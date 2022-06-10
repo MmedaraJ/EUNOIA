@@ -1,0 +1,25 @@
+type NoteData
+@model
+@auth (rules: [ { allow: owner } ]) {
+    id: ID!
+    name: String!
+    description: String
+    image: String
+}
+
+type SoundData @model
+ @auth (rules: [ { allow: owner, operations: [create, delete, update] } ]) {
+     id: ID!
+     owner_username: String!
+     original_name: String!
+     display_name: String!
+     short_description: String!
+     long_description: String!
+     key: String!
+     comment: String
+     icon: Int!
+     fullPlayTime: Int!
+     visible_to_others: Boolean!
+     original_volumes: [Int!]!
+     current_volumes: [Int!]!
+ }

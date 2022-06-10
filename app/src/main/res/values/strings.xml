@@ -1,0 +1,48 @@
+<resources>
+    <string name="empty"> </string>
+    <string name="app_name">Eunoia</string>
+    <string name="logo_text">Eunoia logo</string>
+    <string name="profile_picture_text">Profile picture</string>
+
+    <!--Sign in/up process-->
+    <string name="eunoia_definition">(n): well mind, beautiful thinking</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="sign_in">sign in</string>
+    <string name="sign_up">sign up</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="email">email</string>
+    <string name="first_name">first name</string>
+    <string name="last_name">last name</string>
+    <string name="sign_up_no_account"><u>Don\'t have an account yet? SIGN-UP here.</u></string>
+    <string name="sign_in_yes_account"><u>Already a member? SIGN-IN here.</u></string>
+    <string name="hi_user">Hi User!</string>
+    <string name="ready">Ready to cool off after a long day?</string>
+    <string name="start">Let’s get started!</string>
+    <string name="verify">verify</string>
+    <string name="code">code</string>
+    <string name="request_code">request code</string>
+    <string name="password_changed">Password successfully changed</string>
+    <string name="new_password">new password</string>
+    <string name="reset_password">reset password</string>
+    <string name="forgot_password"><u>Forgot password?</u></string>
+    <string name="resend_code">Resend code</string>
+    <string name="error_message">This is an error message</string>
+    <string name="empty_sign_in_up_error">One or more inputs are empty</string>
+    <string name="empty_username">Empty username</string>
+    <string name="edit_profile_picture">Edit picture</string>
+    <string name="title_activity_test_compose">TestCompose</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="title_activity_sign_in">SignInActivity</string>
+    <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="title_activity_sign_up_confirmation_code">SignUpConfirmationCodeActivity</string>
+    <string name="title_activity_username_reset_pw">UsernameResetPwActivity</string>
+    <string name="title_activity_reset_password">ResetPasswordActivity</string>
+    <string name="title_activity_hello_user">HelloUserActivity</string>
+    <string name="title_activity_user_dashboard">UserDashboard</string>
+    <string name="title_activity_used_dashboard">UsedDashboardActivity</string>
+
+    <!--Dashboard-->
+    <string name="explore">Want to explore something new today?</string>
+    <string name="title_activity_sound">SoundActivity</string>
+</resources>

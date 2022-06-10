@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Sign In/Up process-->
+    <!--Font-->
+    <dimen name="welcome_messages_dimen">12sp</dimen>
+    <dimen name="sign_in_out_text_dimen">15sp</dimen>
+    <dimen name="standard_24">24sp</dimen>
+    <dimen name="standard_16">16sp</dimen>
+    <dimen name="error_messages">10sp</dimen>
+
+    <!--Width and Height-->
+    <dimen name="sign_in_out_height_dimen">47dp</dimen>
+    <dimen name="sign_in_out_width_dimen">160dp</dimen>
+    <dimen name="input_user_details_height_dimen">43dp</dimen>
+    <dimen name="input_user_details_width_dimen">211dp</dimen>
+    <dimen name="logo_top_height_dimen">37.5dp</dimen>
+    <dimen name="logo_top_width_dimen">75dp</dimen>
+    <dimen name="profile_picture_width_dimen_big">278dp</dimen>
+    <dimen name="profile_picture_height_dimen_big">336dp</dimen>
+    <dimen name="error_messages_text_view_height">20dp</dimen>
+    <dimen name="big_logo_w">188dp</dimen>
+    <dimen name="big_logo_h">94dp</dimen>
+
+    <!--Spacer-->
+    <dimen name="eight_sp">8dp</dimen>
+    <dimen name="four_sp">4dp</dimen>
+    <dimen name="forty_sp">40dp</dimen>
+
+    <!--Corners-->
+    <dimen name="ten">10dp</dimen>
+
+    <!--Border-->
+    <dimen name="point_five">0.5dp</dimen>
+
+    <!--Dashboard process-->
+    <dimen name="small_profile_picture_width_dimen_big">40dp</dimen>
+    <dimen name="small_profile_picture_height_dimen_big">48.51dp</dimen>
+</resources>

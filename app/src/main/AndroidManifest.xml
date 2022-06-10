@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.eunoia">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:requestLegacyExternalStorage="true"
+        android:allowBackup="true"
+        android:name="Eunoia"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/star_1"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/star_1"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.EUNOIA"
+        tools:targetApi="31">
+        <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
+        <activity
+            android:name=".sign_in_process.HelloUserActivity"
+            android:exported="false"
+            android:label="@string/title_activity_hello_user"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.EUNOIA" />
+        <activity
+            android:name=".sign_in_process.ResetPasswordActivity"
+            android:exported="false"
+            android:label="@string/title_activity_reset_password"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.EUNOIA" />
+        <activity
+            android:name=".sign_in_process.UsernameResetPwActivity"
+            android:exported="false"
+            android:label="@string/title_activity_username_reset_pw"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.EUNOIA" />
+        <activity
+            android:name=".sign_in_process.SignUpConfirmationCodeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sign_up_confirmation_code"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.EUNOIA" />
+        <activity
+            android:name=".sign_in_process.SignUpActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sign_up"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.EUNOIA" />
+        <activity
+            android:name=".sign_in_process.SignInActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sign_in"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.EUNOIA" />
+        <activity
+            android:name=".sign_in_process.WelcomeActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.EUNOIA">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".dashboard.home.UserDashboardActivity"
+            android:exported="false"
+            android:label="@string/title_activity_used_dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.EUNOIA" />
+        <activity
+            android:name=".dashboard.upload_files.UploadFilesActivity"
+            android:exported="false"
+            android:label="@string/title_activity_used_dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.EUNOIA" >
+            <intent-filter>
+                <action android:name="android.intent.action.GET_CONTENT" />
+                <data android:mimeType="audio/*" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- The OPENABLE category declares that the returned file is accessible
+                     from a content provider that supports OpenableColumns
+                     and ContentResolver.openFileDescriptor() -->
+                <category android:name="android.intent.category.OPENABLE" />
+                <category android:name="android.intent.category.EXTRA_ALLOW_MULTIPLE" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

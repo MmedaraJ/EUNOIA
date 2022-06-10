@@ -1,0 +1,18 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url = 'https://androidx.dev/snapshots/builds/8661524/artifacts/repository' }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = 'https://androidx.dev/snapshots/builds/8661524/artifacts/repository' }
+    }
+}
+rootProject.name = "EUNOIA"
+include ':app'

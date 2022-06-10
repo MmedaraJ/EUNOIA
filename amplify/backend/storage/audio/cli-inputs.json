@@ -1,0 +1,13 @@
+{
+  "resourceName": "audio",
+  "policyUUID": "c3b37c9d",
+  "bucketName": "eunoia285db47af376d4218b9325333a9cc9e99",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "groupAccess": {}
+}
