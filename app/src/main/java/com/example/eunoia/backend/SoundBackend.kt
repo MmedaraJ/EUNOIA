@@ -32,7 +32,7 @@ object SoundBackend{
                     completed(response.data)
                 },
                 { Log.e("MyAmplifyApp", "Query failed", it) }
-            );
+            )
         }
     }
 
@@ -42,12 +42,12 @@ object SoundBackend{
             Amplify.API.query(
                 ModelQuery.list(SoundData::class.java),
                 { response ->
-                    Log.i(TAG, "Queried")
-                    for (soundData in response.data) {
+                    Log.i(TAG, "Queried $response")
+                    /*for (soundData in response.data) {
                         Log.i(TAG, "${soundData.ownerUsername} = ${soundData.displayName}")
                         // TODO should add all the sounds at once instead of one by one (each add triggers a UI refresh)
                         SoundObject.addSound(SoundObject.Sound.from(soundData))
-                    }
+                    }*/
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -65,6 +65,7 @@ object SoundBackend{
                         Log.e(TAG, response.errors.first().message)
                     } else {
                         Log.i(TAG, "Created sound with id: " + response.data.id)
+                        querySound()
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }

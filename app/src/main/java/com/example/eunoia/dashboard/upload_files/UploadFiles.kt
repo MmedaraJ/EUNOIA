@@ -70,10 +70,10 @@ class UploadFilesActivity : ComponentActivity() {
     }
 
     private fun createPouringRainSound(){
-        /*val sound = SoundObject.Sound(
+       /* val sound = SoundObject.Sound(
             UUID.randomUUID().toString(),
             "mmedaraj",
-            "pouring rain1",
+            "pouring rain1yy",
             "pouring rain1",
             "The beautiful sound of the pouring rain1",
             "The beautiful sound of the pouring rain1",
@@ -99,6 +99,11 @@ class UploadFilesActivity : ComponentActivity() {
                 3
             )
         }
+        /*val sounds = SoundObject.sounds().value
+        val isEmpty = sounds?.isEmpty() ?: false
+        if(isEmpty){
+            SoundBackend.querySound()
+        }*/
     }
 
     private val selectAudiosActivityResult =
@@ -126,7 +131,7 @@ class UploadFilesActivity : ComponentActivity() {
                 else if(data?.data != null){
                     val mp3Uri: Uri? = data.data
                     Log.i(TAG, "One file selected; ${data.data}")
-                    val mediaPlayer = MediaPlayer().apply {
+                    /*val mediaPlayer = MediaPlayer().apply {
                         setAudioAttributes(
                             AudioAttributes.Builder()
                                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -138,7 +143,7 @@ class UploadFilesActivity : ComponentActivity() {
                         }
                         prepare()
                         start()
-                    }
+                    }*/
                 }
             }
         }

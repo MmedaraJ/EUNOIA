@@ -8,7 +8,7 @@ type NoteData
 }
 
 type SoundData @model
- @auth (rules: [ { allow: owner, operations: [create, delete, update] } ]) {
+ @auth (rules: [ { allow: owner } ]) {
      id: ID!
      owner_username: String!
      original_name: String!
