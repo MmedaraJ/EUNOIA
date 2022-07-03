@@ -7,19 +7,43 @@ type NoteData
     image: String
 }
 
-type SoundData @model
- @auth (rules: [ { allow: owner } ]) {
+type SoundData
+@model (queries: { get: "getSoundData", list: "listSoundDatas" })
+ @auth (
+        rules: [
+            { allow: private, operations: [read]},
+            { allow: owner }
+        ]
+     ) {
      id: ID!
      owner_username: String!
      original_name: String!
      display_name: String!
      short_description: String!
      long_description: String!
-     key: String!
-     comment: String
+     audio_key: String!
+     comment: String!
      icon: Int!
      fullPlayTime: Int!
      visible_to_others: Boolean!
      original_volumes: [Int!]!
      current_volumes: [Int!]!
+     audio_names: [String!]!
+ }
+
+type UserData
+@model (queries: { get: "getUserData", list: "listUserDatas" })
+ @auth (rules: [{ allow: owner }]) {
+    id: ID!
+    username: String!
+    givenName: String!
+    familyName: String!
+    middleName: String
+    email: String!
+    profile_picture_key: String
+    address: String
+    birthdate: String
+    gender: String
+    nickname: String
+    phoneNumber: String
  }

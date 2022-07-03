@@ -16,7 +16,7 @@ object UserData {
     //
 
     // signed in status
-    private val _isSignedIn = MutableLiveData<Boolean>(false)
+    private val _isSignedIn = MutableLiveData(false)
     var isSignedIn: LiveData<Boolean> = _isSignedIn
 
     fun setSignedIn(newValue : Boolean) {

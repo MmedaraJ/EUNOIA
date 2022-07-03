@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.eunoia.R
-import com.example.eunoia.backend.Backend
+import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.ui.theme.Blue
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.EUNOIATheme
@@ -49,11 +49,11 @@ class ResetPasswordActivity : ComponentActivity() {
     }
 
     private fun observeConfirmResetPassword(){
-        Backend.confirmResetPassword.observe(this) { confirmResetPassword ->
+        AuthBackend.confirmResetPassword.observe(this) { confirmResetPassword ->
             // update UI
             Log.i(TAG, "confirmResetPassword changed : $confirmResetPassword")
             if (confirmResetPassword) {
-                if (Backend.confirmResetPassword.value!!) {
+                if (AuthBackend.confirmResetPassword.value!!) {
                     val intent = Intent(this, SignInActivity::class.java)
                     intent.putExtra("message", "Password successfully updated")
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -90,7 +90,7 @@ class ResetPasswordActivity : ComponentActivity() {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.eight_sp)))
             new_password = standardPasswordOutlinedTextInput("new password", 43)
             Spacer(modifier = Modifier.height(12.dp))
-            if(showErrorMessage.value || Backend.confirmResetPasswordError.value!="") ErrorMessage()
+            if(showErrorMessage.value || AuthBackend.confirmResetPasswordError.value!="") ErrorMessage()
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.forty_sp)))
             StandardBlueButton(stringResource(id = R.string.reset_password)){hasValidInputs()}
         }
@@ -110,7 +110,7 @@ class ResetPasswordActivity : ComponentActivity() {
     }
 
     private fun resendCodeListener(){
-        Backend.resetPassword(username)
+        AuthBackend.resetPassword(username)
     }
 
     private fun hasValidInputs() {
@@ -118,8 +118,8 @@ class ResetPasswordActivity : ComponentActivity() {
             showErrorMessage.value = true
         }else {
             showErrorMessage.value = false
-            Backend.confirmResetPasswordError.value = ""
-            Backend.confirmResetPassword(
+            AuthBackend.confirmResetPasswordError.value = ""
+            AuthBackend.confirmResetPassword(
                 code, new_password
             )
         }
@@ -133,8 +133,8 @@ class ResetPasswordActivity : ComponentActivity() {
         if(showErrorMessage.value){
             ErrorTextSize12(text = stringResource(id = R.string.empty_sign_in_up_error))
         }else{
-            if(Backend.confirmResetPasswordError.value!="") {
-                ErrorTextSize12(text = Backend.confirmResetPasswordError.value)
+            if(AuthBackend.confirmResetPasswordError.value!="") {
+                ErrorTextSize12(text = AuthBackend.confirmResetPasswordError.value)
             }
         }
     }

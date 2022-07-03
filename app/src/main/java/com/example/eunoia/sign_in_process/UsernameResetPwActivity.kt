@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.eunoia.R
-import com.example.eunoia.backend.Backend
+import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.EUNOIATheme
 
@@ -45,11 +45,11 @@ class UsernameResetPwActivity : ComponentActivity() {
     }
 
     private fun observeResetPassword(){
-        Backend.resetPassword.observe(this) { resetPassword ->
+        AuthBackend.resetPassword.observe(this) { resetPassword ->
             // update UI
             Log.i(TAG, "resetPassword changed : $resetPassword")
             if (resetPassword) {
-                if (Backend.resetPassword.value!!) {
+                if (AuthBackend.resetPassword.value!!) {
                     val intent = Intent(this, ResetPasswordActivity::class.java)
                     intent.putExtra("username", username)
                     startActivity(intent)
@@ -83,7 +83,7 @@ class UsernameResetPwActivity : ComponentActivity() {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.forty_sp)))
             username = standardOutlinedTextInput(211, 50, "username", 55)
             Spacer(modifier = Modifier.height(12.dp))
-            if(showErrorMessage.value || Backend.resetPasswordError.value!="") ErrorMessage()
+            if(showErrorMessage.value || AuthBackend.resetPasswordError.value!="") ErrorMessage()
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.forty_sp)))
             StandardBlueButton(stringResource(id = R.string.request_code)){hasValidInputs()}
         }
@@ -94,8 +94,8 @@ class UsernameResetPwActivity : ComponentActivity() {
             showErrorMessage.value = true
         }else {
             showErrorMessage.value = false
-            Backend.resetPasswordError.value = ""
-            Backend.resetPassword(
+            AuthBackend.resetPasswordError.value = ""
+            AuthBackend.resetPassword(
                 username
             )
         }
@@ -109,8 +109,8 @@ class UsernameResetPwActivity : ComponentActivity() {
         if(showErrorMessage.value){
             ErrorTextSize12(text = stringResource(id = R.string.empty_sign_in_up_error))
         }else{
-            if(Backend.resetPasswordError.value!="") {
-                ErrorTextSize12(text = Backend.resetPasswordError.value)
+            if(AuthBackend.resetPasswordError.value!="") {
+                ErrorTextSize12(text = AuthBackend.resetPasswordError.value)
             }
         }
     }

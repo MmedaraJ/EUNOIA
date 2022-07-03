@@ -27,6 +27,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -48,7 +49,7 @@ android {
 
 dependencies {
     //compose
-    def compose_version = '1.2.0-beta03'
+    def compose_version = '1.2.0-rc02'
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
@@ -62,17 +63,17 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
     // Amplify core dependency
-    implementation 'com.amplifyframework:core:1.24.0'
-    implementation 'com.amplifyframework:aws-auth-cognito:1.24.0'
-    implementation 'com.amplifyframework:aws-api:1.24.0'
-    implementation 'com.amplifyframework:aws-storage-s3:1.4.0'
+    implementation 'com.amplifyframework:core:1.36.0'
+    implementation 'com.amplifyframework:aws-api:1.36.0'
+    implementation 'com.amplifyframework:aws-auth-cognito:1.36.0'
+    implementation 'com.amplifyframework:aws-storage-s3:1.36.0'
     //For AWSMobileClient only:
-    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.44.0'
+    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.49.0'
     //For the drop-in UI also:
     implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.44.0'
     implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.44.0'
     //For hosted UI also:
-    implementation 'com.amazonaws:aws-android-sdk-cognitoauth:2.44.0'
+    implementation 'com.amazonaws:aws-android-sdk-cognitoauth:2.49.0'
     //Jetpack compose
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
@@ -83,15 +84,19 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.navigation:navigation-compose:2.5.0-rc01"
-    implementation("androidx.compose.runtime:runtime:1.2.0-beta03")
-    implementation("androidx.compose.runtime:runtime-livedata:1.2.0-beta03")
-    implementation("androidx.compose.runtime:runtime-rxjava2:1.2.0-beta03")
+    implementation "androidx.navigation:navigation-compose:2.5.0-rc02"
+    implementation("androidx.compose.runtime:runtime:1.2.0-rc02")
+    implementation("androidx.compose.runtime:runtime-livedata:1.2.0-rc02")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.2.0-rc02")
     // Test rules and transitive dependencies:
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
     // Needed for createComposeRule, but not createAndroidComposeRule:
     debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
     //navigation
-    def nav_version = "2.4.2"
+    def nav_version = "2.5.0-rc02"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    //desugar
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    //audio converter
+    implementation 'com.github.adrielcafe:AndroidAudioConverter:0.0.8'
 }

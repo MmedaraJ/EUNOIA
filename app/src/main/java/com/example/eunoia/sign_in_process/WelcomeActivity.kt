@@ -53,17 +53,19 @@ class WelcomeActivity : ComponentActivity() {
             if (isSignedIn) {
                 Log.i(TAG, "user val : ${UserData.isSignedIn.value!!}")
                 if (UserData.isSignedIn.value!!) {
-                    if(Amplify.Auth.currentUser.username == "mmedaraj"){
-                        val intent = Intent(this, UploadFilesActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                    }else {
-                        val intent = Intent(this, UserDashboardActivity::class.java)
-                        intent.putExtra("username", Amplify.Auth.currentUser.username)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
+                    if(Amplify.Auth.currentUser != null) {
+                        if (Amplify.Auth.currentUser.username == "eunoia") {
+                            val intent = Intent(this, UploadFilesActivity::class.java)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        } else {
+                            val intent = Intent(this, UserDashboardActivity::class.java)
+                            intent.putExtra("username", Amplify.Auth.currentUser.username)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }
                     }
                 }
             }

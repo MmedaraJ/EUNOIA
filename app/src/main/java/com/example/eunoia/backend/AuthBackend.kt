@@ -7,8 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.AmplifyException
 import com.amplifyframework.api.aws.AWSApiPlugin
-import com.amplifyframework.api.graphql.model.ModelMutation
-import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.auth.AuthChannelEventName
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
@@ -17,15 +15,17 @@ import com.amplifyframework.auth.options.AuthSignUpOptions
 import com.amplifyframework.auth.result.AuthSessionResult
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.InitializationStatus
-import com.amplifyframework.datastore.generated.model.NoteData
 import com.amplifyframework.hub.HubChannel
 import com.amplifyframework.hub.HubEvent
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin
 import com.example.eunoia.models.UserData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 
-object Backend {
+object AuthBackend {
     private const val TAG = "AuthQuickstart"
-    private const val BACKEND_TAG = "Backend"
+    private const val BACKEND_TAG = "AuthBackend"
     private val _isSignedUp = MutableLiveData(false)
     var isSignedUp: LiveData<Boolean> = _isSignedUp
     private val _isSignedIn = MutableLiveData(false)
@@ -45,12 +45,14 @@ object Backend {
     val signUpConfirmationError = mutableStateOf("")
     val resetPasswordError = mutableStateOf("")
     val confirmResetPasswordError = mutableStateOf("")
+    private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
-    fun initialize(applicationContext: Context) : Backend {
+    fun initialize(applicationContext: Context) : AuthBackend {
         try {
             Amplify.addPlugin(AWSCognitoAuthPlugin())
-            Amplify.addPlugin(AWSS3StoragePlugin())
             Amplify.addPlugin(AWSApiPlugin())
+            Amplify.addPlugin(AWSS3StoragePlugin())
+
             Amplify.configure(applicationContext)
             Log.i(TAG, "Initialized Amplify")
         } catch (e: AmplifyException) {
@@ -104,7 +106,7 @@ object Backend {
     }
 
     private fun updateUserData(withSignedInStatus : Boolean) {
-        com.example.eunoia.models.UserData.setSignedIn(withSignedInStatus)
+        UserData.setSignedIn(withSignedInStatus)
         /*val notes = UserData.notes().value
         val isEmpty = notes?.isEmpty() ?: false
 
@@ -182,6 +184,7 @@ object Backend {
         Amplify.Auth.signUp(username, password, options,
             {
                 Log.i(TAG, "Sign up succeeded: $it")
+                updateUserData(true)
                 setSignedUp(true)
             },
             {
@@ -245,61 +248,6 @@ object Backend {
                 Log.e("AuthQuickstart", "Failed to confirm password reset", it)
                 confirmResetPasswordError.value = it.message.toString()
             }
-        )
-    }
-
-    //Notes
-    fun queryNotes() {
-        Log.i(TAG, "Querying notes")
-
-        Amplify.API.query(
-            ModelQuery.list(NoteData::class.java),
-            { response ->
-                Log.i(TAG, "Queried")
-                for (noteData in response.data) {
-                    Log.i(TAG, noteData.name)
-                    // TODO should add all the notes at once instead of one by one (each add triggers a UI refresh)
-                    UserData.addNote(UserData.Note.from(noteData))
-                }
-            },
-            { error -> Log.e(TAG, "Query failure", error) }
-        )
-    }
-
-    fun createNote(note : UserData.Note) {
-        Log.i(TAG, "Creating notes")
-
-        Amplify.API.mutate(
-            ModelMutation.create(note.data),
-            { response ->
-                Log.i(TAG, "Created")
-                if (response.hasErrors()) {
-                    Log.e(TAG, response.errors.first().message)
-                } else {
-                    Log.i(TAG, "Created Note with id: " + response.data.id)
-                }
-            },
-            { error -> Log.e(TAG, "Create failed", error) }
-        )
-    }
-
-    fun deleteNote(note : UserData.Note?) {
-
-        if (note == null) return
-
-        Log.i(TAG, "Deleting note $note")
-
-        Amplify.API.mutate(
-            ModelMutation.delete(note.data),
-            { response ->
-                Log.i(TAG, "Deleted")
-                if (response.hasErrors()) {
-                    Log.e(TAG, response.errors.first().message)
-                } else {
-                    Log.i(TAG, "Deleted Note $response")
-                }
-            },
-            { error -> Log.e(TAG, "Delete failed", error) }
         )
     }
 }

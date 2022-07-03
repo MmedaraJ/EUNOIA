@@ -31,17 +31,22 @@ import com.amplifyframework.auth.AuthUserAttribute
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.R
-import com.example.eunoia.backend.Backend
+import com.example.eunoia.backend.AuthBackend
+import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.dashboard.home.UserDashboardActivity
+import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.EUNOIATheme
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.util.*
 
 class HelloUserActivity : ComponentActivity() {
     private var username: String = ""
     private var first_name: String = ""
+    private var last_name: String = ""
+    private var email: String = ""
     private val TAG = "HelloUserActivity"
     private val imageSelected = mutableStateOf(false)
     private val imageStoredS3 = mutableStateOf(false)
@@ -54,6 +59,8 @@ class HelloUserActivity : ComponentActivity() {
         observeImageStoredOnS3()
         username = intent.getStringExtra("username")!!
         first_name = intent.getStringExtra("first_name")!!
+        last_name = intent.getStringExtra("last_name")!!
+        email = intent.getStringExtra("email")!!
         setContent {
             EUNOIATheme {
                 // A surface container using the 'background' color from the theme
@@ -68,14 +75,14 @@ class HelloUserActivity : ComponentActivity() {
     }
 
     private fun observeImageStoredOnS3(){
-        Backend.imageStoredOnS3.observe(this) { imageStoredOnS3 ->
+        AuthBackend.imageStoredOnS3.observe(this) { imageStoredOnS3 ->
             // update UI
             Log.i(TAG, "imageStoredOnS3 changed : $imageStoredOnS3")
             if (imageStoredOnS3) {
-                if (Backend.imageStoredOnS3.value!!) {
+                if (AuthBackend.imageStoredOnS3.value!!) {
                     imageStoredS3.value = true
                 } else {
-                    Log.d(TAG, Backend.imageStoredOnS3.value.toString())
+                    Log.d(TAG, AuthBackend.imageStoredOnS3.value.toString())
                 }
             } else {
             }
@@ -146,7 +153,7 @@ class HelloUserActivity : ComponentActivity() {
                 userImageKey = "$username - profile picture"
 
                 //store user image in aws s3
-                //Backend.storeImage(userImagePath!!, userImageKey!!)
+                //AuthBackend.storeImage(userImagePath!!, userImageKey!!)
 
                 if(imageStoredS3.value) {
                     //Update user profile image on amplify
@@ -157,7 +164,7 @@ class HelloUserActivity : ComponentActivity() {
                     )
 
                     //retrieve user image
-                    /*Backend.retrieveImage(userImageKey!!) {
+                    /*AuthBackend.retrieveImage(userImageKey!!) {
                         imageRetrievedS3.value = it
                     }*/
                     if (imageRetrievedS3.value != null) {
@@ -199,7 +206,12 @@ class HelloUserActivity : ComponentActivity() {
                 0
             )
             Spacer(modifier = Modifier.height(4.dp))
-            IconButton(onClick = { goToDashboard(context) }) {
+            IconButton(
+                onClick = {
+                    createUserObject()
+                    goToDashboard(context)
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Filled.East,
                     contentDescription = "Get Started",
@@ -227,6 +239,24 @@ class HelloUserActivity : ComponentActivity() {
 
     private fun goToDashboard(context: Context){
         context.startActivity(Intent(context, UserDashboardActivity::class.java))
+    }
+
+    private fun createUserObject(){
+        val user = UserObject.User(
+            UUID.randomUUID().toString(),
+            username,
+            first_name,
+            last_name,
+            "",
+            email,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+        )
+        UserBackend.createUser(user)
     }
 
     @Preview(

@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.eunoia.R
-import com.example.eunoia.backend.Backend
+import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.ui.theme.Blue
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.EUNOIATheme
@@ -51,7 +51,7 @@ class SignUpActivity : ComponentActivity() {
     }
 
     private fun observeIsSignedUp(){
-        Backend.isSignedUp.observe(this) { isSignedUp ->
+        AuthBackend.isSignedUp.observe(this) { isSignedUp ->
             // update UI
             Log.i(TAG, "isSignedUp changed : $isSignedUp")
             if (isSignedUp) {
@@ -99,7 +99,7 @@ class SignUpActivity : ComponentActivity() {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.four_sp)))
             password = standardPasswordOutlinedTextInput("password", 56)
             Spacer(modifier = Modifier.height(12.dp))
-            if(showErrorMessage.value || Backend.signUpError.value!="") ErrorMessage()
+            if(showErrorMessage.value || AuthBackend.signUpError.value!="") ErrorMessage()
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.forty_sp)))
             StandardBlueButton(stringResource(id = R.string.sign_up)){hasValidInputs()}
         }
@@ -131,8 +131,8 @@ class SignUpActivity : ComponentActivity() {
             showErrorMessage.value = true
         }else {
             showErrorMessage.value = false
-            Backend.signUpError.value = ""
-            Backend.signUp(
+            AuthBackend.signUpError.value = ""
+            AuthBackend.signUp(
                 first_name, last_name, email, username, password
             )
         }
@@ -146,8 +146,8 @@ class SignUpActivity : ComponentActivity() {
         if(showErrorMessage.value){
             ErrorTextSize12(text = stringResource(id = R.string.empty_sign_in_up_error))
         }else{
-            if(Backend.signUpError.value!="") {
-                ErrorTextSize12(text = Backend.signUpError.value)
+            if(AuthBackend.signUpError.value!="") {
+                ErrorTextSize12(text = AuthBackend.signUpError.value)
             }
         }
     }

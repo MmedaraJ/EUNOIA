@@ -14,6 +14,7 @@ export type AmplifyDependentResourcesAttributes = {
     },
     "api": {
         "eunoia2": {
+            "GraphQLAPIKeyOutput": "string",
             "GraphQLAPIIdOutput": "string",
             "GraphQLAPIEndpointOutput": "string"
         }

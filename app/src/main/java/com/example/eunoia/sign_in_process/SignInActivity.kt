@@ -19,13 +19,18 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.amplifyframework.auth.AuthUserAttribute
+import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.R
-import com.example.eunoia.backend.Backend
+import com.example.eunoia.backend.AuthBackend
+import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.dashboard.home.UserDashboardActivity
+import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.theme.Blue
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.EUNOIATheme
+import java.util.*
 
 class SignInActivity : ComponentActivity() {
     private val TAG = "SignIn"
@@ -59,18 +64,18 @@ class SignInActivity : ComponentActivity() {
     }
 
     private fun observeIsSignedIn(){
-        Backend.isSignedIn.observe(this) { isSignedIn ->
+        AuthBackend.isSignedIn.observe(this) { isSignedIn ->
             // update UI
             Log.i(TAG, "isSignedIn changed : $isSignedIn")
             if (isSignedIn) {
-                if (Backend.isSignedIn.value!!) {
-                    Log.d(TAG, Backend.isSignedIn.value.toString())
+                if (AuthBackend.isSignedIn.value!!) {
+                    Log.d(TAG, AuthBackend.isSignedIn.value.toString())
                     val intent = Intent(this, UserDashboardActivity::class.java)
                     intent.putExtra("username", Amplify.Auth.currentUser.username)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 } else {
-                    Log.d(TAG, Backend.isSignedIn.value.toString())
+                    Log.d(TAG, AuthBackend.isSignedIn.value.toString())
                 }
             } else {
                 Log.d(TAG, isSignedIn.toString())
@@ -79,11 +84,11 @@ class SignInActivity : ComponentActivity() {
     }
 
     private fun observeSetResendCode(){
-        Backend.resendCode.observe(this) { resendCode ->
+        AuthBackend.resendCode.observe(this) { resendCode ->
             // update UI
             Log.i(TAG, "resendCode changed : $resendCode")
             if (resendCode) {
-                if (Backend.resendCode.value!!) {
+                if (AuthBackend.resendCode.value!!) {
                     val intent = Intent(this, SignUpConfirmationCodeActivity::class.java)
                     if (username.isNotEmpty()) {
                         intent.putExtra("username", username)
@@ -92,7 +97,7 @@ class SignInActivity : ComponentActivity() {
                         hasValidInputs()
                     }
                 } else {
-                    Log.d(TAG, Backend.resendCode.value.toString())
+                    Log.d(TAG, AuthBackend.resendCode.value.toString())
                 }
             } else {
                 Log.d(TAG, resendCode.toString())
@@ -135,7 +140,7 @@ class SignInActivity : ComponentActivity() {
                 0
             ) { forgotPasswordListener(context!!) }
             Spacer(modifier = Modifier.height(12.dp))
-            if(showErrorMessage.value || Backend.signInError.value!="") ErrorMessage()
+            if(showErrorMessage.value || AuthBackend.signInError.value!="") ErrorMessage()
             Spacer(modifier = Modifier.height(12.dp))
             if(message.isNotEmpty()) SuccessMessage(message)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.forty_sp)))
@@ -164,13 +169,13 @@ class SignInActivity : ComponentActivity() {
         context.startActivity(Intent(context, UsernameResetPwActivity::class.java))
     }
 
-    fun hasValidInputs() {
+    private fun hasValidInputs() {
         if (username.isEmpty() or password.isEmpty()) {
             showErrorMessage.value = true
         }else {
             showErrorMessage.value = false
-            Backend.signInError.value = ""
-            Backend.signIn(
+            AuthBackend.signInError.value = ""
+            AuthBackend.signIn(
                 username,
                 password
             )
@@ -196,8 +201,8 @@ class SignInActivity : ComponentActivity() {
         if(showErrorMessage.value){
             ErrorTextSize12(text = stringResource(id = R.string.empty_sign_in_up_error))
         }else{
-            if(Backend.signInError.value!="") {
-                ErrorTextSize12(text = Backend.signInError.value)
+            if(AuthBackend.signInError.value!="") {
+                ErrorTextSize12(text = AuthBackend.signInError.value)
             }
         }
     }

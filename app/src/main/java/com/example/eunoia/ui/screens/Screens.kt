@@ -2,9 +2,7 @@ package com.example.eunoia.ui.screens
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
-import androidx.navigation.NavBackStackEntry
 import com.example.eunoia.R
-import androidx.navigation.compose.*
 
 /*fun NavBackStackEntry.getRoute(): String {
     return arguments?.getString(KEY_ROUTE) ?: ""
@@ -26,8 +24,8 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
     }
     object DashboardDetail : Screen("DashboardDetail")*/
 
-    object Sound: Screen("Sound", -1, "sound")
-    object PouringRain: Screen("Pouring Rain", -1, "pouring_rain")
+    object Sound: Screen("User", -1, "sound")
+    object SoundScreen: Screen("Sound Screen", -1, "sound_screen")
     object Settings: Screen("Settings", -1, "settings")
     object Article: Screen("Article", -1, "article")
     object Pricing: Screen("Pricing", -1, "pricing")
@@ -47,7 +45,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                 Feedback.screen_route -> Feedback
                 Account.screen_route -> Account
                 Sound.screen_route -> Sound
-                PouringRain.screen_route -> PouringRain
+                SoundScreen.screen_route -> SoundScreen
                 Settings.screen_route -> Settings
                 Article.screen_route -> Article
                 Pricing.screen_route -> Pricing

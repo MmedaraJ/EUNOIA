@@ -1,6 +1,7 @@
 package com.example.eunoia.ui.components
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -17,21 +18,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.eunoia.R
 import com.example.eunoia.ui.theme.*
+
+val bioRhymeFonts = FontFamily(
+    Font(R.font.biorhyme_regular, weight = FontWeight.Normal),
+    Font(R.font.biorhyme_bold1, weight =  FontWeight.Bold),
+    Font(R.font.biorhyme_extrabold, weight = FontWeight.ExtraBold),
+    Font(R.font.biorhyme_light, weight =  FontWeight.Light),
+    Font(R.font.biorhyme_extralight, weight = FontWeight.ExtraLight)
+)
 
 @Composable
 fun StandardBlueButton(text: String, lambda: () -> Unit){
@@ -128,6 +147,37 @@ fun standardOutlinedTextInput(width: Int, height: Int, placeholder: String, offs
             .size(width.dp, height.dp)
             .padding(0.dp)
             .testTag(placeholder)
+    )
+    return text
+}
+
+@Composable
+fun standardCentralizedOutlinedTextInput(placeholder: String, color: Color): String{
+    var text by rememberSaveable{ mutableStateOf(placeholder) }
+    val context = LocalContext.current
+    val maxLength = 30
+    OutlinedTextField(
+        value = text,
+        onValueChange = {
+            if (it.length <= maxLength) text = it
+            else Toast.makeText(context, "Sound name cannot be more than $maxLength characters", Toast.LENGTH_SHORT).show()
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            backgroundColor = color.copy(alpha = 0f),
+            focusedBorderColor = color.copy(alpha = 0f),
+            unfocusedBorderColor = color.copy(alpha = 0f),
+            textColor = MaterialTheme.colors.onPrimary
+        ),
+        textStyle = TextStyle(
+            textAlign = TextAlign.Center,
+            fontFamily = bioRhymeFonts,
+            fontWeight = FontWeight.Normal,
+            fontSize = 18.sp
+        ),
+        singleLine = true,
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(0.dp)
     )
     return text
 }
@@ -885,6 +935,7 @@ fun Article(title: String, summary: String, icon: Int, lambda: () -> Unit){
 @Composable
 fun Preview() {
     EUNOIATheme {
-        StarSurroundedTextWithIconRight("Beauty Sleep", R.drawable.beauty_sleep_icon, 98.0, 87.62)
+        standardCentralizedOutlinedTextInput("pouring rain", MixerBackground2)
+        //StarSurroundedTextWithIconRight("Beauty Sleep", R.drawable.beauty_sleep_icon, 98.0, 87.62)
     }
 }

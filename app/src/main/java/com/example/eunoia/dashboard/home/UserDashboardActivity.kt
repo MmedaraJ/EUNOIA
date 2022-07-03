@@ -2,6 +2,9 @@ package com.example.eunoia.dashboard.home
 
 import android.content.Context
 import android.content.res.Configuration
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,7 +24,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.eunoia.R
+import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.upload_files.UploadFilesActivity
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.ui.theme.Grey
 import com.example.eunoia.ui.theme.White
@@ -145,10 +150,10 @@ private fun OptionsList(context: Context, navController: NavHostController){
         modifier = Modifier
             .fillMaxWidth()
     ){
-        OptionItem(name = "sleep", icon = R.drawable.sleep_icon, 71, 71, false, 0, 0){ something() }
-        OptionItem(name = "music", icon = R.drawable.music_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(name = "meditate", icon = R.drawable.meditate_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(name = "sound", icon = R.drawable.sound_icon, 71, 71, false, 0, 0){toSoundActivity(context, navController)}
+        OptionItem(displayName = "sleep", icon = R.drawable.sleep_icon, 71, 71, false, 0, 0){ AuthBackend.signOut() }
+        OptionItem(displayName = "music", icon = R.drawable.music_icon, 71, 71, false, 0, 0){something()}
+        OptionItem(displayName = "meditate", icon = R.drawable.meditate_icon, 71, 71, false, 0, 0){something()}
+        OptionItem(displayName = "sound", icon = R.drawable.sound_icon, 71, 71, false, 0, 0){toSoundActivity(context, navController)}
     }
 
     Row(
@@ -156,29 +161,29 @@ private fun OptionsList(context: Context, navController: NavHostController){
         modifier = Modifier
             .fillMaxWidth()
     ){
-        OptionItem(name = "self-love", icon = R.drawable.self_love_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(name = "stretch", icon = R.drawable.stretch_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(name = "slumber party", icon = R.drawable.slumber_party_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(name = "bedtime story", icon = R.drawable.bedtime_story_icon, 71, 71, false, 0, 0){something()}
+        OptionItem(displayName = "self-love", icon = R.drawable.self_love_icon, 71, 71, false, 0, 0){something()}
+        OptionItem(displayName = "stretch", icon = R.drawable.stretch_icon, 71, 71, false, 0, 0){something()}
+        OptionItem(displayName = "slumber party", icon = R.drawable.slumber_party_icon, 71, 71, false, 0, 0){something()}
+        OptionItem(displayName = "bedtime story", icon = R.drawable.bedtime_story_icon, 71, 71, false, 0, 0){something()}
     }
 }
 
 @Composable
 fun OptionItem(
-    name: String,
+    displayName: String,
     icon: Int,
     width: Int,
     height: Int,
     pro: Boolean,
     xOffset: Int,
     yOffset: Int,
-    lambda: () -> Unit
+    lambda: (displayName: String) -> Unit
 ){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(bottom = 15.dp)
-            .clickable { lambda() }
+            .clickable { lambda(displayName) }
     ){
         Box(
         ){
@@ -192,7 +197,7 @@ fun OptionItem(
             ) {
                 Image(
                     painter = painterResource(id = icon),
-                    contentDescription = "$name icon",
+                    contentDescription = "$displayName icon",
                     modifier = Modifier
                         .size(width = 25.64.dp, height = 25.64.dp)
                         .padding(20.dp)
@@ -223,7 +228,7 @@ fun OptionItem(
         }
         Spacer(modifier = Modifier.height(4.dp))
         NormalText(
-            text = name,
+            text = displayName,
             color = MaterialTheme.colors.primary,
             fontSize = 9,
             xOffset = 0,
@@ -276,11 +281,11 @@ private fun ArticlesList(navController: NavController){
 private fun toSoundActivity(context: Context, navController: NavHostController){
    /* val i = Intent(context, SoundActivity::class.java)
     context.startActivity(i)*/
-    val sounds = SoundObject.sounds().value
+   /* val sounds = SoundObject.sounds().value
     val isEmpty = sounds?.isEmpty() ?: false
     if(isEmpty){
         SoundBackend.querySound()
-    }
+    }*/
     navController.navigate(Screen.Sound.screen_route)
 }
 

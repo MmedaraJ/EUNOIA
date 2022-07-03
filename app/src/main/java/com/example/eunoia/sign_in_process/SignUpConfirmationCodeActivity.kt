@@ -19,7 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.R
-import com.example.eunoia.backend.Backend
+import com.example.eunoia.backend.AuthBackend
+import com.example.eunoia.dashboard.upload_files.UploadFilesActivity
 import com.example.eunoia.ui.theme.Blue
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.EUNOIATheme
@@ -53,16 +54,21 @@ class SignUpConfirmationCodeActivity : ComponentActivity() {
     }
 
     private fun observeSignUpConfirmed(){
-        Backend.signUpConfirmed.observe(this) { signUpConfirmed ->
+        AuthBackend.signUpConfirmed.observe(this) { signUpConfirmed ->
             // update UI
             Log.i(TAG, "isSignedUp changed : $signUpConfirmed")
             if (signUpConfirmed) {
-                val intent = Intent(this, HelloUserActivity::class.java)
-                intent.putExtra("first_name", first_name)
-                intent.putExtra("last_name", last_name)
-                intent.putExtra("email", email)
-                intent.putExtra("username", username)
-                startActivity(intent)
+                if(username == "eunoia"){
+                    val intent = Intent(this, UploadFilesActivity::class.java)
+                    startActivity(intent)
+                }else {
+                    val intent = Intent(this, HelloUserActivity::class.java)
+                    intent.putExtra("first_name", first_name)
+                    intent.putExtra("last_name", last_name)
+                    intent.putExtra("email", email)
+                    intent.putExtra("username", username)
+                    startActivity(intent)
+                }
             }
         }
     }
@@ -100,7 +106,7 @@ class SignUpConfirmationCodeActivity : ComponentActivity() {
                 0
             )
             Spacer(modifier = Modifier.height(12.dp))
-            if(showErrorMessage.value || Backend.signUpConfirmationError.value!="") ErrorMessage()
+            if(showErrorMessage.value || AuthBackend.signUpConfirmationError.value!="") ErrorMessage()
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.forty_sp)))
             StandardBlueButton(stringResource(id = R.string.verify)){hasValidInputs()}
         }
@@ -120,7 +126,7 @@ class SignUpConfirmationCodeActivity : ComponentActivity() {
     }
 
     private fun resendCodeListener(){
-        Backend.resendSignUpCode(username)
+        AuthBackend.resendSignUpCode(username)
     }
 
     private fun hasValidInputs() {
@@ -128,8 +134,8 @@ class SignUpConfirmationCodeActivity : ComponentActivity() {
             showErrorMessage.value = true
         }else {
             showErrorMessage.value = false
-            Backend.signUpConfirmationError.value = ""
-            Backend.confirmSignUp(
+            AuthBackend.signUpConfirmationError.value = ""
+            AuthBackend.confirmSignUp(
                 username, code
             )
         }
@@ -143,8 +149,8 @@ class SignUpConfirmationCodeActivity : ComponentActivity() {
         if(showErrorMessage.value){
             ErrorTextSize12(text = stringResource(id = R.string.empty_sign_in_up_error))
         }else{
-            if(Backend.signUpConfirmationError.value!="") {
-                ErrorTextSize12(text = Backend.signUpConfirmationError.value)
+            if(AuthBackend.signUpConfirmationError.value!="") {
+                ErrorTextSize12(text = AuthBackend.signUpConfirmationError.value)
             }
         }
     }

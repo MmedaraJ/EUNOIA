@@ -13,12 +13,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.eunoia.dashboard.ArticleUI
 import com.example.eunoia.dashboard.home.UserDashboardActivityUI
-import com.example.eunoia.dashboard.sound.EunoiaSoundScreen
+import com.example.eunoia.dashboard.sound.SoundScreen
 import com.example.eunoia.dashboard.sound.SoundActivityUI
 import com.example.eunoia.feedback.FeedbackUI
 import com.example.eunoia.pricing.PricingUI
@@ -161,12 +163,16 @@ fun DashboardTab(navState: MutableState<Bundle>) {
         composable(
             Screen.Sound.screen_route
         ) {
-            Log.i("Sound", "You are now on the Sound tab")
+            Log.i("User", "You are now on the User tab")
             SoundActivityUI(navController, LocalContext.current)
         }
-        composable(Screen.PouringRain.screen_route) {
+        composable(
+            "${Screen.SoundScreen.screen_route}/{display_name}",
+            arguments = listOf(navArgument("display_name") {type = NavType.StringType})
+        ) { backStackEntry ->
             Log.i("Pouring Rain", "You are now on the Pouring Rain tab")
-            EunoiaSoundScreen(navController, Screen.PouringRain.screen_route)
+            backStackEntry.arguments?.getString("display_name")
+                ?.let { SoundScreen(navController, it, LocalContext.current) }
         }
         composable(Screen.Settings.screen_route) {
             Log.i("Settings", "You are now on the Settings tab")

@@ -270,7 +270,7 @@ fun SettingsBlockOne(){
                     }.fillMaxWidth()
             ){
                 NormalText(
-                    text = "Sound",
+                    text = "User",
                     color = Black,
                     fontSize = 15,
                     xOffset = 26,

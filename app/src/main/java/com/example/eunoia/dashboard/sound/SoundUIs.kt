@@ -1,7 +1,13 @@
 package com.example.eunoia.dashboard.sound
 
+import android.content.Context
 import android.content.res.Configuration
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import android.net.Uri
+import android.os.CountDownTimer
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -25,17 +31,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.MutableLiveData
+import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
+import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.*
 import java.lang.Math.*
+import kotlin.concurrent.fixedRateTimer
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 private const val TAG = "Mixer"
+private var mediaPlayers = mutableListOf<MediaPlayer>()
+private val isPlaying = mutableStateOf(false)
+private val isLooping = mutableStateOf(false)
+private val meditationBellInterval = mutableStateOf(0)
+private val timerTime = mutableStateOf(0L)
+private val meditationBellMediaPlayer = MutableLiveData<MediaPlayer>()
+private var numCounters = 0
+private var displayName = ""
 
 @Composable
-fun Mixer(original_sound_name: String){
+fun Mixer(sound: SoundData, context: Context, sliderPositions: Array<MutableState<Float>>){
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)
@@ -63,28 +81,73 @@ fun Mixer(original_sound_name: String){
             Column(
                 modifier = Modifier
                     .constrainAs(title) {
-                        top.linkTo(parent.top, margin = 16.dp)
+                        top.linkTo(parent.top, margin = 0.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ) {
-                NormalText(
-                    text = "[$original_sound_name]",
-                    color = com.example.eunoia.ui.theme.Black,
-                    fontSize = 18,
-                    xOffset = 0,
-                    yOffset = 0
-                )
+                ConstraintLayout {
+                    val (
+                        leftBracket,
+                        text,
+                        rightBracket
+                    ) = createRefs()
+                    Column(
+                        modifier = Modifier
+                            .constrainAs(leftBracket){
+                                top.linkTo(text.top, margin = 0.dp)
+                                end.linkTo(text.start, margin = 0.dp)
+                                start.linkTo(parent.start, margin = 32.dp)
+                                bottom.linkTo(text.bottom, margin = 0.dp)
+                            }
+                    ) {
+                        NormalText(
+                            text = "[",
+                            color = Black,
+                            fontSize = 18,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .constrainAs(text){
+                                top.linkTo(parent.top, margin = 0.dp)
+                                start.linkTo(parent.start, margin = 16.dp)
+                                bottom.linkTo(parent.bottom, margin = 0.dp)
+                                end.linkTo(parent.end, margin = 16.dp)
+                            }
+                    ) {
+                        displayName = standardCentralizedOutlinedTextInput(sound.displayName, MixerBackground2)
+                    }
+                    Column(
+                        modifier = Modifier
+                            .constrainAs(rightBracket){
+                                top.linkTo(text.top, margin = 0.dp)
+                                start.linkTo(text.end, margin = 0.dp)
+                                end.linkTo(parent.end, margin = 32.dp)
+                                bottom.linkTo(text.bottom, margin = 0.dp)
+                            }
+                    ) {
+                        NormalText(
+                            text = "]",
+                            color = Black,
+                            fontSize = 18,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+                    }
+                }
             }
             Column(
                 modifier = Modifier
                     .constrainAs(sliders) {
-                        top.linkTo(title.bottom, margin = 16.dp)
+                        top.linkTo(title.bottom, margin = 0.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ) {
-                Sliders()
+                Sliders(sound, sliderPositions)
             }
             Column(
                 modifier = Modifier
@@ -95,32 +158,19 @@ fun Mixer(original_sound_name: String){
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                     }
             ) {
-                Controls()
+                Controls(sound, context, sliderPositions)
             }
         }
     }
 }
 
 @Composable
-fun Sliders(){
+fun Sliders(sound: SoundData, sliderPositions: Array<MutableState<Float>>){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        var volumes = arrayOf(0f, 4f, 8f, 3f, 5f, 7f, 6f, 9f, 2f, 3f)
-        var sliderPositions = arrayOf(
-            remember { mutableStateOf(volumes[0]) },
-            remember { mutableStateOf(volumes[1]) },
-            remember { mutableStateOf(volumes[2]) },
-            remember { mutableStateOf(volumes[3]) },
-            remember { mutableStateOf(volumes[4]) },
-            remember { mutableStateOf(volumes[5]) },
-            remember { mutableStateOf(volumes[6]) },
-            remember { mutableStateOf(volumes[7]) },
-            remember { mutableStateOf(volumes[8]) },
-            remember { mutableStateOf(volumes[9]) }
-        )
-        var colors = arrayOf(
+        val colors = arrayOf(
             Mixer1,
             Mixer2,
             Mixer3,
@@ -132,17 +182,17 @@ fun Sliders(){
             Mixer9,
             Mixer10,
         )
-        var labels = arrayOf(
-            "Mixer1",
-            "Mixer2",
-            "Mixer3",
-            "Mixer4",
-            "Mixer5",
-            "Mixer6",
-            "Mixer7",
-            "Mixer8",
-            "Mixer9",
-            "Mixer10",
+        val labels = arrayOf(
+            sound.audioNames[0],
+            sound.audioNames[1],
+            sound.audioNames[2],
+            sound.audioNames[3],
+            sound.audioNames[4],
+            sound.audioNames[5],
+            sound.audioNames[6],
+            sound.audioNames[7],
+            sound.audioNames[8],
+            sound.audioNames[9],
         )
         sliderPositions.forEachIndexed {index, sliderPosition ->
             ConstraintLayout(
@@ -169,7 +219,11 @@ fun Sliders(){
                     Slider(
                         value = sliderPosition.value,
                         valueRange = 0f..10f,
-                        onValueChange = {sliderPositions[index].value = it},
+                        onValueChange = {
+                            //sound.currentVolumes[index] = it.toInt()
+                            sliderPositions[index].value = it
+                            adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
+                        },
                         steps = 10,
                         onValueChangeFinished = { Log.i(TAG, "Value Changed") },
                         colors = SliderDefaults.colors(
@@ -234,7 +288,10 @@ fun Sliders(){
 }
 
 @Composable
-fun Controls(){
+fun Controls(sound: SoundData, applicationContext: Context, sliderPositions: Array<MutableState<Float>>){
+    var uris = remember{mutableListOf<Uri>()}
+    createMeditationBellMediaPlayer(applicationContext)
+    retrieveAudioUris(sound, uris)
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
@@ -265,7 +322,18 @@ fun Controls(){
                     12.dp,
                     0,
                     0
-                ) {}
+                ) {
+                    if(uris.size == 10) {
+                        activateControls(
+                            sound,
+                            index,
+                            uris.subList(0, 10),
+                            applicationContext,
+                            sliderPositions,
+                            mediaPlayers
+                        )
+                    }
+                }
             }
         }
         Box(
@@ -284,6 +352,250 @@ fun Controls(){
                 0
             ) {}
         }
+    }
+}
+
+fun createMeditationBellMediaPlayer(context: Context){
+    meditationBellMediaPlayer.value = MediaPlayer.create(
+        context,
+        R.raw.bell
+    )
+}
+
+fun retrieveAudioUris(sound: SoundData, uris: MutableList<Uri>){
+    if(uris.size == 0) {
+        SoundBackend.listEunoiaSounds(sound.audioKey) { result ->
+            result.items.forEach { item ->
+                SoundBackend.retrieveAudio(item.key) { audioUri ->
+                    uris.add(audioUri)
+                }
+            }
+        }
+    }
+}
+
+fun playTenSounds(
+    tenSounds: MutableList<Uri>,
+    applicationContext: Context,
+    sliderPositions: Array<MutableState<Float>>,
+    mediaPlayers: MutableList<MediaPlayer>){
+    if(mediaPlayers.size == 0) {
+        tenSounds.forEachIndexed { index, audioUri ->
+            val mediaPlayer = MediaPlayer().apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+                setDataSource(applicationContext, audioUri)
+                setVolume(sliderPositions[index].value/10, sliderPositions[index].value/10)
+                Log.i(TAG, "New volume for player $index = ${sliderPositions[index].value/10}")
+                prepare()
+                start()
+            }
+            mediaPlayers.add(mediaPlayer)
+        }
+    }else{
+        mediaPlayers.forEach { mediaPlayer ->
+            mediaPlayer.start()
+        }
+    }
+    isPlaying.value = true
+    Toast.makeText(applicationContext, "Sound: playing", Toast.LENGTH_SHORT).show()
+}
+
+fun pauseTenSounds(applicationContext: Context, mediaPlayers: MutableList<MediaPlayer>){
+    if(isPlaying.value) {
+        mediaPlayers.forEach { mediaPlayer ->
+            mediaPlayer.pause()
+        }
+        isPlaying.value = false
+        Toast.makeText(applicationContext, "Sound: paused", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun loopTenSounds(applicationContext: Context, mediaPlayers: MutableList<MediaPlayer>){
+    if(mediaPlayers.size == 10) {
+        isLooping.value = !isLooping.value
+        mediaPlayers.forEach { mediaPlayer ->
+            mediaPlayer.isLooping = isLooping.value
+        }
+        val loopingInfo = if(isLooping.value) "Sound: looped" else "Sound: not looped"
+        Toast.makeText(applicationContext, loopingInfo, Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun resetTenSounds(
+    applicationContext: Context,
+    mediaPlayers: MutableList<MediaPlayer>,
+    sound: SoundData,
+    sliderPositions: Array<MutableState<Float>>
+){
+    if(mediaPlayers.size == 10) {
+        mediaPlayers.forEach { mediaPlayer ->
+            mediaPlayer.reset()
+        }
+        mediaPlayers.clear()
+        isPlaying.value = false
+        resetSliders(sound, sliderPositions)
+        Toast.makeText(applicationContext, "Sound: reset", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun resetSliders(sound: SoundData, sliderPositions: Array<MutableState<Float>>){
+    sliderPositions.forEachIndexed { index, mutableState ->
+        mutableState.value = sound.currentVolumes[index].toFloat()
+    }
+}
+
+fun increaseSliderLevels(applicationContext: Context, sliderPositions: Array<MutableState<Float>>){
+    sliderPositions.forEachIndexed{ index, mutableState ->
+        if(mutableState.value < 10) {
+            mutableState.value++
+            adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
+        }
+    }
+    Toast.makeText(applicationContext, "Sound: levels increased", Toast.LENGTH_SHORT).show()
+}
+
+fun decreaseSliderLevels(applicationContext: Context, sliderPositions: Array<MutableState<Float>>){
+    sliderPositions.forEachIndexed{ index, mutableState ->
+        if(mutableState.value > 0) {
+            mutableState.value--
+            adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
+        }
+    }
+    Toast.makeText(applicationContext, "Sound: levels decreased", Toast.LENGTH_SHORT).show()
+}
+
+fun ringMeditationBell(context: Context){
+    meditationBellInterval.value++
+    fixedRateTimer(
+        "Meditation Bell Timer",
+        false,
+        0L,
+        meditationBellInterval.value * 60000L
+    ){
+        Log.i(TAG, "${meditationBellInterval.value * 60000L}")
+        if(meditationBellInterval.value == 0){
+            cancel()
+            Log.i(TAG, "Cancelled meditation bell timer")
+        }else{
+            if(meditationBellInterval.value <= 5) {
+                meditationBellMediaPlayer.value?.start()
+            }else{
+                meditationBellInterval.value = 0
+            }
+        }
+    }
+    if(meditationBellInterval.value in 1..5){
+        val minute = if(meditationBellInterval.value == 1) "minute" else "minutes"
+        Toast.makeText(context, "Sound: meditation bell every ${meditationBellInterval.value} $minute", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun startCountDownTimer(context: Context, time: Long){
+    object : CountDownTimer(time, 10000) {
+        override fun onTick(millisUntilFinished: Long) {
+            Log.i(TAG, "Timer has been going for $millisUntilFinished")
+        }
+        override fun onFinish() {
+            if(numCounters == 1){
+                if(timerTime.value > 0) {
+                    mediaPlayers.forEach { mediaPlayer ->
+                        mediaPlayer.pause()
+                    }
+                    //mediaPlayers.clear()
+                    isPlaying.value = false
+                    Toast.makeText(context, "Sound: timer stopped", Toast.LENGTH_SHORT).show()
+                    Log.i(TAG, "Timer stopped")
+                    timerTime.value = 0
+                }
+            }
+            numCounters--
+        }
+    }.start()
+}
+
+fun changeTimerTime(
+    mediaPlayers: MutableList<MediaPlayer>,
+    tenSoundsURIs: MutableList<Uri>,
+    applicationContext: Context,
+    sliderPositions: Array<MutableState<Float>>){
+    timerTime.value += 60000L
+    Log.i(TAG, "Timer time set to ${timerTime.value}")
+    if(timerTime.value in 60000L..300000L){
+        numCounters++
+        if(!isPlaying.value) {
+            playTenSounds(
+                tenSoundsURIs,
+                applicationContext,
+                sliderPositions,
+                mediaPlayers
+            )
+        }
+    }else{
+        timerTime.value = 0L
+    }
+    startCountDownTimer(applicationContext, timerTime.value)
+    Toast.makeText(applicationContext, "Sound: timer set to ${timerTime.value}", Toast.LENGTH_SHORT).show()
+}
+
+fun activateControls(
+    sound: SoundData,
+    index: Int,
+    tenSoundsURIs: MutableList<Uri>,
+    applicationContext: Context,
+    sliderPositions: Array<MutableState<Float>>,
+    mediaPlayers: MutableList<MediaPlayer>){
+    when(index){
+        0 -> loopTenSounds(
+                applicationContext,
+                mediaPlayers
+            )
+        1 -> resetTenSounds(
+                applicationContext,
+                mediaPlayers,
+                sound,
+                sliderPositions
+            )
+        2 -> changeTimerTime(
+                mediaPlayers,
+                tenSoundsURIs,
+                applicationContext,
+                sliderPositions
+            )
+        3 -> {
+            if(isPlaying.value){
+                pauseTenSounds(
+                    applicationContext,
+                    mediaPlayers
+                )
+            } else {
+                playTenSounds(
+                    tenSoundsURIs,
+                    applicationContext,
+                    sliderPositions,
+                    mediaPlayers
+                )
+            }
+        }
+        4 -> increaseSliderLevels(applicationContext, sliderPositions)
+        5 -> decreaseSliderLevels(applicationContext, sliderPositions)
+        6 -> ringMeditationBell(applicationContext)
+        7 -> ""
+    }
+}
+
+fun adjustMediaPlayerVolumes(mediaPlayers: MutableList<MediaPlayer>, sliderPositions: Array<MutableState<Float>>, index: Int){
+    if(mediaPlayers.size>0) {
+        Log.i(TAG, "Adjusting volumes")
+        mediaPlayers[index].setVolume(
+            sliderPositions[index].value / 10,
+            sliderPositions[index].value / 10
+        )
+        Log.i(TAG, "New volume for player $index = ${sliderPositions[index].value / 10}")
     }
 }
 
