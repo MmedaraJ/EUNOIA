@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.AmplifyException
 import com.amplifyframework.api.aws.AWSApiPlugin
 import com.amplifyframework.auth.AuthChannelEventName
+import com.amplifyframework.auth.AuthUserAttribute
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
@@ -30,6 +31,8 @@ object AuthBackend {
     var isSignedUp: LiveData<Boolean> = _isSignedUp
     private val _isSignedIn = MutableLiveData(false)
     var isSignedIn: LiveData<Boolean> = _isSignedIn
+    private val _isSignedOut = MutableLiveData(false)
+    var isSignedOut: LiveData<Boolean> = _isSignedOut
     private val _signUpConfirmed = MutableLiveData(false)
     var signUpConfirmed: LiveData<Boolean> = _signUpConfirmed
     private val _resetPassword = MutableLiveData(false)
@@ -126,6 +129,10 @@ object AuthBackend {
         _isSignedIn.postValue(newValue)
     }
 
+    fun setSignedOut(newValue : Boolean) {
+        _isSignedOut.postValue(newValue)
+    }
+
     fun setSignUpConfirmed(newValue : Boolean) {
         _signUpConfirmed.postValue(newValue)
     }
@@ -144,7 +151,10 @@ object AuthBackend {
 
     fun signOut() {
         Amplify.Auth.signOut(
-            { Log.i(TAG, "Signed out successfully") },
+            {
+                Log.i(TAG, "Signed out successfully")
+                setSignedOut(true)
+            },
             { Log.e(TAG, "Sign out failed", it) }
         )
     }
@@ -156,6 +166,7 @@ object AuthBackend {
             { result ->
                 if (result.isSignInComplete) {
                     Log.i(TAG, "Sign in succeeded")
+                    setSignedOut(false)
                     setSignedIn(true)
                 } else {
                     Log.i(TAG, result.toString())
@@ -240,14 +251,24 @@ object AuthBackend {
         Amplify.Auth.confirmResetPassword(new_password, code,
             {
                 Log.d(TAG, code)
-                Log.i("AuthQuickstart", "New password confirmed")
+                Log.i(TAG, "New password confirmed")
                 setConfirmResetPassword(true)
             },
             {
                 Log.d(TAG, code)
-                Log.e("AuthQuickstart", "Failed to confirm password reset", it)
+                Log.e(TAG, "Failed to confirm password reset", it)
                 confirmResetPasswordError.value = it.message.toString()
             }
+        )
+    }
+
+    fun getAuthUserAttributes(completed: (attr: MutableList<AuthUserAttribute>) -> Unit){
+        Amplify.Auth.fetchUserAttributes(
+            {
+                Log.i(TAG, "User attributes = $it")
+                completed(it)
+            },
+            { Log.e(TAG, "Failed to fetch user attributes", it) }
         )
     }
 }

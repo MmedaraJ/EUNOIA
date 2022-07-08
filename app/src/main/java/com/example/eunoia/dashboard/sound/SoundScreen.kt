@@ -3,6 +3,7 @@ package com.example.eunoia.dashboard.sound
 import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,25 +19,32 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.amplifyframework.auth.AuthUserAttributeKey
-import com.amplifyframework.core.Amplify
+import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.SoundData
-import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.models.SoundObject
+import com.example.eunoia.backend.*
+import com.example.eunoia.models.*
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.EUNOIATheme
+import java.util.*
 
 private const val TAG = "SoundScreen"
+private val comment = mutableStateOf("")
+private val commentSounds = mutableStateOf(listOf<SoundData>())
+var sliderPositions = arrayOf<MutableState<Float>?>()
 
 @Composable
 fun SoundScreen(navController: NavController, soundDisplayName: String, context: Context){
     var sound: SoundData? by rememberSaveable{ mutableStateOf(null) }
+    var soundPreset: PresetData? by rememberSaveable{ mutableStateOf(null) }
     SoundBackend.querySoundBasedOnDisplayName(soundDisplayName, LocalContext.current){
         sound = it
+        getSoundPresets(sound!!){presetData ->
+            soundPreset = presetData
+        }
     }
-    if(sound == null){
+    if(sound == null || soundPreset == null){
         ConstraintLayout{
             val (progressBar) = createRefs()
             Column(
@@ -55,7 +63,6 @@ fun SoundScreen(navController: NavController, soundDisplayName: String, context:
             }
         }
     }else{
-        Log.i(TAG, "$sound")
         val scrollState = rememberScrollState()
         var showTapText by rememberSaveable{ mutableStateOf(true) }
         var manualTopMargin by rememberSaveable{ mutableStateOf(-260) }
@@ -101,19 +108,19 @@ fun SoundScreen(navController: NavController, soundDisplayName: String, context:
                         top.linkTo(header.bottom, margin = 50.dp)
                     }
             ) {
-                val sliderPositions = arrayOf(
-                    remember { mutableStateOf(sound!!.currentVolumes[0].toFloat()) },
-                    remember { mutableStateOf(sound!!.currentVolumes[1].toFloat()) },
-                    remember { mutableStateOf(sound!!.currentVolumes[2].toFloat()) },
-                    remember { mutableStateOf(sound!!.currentVolumes[3].toFloat()) },
-                    remember { mutableStateOf(sound!!.currentVolumes[4].toFloat()) },
-                    remember { mutableStateOf(sound!!.currentVolumes[5].toFloat()) },
-                    remember { mutableStateOf(sound!!.currentVolumes[6].toFloat()) },
-                    remember { mutableStateOf(sound!!.currentVolumes[7].toFloat()) },
-                    remember { mutableStateOf(sound!!.currentVolumes[8].toFloat()) },
-                    remember { mutableStateOf(sound!!.currentVolumes[9].toFloat()) }
+                sliderPositions = arrayOf(
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(0)?.let { mutableStateOf(it.toFloat()) } },
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(1)?.let { mutableStateOf(it.toFloat()) } },
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(2)?.let { mutableStateOf(it.toFloat()) } },
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(3)?.let { mutableStateOf(it.toFloat()) } },
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(4)?.let { mutableStateOf(it.toFloat()) } },
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(5)?.let { mutableStateOf(it.toFloat()) } },
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(6)?.let { mutableStateOf(it.toFloat()) } },
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(7)?.let { mutableStateOf(it.toFloat()) } },
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(8)?.let { mutableStateOf(it.toFloat()) } },
+                    remember { soundPreset?.presets?.get(1)?.volumes?.get(9)?.let { mutableStateOf(it.toFloat()) } },
                 )
-                sound?.let { Mixer(it, context, sliderPositions) }
+                sound?.let { Mixer(it, context, soundPreset!!, sliderPositions) }
             }
             Column(
                 modifier = Modifier
@@ -133,7 +140,7 @@ fun SoundScreen(navController: NavController, soundDisplayName: String, context:
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ){
-                if(sound?.ownerUsername == Amplify.Auth.currentUser.username) {
+                comment.value =
                     bigOutlinedTextInput(
                         100,
                         "Share how you feel about this sound",
@@ -143,8 +150,12 @@ fun SoundScreen(navController: NavController, soundDisplayName: String, context:
                         MaterialTheme.colors.onPrimary,
                         Black,
                         13
-                    )
-                }
+                    ){
+                        if(it != "") {
+                            Log.i(TAG, "Comment input completed: $it")
+                            createComment(sound!!, soundPreset!!, it, context)
+                        }
+                    }
             }
             Column(
                 modifier = Modifier
@@ -164,10 +175,15 @@ fun SoundScreen(navController: NavController, soundDisplayName: String, context:
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ) {
-                OtherUsersFeedback("Listening to this with train and railroad noise, and its great " +
-                        "for getting my ADHD brain to sit on the proverbial track and stay on it. It's so " +
-                        "helpful as I try and write up my PhD thesis. I would not be able to do it without " +
-                        "this app for sure. Thank you so much!"){}
+                getOtherUsersComments(sound!!.originalName){
+                    commentSounds.value = it.toMutableStateList()
+                }
+                if(commentSounds.value.isNotEmpty()) {
+                    Log.i(TAG, "These are the comment sounds 2 -=-=--= ${commentSounds.value.size}")
+                    CommentsForSound(commentSounds.value){
+                        navController.navigate("${Screen.SoundScreen.screen_route}/${it.displayName}")
+                    }
+                }
             }
             Column(
                 modifier = Modifier
@@ -179,6 +195,121 @@ fun SoundScreen(navController: NavController, soundDisplayName: String, context:
             }
         }
     }
+}
+
+fun getOtherUsersComments(originalSoundName: String, completed: (soundList: List<SoundData>) -> Unit) {
+    SoundBackend.querySoundBasedOnOriginalName(originalSoundName){ sounds ->
+        completed(sounds)
+    }
+}
+
+fun getSoundPresets(sound: SoundData, completed: (presetData: PresetData) -> Unit){
+    PresetBackend.queryPresetBasedOnSound(sound){
+        completed(it)
+    }
+}
+
+fun checkIfSliderPositionsAreDifferentFromOriginalCurrentVolumes(presetData: PresetData): Boolean{
+    var sameVolume = 0
+    for(i in sliderPositions.indices)
+        if (sliderPositions[i]!!.value == presetData.presets[1].volumes[i].toFloat())
+            sameVolume++
+    return sameVolume != sliderPositions.size
+}
+
+fun createComment(
+    soundData: SoundData,
+    presetData: PresetData,
+    comment: String,
+    context: Context
+){
+    if(displayName.value.isNotEmpty())
+        if(displayName.value != soundData.displayName)
+            if(sliderPositions.isNotEmpty())
+                if(checkIfSliderPositionsAreDifferentFromOriginalCurrentVolumes(presetData))
+                    makeSoundObject(soundData, presetData, comment)
+                else {
+                    Log.i(TAG, "You must change the volume before commenting")
+                    Toast.makeText(
+                        context,
+                        "You must change the volume before commenting",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+        else {
+                Log.i(TAG, "The name, $displayName, is already taken")
+                Toast.makeText(
+                    context,
+                    "The name, $displayName, is already taken",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    else {
+            Log.i(TAG, "Sound name cannot be empty")
+            Toast.makeText(context, "Sound name cannot be empty", Toast.LENGTH_SHORT).show()
+        }
+}
+
+fun makeSoundObject(soundData: SoundData, soundPresets: PresetData, comment: String){
+    val sound = SoundObject.Sound(
+        UUID.randomUUID().toString(),
+        soundData.originalOwner,
+        UserObject.signedInUser().value!!.data,
+        soundData.originalName,
+        displayName.value,
+        soundData.shortDescription,
+        soundData.longDescription,
+        soundData.audioKeyS3,
+        soundData.icon,
+        soundData.fullPlayTime,
+        true,
+        soundData.audioNames,
+    )
+    SoundBackend.createSound(sound){
+        createSoundPreset(it, soundPresets)
+        createSoundComment(it, comment)
+    }
+}
+
+private fun createSoundComment(soundData: SoundData, newComment: String){
+    val comment = CommentObject.Comment(
+        UUID.randomUUID().toString(),
+        soundData,
+        newComment
+    )
+    CommentBackend.createComment(comment){
+
+    }
+}
+
+private fun createSoundPreset(soundData: SoundData, soundPresets: PresetData){
+    val preset = PresetObject.Preset(
+        UUID.randomUUID().toString(),
+        soundData
+    )
+    PresetBackend.createPreset(preset){ newPresetData ->
+        createPresetNameAndVolumesMapData(newPresetData, soundPresets)
+    }
+}
+
+private fun createPresetNameAndVolumesMapData(newPresetData: PresetData, currentPresetData: PresetData){
+    val volumes = mutableListOf<Int>()
+    for(i in currentPresetData.presets.indices){
+        if(i == 1)
+            for(j in sliderPositions.indices)
+                volumes.add(sliderPositions[j]!!.value.toInt())
+        else
+            for(j in currentPresetData.presets[i].volumes.indices)
+                volumes.add(currentPresetData.presets[i].volumes[j].toInt())
+        val presetVolume = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
+            currentPresetData.presets[i].key,
+            volumes,
+            newPresetData
+        )
+        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(presetVolume){}
+        volumes.clear()
+    }
+    Log.i(TAG, "Successfully created comment")
 }
 
 @Preview(

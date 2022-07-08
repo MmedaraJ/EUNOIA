@@ -75,8 +75,9 @@ dependencies {
     //For hosted UI also:
     implementation 'com.amazonaws:aws-android-sdk-cognitoauth:2.49.0'
     //Jetpack compose
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0")
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha03"
     //Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
     //compose

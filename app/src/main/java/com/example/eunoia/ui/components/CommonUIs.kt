@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
@@ -191,7 +192,8 @@ fun bigOutlinedTextInput(
     unfocusedBorderColor: Color,
     textColor: Color,
     placeholderColor: Color,
-    placeholderTextSize: Int
+    placeholderTextSize: Int,
+    completed: (comment: String) -> Unit
 ): String{
     var text by rememberSaveable{ mutableStateOf("") }
     OutlinedTextField(
@@ -216,6 +218,18 @@ fun bigOutlinedTextInput(
                     0,
                     0
                 )
+            }
+        },
+        trailingIcon = {
+            val image = Icons.Filled.Send
+            // Please provide localized description for accessibility services
+            val description = "Create Comment"
+            IconButton(
+                onClick = {
+                    completed(text)
+                }
+            ){
+                Icon(imageVector  = image, description)
             }
         },
         modifier = Modifier
@@ -935,7 +949,15 @@ fun Article(title: String, summary: String, icon: Int, lambda: () -> Unit){
 @Composable
 fun Preview() {
     EUNOIATheme {
-        standardCentralizedOutlinedTextInput("pouring rain", MixerBackground2)
-        //StarSurroundedTextWithIconRight("Beauty Sleep", R.drawable.beauty_sleep_icon, 98.0, 87.62)
+        bigOutlinedTextInput(
+            100,
+            "Share how you feel about this sound",
+            MaterialTheme.colors.primaryVariant,
+            MaterialTheme.colors.onPrimary,
+            MaterialTheme.colors.onPrimary,
+            MaterialTheme.colors.onPrimary,
+            Black,
+            13
+        ){}
     }
 }

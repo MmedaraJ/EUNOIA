@@ -9,41 +9,67 @@ type NoteData
 
 type SoundData
 @model (queries: { get: "getSoundData", list: "listSoundDatas" })
- @auth (
-        rules: [
-            { allow: private, operations: [read]},
-            { allow: owner }
-        ]
-     ) {
-     id: ID!
-     owner_username: String!
-     original_name: String!
-     display_name: String!
-     short_description: String!
-     long_description: String!
-     audio_key: String!
-     comment: String!
-     icon: Int!
-     fullPlayTime: Int!
-     visible_to_others: Boolean!
-     original_volumes: [Int!]!
-     current_volumes: [Int!]!
-     audio_names: [String!]!
- }
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userDataID: ID @index(name: "byUserData", sortKeyFields: ["display_name"])
+    original_owner: UserData! @belongsTo(fields: ["userDataID"])
+    current_owner: UserData! @belongsTo(fields: ["userDataID"])
+    original_name: String!
+    display_name: String!
+    short_description: String!
+    long_description: String!
+    audio_key_s3: String!
+    icon: Int!
+    fullPlayTime: Int!
+    visible_to_others: Boolean!
+    audio_names: [String!]!
+    comment: CommentData @hasOne(fields: ["id"])
+    preset: PresetData @hasOne(fields: ["id"])
+}
+
+type CommentData
+@model (queries: {get: "getCommentData", list: "listCommentDatas" })
+@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
+    id: ID!
+    soundID: ID! @index(name: "bySoundData", sortKeyFields: ["comment"])
+    sound: SoundData! @belongsTo(fields: ["soundID"])
+    comment: String!
+}
+
+type PresetNameAndVolumesMapData
+@model (queries: {get: "getPresetNameAndVolumesMapData", list: "listPresetNameAndVolumesMapDatas" })
+@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
+    key: String!
+    volumes: [Int!]!
+    presetID: ID! @index(name: "byPresetData", sortKeyFields: ["key"])
+    preset: PresetData! @belongsTo(fields: ["presetID"])
+}
+
+type PresetData
+@model (queries: {get: "getPresetData", list: "listPresetDatas" })
+@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
+    id: ID!
+    soundID: ID! @index(name: "bySoundData")
+    sound: SoundData! @belongsTo(fields: ["soundID"])
+    presets: [PresetNameAndVolumesMapData!]! @hasMany(indexName: "byPresetData", fields: ["id"])
+}
 
 type UserData
 @model (queries: { get: "getUserData", list: "listUserDatas" })
- @auth (rules: [{ allow: owner }]) {
+@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
     id: ID!
     username: String!
     givenName: String!
     familyName: String!
-    middleName: String
+    middleName: String!
     email: String!
-    profile_picture_key: String
-    address: String
-    birthdate: String
-    gender: String
-    nickname: String
-    phoneNumber: String
- }
+    profile_picture_key: String!
+    address: String!
+    birthdate: String!
+    gender: String!
+    nickname: String!
+    phoneNumber: String!
+    authenticated: Boolean!
+    subscription: String!
+    sounds: [SoundData] @hasMany(indexName: "byUserData", fields: ["id"])
+}

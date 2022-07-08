@@ -1,17 +1,18 @@
 package com.example.eunoia.dashboard.home
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
-import android.media.AudioAttributes
-import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,25 +22,81 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.amplifyframework.core.Amplify
+import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
-import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.dashboard.upload_files.UploadFilesActivity
-import com.example.eunoia.models.SoundObject
+import com.example.eunoia.backend.UserBackend
+import com.example.eunoia.models.UserObject
+import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.theme.Grey
 import com.example.eunoia.ui.theme.White
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.MultiBottomNavApp
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class UserDashboardActivity : ComponentActivity() {
+    private val TAG = "UserDashboardActivity"
+    private val _currentUser = MutableLiveData<UserData>(null)
+    var currentUser: LiveData<UserData> = _currentUser
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        observeCurrentUserChanged()
+        setSignedInUser()
+        observeIsSignedOut()
         setContent {
             MultiBottomNavApp()
+        }
+    }
+
+    fun setCurrentUser(newValue: UserData) {
+        _currentUser.postValue(newValue)
+        Log.i(TAG, "currentUser changed : $_currentUser")
+    }
+
+    private fun observeCurrentUserChanged(){
+        currentUser.observe(this) { currentUser ->
+            Log.i(TAG, "currentUser changed : $currentUser")
+            if (currentUser != null) {
+                UserObject.setSignedInUser(UserObject.User.from(currentUser))
+            }
+        }
+    }
+
+    private fun setSignedInUser(){
+        UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){
+            if(it != null)
+            setCurrentUser(it)
+        }
+    }
+
+    private fun observeIsSignedOut(){
+        AuthBackend.isSignedOut.observe(this) { isSignedOut ->
+            // update UI
+            Log.i(TAG, "isSignedOut changed : $isSignedOut")
+            if (isSignedOut) {
+                if (AuthBackend.isSignedOut.value!!) {
+                    Log.d(TAG, AuthBackend.isSignedOut.value.toString())
+                    val intent = Intent(this, SignInActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                } else {
+                    Log.d(TAG, AuthBackend.isSignedOut.value.toString())
+                }
+            } else {
+                Log.d(TAG, isSignedOut.toString())
+            }
         }
     }
 }

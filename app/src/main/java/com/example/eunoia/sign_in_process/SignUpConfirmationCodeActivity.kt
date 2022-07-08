@@ -20,10 +20,13 @@ import androidx.compose.ui.unit.dp
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
+import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.dashboard.upload_files.UploadFilesActivity
+import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.theme.Blue
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.EUNOIATheme
+import java.util.*
 
 class SignUpConfirmationCodeActivity : ComponentActivity() {
     private val TAG = "SignUpConfirmationCode"
@@ -60,9 +63,12 @@ class SignUpConfirmationCodeActivity : ComponentActivity() {
             if (signUpConfirmed) {
                 if(username == "eunoia"){
                     val intent = Intent(this, UploadFilesActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 }else {
-                    val intent = Intent(this, HelloUserActivity::class.java)
+                    //createUserObject()
+                    val intent = Intent(this, SignInActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     intent.putExtra("first_name", first_name)
                     intent.putExtra("last_name", last_name)
                     intent.putExtra("email", email)

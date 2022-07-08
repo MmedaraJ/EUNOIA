@@ -16,15 +16,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.R
+import com.example.eunoia.backend.AuthBackend
+import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.upload_files.UploadFilesActivity
 import com.example.eunoia.models.UserData
+//import com.amplifyframework.datastore.generated.model.UserData
+import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.components.EunoiaLogo
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.StandardBlueButton
 import com.example.eunoia.ui.theme.EUNOIATheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.util.*
 
 
 class WelcomeActivity : ComponentActivity() {
@@ -56,14 +67,12 @@ class WelcomeActivity : ComponentActivity() {
                     if(Amplify.Auth.currentUser != null) {
                         if (Amplify.Auth.currentUser.username == "eunoia") {
                             val intent = Intent(this, UploadFilesActivity::class.java)
-                            intent.flags =
-                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                         } else {
                             val intent = Intent(this, UserDashboardActivity::class.java)
                             intent.putExtra("username", Amplify.Auth.currentUser.username)
-                            intent.flags =
-                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                         }
                     }

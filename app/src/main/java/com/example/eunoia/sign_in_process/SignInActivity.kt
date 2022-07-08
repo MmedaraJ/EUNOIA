@@ -19,17 +19,25 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.auth.AuthUserAttribute
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.core.Amplify
+import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.dashboard.home.UserDashboardActivity
+import com.example.eunoia.dashboard.sound.scope
+import com.example.eunoia.dashboard.upload_files.UploadFilesActivity
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.theme.Blue
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.EUNOIATheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
 
 class SignInActivity : ComponentActivity() {
@@ -38,6 +46,8 @@ class SignInActivity : ComponentActivity() {
     private var password: String = ""
     private var message: String = ""
     private val showErrorMessage = mutableStateOf(false)
+    private var currentUser: MutableLiveData<UserData>? = null
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,20 +75,65 @@ class SignInActivity : ComponentActivity() {
 
     private fun observeIsSignedIn(){
         AuthBackend.isSignedIn.observe(this) { isSignedIn ->
-            // update UI
             Log.i(TAG, "isSignedIn changed : $isSignedIn")
             if (isSignedIn) {
                 if (AuthBackend.isSignedIn.value!!) {
-                    Log.d(TAG, AuthBackend.isSignedIn.value.toString())
-                    val intent = Intent(this, UserDashboardActivity::class.java)
-                    intent.putExtra("username", Amplify.Auth.currentUser.username)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
+                    getSignedInUser{ userData ->
+                        if(userData == null){
+                            createUserObject{
+                                scope.launch { UserObject.setSignedInUser(UserObject.User.from(it!!)) }
+                            }
+                        }else{
+                            setSignedInUser{
+                                scope.launch { UserObject.setSignedInUser(UserObject.User.from(it!!)) }
+                            }
+                        }
+                        if(Amplify.Auth.currentUser.username == "eunoia"){
+                            val intent = Intent(this, UploadFilesActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }else {
+                            val intent = Intent(this, UserDashboardActivity::class.java)
+                            intent.putExtra("username", Amplify.Auth.currentUser.username)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }
+                    }
                 } else {
                     Log.d(TAG, AuthBackend.isSignedIn.value.toString())
                 }
             } else {
                 Log.d(TAG, isSignedIn.toString())
+            }
+        }
+    }
+
+    private fun getSignedInUser(completed: (userData: UserData?) -> Unit){
+        UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){userData ->
+            completed(userData)
+        }
+    }
+
+    private fun createUserObject(completed: (userData: UserData?) -> Unit){
+        AuthBackend.getAuthUserAttributes {
+            val user = UserObject.User(
+                UUID.randomUUID().toString(),
+                username,
+                "",
+                "",
+                "",
+                it[2].value,
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                true,
+                "rookie"
+            )
+            UserBackend.createUser(user){ userData ->
+                completed(userData)
             }
         }
     }
@@ -102,6 +157,12 @@ class SignInActivity : ComponentActivity() {
             } else {
                 Log.d(TAG, resendCode.toString())
             }
+        }
+    }
+
+    private fun setSignedInUser(completed: (userData: UserData?) -> Unit){
+        UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){
+            completed(it)
         }
     }
 
@@ -157,7 +218,7 @@ class SignInActivity : ComponentActivity() {
                 12,
                 0,
                 0
-            ) { signUpListener(context!!) }
+            ) { signUpListener(context) }
         }
     }
 

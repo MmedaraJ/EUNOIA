@@ -1,5 +1,6 @@
 package com.amplifyframework.datastore.generated.model;
 
+import com.amplifyframework.core.model.annotations.HasMany;
 import com.amplifyframework.core.model.temporal.Temporal;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 /** This is an auto generated class representing the UserData type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "UserData", authRules = {
+  @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
 public final class UserData implements Model {
@@ -37,18 +39,23 @@ public final class UserData implements Model {
   public static final QueryField GENDER = field("UserData", "gender");
   public static final QueryField NICKNAME = field("UserData", "nickname");
   public static final QueryField PHONE_NUMBER = field("UserData", "phoneNumber");
+  public static final QueryField AUTHENTICATED = field("UserData", "authenticated");
+  public static final QueryField SUBSCRIPTION = field("UserData", "subscription");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String username;
   private final @ModelField(targetType="String", isRequired = true) String givenName;
   private final @ModelField(targetType="String", isRequired = true) String familyName;
-  private final @ModelField(targetType="String") String middleName;
+  private final @ModelField(targetType="String", isRequired = true) String middleName;
   private final @ModelField(targetType="String", isRequired = true) String email;
-  private final @ModelField(targetType="String") String profile_picture_key;
-  private final @ModelField(targetType="String") String address;
-  private final @ModelField(targetType="String") String birthdate;
-  private final @ModelField(targetType="String") String gender;
-  private final @ModelField(targetType="String") String nickname;
-  private final @ModelField(targetType="String") String phoneNumber;
+  private final @ModelField(targetType="String", isRequired = true) String profile_picture_key;
+  private final @ModelField(targetType="String", isRequired = true) String address;
+  private final @ModelField(targetType="String", isRequired = true) String birthdate;
+  private final @ModelField(targetType="String", isRequired = true) String gender;
+  private final @ModelField(targetType="String", isRequired = true) String nickname;
+  private final @ModelField(targetType="String", isRequired = true) String phoneNumber;
+  private final @ModelField(targetType="Boolean", isRequired = true) Boolean authenticated;
+  private final @ModelField(targetType="String", isRequired = true) String subscription;
+  private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "original_owner", type = SoundData.class) List<SoundData> sounds = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -99,6 +106,18 @@ public final class UserData implements Model {
       return phoneNumber;
   }
   
+  public Boolean getAuthenticated() {
+      return authenticated;
+  }
+  
+  public String getSubscription() {
+      return subscription;
+  }
+  
+  public List<SoundData> getSounds() {
+      return sounds;
+  }
+  
   public Temporal.DateTime getCreatedAt() {
       return createdAt;
   }
@@ -107,7 +126,7 @@ public final class UserData implements Model {
       return updatedAt;
   }
   
-  private UserData(String id, String username, String givenName, String familyName, String middleName, String email, String profile_picture_key, String address, String birthdate, String gender, String nickname, String phoneNumber) {
+  private UserData(String id, String username, String givenName, String familyName, String middleName, String email, String profile_picture_key, String address, String birthdate, String gender, String nickname, String phoneNumber, Boolean authenticated, String subscription) {
     this.id = id;
     this.username = username;
     this.givenName = givenName;
@@ -120,6 +139,8 @@ public final class UserData implements Model {
     this.gender = gender;
     this.nickname = nickname;
     this.phoneNumber = phoneNumber;
+    this.authenticated = authenticated;
+    this.subscription = subscription;
   }
   
   @Override
@@ -142,6 +163,8 @@ public final class UserData implements Model {
               ObjectsCompat.equals(getGender(), userData.getGender()) &&
               ObjectsCompat.equals(getNickname(), userData.getNickname()) &&
               ObjectsCompat.equals(getPhoneNumber(), userData.getPhoneNumber()) &&
+              ObjectsCompat.equals(getAuthenticated(), userData.getAuthenticated()) &&
+              ObjectsCompat.equals(getSubscription(), userData.getSubscription()) &&
               ObjectsCompat.equals(getCreatedAt(), userData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), userData.getUpdatedAt());
       }
@@ -162,6 +185,8 @@ public final class UserData implements Model {
       .append(getGender())
       .append(getNickname())
       .append(getPhoneNumber())
+      .append(getAuthenticated())
+      .append(getSubscription())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -184,6 +209,8 @@ public final class UserData implements Model {
       .append("gender=" + String.valueOf(getGender()) + ", ")
       .append("nickname=" + String.valueOf(getNickname()) + ", ")
       .append("phoneNumber=" + String.valueOf(getPhoneNumber()) + ", ")
+      .append("authenticated=" + String.valueOf(getAuthenticated()) + ", ")
+      .append("subscription=" + String.valueOf(getSubscription()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -215,6 +242,8 @@ public final class UserData implements Model {
       null,
       null,
       null,
+      null,
+      null,
       null
     );
   }
@@ -231,7 +260,9 @@ public final class UserData implements Model {
       birthdate,
       gender,
       nickname,
-      phoneNumber);
+      phoneNumber,
+      authenticated,
+      subscription);
   }
   public interface UsernameStep {
     GivenNameStep username(String username);
@@ -244,41 +275,81 @@ public final class UserData implements Model {
   
 
   public interface FamilyNameStep {
-    EmailStep familyName(String familyName);
+    MiddleNameStep familyName(String familyName);
+  }
+  
+
+  public interface MiddleNameStep {
+    EmailStep middleName(String middleName);
   }
   
 
   public interface EmailStep {
-    BuildStep email(String email);
+    ProfilePictureKeyStep email(String email);
+  }
+  
+
+  public interface ProfilePictureKeyStep {
+    AddressStep profilePictureKey(String profilePictureKey);
+  }
+  
+
+  public interface AddressStep {
+    BirthdateStep address(String address);
+  }
+  
+
+  public interface BirthdateStep {
+    GenderStep birthdate(String birthdate);
+  }
+  
+
+  public interface GenderStep {
+    NicknameStep gender(String gender);
+  }
+  
+
+  public interface NicknameStep {
+    PhoneNumberStep nickname(String nickname);
+  }
+  
+
+  public interface PhoneNumberStep {
+    AuthenticatedStep phoneNumber(String phoneNumber);
+  }
+  
+
+  public interface AuthenticatedStep {
+    SubscriptionStep authenticated(Boolean authenticated);
+  }
+  
+
+  public interface SubscriptionStep {
+    BuildStep subscription(String subscription);
   }
   
 
   public interface BuildStep {
     UserData build();
     BuildStep id(String id);
-    BuildStep middleName(String middleName);
-    BuildStep profilePictureKey(String profilePictureKey);
-    BuildStep address(String address);
-    BuildStep birthdate(String birthdate);
-    BuildStep gender(String gender);
-    BuildStep nickname(String nickname);
-    BuildStep phoneNumber(String phoneNumber);
   }
   
 
-  public static class Builder implements UsernameStep, GivenNameStep, FamilyNameStep, EmailStep, BuildStep {
+  public static class Builder implements UsernameStep, GivenNameStep, FamilyNameStep, MiddleNameStep, EmailStep, ProfilePictureKeyStep, AddressStep, BirthdateStep, GenderStep, NicknameStep, PhoneNumberStep, AuthenticatedStep, SubscriptionStep, BuildStep {
     private String id;
     private String username;
     private String givenName;
     private String familyName;
-    private String email;
     private String middleName;
+    private String email;
     private String profile_picture_key;
     private String address;
     private String birthdate;
     private String gender;
     private String nickname;
     private String phoneNumber;
+    private Boolean authenticated;
+    private String subscription;
     @Override
      public UserData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -295,7 +366,9 @@ public final class UserData implements Model {
           birthdate,
           gender,
           nickname,
-          phoneNumber);
+          phoneNumber,
+          authenticated,
+          subscription);
     }
     
     @Override
@@ -313,58 +386,79 @@ public final class UserData implements Model {
     }
     
     @Override
-     public EmailStep familyName(String familyName) {
+     public MiddleNameStep familyName(String familyName) {
         Objects.requireNonNull(familyName);
         this.familyName = familyName;
         return this;
     }
     
     @Override
-     public BuildStep email(String email) {
+     public EmailStep middleName(String middleName) {
+        Objects.requireNonNull(middleName);
+        this.middleName = middleName;
+        return this;
+    }
+    
+    @Override
+     public ProfilePictureKeyStep email(String email) {
         Objects.requireNonNull(email);
         this.email = email;
         return this;
     }
     
     @Override
-     public BuildStep middleName(String middleName) {
-        this.middleName = middleName;
-        return this;
-    }
-    
-    @Override
-     public BuildStep profilePictureKey(String profilePictureKey) {
+     public AddressStep profilePictureKey(String profilePictureKey) {
+        Objects.requireNonNull(profilePictureKey);
         this.profile_picture_key = profilePictureKey;
         return this;
     }
     
     @Override
-     public BuildStep address(String address) {
+     public BirthdateStep address(String address) {
+        Objects.requireNonNull(address);
         this.address = address;
         return this;
     }
     
     @Override
-     public BuildStep birthdate(String birthdate) {
+     public GenderStep birthdate(String birthdate) {
+        Objects.requireNonNull(birthdate);
         this.birthdate = birthdate;
         return this;
     }
     
     @Override
-     public BuildStep gender(String gender) {
+     public NicknameStep gender(String gender) {
+        Objects.requireNonNull(gender);
         this.gender = gender;
         return this;
     }
     
     @Override
-     public BuildStep nickname(String nickname) {
+     public PhoneNumberStep nickname(String nickname) {
+        Objects.requireNonNull(nickname);
         this.nickname = nickname;
         return this;
     }
     
     @Override
-     public BuildStep phoneNumber(String phoneNumber) {
+     public AuthenticatedStep phoneNumber(String phoneNumber) {
+        Objects.requireNonNull(phoneNumber);
         this.phoneNumber = phoneNumber;
+        return this;
+    }
+    
+    @Override
+     public SubscriptionStep authenticated(Boolean authenticated) {
+        Objects.requireNonNull(authenticated);
+        this.authenticated = authenticated;
+        return this;
+    }
+    
+    @Override
+     public BuildStep subscription(String subscription) {
+        Objects.requireNonNull(subscription);
+        this.subscription = subscription;
         return this;
     }
     
@@ -380,19 +474,21 @@ public final class UserData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String username, String givenName, String familyName, String middleName, String email, String profilePictureKey, String address, String birthdate, String gender, String nickname, String phoneNumber) {
+    private CopyOfBuilder(String id, String username, String givenName, String familyName, String middleName, String email, String profilePictureKey, String address, String birthdate, String gender, String nickname, String phoneNumber, Boolean authenticated, String subscription) {
       super.id(id);
       super.username(username)
         .givenName(givenName)
         .familyName(familyName)
-        .email(email)
         .middleName(middleName)
+        .email(email)
         .profilePictureKey(profilePictureKey)
         .address(address)
         .birthdate(birthdate)
         .gender(gender)
         .nickname(nickname)
-        .phoneNumber(phoneNumber);
+        .phoneNumber(phoneNumber)
+        .authenticated(authenticated)
+        .subscription(subscription);
     }
     
     @Override
@@ -411,13 +507,13 @@ public final class UserData implements Model {
     }
     
     @Override
-     public CopyOfBuilder email(String email) {
-      return (CopyOfBuilder) super.email(email);
+     public CopyOfBuilder middleName(String middleName) {
+      return (CopyOfBuilder) super.middleName(middleName);
     }
     
     @Override
-     public CopyOfBuilder middleName(String middleName) {
-      return (CopyOfBuilder) super.middleName(middleName);
+     public CopyOfBuilder email(String email) {
+      return (CopyOfBuilder) super.email(email);
     }
     
     @Override
@@ -448,6 +544,16 @@ public final class UserData implements Model {
     @Override
      public CopyOfBuilder phoneNumber(String phoneNumber) {
       return (CopyOfBuilder) super.phoneNumber(phoneNumber);
+    }
+    
+    @Override
+     public CopyOfBuilder authenticated(Boolean authenticated) {
+      return (CopyOfBuilder) super.authenticated(authenticated);
+    }
+    
+    @Override
+     public CopyOfBuilder subscription(String subscription) {
+      return (CopyOfBuilder) super.subscription(subscription);
     }
   }
   

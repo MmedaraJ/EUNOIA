@@ -32,10 +32,16 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
+import com.amplifyframework.datastore.generated.model.CommentData
+import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
+import com.example.eunoia.backend.CommentBackend
+import com.example.eunoia.backend.PresetBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.components.*
+import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import java.lang.Math.*
 import kotlin.concurrent.fixedRateTimer
@@ -50,10 +56,15 @@ private val meditationBellInterval = mutableStateOf(0)
 private val timerTime = mutableStateOf(0L)
 private val meditationBellMediaPlayer = MutableLiveData<MediaPlayer>()
 private var numCounters = 0
-private var displayName = ""
+var displayName = mutableStateOf("")
 
 @Composable
-fun Mixer(sound: SoundData, context: Context, sliderPositions: Array<MutableState<Float>>){
+fun Mixer(
+    sound: SoundData,
+    context: Context,
+    preset: PresetData,
+    sliderPositions: Array<MutableState<Float>?>,
+){
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)
@@ -118,7 +129,7 @@ fun Mixer(sound: SoundData, context: Context, sliderPositions: Array<MutableStat
                                 end.linkTo(parent.end, margin = 16.dp)
                             }
                     ) {
-                        displayName = standardCentralizedOutlinedTextInput(sound.displayName, MixerBackground2)
+                        displayName.value = standardCentralizedOutlinedTextInput(sound.displayName, MixerBackground2)
                     }
                     Column(
                         modifier = Modifier
@@ -158,14 +169,14 @@ fun Mixer(sound: SoundData, context: Context, sliderPositions: Array<MutableStat
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                     }
             ) {
-                Controls(sound, context, sliderPositions)
+                Controls(sound, preset, context, sliderPositions)
             }
         }
     }
 }
 
 @Composable
-fun Sliders(sound: SoundData, sliderPositions: Array<MutableState<Float>>){
+fun Sliders(sound: SoundData, sliderPositions: Array<MutableState<Float>?>){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
@@ -216,54 +227,56 @@ fun Sliders(sound: SoundData, sliderPositions: Array<MutableState<Float>>){
                     )
                     var tapped by remember { mutableStateOf(false) }
                     val interactionSource = remember { MutableInteractionSource() }
-                    Slider(
-                        value = sliderPosition.value,
-                        valueRange = 0f..10f,
-                        onValueChange = {
-                            //sound.currentVolumes[index] = it.toInt()
-                            sliderPositions[index].value = it
-                            adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
-                        },
-                        steps = 10,
-                        onValueChangeFinished = { Log.i(TAG, "Value Changed") },
-                        colors = SliderDefaults.colors(
-                            thumbColor = colors[index],
-                            activeTrackColor = colors[index],
-                            activeTickColor = Color.Transparent,
-                            inactiveTickColor = Color.Transparent,
-                            inactiveTrackColor = colors[index],
-                        ),
-                        modifier = Modifier
-                            .size(32.dp, 190.dp)
-                            .graphicsLayer {
-                                rotationZ = 270f
-                                transformOrigin = TransformOrigin(0f, 0f)
-                            }
-                            .layout { measurable, constraints ->
-                                val placeable = measurable.measure(
-                                    Constraints(
-                                        minWidth = constraints.minHeight,
-                                        maxWidth = constraints.maxHeight,
-                                        minHeight = constraints.minWidth,
-                                        maxHeight = constraints.maxHeight,
-                                    )
-                                )
-                                layout(placeable.height, placeable.width) {
-                                    placeable.place(-placeable.width, 0)
+                    if (sliderPosition != null) {
+                        Slider(
+                            value = sliderPosition.value,
+                            valueRange = 0f..10f,
+                            onValueChange = {
+                                //sound.currentVolumes[index] = it.toInt()
+                                sliderPositions[index]!!.value = it
+                                adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
+                            },
+                            steps = 10,
+                            onValueChangeFinished = { Log.i(TAG, "Value Changed") },
+                            colors = SliderDefaults.colors(
+                                thumbColor = colors[index],
+                                activeTrackColor = colors[index],
+                                activeTickColor = Color.Transparent,
+                                inactiveTickColor = Color.Transparent,
+                                inactiveTrackColor = colors[index],
+                            ),
+                            modifier = Modifier
+                                .size(32.dp, 190.dp)
+                                .graphicsLayer {
+                                    rotationZ = 270f
+                                    transformOrigin = TransformOrigin(0f, 0f)
                                 }
-                            }
-                            .indication(interactionSource, LocalIndication.current)
-                            .pointerInput(Unit) {
-                                detectTapGestures(onPress = { offset ->
-                                    tapped = true
-                                    val press = PressInteraction.Press(offset)
-                                    interactionSource.emit(press)
-                                    tryAwaitRelease()
-                                    interactionSource.emit(PressInteraction.Release(press))
-                                    tapped = false
-                                })
-                            }
-                    )
+                                .layout { measurable, constraints ->
+                                    val placeable = measurable.measure(
+                                        Constraints(
+                                            minWidth = constraints.minHeight,
+                                            maxWidth = constraints.maxHeight,
+                                            minHeight = constraints.minWidth,
+                                            maxHeight = constraints.maxHeight,
+                                        )
+                                    )
+                                    layout(placeable.height, placeable.width) {
+                                        placeable.place(-placeable.width, 0)
+                                    }
+                                }
+                                .indication(interactionSource, LocalIndication.current)
+                                .pointerInput(Unit) {
+                                    detectTapGestures(onPress = { offset ->
+                                        tapped = true
+                                        val press = PressInteraction.Press(offset)
+                                        interactionSource.emit(press)
+                                        tryAwaitRelease()
+                                        interactionSource.emit(PressInteraction.Release(press))
+                                        tapped = false
+                                    })
+                                }
+                        )
+                    }
                 }
                 Column(
                     modifier = Modifier
@@ -288,7 +301,12 @@ fun Sliders(sound: SoundData, sliderPositions: Array<MutableState<Float>>){
 }
 
 @Composable
-fun Controls(sound: SoundData, applicationContext: Context, sliderPositions: Array<MutableState<Float>>){
+fun Controls(
+    sound: SoundData,
+    preset: PresetData,
+    applicationContext: Context,
+    sliderPositions: Array<MutableState<Float>?>
+){
     var uris = remember{mutableListOf<Uri>()}
     createMeditationBellMediaPlayer(applicationContext)
     retrieveAudioUris(sound, uris)
@@ -326,6 +344,7 @@ fun Controls(sound: SoundData, applicationContext: Context, sliderPositions: Arr
                     if(uris.size == 10) {
                         activateControls(
                             sound,
+                            preset,
                             index,
                             uris.subList(0, 10),
                             applicationContext,
@@ -364,7 +383,7 @@ fun createMeditationBellMediaPlayer(context: Context){
 
 fun retrieveAudioUris(sound: SoundData, uris: MutableList<Uri>){
     if(uris.size == 0) {
-        SoundBackend.listEunoiaSounds(sound.audioKey) { result ->
+        SoundBackend.listEunoiaSounds(sound.audioKeyS3) { result ->
             result.items.forEach { item ->
                 SoundBackend.retrieveAudio(item.key) { audioUri ->
                     uris.add(audioUri)
@@ -377,7 +396,7 @@ fun retrieveAudioUris(sound: SoundData, uris: MutableList<Uri>){
 fun playTenSounds(
     tenSounds: MutableList<Uri>,
     applicationContext: Context,
-    sliderPositions: Array<MutableState<Float>>,
+    sliderPositions: Array<MutableState<Float>?>,
     mediaPlayers: MutableList<MediaPlayer>){
     if(mediaPlayers.size == 0) {
         tenSounds.forEachIndexed { index, audioUri ->
@@ -389,8 +408,8 @@ fun playTenSounds(
                         .build()
                 )
                 setDataSource(applicationContext, audioUri)
-                setVolume(sliderPositions[index].value/10, sliderPositions[index].value/10)
-                Log.i(TAG, "New volume for player $index = ${sliderPositions[index].value/10}")
+                setVolume(sliderPositions[index]!!.value/10, sliderPositions[index]!!.value/10)
+                Log.i(TAG, "New volume for player $index = ${sliderPositions[index]!!.value/10}")
                 prepare()
                 start()
             }
@@ -430,7 +449,8 @@ fun resetTenSounds(
     applicationContext: Context,
     mediaPlayers: MutableList<MediaPlayer>,
     sound: SoundData,
-    sliderPositions: Array<MutableState<Float>>
+    sliderPositions: Array<MutableState<Float>?>,
+    preset: PresetData
 ){
     if(mediaPlayers.size == 10) {
         mediaPlayers.forEach { mediaPlayer ->
@@ -438,20 +458,24 @@ fun resetTenSounds(
         }
         mediaPlayers.clear()
         isPlaying.value = false
-        resetSliders(sound, sliderPositions)
+        resetSliders(sound, sliderPositions, preset)
         Toast.makeText(applicationContext, "Sound: reset", Toast.LENGTH_SHORT).show()
     }
 }
 
-fun resetSliders(sound: SoundData, sliderPositions: Array<MutableState<Float>>){
+fun resetSliders(
+    sound: SoundData,
+    sliderPositions: Array<MutableState<Float>?>,
+    preset: PresetData
+){
     sliderPositions.forEachIndexed { index, mutableState ->
-        mutableState.value = sound.currentVolumes[index].toFloat()
+        mutableState!!.value = preset.presets[1].volumes[index].toFloat()
     }
 }
 
-fun increaseSliderLevels(applicationContext: Context, sliderPositions: Array<MutableState<Float>>){
+fun increaseSliderLevels(applicationContext: Context, sliderPositions: Array<MutableState<Float>?>){
     sliderPositions.forEachIndexed{ index, mutableState ->
-        if(mutableState.value < 10) {
+        if(mutableState!!.value < 10) {
             mutableState.value++
             adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
         }
@@ -459,9 +483,9 @@ fun increaseSliderLevels(applicationContext: Context, sliderPositions: Array<Mut
     Toast.makeText(applicationContext, "Sound: levels increased", Toast.LENGTH_SHORT).show()
 }
 
-fun decreaseSliderLevels(applicationContext: Context, sliderPositions: Array<MutableState<Float>>){
+fun decreaseSliderLevels(applicationContext: Context, sliderPositions: Array<MutableState<Float>?>){
     sliderPositions.forEachIndexed{ index, mutableState ->
-        if(mutableState.value > 0) {
+        if(mutableState!!.value > 0) {
             mutableState.value--
             adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
         }
@@ -522,7 +546,8 @@ fun changeTimerTime(
     mediaPlayers: MutableList<MediaPlayer>,
     tenSoundsURIs: MutableList<Uri>,
     applicationContext: Context,
-    sliderPositions: Array<MutableState<Float>>){
+    sliderPositions: Array<MutableState<Float>?>
+){
     timerTime.value += 60000L
     Log.i(TAG, "Timer time set to ${timerTime.value}")
     if(timerTime.value in 60000L..300000L){
@@ -544,10 +569,11 @@ fun changeTimerTime(
 
 fun activateControls(
     sound: SoundData,
+    preset: PresetData,
     index: Int,
     tenSoundsURIs: MutableList<Uri>,
     applicationContext: Context,
-    sliderPositions: Array<MutableState<Float>>,
+    sliderPositions: Array<MutableState<Float>?>,
     mediaPlayers: MutableList<MediaPlayer>){
     when(index){
         0 -> loopTenSounds(
@@ -558,7 +584,8 @@ fun activateControls(
                 applicationContext,
                 mediaPlayers,
                 sound,
-                sliderPositions
+                sliderPositions,
+                preset
             )
         2 -> changeTimerTime(
                 mediaPlayers,
@@ -588,14 +615,14 @@ fun activateControls(
     }
 }
 
-fun adjustMediaPlayerVolumes(mediaPlayers: MutableList<MediaPlayer>, sliderPositions: Array<MutableState<Float>>, index: Int){
+fun adjustMediaPlayerVolumes(mediaPlayers: MutableList<MediaPlayer>, sliderPositions: Array<MutableState<Float>?>, index: Int){
     if(mediaPlayers.size>0) {
         Log.i(TAG, "Adjusting volumes")
         mediaPlayers[index].setVolume(
-            sliderPositions[index].value / 10,
-            sliderPositions[index].value / 10
+            sliderPositions[index]!!.value / 10,
+            sliderPositions[index]!!.value / 10
         )
-        Log.i(TAG, "New volume for player $index = ${sliderPositions[index].value / 10}")
+        Log.i(TAG, "New volume for player $index = ${sliderPositions[index]!!.value / 10}")
     }
 }
 
@@ -894,14 +921,38 @@ fun Tip(){
 }
 
 @Composable
-fun OtherUsersFeedback(feedback: String, lambda: () -> Unit){
+fun CommentsForSound(sounds: List<SoundData>, completed: (soundData: SoundData) -> Unit){
+    for(sound in sounds){
+        var soundComment: CommentData? by rememberSaveable{ mutableStateOf(null) }
+        Log.i(TAG, "Comments for sound -> $sound")
+        //if(sound.comment != null /*&& sound.currentOwner != UserObject.signedInUser().value!!.data*/){
+        getSoundComment(sound){
+            soundComment = it
+        }
+        if(soundComment != null /*&& sound.currentOwner != UserObject.signedInUser().value!!.data*/) {
+            OtherUsersCommentsUI(sound = sound, soundComment!!) {
+                completed(sound)
+            }
+        }
+        //}
+    }
+}
+
+fun getSoundComment(sound: SoundData, completed: (commentData: CommentData) -> Unit){
+    CommentBackend.queryCommentBasedOnSound(sound){
+        completed(it)
+    }
+}
+
+@Composable
+fun OtherUsersCommentsUI(sound: SoundData, comment: CommentData, lambda: (soundData: SoundData) -> Unit){
     var clicked by rememberSaveable{ mutableStateOf(false) }
     var cardModifier = Modifier
         .padding(bottom = 16.dp)
         .wrapContentHeight()
         .clickable {
             clicked = !clicked
-            lambda()
+            lambda(sound)
         }
         .fillMaxWidth()
 
@@ -910,32 +961,38 @@ fun OtherUsersFeedback(feedback: String, lambda: () -> Unit){
             Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.small)
         )
     }
-    Card(
-        modifier = cardModifier,
-        shape = MaterialTheme.shapes.small,
-        backgroundColor = OtherUsersFeedbackBackground,
-        elevation = 8.dp,
-    ){
-        ConstraintLayout(
-            modifier = Modifier.padding(16.dp)
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        Card(
+            modifier = cardModifier,
+            shape = MaterialTheme.shapes.small,
+            backgroundColor = OtherUsersFeedbackBackground,
+            elevation = 8.dp,
         ) {
-            val (user_feedback) = createRefs()
-            Column(
-                modifier = Modifier
-                    .constrainAs(user_feedback) {
-                        top.linkTo(parent.top, margin = 0.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                        bottom.linkTo(parent.bottom, margin = 0.dp)
-                    }
+            ConstraintLayout(
+                modifier = Modifier.padding(16.dp)
             ) {
-                LightText(
-                    text = feedback,
-                    color = Black,
-                    fontSize = 13,
-                    xOffset = 0,
-                    yOffset = 0
-                )
+                val (user_feedback) = createRefs()
+                Column(
+                    modifier = Modifier
+                        .constrainAs(user_feedback) {
+                            top.linkTo(parent.top, margin = 0.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                            bottom.linkTo(parent.bottom, margin = 0.dp)
+                        }
+                ) {
+                    LightText(
+                        text = comment.comment,
+                        color = Black,
+                        fontSize = 13,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
+                }
             }
         }
     }
@@ -953,6 +1010,6 @@ fun OtherUsersFeedback(feedback: String, lambda: () -> Unit){
 @Composable
 fun PreviewUI() {
     EUNOIATheme {
-        OtherUsersFeedback("geujhfkejkfekfehf"){}
+        //OtherUsersFeedback("geujhfkejkfekfehf"){}
     }
 }

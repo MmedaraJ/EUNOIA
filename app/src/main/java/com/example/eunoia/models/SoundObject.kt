@@ -9,7 +9,10 @@ import android.util.Log
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.amplifyframework.datastore.generated.model.CommentData
+import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.UserData
 import com.amplifyframework.storage.result.StorageListResult
 import com.example.eunoia.backend.SoundBackend
 import java.net.CacheResponse
@@ -60,58 +63,52 @@ object SoundObject {
     // a sound data class
     data class Sound(
         val id: String,
-        val owner_username: String,
+        val original_owner: UserData,
+        val current_owner: UserData,
         val original_name: String,
         val display_name: String,
         val short_description: String,
         val long_description: String,
-        val audio_key: String,
-        val comment: String,
-        val icon: Int, //drawable
-        val fullPlayTime: Int, //minutes
+        val audio_key_s3: String,
+        val icon: Int,
+        val fullPlayTime: Int,
         val visible_to_others: Boolean,
-        val original_volumes: List<Int>,
-        val current_volumes: List<Int>,
-        val audio_names: List<String>
+        val audio_names: List<String>,
     ) {
-        override fun toString(): String = "$owner_username - $display_name"
+        override fun toString(): String = "${current_owner.username} - $display_name"
         var mediaPlayers = mutableListOf<MediaPlayer>()
         // return an API SoundData from this Sound object
         val data: SoundData
             get() = SoundData.builder()
-                .ownerUsername(this.owner_username)
+                .originalOwner(this.original_owner)
+                .currentOwner(this.current_owner)
                 .originalName(this.original_name)
                 .displayName(this.display_name)
                 .shortDescription(this.short_description)
                 .longDescription(this.long_description)
-                .audioKey(this.audio_key)
-                .comment(this.comment)
+                .audioKeyS3(this.audio_key_s3)
                 .icon(this.icon)
                 .fullPlayTime(this.fullPlayTime)
                 .visibleToOthers(this.visible_to_others)
-                .originalVolumes(this.original_volumes)
-                .currentVolumes(this.current_volumes)
                 .audioNames(this.audio_names)
                 .id(this.id)
                 .build()
 
         companion object{
-            fun from(soundData: SoundData, context: Context): Sound{
+            fun from(soundData: SoundData): Sound{
                 val audioUris = mutableListOf<Uri>()
                 val result = Sound(
                     soundData.id,
-                    soundData.ownerUsername,
+                    soundData.originalOwner,
+                    soundData.currentOwner,
                     soundData.originalName,
                     soundData.displayName,
                     soundData.shortDescription,
                     soundData.longDescription,
-                    soundData.audioKey,
-                    soundData.comment,
+                    soundData.audioKeyS3,
                     soundData.icon,
                     soundData.fullPlayTime,
                     soundData.visibleToOthers,
-                    soundData.originalVolumes,
-                    soundData.currentVolumes,
                     soundData.audioNames
                 )
 

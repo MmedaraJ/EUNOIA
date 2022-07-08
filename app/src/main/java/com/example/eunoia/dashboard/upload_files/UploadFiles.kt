@@ -1,16 +1,13 @@
 package com.example.eunoia.dashboard.upload_files
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,18 +18,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import cafe.adriel.androidaudioconverter.AndroidAudioConverter
-import cafe.adriel.androidaudioconverter.callback.IConvertCallback
-import cafe.adriel.androidaudioconverter.model.AudioFormat
-import com.amplifyframework.auth.AuthUserAttributeKey
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.core.Amplify
+import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
-import com.example.eunoia.backend.AuthBackend
-import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.*
+import com.example.eunoia.models.PresetNameAndVolumesMapObject
+import com.example.eunoia.models.PresetObject
 import com.example.eunoia.models.SoundObject
+import com.example.eunoia.models.UserObject
+import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.components.StandardBlueButton
 import com.example.eunoia.ui.theme.EUNOIATheme
 import java.io.File
@@ -44,13 +42,18 @@ class UploadFilesActivity : ComponentActivity() {
     companion object {
         private const val TAG = "UploadFilesActivity"
         private const val SELECT_MP3 = 10
-        private var sound: SoundData? = null
         private var soundAudioPath: String? = null
         private var tenSounds = mutableListOf<Uri>()
+        private val _currentUser = MutableLiveData<UserData>()
+        var currentUser: LiveData<UserData> = _currentUser
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //createEunoiaUser()
+        setSignedInUser()
+        observeCurrentUserChanged()
+        observeIsSignedOut()
         setContent {
             EUNOIATheme {
                 //A surface container using the 'background' color from the theme
@@ -64,6 +67,73 @@ class UploadFilesActivity : ComponentActivity() {
         }
     }
 
+    fun setCurrentUser(newValue: UserData) {
+        _currentUser.postValue(newValue)
+    }
+
+    private fun observeCurrentUserChanged(){
+        currentUser.observe(this) { currentUser ->
+            Log.i(TAG, "currentUser changed : $currentUser")
+            if (currentUser.username != null) {
+                UserObject.setSignedInUser(UserObject.User.from(currentUser))
+                Log.i(TAG, "Setting signed in user $currentUser")
+            }
+        }
+    }
+
+    private fun setSignedInUser(){
+        UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){
+            setCurrentUser(it!!)
+        }
+    }
+
+    private fun observeIsSignedOut(){
+        AuthBackend.isSignedOut.observe(this) { isSignedOut ->
+            // update UI
+            Log.i(TAG, "isSignedOut changed : $isSignedOut")
+            if (isSignedOut) {
+                if (AuthBackend.isSignedOut.value!!) {
+                    Log.d(TAG, AuthBackend.isSignedOut.value.toString())
+                    val intent = Intent(this, SignInActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                } else {
+                    Log.d(TAG, AuthBackend.isSignedOut.value.toString())
+                }
+            } else {
+                Log.d(TAG, isSignedOut.toString())
+            }
+        }
+    }
+
+    private fun createEunoiaUser(){
+        if(currentUser == null) {
+            if (Amplify.Auth.currentUser.username == "eunoia") {
+                val user = UserObject.User(
+                    UUID.randomUUID().toString(),
+                    "eunoia",
+                    "Eunoia",
+                    "Eunoia",
+                    "",
+                    "mmedarajosiah@gmail.com",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    true,
+                    "rookie"
+                )
+                UserBackend.createUser(user){
+
+                }
+                UserObject.setSignedInUser(user)
+                Log.i(TAG, UserObject.signedInUser().value.toString())
+            }
+        }
+    }
+
     @Composable
     fun UploadFilesUI() {
         Column(
@@ -72,7 +142,7 @@ class UploadFilesActivity : ComponentActivity() {
             modifier = Modifier.wrapContentSize()
         ) {
             StandardBlueButton(text = "Pouring Rain") {
-                //createPouringRainSound()
+                createPouringRainSound()
                /* SoundBackend.listEunoiaSounds{ result ->
                     result.items.forEach { item ->
                         Log.i(TAG, "Item: ${item.key}")
@@ -83,10 +153,10 @@ class UploadFilesActivity : ComponentActivity() {
                 }*/
                 /*SoundBackend.deleteAudio("Routine/Sounds/Eunoia/Pouring_Rain")
                 SoundBackend.deleteAudio("Routine/Sounds/Eunoia/Pouring_Rain1")*/
-                AuthBackend.signOut()
+                //AuthBackend.signOut()
             }
             StandardBlueButton(text = "play sounds") {
-                playTenSounds()
+                AuthBackend.signOut()
             }
         }
     }
@@ -107,25 +177,80 @@ class UploadFilesActivity : ComponentActivity() {
         }
     }
 
+    private fun createPresetNameAndVolumesMapData(presetData: PresetData){
+        val originalVolumes = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
+            "original_volumes",
+            listOf(5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
+            presetData
+        )
+        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(originalVolumes){}
+        val currentVolumes = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
+            "current_volumes",
+            listOf(5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
+            presetData
+        )
+        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(currentVolumes){}
+
+        val preset1 = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
+            "preset1",
+            listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+            presetData
+        )
+        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(preset1){}
+
+        val preset2 = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
+            "preset2",
+            listOf(10, 9, 8, 7, 6, 5, 4, 3, 2, 1),
+            presetData
+        )
+        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(preset2){}
+
+        val preset3 = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
+            "preset3",
+            listOf(10, 9, 8, 7, 6, 1, 2, 3, 4, 5),
+            presetData
+        )
+        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(preset3){}
+
+        val preset4 = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
+            "preset4",
+            listOf(10, 8, 6, 4, 2, 1, 2, 4, 6, 8, 10),
+            presetData
+        )
+        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(preset4){}
+    }
+
+    private fun createSoundPreset(soundData: SoundData){
+        val preset = PresetObject.Preset(
+            UUID.randomUUID().toString(),
+            soundData
+        )
+        PresetBackend.createPreset(preset){
+            createPresetNameAndVolumesMapData(it)
+        }
+    }
+
     private fun createPouringRainSound(){
         val sound = SoundObject.Sound(
             UUID.randomUUID().toString(),
-            "eunoia",
+            currentUser.value!!,
+            currentUser.value!!,
             "pouring rain",
             "pouring rain",
             "The beautiful sound of the pouring rain",
             "The beautiful sound of the pouring rain. This is the long description.",
             "Routine/Sounds/Eunoia/Pouring_Rain/",
-            "null",
             R.drawable.pouring_rain_icon,
             180,
             true,
-            listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-            listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-            listOf("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"),
+            listOf("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten")
         )
-        SoundBackend.createSound(sound)
-        SoundObject.addSound(sound)
+        SoundBackend.createSound(sound){
+            createSoundPreset(it)
+            /*Log.i(TAG, "hsjnd sdhskdhsdusjd sdbsj $sound")
+            setSound(sound)*/
+        }
+
         /*if(ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_EXTERNAL_STORAGE
@@ -137,15 +262,6 @@ class UploadFilesActivity : ComponentActivity() {
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                 3
             )
-        }*/
-        /*
-        SoundBackend.getSoundWithKey("9dc5354a-67f0-4ae3-bb0d-956a7a7c3561"){
-            //SoundBackend.querySound()
-        }*/
-        /*val sounds = SoundObject.sounds().value
-        val isEmpty = sounds?.isEmpty() ?: false
-        if(isEmpty){
-            SoundBackend.querySound()
         }*/
     }
 

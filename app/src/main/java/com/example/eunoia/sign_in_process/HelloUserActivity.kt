@@ -208,7 +208,6 @@ class HelloUserActivity : ComponentActivity() {
             Spacer(modifier = Modifier.height(4.dp))
             IconButton(
                 onClick = {
-                    createUserObject()
                     goToDashboard(context)
                 }
             ) {
@@ -239,24 +238,6 @@ class HelloUserActivity : ComponentActivity() {
 
     private fun goToDashboard(context: Context){
         context.startActivity(Intent(context, UserDashboardActivity::class.java))
-    }
-
-    private fun createUserObject(){
-        val user = UserObject.User(
-            UUID.randomUUID().toString(),
-            username,
-            first_name,
-            last_name,
-            "",
-            email,
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-        )
-        UserBackend.createUser(user)
     }
 
     @Preview(

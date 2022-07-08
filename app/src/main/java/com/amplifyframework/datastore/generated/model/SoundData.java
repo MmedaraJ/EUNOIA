@@ -1,5 +1,7 @@
 package com.amplifyframework.datastore.generated.model;
 
+import com.amplifyframework.core.model.annotations.BelongsTo;
+import com.amplifyframework.core.model.annotations.HasOne;
 import com.amplifyframework.core.model.temporal.Temporal;
 
 import java.util.List;
@@ -25,43 +27,46 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
+@Index(name = "byUserData", fields = {"userDataID","display_name"})
 public final class SoundData implements Model {
   public static final QueryField ID = field("SoundData", "id");
-  public static final QueryField OWNER_USERNAME = field("SoundData", "owner_username");
+  public static final QueryField ORIGINAL_OWNER = field("SoundData", "userDataID");
+  public static final QueryField CURRENT_OWNER = field("SoundData", "userDataID");
   public static final QueryField ORIGINAL_NAME = field("SoundData", "original_name");
   public static final QueryField DISPLAY_NAME = field("SoundData", "display_name");
   public static final QueryField SHORT_DESCRIPTION = field("SoundData", "short_description");
   public static final QueryField LONG_DESCRIPTION = field("SoundData", "long_description");
-  public static final QueryField AUDIO_KEY = field("SoundData", "audio_key");
-  public static final QueryField COMMENT = field("SoundData", "comment");
+  public static final QueryField AUDIO_KEY_S3 = field("SoundData", "audio_key_s3");
   public static final QueryField ICON = field("SoundData", "icon");
   public static final QueryField FULL_PLAY_TIME = field("SoundData", "fullPlayTime");
   public static final QueryField VISIBLE_TO_OTHERS = field("SoundData", "visible_to_others");
-  public static final QueryField ORIGINAL_VOLUMES = field("SoundData", "original_volumes");
-  public static final QueryField CURRENT_VOLUMES = field("SoundData", "current_volumes");
   public static final QueryField AUDIO_NAMES = field("SoundData", "audio_names");
   private final @ModelField(targetType="ID", isRequired = true) String id;
-  private final @ModelField(targetType="String", isRequired = true) String owner_username;
+  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData original_owner;
+  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData current_owner;
   private final @ModelField(targetType="String", isRequired = true) String original_name;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="String", isRequired = true) String short_description;
   private final @ModelField(targetType="String", isRequired = true) String long_description;
-  private final @ModelField(targetType="String", isRequired = true) String audio_key;
-  private final @ModelField(targetType="String", isRequired = true) String comment;
+  private final @ModelField(targetType="String", isRequired = true) String audio_key_s3;
   private final @ModelField(targetType="Int", isRequired = true) Integer icon;
   private final @ModelField(targetType="Int", isRequired = true) Integer fullPlayTime;
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean visible_to_others;
-  private final @ModelField(targetType="Int", isRequired = true) List<Integer> original_volumes;
-  private final @ModelField(targetType="Int", isRequired = true) List<Integer> current_volumes;
   private final @ModelField(targetType="String", isRequired = true) List<String> audio_names;
+  private final @ModelField(targetType="CommentData") @HasOne(associatedWith = "sound", type = CommentData.class) CommentData comment = null;
+  private final @ModelField(targetType="PresetData") @HasOne(associatedWith = "sound", type = PresetData.class) PresetData preset = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
       return id;
   }
   
-  public String getOwnerUsername() {
-      return owner_username;
+  public UserData getOriginalOwner() {
+      return original_owner;
+  }
+  
+  public UserData getCurrentOwner() {
+      return current_owner;
   }
   
   public String getOriginalName() {
@@ -80,12 +85,8 @@ public final class SoundData implements Model {
       return long_description;
   }
   
-  public String getAudioKey() {
-      return audio_key;
-  }
-  
-  public String getComment() {
-      return comment;
+  public String getAudioKeyS3() {
+      return audio_key_s3;
   }
   
   public Integer getIcon() {
@@ -100,16 +101,16 @@ public final class SoundData implements Model {
       return visible_to_others;
   }
   
-  public List<Integer> getOriginalVolumes() {
-      return original_volumes;
-  }
-  
-  public List<Integer> getCurrentVolumes() {
-      return current_volumes;
-  }
-  
   public List<String> getAudioNames() {
       return audio_names;
+  }
+  
+  public CommentData getComment() {
+      return comment;
+  }
+  
+  public PresetData getPreset() {
+      return preset;
   }
   
   public Temporal.DateTime getCreatedAt() {
@@ -120,20 +121,18 @@ public final class SoundData implements Model {
       return updatedAt;
   }
   
-  private SoundData(String id, String owner_username, String original_name, String display_name, String short_description, String long_description, String audio_key, String comment, Integer icon, Integer fullPlayTime, Boolean visible_to_others, List<Integer> original_volumes, List<Integer> current_volumes, List<String> audio_names) {
+  private SoundData(String id, UserData original_owner, UserData current_owner, String original_name, String display_name, String short_description, String long_description, String audio_key_s3, Integer icon, Integer fullPlayTime, Boolean visible_to_others, List<String> audio_names) {
     this.id = id;
-    this.owner_username = owner_username;
+    this.original_owner = original_owner;
+    this.current_owner = current_owner;
     this.original_name = original_name;
     this.display_name = display_name;
     this.short_description = short_description;
     this.long_description = long_description;
-    this.audio_key = audio_key;
-    this.comment = comment;
+    this.audio_key_s3 = audio_key_s3;
     this.icon = icon;
     this.fullPlayTime = fullPlayTime;
     this.visible_to_others = visible_to_others;
-    this.original_volumes = original_volumes;
-    this.current_volumes = current_volumes;
     this.audio_names = audio_names;
   }
   
@@ -146,18 +145,16 @@ public final class SoundData implements Model {
       } else {
       SoundData soundData = (SoundData) obj;
       return ObjectsCompat.equals(getId(), soundData.getId()) &&
-              ObjectsCompat.equals(getOwnerUsername(), soundData.getOwnerUsername()) &&
+              ObjectsCompat.equals(getOriginalOwner(), soundData.getOriginalOwner()) &&
+              ObjectsCompat.equals(getCurrentOwner(), soundData.getCurrentOwner()) &&
               ObjectsCompat.equals(getOriginalName(), soundData.getOriginalName()) &&
               ObjectsCompat.equals(getDisplayName(), soundData.getDisplayName()) &&
               ObjectsCompat.equals(getShortDescription(), soundData.getShortDescription()) &&
               ObjectsCompat.equals(getLongDescription(), soundData.getLongDescription()) &&
-              ObjectsCompat.equals(getAudioKey(), soundData.getAudioKey()) &&
-              ObjectsCompat.equals(getComment(), soundData.getComment()) &&
+              ObjectsCompat.equals(getAudioKeyS3(), soundData.getAudioKeyS3()) &&
               ObjectsCompat.equals(getIcon(), soundData.getIcon()) &&
               ObjectsCompat.equals(getFullPlayTime(), soundData.getFullPlayTime()) &&
               ObjectsCompat.equals(getVisibleToOthers(), soundData.getVisibleToOthers()) &&
-              ObjectsCompat.equals(getOriginalVolumes(), soundData.getOriginalVolumes()) &&
-              ObjectsCompat.equals(getCurrentVolumes(), soundData.getCurrentVolumes()) &&
               ObjectsCompat.equals(getAudioNames(), soundData.getAudioNames()) &&
               ObjectsCompat.equals(getCreatedAt(), soundData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), soundData.getUpdatedAt());
@@ -168,18 +165,16 @@ public final class SoundData implements Model {
    public int hashCode() {
     return new StringBuilder()
       .append(getId())
-      .append(getOwnerUsername())
+      .append(getOriginalOwner())
+      .append(getCurrentOwner())
       .append(getOriginalName())
       .append(getDisplayName())
       .append(getShortDescription())
       .append(getLongDescription())
-      .append(getAudioKey())
-      .append(getComment())
+      .append(getAudioKeyS3())
       .append(getIcon())
       .append(getFullPlayTime())
       .append(getVisibleToOthers())
-      .append(getOriginalVolumes())
-      .append(getCurrentVolumes())
       .append(getAudioNames())
       .append(getCreatedAt())
       .append(getUpdatedAt())
@@ -192,18 +187,16 @@ public final class SoundData implements Model {
     return new StringBuilder()
       .append("SoundData {")
       .append("id=" + String.valueOf(getId()) + ", ")
-      .append("owner_username=" + String.valueOf(getOwnerUsername()) + ", ")
+      .append("original_owner=" + String.valueOf(getOriginalOwner()) + ", ")
+      .append("current_owner=" + String.valueOf(getCurrentOwner()) + ", ")
       .append("original_name=" + String.valueOf(getOriginalName()) + ", ")
       .append("display_name=" + String.valueOf(getDisplayName()) + ", ")
       .append("short_description=" + String.valueOf(getShortDescription()) + ", ")
       .append("long_description=" + String.valueOf(getLongDescription()) + ", ")
-      .append("audio_key=" + String.valueOf(getAudioKey()) + ", ")
-      .append("comment=" + String.valueOf(getComment()) + ", ")
+      .append("audio_key_s3=" + String.valueOf(getAudioKeyS3()) + ", ")
       .append("icon=" + String.valueOf(getIcon()) + ", ")
       .append("fullPlayTime=" + String.valueOf(getFullPlayTime()) + ", ")
       .append("visible_to_others=" + String.valueOf(getVisibleToOthers()) + ", ")
-      .append("original_volumes=" + String.valueOf(getOriginalVolumes()) + ", ")
-      .append("current_volumes=" + String.valueOf(getCurrentVolumes()) + ", ")
       .append("audio_names=" + String.valueOf(getAudioNames()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
@@ -211,7 +204,7 @@ public final class SoundData implements Model {
       .toString();
   }
   
-  public static OwnerUsernameStep builder() {
+  public static OriginalOwnerStep builder() {
       return new Builder();
   }
   
@@ -236,30 +229,31 @@ public final class SoundData implements Model {
       null,
       null,
       null,
-      null,
-      null,
       null
     );
   }
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      owner_username,
+      original_owner,
+      current_owner,
       original_name,
       display_name,
       short_description,
       long_description,
-      audio_key,
-      comment,
+      audio_key_s3,
       icon,
       fullPlayTime,
       visible_to_others,
-      original_volumes,
-      current_volumes,
       audio_names);
   }
-  public interface OwnerUsernameStep {
-    OriginalNameStep ownerUsername(String ownerUsername);
+  public interface OriginalOwnerStep {
+    CurrentOwnerStep originalOwner(UserData originalOwner);
+  }
+  
+
+  public interface CurrentOwnerStep {
+    OriginalNameStep currentOwner(UserData currentOwner);
   }
   
 
@@ -279,17 +273,12 @@ public final class SoundData implements Model {
   
 
   public interface LongDescriptionStep {
-    AudioKeyStep longDescription(String longDescription);
+    AudioKeyS3Step longDescription(String longDescription);
   }
   
 
-  public interface AudioKeyStep {
-    CommentStep audioKey(String audioKey);
-  }
-  
-
-  public interface CommentStep {
-    IconStep comment(String comment);
+  public interface AudioKeyS3Step {
+    IconStep audioKeyS3(String audioKeyS3);
   }
   
 
@@ -304,17 +293,7 @@ public final class SoundData implements Model {
   
 
   public interface VisibleToOthersStep {
-    OriginalVolumesStep visibleToOthers(Boolean visibleToOthers);
-  }
-  
-
-  public interface OriginalVolumesStep {
-    CurrentVolumesStep originalVolumes(List<Integer> originalVolumes);
-  }
-  
-
-  public interface CurrentVolumesStep {
-    AudioNamesStep currentVolumes(List<Integer> currentVolumes);
+    AudioNamesStep visibleToOthers(Boolean visibleToOthers);
   }
   
 
@@ -329,20 +308,18 @@ public final class SoundData implements Model {
   }
   
 
-  public static class Builder implements OwnerUsernameStep, OriginalNameStep, DisplayNameStep, ShortDescriptionStep, LongDescriptionStep, AudioKeyStep, CommentStep, IconStep, FullPlayTimeStep, VisibleToOthersStep, OriginalVolumesStep, CurrentVolumesStep, AudioNamesStep, BuildStep {
+  public static class Builder implements OriginalOwnerStep, CurrentOwnerStep, OriginalNameStep, DisplayNameStep, ShortDescriptionStep, LongDescriptionStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, AudioNamesStep, BuildStep {
     private String id;
-    private String owner_username;
+    private UserData original_owner;
+    private UserData current_owner;
     private String original_name;
     private String display_name;
     private String short_description;
     private String long_description;
-    private String audio_key;
-    private String comment;
+    private String audio_key_s3;
     private Integer icon;
     private Integer fullPlayTime;
     private Boolean visible_to_others;
-    private List<Integer> original_volumes;
-    private List<Integer> current_volumes;
     private List<String> audio_names;
     @Override
      public SoundData build() {
@@ -350,25 +327,30 @@ public final class SoundData implements Model {
         
         return new SoundData(
           id,
-          owner_username,
+          original_owner,
+          current_owner,
           original_name,
           display_name,
           short_description,
           long_description,
-          audio_key,
-          comment,
+          audio_key_s3,
           icon,
           fullPlayTime,
           visible_to_others,
-          original_volumes,
-          current_volumes,
           audio_names);
     }
     
     @Override
-     public OriginalNameStep ownerUsername(String ownerUsername) {
-        Objects.requireNonNull(ownerUsername);
-        this.owner_username = ownerUsername;
+     public CurrentOwnerStep originalOwner(UserData originalOwner) {
+        Objects.requireNonNull(originalOwner);
+        this.original_owner = originalOwner;
+        return this;
+    }
+    
+    @Override
+     public OriginalNameStep currentOwner(UserData currentOwner) {
+        Objects.requireNonNull(currentOwner);
+        this.current_owner = currentOwner;
         return this;
     }
     
@@ -394,23 +376,16 @@ public final class SoundData implements Model {
     }
     
     @Override
-     public AudioKeyStep longDescription(String longDescription) {
+     public AudioKeyS3Step longDescription(String longDescription) {
         Objects.requireNonNull(longDescription);
         this.long_description = longDescription;
         return this;
     }
     
     @Override
-     public CommentStep audioKey(String audioKey) {
-        Objects.requireNonNull(audioKey);
-        this.audio_key = audioKey;
-        return this;
-    }
-    
-    @Override
-     public IconStep comment(String comment) {
-        Objects.requireNonNull(comment);
-        this.comment = comment;
+     public IconStep audioKeyS3(String audioKeyS3) {
+        Objects.requireNonNull(audioKeyS3);
+        this.audio_key_s3 = audioKeyS3;
         return this;
     }
     
@@ -429,23 +404,9 @@ public final class SoundData implements Model {
     }
     
     @Override
-     public OriginalVolumesStep visibleToOthers(Boolean visibleToOthers) {
+     public AudioNamesStep visibleToOthers(Boolean visibleToOthers) {
         Objects.requireNonNull(visibleToOthers);
         this.visible_to_others = visibleToOthers;
-        return this;
-    }
-    
-    @Override
-     public CurrentVolumesStep originalVolumes(List<Integer> originalVolumes) {
-        Objects.requireNonNull(originalVolumes);
-        this.original_volumes = originalVolumes;
-        return this;
-    }
-    
-    @Override
-     public AudioNamesStep currentVolumes(List<Integer> currentVolumes) {
-        Objects.requireNonNull(currentVolumes);
-        this.current_volumes = currentVolumes;
         return this;
     }
     
@@ -468,26 +429,29 @@ public final class SoundData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String ownerUsername, String originalName, String displayName, String shortDescription, String longDescription, String audioKey, String comment, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<Integer> originalVolumes, List<Integer> currentVolumes, List<String> audioNames) {
+    private CopyOfBuilder(String id, UserData originalOwner, UserData currentOwner, String originalName, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> audioNames) {
       super.id(id);
-      super.ownerUsername(ownerUsername)
+      super.originalOwner(originalOwner)
+        .currentOwner(currentOwner)
         .originalName(originalName)
         .displayName(displayName)
         .shortDescription(shortDescription)
         .longDescription(longDescription)
-        .audioKey(audioKey)
-        .comment(comment)
+        .audioKeyS3(audioKeyS3)
         .icon(icon)
         .fullPlayTime(fullPlayTime)
         .visibleToOthers(visibleToOthers)
-        .originalVolumes(originalVolumes)
-        .currentVolumes(currentVolumes)
         .audioNames(audioNames);
     }
     
     @Override
-     public CopyOfBuilder ownerUsername(String ownerUsername) {
-      return (CopyOfBuilder) super.ownerUsername(ownerUsername);
+     public CopyOfBuilder originalOwner(UserData originalOwner) {
+      return (CopyOfBuilder) super.originalOwner(originalOwner);
+    }
+    
+    @Override
+     public CopyOfBuilder currentOwner(UserData currentOwner) {
+      return (CopyOfBuilder) super.currentOwner(currentOwner);
     }
     
     @Override
@@ -511,13 +475,8 @@ public final class SoundData implements Model {
     }
     
     @Override
-     public CopyOfBuilder audioKey(String audioKey) {
-      return (CopyOfBuilder) super.audioKey(audioKey);
-    }
-    
-    @Override
-     public CopyOfBuilder comment(String comment) {
-      return (CopyOfBuilder) super.comment(comment);
+     public CopyOfBuilder audioKeyS3(String audioKeyS3) {
+      return (CopyOfBuilder) super.audioKeyS3(audioKeyS3);
     }
     
     @Override
@@ -533,16 +492,6 @@ public final class SoundData implements Model {
     @Override
      public CopyOfBuilder visibleToOthers(Boolean visibleToOthers) {
       return (CopyOfBuilder) super.visibleToOthers(visibleToOthers);
-    }
-    
-    @Override
-     public CopyOfBuilder originalVolumes(List<Integer> originalVolumes) {
-      return (CopyOfBuilder) super.originalVolumes(originalVolumes);
-    }
-    
-    @Override
-     public CopyOfBuilder currentVolumes(List<Integer> currentVolumes) {
-      return (CopyOfBuilder) super.currentVolumes(currentVolumes);
     }
     
     @Override

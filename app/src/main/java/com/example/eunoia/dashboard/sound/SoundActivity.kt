@@ -1,7 +1,6 @@
 package com.example.eunoia.dashboard.sound
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,7 +21,7 @@ import com.example.eunoia.ui.theme.EUNOIATheme
 import kotlinx.coroutines.*
 
 private const val TAG = "Sound Activity"
-val scope = CoroutineScope(Job() + Dispatchers.IO)
+val scope = CoroutineScope(Job() + Dispatchers.Main)
 
 @Composable
 fun SoundActivityUI(navController: NavController, context: Context) {
@@ -129,7 +128,7 @@ private fun OptionsList(navController: NavController, context: Context){
         modifier = Modifier
             .fillMaxWidth()
     ){
-        OptionItem(displayName = "pouring rain", icon = R.drawable.pouring_rain_icon, 71, 71, false, 0, 0){displayName -> toPouringRain(navController, displayName) }
+        OptionItem(displayName = "pouring rain", icon = R.drawable.pouring_rain_icon, 71, 71, false, 0, 0){displayName -> toSoundScreen(navController, displayName) }
         OptionItem(displayName = "coffee house", icon = R.drawable.coffee_house_icon, 71, 71, true, 35, -10){ something() }
         OptionItem(displayName = "library", icon = R.drawable.library_icon, 71, 71, false, 0, 0){ something() }
         OptionItem(displayName = "baking", icon = R.drawable.baking_icon, 71, 71, false, 0, 0){ something() }
@@ -188,11 +187,7 @@ private fun ArticlesList(){
     }
 }
 
-private fun toPouringRain(navController: NavController, displayName: String){
-    /*retrieveAllEunoiaRoutineSoundMp3For("Pouring_Rain"){
-        Log.i("SoundActivityUI", "Get Pouring rain")
-    }*/
-    Log.i(TAG, displayName)
+private fun toSoundScreen(navController: NavController, displayName: String){
     navController.navigate("${Screen.SoundScreen.screen_route}/$displayName")
 }
 

@@ -111,7 +111,7 @@ fun FeedbackUI(navController: NavController, context: Context) {
                 RatingDropdownText,
                 RatingDropdownText,
                 15
-            )
+            ){}
         }
         Column(
             modifier = Modifier

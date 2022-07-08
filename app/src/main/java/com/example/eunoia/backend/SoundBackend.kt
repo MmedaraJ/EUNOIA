@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.core.net.toUri
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
@@ -23,16 +22,13 @@ import java.io.File
 object SoundBackend{
     private const val TAG = "SoundBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
-    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
-    fun getSoundWithKey(key: String, completed: (sound: SoundData) -> Unit){
-        Log.i(TAG, "Querying sound with key")
+    fun getSoundWithID(id: String, completed: (sound: SoundData) -> Unit){
         scope.launch {
-            Amplify.API.query(ModelQuery.list(SoundData::class.java, SoundData.DISPLAY_NAME.contains("d")),
+            Amplify.API.query(ModelQuery.get(SoundData::class.java, id),
                 { response ->
-                    Log.i(TAG, "Get sound Response: $response")
-                    Log.i("MyAmplifyApp", "Query results = ${(response.data as SoundData).displayName}")
-                    //completed(response.data.)
+                    Log.i(TAG, "Query results = ${(response.data as SoundData).displayName}")
+                    completed(response.data)
                 },
                 { Log.e("MyAmplifyApp", "Query failed", it) }
             )
@@ -69,15 +65,33 @@ object SoundBackend{
             Amplify.API.query(
                 ModelQuery.list(SoundData::class.java, SoundData.DISPLAY_NAME.eq(display_name)),
                 { response ->
-                    Log.i(TAG, "Queried $response")
                     if(response.hasData()) {
                         for (soundData in response.data) {
                             Log.i(TAG, soundData.toString())
-                            // TODO should add all the sounds at once instead of one by one (each add triggers a UI refresh)
-                            SoundObject.addSound(SoundObject.Sound.from(soundData, context))
                             completed(soundData)
                             break
                         }
+                    }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun querySoundBasedOnOriginalName(
+        original_name: String,
+        completed: (soundList: List<SoundData>) -> Unit) {
+        scope.launch {
+            var sounds = mutableListOf<SoundData>()
+            Amplify.API.query(
+                ModelQuery.list(SoundData::class.java, SoundData.ORIGINAL_NAME.eq(original_name)),
+                { response ->
+                    if(response.hasData()) {
+                        for (soundData in response.data) {
+                            Log.i(TAG, soundData.toString())
+                            sounds.add(soundData)
+                        }
+                        completed(sounds)
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
@@ -96,7 +110,7 @@ object SoundBackend{
                         for (soundData in response.data) {
                             Log.i(TAG, soundData.toString())
                             // TODO should add all the sounds at once instead of one by one (each add triggers a UI refresh)
-                            SoundObject.addSound(SoundObject.Sound.from(soundData, context))
+                            SoundObject.addSound(SoundObject.Sound.from(soundData))
                         }
                     }
                 },
@@ -105,16 +119,17 @@ object SoundBackend{
         }
     }
 
-    fun createSound(sound: SoundObject.Sound) {
+    fun createSound(sound: SoundObject.Sound, completed: (sound: SoundData) -> Unit) {
         scope.launch {
             Amplify.API.mutate(
                 ModelMutation.create(sound.data),
                 { response ->
                     Log.i(TAG, "Created $response")
                     if (response.hasErrors()) {
-                        Log.e(TAG, response.errors.first().message)
+                        Log.e(TAG, "Error from create sound ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created sound with id: " + response.data.id)
+                        completed(response.data)
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
