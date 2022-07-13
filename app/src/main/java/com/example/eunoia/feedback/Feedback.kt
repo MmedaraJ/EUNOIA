@@ -12,14 +12,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
-fun FeedbackUI(navController: NavController, context: Context) {
+fun FeedbackUI(navController: NavController, context: Context, globalViewModel: GlobalViewModel) {
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -105,11 +107,11 @@ fun FeedbackUI(navController: NavController, context: Context) {
             bigOutlinedTextInput(
                 100,
                 "We are happy to hear from you.\nDo you have any ideas or suggestions for us?",
-                RatingDropdownBackground,
-                RatingDropdownText,
-                RatingDropdownBackground,
-                RatingDropdownText,
-                RatingDropdownText,
+                SoftPeach,
+                BeautyBush,
+                SoftPeach,
+                BeautyBush,
+                BeautyBush,
                 15
             ){}
         }
@@ -145,7 +147,8 @@ fun FeedbackUI(navController: NavController, context: Context) {
 )
 @Composable
 fun Preview() {
+    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        FeedbackUI(rememberNavController(), LocalContext.current)
+        FeedbackUI(rememberNavController(), LocalContext.current, globalViewModel)
     }
 }

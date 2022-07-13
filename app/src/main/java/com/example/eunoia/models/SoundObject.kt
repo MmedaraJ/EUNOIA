@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.ui.platform.LocalContext
@@ -15,6 +16,8 @@ import com.amplifyframework.datastore.generated.model.SoundData
 import com.amplifyframework.datastore.generated.model.UserData
 import com.amplifyframework.storage.result.StorageListResult
 import com.example.eunoia.backend.SoundBackend
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 import java.net.CacheResponse
 
 object SoundObject {

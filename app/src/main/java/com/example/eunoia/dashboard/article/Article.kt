@@ -1,4 +1,4 @@
-package com.example.eunoia.dashboard
+package com.example.eunoia.dashboard.article
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
@@ -11,15 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.R
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
+import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
-fun ArticleUI(navController: NavController){
+fun ArticleUI(navController: NavController, globalViewModel: GlobalViewModel){
     val scrollState = rememberScrollState()
     val sub_texts = arrayOf(
         "Your skincare routine ends with a goodnight sleep.\n" +
@@ -152,7 +154,8 @@ fun ArticleUI(navController: NavController){
 )
 @Composable
 fun Preview() {
+    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        ArticleUI(rememberNavController())
+        ArticleUI(rememberNavController(), globalViewModel)
     }
 }

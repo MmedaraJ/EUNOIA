@@ -106,7 +106,7 @@ fun Rookie(lambda: () -> Unit) {
     Card(
         modifier = cardModifier,
         shape = MaterialTheme.shapes.small,
-        backgroundColor = PricingPlanBackground,
+        backgroundColor = CarouselPink,
         elevation = 8.dp,
     ) {
         ConstraintLayout(
@@ -230,7 +230,7 @@ fun MasterSix(lambda: () -> Unit) {
     Card(
         modifier = cardModifier,
         shape = MaterialTheme.shapes.small,
-        backgroundColor = PricingPlanBackground,
+        backgroundColor = CarouselPink,
         elevation = 8.dp,
     ) {
         ConstraintLayout(
@@ -386,7 +386,7 @@ fun MasterNine(lambda: () -> Unit) {
     Card(
         modifier = cardModifier,
         shape = MaterialTheme.shapes.small,
-        backgroundColor = PricingPlanBackground,
+        backgroundColor = CarouselPink,
         elevation = 8.dp,
     ) {
         ConstraintLayout(
@@ -542,7 +542,7 @@ fun Contributor(lambda: () -> Unit) {
     Card(
         modifier = cardModifier,
         shape = MaterialTheme.shapes.small,
-        backgroundColor = PricingPlanBackground,
+        backgroundColor = CarouselPink,
         elevation = 8.dp,
     ) {
         ConstraintLayout(
@@ -608,7 +608,7 @@ fun Contributor(lambda: () -> Unit) {
                 modifier = Modifier
                     .size(46.dp)
                     .clip(CircleShape)
-                    .background(ContributorSubscribeButtonBackground)
+                    .background(ClassicRose)
                     .constrainAs(popular) {
                         top.linkTo(price.top, margin = 0.dp)
                         bottom.linkTo(price.bottom, margin = 0.dp)

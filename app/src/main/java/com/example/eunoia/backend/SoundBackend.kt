@@ -35,28 +35,6 @@ object SoundBackend{
         }
     }
 
-    /**
-     * Used when navigating to a sound screen
-     * Returns only one sound with the given display name
-     */
-    fun getSoundWithDisplayName(
-        display_name: String,
-        completed: (sound: SoundData) -> Unit){
-        scope.launch{
-            Amplify.API.query(ModelQuery.get(SoundData::class.java, "a6b4c130-b201-42a3-b99e-f8e896f218c8"),
-                {response ->
-                    Log.i(TAG, "getSoundWithDisplayName Response: $response")
-                    if(response.hasData()) {
-                        Log.i(TAG, "Query results = ${(response.data as SoundData).displayName}")
-                        //mainScope.launch { completed(response.data) }
-                        completed(response.data)
-                    }
-                },
-                { Log.e(TAG, "Query failed", it) }
-            )
-        }
-    }
-
     fun querySoundBasedOnDisplayName(
         display_name: String,
         context: Context,
@@ -82,7 +60,7 @@ object SoundBackend{
         original_name: String,
         completed: (soundList: List<SoundData>) -> Unit) {
         scope.launch {
-            var sounds = mutableListOf<SoundData>()
+            val sounds = mutableListOf<SoundData>()
             Amplify.API.query(
                 ModelQuery.list(SoundData::class.java, SoundData.ORIGINAL_NAME.eq(original_name)),
                 { response ->

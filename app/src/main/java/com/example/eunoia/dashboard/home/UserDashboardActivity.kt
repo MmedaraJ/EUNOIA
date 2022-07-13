@@ -3,6 +3,7 @@ package com.example.eunoia.dashboard.home
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -22,8 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.amplifyframework.core.Amplify
@@ -32,6 +32,10 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.models.UserObject
+import com.example.eunoia.mvvm.commentMvvm.viewModel.CommentViewModel
+import com.example.eunoia.mvvm.presetMvvm.viewModel.PresetViewModel
+import com.example.eunoia.mvvm.soundMvvm.model.SoundModel
+import com.example.eunoia.mvvm.soundMvvm.viewModel.SoundViewModel
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.theme.Grey
 import com.example.eunoia.ui.theme.White
@@ -39,6 +43,7 @@ import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.MultiBottomNavApp
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
+import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -48,13 +53,23 @@ class UserDashboardActivity : ComponentActivity() {
     private val TAG = "UserDashboardActivity"
     private val _currentUser = MutableLiveData<UserData>(null)
     var currentUser: LiveData<UserData> = _currentUser
-    private val scope = CoroutineScope(Job() + Dispatchers.Main)
+
+    companion object{
+        lateinit var soundViewModel: SoundViewModel
+        lateinit var presetViewModel: PresetViewModel
+        lateinit var commentViewModel: CommentViewModel
+        lateinit var owner: LifecycleOwner
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         observeCurrentUserChanged()
         setSignedInUser()
         observeIsSignedOut()
+        owner = this
+        soundViewModel = ViewModelProvider(this)[SoundViewModel::class.java]
+        presetViewModel = ViewModelProvider(this)[PresetViewModel::class.java]
+        commentViewModel = ViewModelProvider(this)[CommentViewModel::class.java]
         setContent {
             MultiBottomNavApp()
         }
@@ -102,7 +117,7 @@ class UserDashboardActivity : ComponentActivity() {
 }
 
 @Composable
-fun UserDashboardActivityUI(navController: NavHostController) {
+fun UserDashboardActivityUI(navController: NavHostController, globalViewModel: GlobalViewModel) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     ConstraintLayout(

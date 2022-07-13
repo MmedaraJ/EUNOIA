@@ -16,14 +16,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -31,7 +29,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -81,7 +78,7 @@ fun StandardBlueButton(text: String, lambda: () -> Unit){
 fun StandardSubscribeButton(text: String, lambda: () -> Unit){
     Button(
         onClick = { lambda() },
-        colors = ButtonDefaults.buttonColors(backgroundColor = background),
+        colors = ButtonDefaults.buttonColors(backgroundColor = OldLace),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
         border = BorderStroke(0.5.dp, Black),
         modifier = Modifier
@@ -101,7 +98,7 @@ fun StandardSubscribeButton(text: String, lambda: () -> Unit){
 fun ContributorSubscribeButton(text: String, lambda: () -> Unit){
     Button(
         onClick = { lambda() },
-        colors = ButtonDefaults.buttonColors(backgroundColor = ContributorSubscribeButtonBackground),
+        colors = ButtonDefaults.buttonColors(backgroundColor = ClassicRose),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
         border = BorderStroke(0.5.dp, Black),
         modifier = Modifier
@@ -222,11 +219,11 @@ fun bigOutlinedTextInput(
         },
         trailingIcon = {
             val image = Icons.Filled.Send
-            // Please provide localized description for accessibility services
             val description = "Create Comment"
             IconButton(
                 onClick = {
                     completed(text)
+                    text = ""
                 }
             ){
                 Icon(imageVector  = image, description)
@@ -312,7 +309,37 @@ fun EunoiaStar(width: Dp, height: Dp, xOffset: Int, yOffset: Int){
 }
 
 @Composable
-fun AnImage(id: Int, contentDescription: String, width: Dp, height: Dp, xOffset: Int, yOffset: Int, lambda: () -> Unit){
+fun AnImageWithColor(
+    id: Int,
+    contentDescription: String,
+    color: Color,
+    width: Dp,
+    height: Dp,
+    xOffset: Int,
+    yOffset: Int,
+    lambda: () -> Unit
+){
+    Image(
+        painter = painterResource(id = id),
+        contentDescription = contentDescription,
+        colorFilter = ColorFilter.tint(color),
+        modifier = Modifier
+            .size(width = width, height = height)
+            .offset(xOffset.dp, yOffset.dp)
+            .clickable { lambda() }
+    )
+}
+
+@Composable
+fun AnImage(
+    id: Int,
+    contentDescription: String,
+    width: Dp,
+    height: Dp,
+    xOffset: Int,
+    yOffset: Int,
+    lambda: () -> Unit
+){
     Image(
         painter = painterResource(id = id),
         contentDescription = contentDescription,
@@ -574,9 +601,10 @@ fun BackArrowHeader(backArrowClicked: () -> Unit, settingsButtonClicked: () -> U
             .padding(horizontal = 12.dp)
             .fillMaxWidth()
     ){
-        AnImage(
+        AnImageWithColor(
             id = R.drawable.back_arrow,
             contentDescription = "Back arrow",
+            Black,
             width = 26.5.dp,
             height = 14.5.dp,
             xOffset = 0,
@@ -590,9 +618,10 @@ fun BackArrowHeader(backArrowClicked: () -> Unit, settingsButtonClicked: () -> U
             0,
             6
         )
-        AnImage(
+        AnImageWithColor(
             id = R.drawable.star_1,
             contentDescription = "Settings",
+            Black,
             32.86.dp,
             32.86.dp,
             xOffset = 0,
@@ -624,9 +653,10 @@ fun ProfilePictureHeader(profilePictureClicked: () -> Unit, settingsButtonClicke
             0,
             6
         )
-        AnImage(
+        AnImageWithColor(
             id = R.drawable.star_1,
             contentDescription = "Settings",
+            Black,
             32.86.dp,
             32.86.dp,
             xOffset = 0,
@@ -655,9 +685,10 @@ fun LogoAndStarHeader(settingsButtonClicked: () -> Unit){
         Column(
             modifier = Modifier.rotate(45F)
         ){
-            AnImage(
+            AnImageWithColor(
                 id = R.drawable.star_1,
                 contentDescription = "Settings",
+                Black,
                 32.86.dp,
                 32.86.dp,
                 xOffset = 0,
@@ -678,7 +709,7 @@ fun EmptyRoutine(lambda: () -> Unit){
             .clickable { lambda() }
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
-        backgroundColor = emptyRoutineBackground,
+        backgroundColor = PeriwinkleGray,
         elevation = 8.dp
     ){
         ConstraintLayout(
@@ -768,7 +799,7 @@ fun SurpriseMeRoutine(lambda: () -> Unit){
             .clickable { lambda() }
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
-        backgroundColor = surpriseMeRoutineBackground,
+        backgroundColor = SwansDown,
         elevation = 8.dp
     ){
         ConstraintLayout(
@@ -857,7 +888,7 @@ fun Article(title: String, summary: String, icon: Int, lambda: () -> Unit){
             .clickable { lambda() }
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
-        backgroundColor = ArticleBackground,
+        backgroundColor = Pampas,
         elevation = 8.dp
     ) {
         ConstraintLayout(

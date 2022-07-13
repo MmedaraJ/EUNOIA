@@ -1,4 +1,4 @@
-package com.example.eunoia.dashboard
+package com.example.eunoia.dashboard.article
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column

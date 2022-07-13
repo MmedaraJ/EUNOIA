@@ -18,26 +18,42 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.eunoia.dashboard.ArticleUI
+import com.example.eunoia.dashboard.article.ArticleUI
 import com.example.eunoia.dashboard.home.UserDashboardActivityUI
 import com.example.eunoia.dashboard.sound.SoundScreen
 import com.example.eunoia.dashboard.sound.SoundActivityUI
 import com.example.eunoia.feedback.FeedbackUI
 import com.example.eunoia.pricing.PricingUI
 import com.example.eunoia.settings.Settings
-import com.example.eunoia.ui.theme.Grey
 import com.example.eunoia.ui.screens.Screen
-import com.example.eunoia.ui.theme.EUNOIATheme
+import com.example.eunoia.viewModels.GlobalViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.eunoia.ui.bottomSheets.BottomSheetAllControls
+import com.example.eunoia.ui.theme.*
+import kotlinx.coroutines.CoroutineScope
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MultiBottomNavApp() {
-    EunoiaApp {
-        MultiNavTabContent(screen = it)
+fun MultiBottomNavApp(globalViewModel: GlobalViewModel = viewModel()) {
+    val modalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    EunoiaApp(globalViewModel, scope, modalBottomSheetState) {screen ->
+        MultiNavTabContent(
+            screen = screen,
+            globalViewModel,
+            scope, modalBottomSheetState
+        )
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun EunoiaApp(bodyContent: @Composable (Screen) -> Unit){
+fun EunoiaApp(
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+    bodyContent: @Composable (Screen) -> Unit
+){
     var currentTab by rememberSaveable(
         saver = screenSaver()
     ) {
@@ -48,64 +64,83 @@ fun EunoiaApp(bodyContent: @Composable (Screen) -> Unit){
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ){
-            Scaffold(
-                content = {padding ->
-                    Column(modifier = Modifier.padding(padding)) {
-                        bodyContent(currentTab)
+            ModalBottomSheetLayout(
+                sheetContent = {
+                    Box(modifier = Modifier.defaultMinSize(minHeight = 1.dp)) {
+                        BottomSheetAllControls(globalViewModel = globalViewModel)
                     }
                 },
-                bottomBar = {
-                    val items = listOf(
-                        Screen.Dashboard,
-                        Screen.Routines,
-                        Screen.Search,
-                        Screen.Feedback,
-                        Screen.Account
-                    )
-                    BottomNavigation(
-                        backgroundColor = MaterialTheme.colors.background,
-                        contentColor = MaterialTheme.colors.primary,
-                        modifier = Modifier.height(height = 50.dp)
-                    ) {
-                        /*val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val currentRoute = navBackStackEntry?.destination?.route*/
-                        items.forEach { item ->
-                            BottomNavigationItem(
-                                icon = {
-                                    Icon(
-                                        painterResource(id = item.icon),
-                                        contentDescription = item.title,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                },
-                                selectedContentColor = Color.Black,
-                                unselectedContentColor = Grey,
-                                alwaysShowLabel = true,
-                                selected = currentTab == item,
-                                onClick = {
-                                    currentTab = item
-                                    /*navController.navigate(item.screen_route) {
-                                        navController.graph.startDestinationRoute?.let { screen_route ->
-                                            popUpTo(item.screen_route) {
-                                                saveState = true
+                sheetState = state,
+                sheetBackgroundColor = OldLace
+            ) {
+                Scaffold(
+                    content = {padding ->
+                        Column(modifier = Modifier.padding(padding)) {
+                            bodyContent(currentTab)
+                        }
+                    },/*
+                drawerContent = {
+                    Settings(navController = rememberNavController(), globalViewModel)
+                },*/
+                    bottomBar = {
+                        val items = listOf(
+                            Screen.Dashboard,
+                            Screen.Routines,
+                            Screen.Search,
+                            Screen.Feedback,
+                            Screen.Account
+                        )
+                        BottomNavigation(
+                            backgroundColor = MaterialTheme.colors.background,
+                            contentColor = MaterialTheme.colors.primary,
+                            modifier = Modifier.height(height = 50.dp)
+                        ) {
+                            /*val navBackStackEntry by navController.currentBackStackEntryAsState()
+                            val currentRoute = navBackStackEntry?.destination?.route*/
+                            items.forEach { item ->
+                                BottomNavigationItem(
+                                    icon = {
+                                        Icon(
+                                            painterResource(id = item.icon),
+                                            contentDescription = item.title,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    },
+                                    selectedContentColor = Color.Black,
+                                    unselectedContentColor = Grey,
+                                    alwaysShowLabel = true,
+                                    selected = currentTab == item,
+                                    onClick = {
+                                        currentTab = item
+                                        /*navController.navigate(item.screen_route) {
+                                            navController.graph.startDestinationRoute?.let { screen_route ->
+                                                popUpTo(item.screen_route) {
+                                                    saveState = true
+                                                }
                                             }
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }*/
-                                },
-                                modifier = Modifier.size(50.dp)
-                            )
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }*/
+                                    },
+                                    modifier = Modifier.size(50.dp)
+                                )
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MultiNavTabContent(screen: Screen) {
+fun MultiNavTabContent(
+    screen: Screen,
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+) {
     val dashboardNavState = rememberSaveable(
         saver = navStateSaver()
     ) { mutableStateOf(Bundle()) }
@@ -122,17 +157,23 @@ fun MultiNavTabContent(screen: Screen) {
         saver = navStateSaver()
     ) { mutableStateOf(Bundle()) }
     when (screen) {
-        Screen.Dashboard -> DashboardTab(dashboardNavState)
-        Screen.Routines -> RoutinesTab(routinesNavState)
-        Screen.Search -> SearchTab(searchNavState)
-        Screen.Feedback -> FeedbackTab(feedbackNavState)
-        Screen.Account -> AccountTab(accountNavState)
-        else -> DashboardTab(dashboardNavState)
+        Screen.Dashboard -> DashboardTab(dashboardNavState, globalViewModel, scope, state)
+        Screen.Routines -> RoutinesTab(routinesNavState, globalViewModel, scope, state)
+        Screen.Search -> SearchTab(searchNavState, globalViewModel, scope, state)
+        Screen.Feedback -> FeedbackTab(feedbackNavState, globalViewModel, scope, state)
+        Screen.Account -> AccountTab(accountNavState, globalViewModel, scope, state)
+        else -> DashboardTab(dashboardNavState, globalViewModel, scope, state)
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DashboardTab(navState: MutableState<Bundle>) {
+fun DashboardTab(
+    navState: MutableState<Bundle>,
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+) {
     val navController = rememberNavController()
 
     DisposableEffect(Unit) {
@@ -158,13 +199,13 @@ fun DashboardTab(navState: MutableState<Bundle>) {
             Screen.Dashboard.screen_route
         ) {
             Log.i("Dashboard", "You are now on the Dashboard tab")
-            UserDashboardActivityUI(navController)
+            UserDashboardActivityUI(navController, globalViewModel)
         }
         composable(
             Screen.Sound.screen_route
         ) {
             Log.i("User", "You are now on the User tab")
-            SoundActivityUI(navController, LocalContext.current)
+            SoundActivityUI(navController, LocalContext.current, scope, state)
         }
         composable(
             "${Screen.SoundScreen.screen_route}/{display_name}",
@@ -172,21 +213,27 @@ fun DashboardTab(navState: MutableState<Bundle>) {
         ) { backStackEntry ->
             Log.i("Pouring Rain", "You are now on the Pouring Rain tab")
             backStackEntry.arguments?.getString("display_name")
-                ?.let { SoundScreen(navController, it, LocalContext.current) }
+                ?.let { SoundScreen(navController, it, LocalContext.current, globalViewModel, scope, state) }
         }
         composable(Screen.Settings.screen_route) {
             Log.i("Settings", "You are now on the Settings tab")
-            Settings(navController)
+            Settings(navController, globalViewModel)
         }
         composable(Screen.Article.screen_route) {
             Log.i("Article", "You are now on the Article tab")
-            ArticleUI(navController)
+            ArticleUI(navController, globalViewModel)
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RoutinesTab(navState: MutableState<Bundle>) {
+fun RoutinesTab(
+    navState: MutableState<Bundle>,
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+) {
     val navController = rememberNavController()
 
     DisposableEffect(Unit) {
@@ -215,8 +262,14 @@ fun RoutinesTab(navState: MutableState<Bundle>) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SearchTab(navState: MutableState<Bundle>) {
+fun SearchTab(
+    navState: MutableState<Bundle>,
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+) {
     val navController = rememberNavController()
 
     DisposableEffect(Unit) {
@@ -245,8 +298,14 @@ fun SearchTab(navState: MutableState<Bundle>) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FeedbackTab(navState: MutableState<Bundle>) {
+fun FeedbackTab(
+    navState: MutableState<Bundle>,
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+) {
     val navController = rememberNavController()
 
     DisposableEffect(Unit) {
@@ -270,17 +329,23 @@ fun FeedbackTab(navState: MutableState<Bundle>) {
     ) {
         composable(Screen.Feedback.screen_route) {
             Log.i("Feedback", "You are now on the Feedback tab")
-            FeedbackUI(navController = navController, context = LocalContext.current)
+            FeedbackUI(navController = navController, context = LocalContext.current, globalViewModel)
         }
         composable(Screen.Settings.screen_route) {
             Log.i("Settings", "You are now on the Settings tab")
-            Settings(navController)
+            Settings(navController, globalViewModel)
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AccountTab(navState: MutableState<Bundle>) {
+fun AccountTab(
+    navState: MutableState<Bundle>,
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+) {
     val navController = rememberNavController()
 
     DisposableEffect(Unit) {
@@ -304,11 +369,11 @@ fun AccountTab(navState: MutableState<Bundle>) {
     ) {
         composable(Screen.Account.screen_route) {
             Log.i("Account", "You are now on the Account tab")
-            PricingUI(navController = navController)
+            PricingUI(navController = navController, globalViewModel)
         }
         composable(Screen.Settings.screen_route) {
             Log.i("Settings", "You are now on the Settings tab")
-            Settings(navController)
+            Settings(navController, globalViewModel)
         }
     }
 }

@@ -21,6 +21,8 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
+import kotlinx.parcelize.Parcelize;
+
 /** This is an auto generated class representing the SoundData type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "SoundData", authRules = {

@@ -28,7 +28,6 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.dashboard.home.UserDashboardActivity
-import com.example.eunoia.dashboard.sound.scope
 import com.example.eunoia.dashboard.upload_files.UploadFilesActivity
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.theme.Blue

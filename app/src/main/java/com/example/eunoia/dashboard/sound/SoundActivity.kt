@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -11,20 +13,29 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.R
 import com.example.eunoia.dashboard.home.*
+import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
+import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.*
 
 private const val TAG = "Sound Activity"
-val scope = CoroutineScope(Job() + Dispatchers.Main)
+//val scope = CoroutineScope(Job() + Dispatchers.Main)
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SoundActivityUI(navController: NavController, context: Context) {
+fun SoundActivityUI(
+    navController: NavController,
+    context: Context,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+) {
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -49,7 +60,13 @@ fun SoundActivityUI(navController: NavController, context: Context) {
                 }
                 .fillMaxWidth()
         ){
-            BackArrowHeader({navController.popBackStack()}, {navController.navigate(Screen.Settings.screen_route)})
+            BackArrowHeader(
+                {navController.popBackStack()},
+                {
+                    openBottomSheet(scope, state)
+                    //navController.navigate(Screen.Settings.screen_route)
+                }
+            )
         }
         Column(
             modifier = Modifier
@@ -198,7 +215,8 @@ private fun something(){
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        SoundActivityUI(rememberNavController(), LocalContext.current)
+        //SoundActivityUI(rememberNavController(), LocalContext.current, globalViewModel)
     }
 }

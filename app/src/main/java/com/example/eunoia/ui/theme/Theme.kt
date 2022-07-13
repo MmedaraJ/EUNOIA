@@ -7,10 +7,10 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val DarkColorPalette = darkColors(
-    primary = background,
+    primary = OldLace,
     primaryVariant = White,
-    secondary = ButtonColor,
-    background = darkModeBackground,
+    secondary = PeriwinkleGray,
+    background = MineShaft,
     onPrimary = Black,
     error = Red,
 )
@@ -18,8 +18,8 @@ private val DarkColorPalette = darkColors(
 private val LightColorPalette = lightColors(
     primary = Black,
     primaryVariant = White,
-    secondary = ButtonColor,
-    background = background,
+    secondary = PeriwinkleGray,
+    background = OldLace,
     onPrimary = Black,
     error = Red,
 

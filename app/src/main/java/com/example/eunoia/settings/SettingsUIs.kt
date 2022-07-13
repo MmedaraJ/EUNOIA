@@ -27,7 +27,7 @@ fun SettingsBlockOne(){
             .wrapContentHeight(),
         shape = MaterialTheme.shapes.small,
         elevation = 0.dp,
-        backgroundColor = SettingsBlockBackground
+        backgroundColor = PotPourri
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -296,7 +296,7 @@ fun SettingsBlockTwo(){
             .wrapContentHeight(),
         shape = MaterialTheme.shapes.small,
         elevation = 0.dp,
-        backgroundColor = SettingsBlockBackground
+        backgroundColor = PotPourri
     ) {
         ConstraintLayout(
             modifier = Modifier
@@ -411,7 +411,7 @@ fun SettingsBlockThree(){
             .wrapContentHeight(),
         shape = MaterialTheme.shapes.small,
         elevation = 0.dp,
-        backgroundColor = SettingsBlockBackground
+        backgroundColor = PotPourri
     ) {
         ConstraintLayout(
             modifier = Modifier

@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.ui.components.AlignedLightText
@@ -17,9 +18,10 @@ import com.example.eunoia.ui.components.AlignedNormalText
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
+import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
-fun PricingUI(navController: NavController){
+fun PricingUI(navController: NavController, globalViewModel: GlobalViewModel){
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -176,7 +178,8 @@ fun PricingUI(navController: NavController){
 )
 @Composable
 fun Preview() {
+    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        PricingUI(rememberNavController())
+        PricingUI(rememberNavController(), globalViewModel)
     }
 }

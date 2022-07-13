@@ -40,7 +40,7 @@ fun RatingBar(modifier: Modifier = Modifier, rating: Int){
                         ratingState = i
                         Log.i("Rating", ratingState.toString())
                     },
-                tint = if (i <= ratingState) ratingStarSelected else ratingStarUnselected
+                tint = if (i <= ratingState) WePeep else SoftPeach
             )
         }
     }
@@ -67,7 +67,7 @@ fun TextFeedback(text: String, lambda: () -> Unit){
     Card(
         modifier = cardModifier,
         shape = MaterialTheme.shapes.small,
-        backgroundColor = textRatingBackground,
+        backgroundColor = WePeep,
         elevation = 2.dp,
     ){
         ConstraintLayout(
@@ -102,8 +102,7 @@ fun TextFeedback(text: String, lambda: () -> Unit){
 
 @Composable
 fun AllTextRatings(){
-    ConstraintLayout(
-    ) {
+    ConstraintLayout {
         val (
             rating1,
             rating2,
@@ -202,7 +201,7 @@ fun DropdownMenu(){
         ){
             Column(
                 modifier = Modifier
-                    .background(RatingDropdownBackground)
+                    .background(SoftPeach)
             ){
                 if(selectedIndex > -1){
                     Row(
@@ -217,7 +216,7 @@ fun DropdownMenu(){
                     ){
                         NormalText(
                             text = topics[selectedIndex],
-                            color = RatingDropdownText,
+                            color = BeautyBush,
                             fontSize = 15,
                             xOffset = 0,
                             yOffset = 0
@@ -244,7 +243,7 @@ fun DropdownMenu(){
                     ){
                         LightText(
                             "Select a topic",
-                            color = RatingDropdownText,
+                            color = BeautyBush,
                             fontSize = 15,
                             xOffset = 0,
                             yOffset = 0
@@ -266,7 +265,7 @@ fun DropdownMenu(){
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .fillMaxWidth()
-                .background(RatingDropdownBackground)
+                .background(SoftPeach)
                 .constrainAs(dropdown) {
                     top.linkTo(select.bottom, margin = 0.dp)
                     start.linkTo(parent.start, margin = 0.dp)
@@ -283,7 +282,7 @@ fun DropdownMenu(){
                 ) {
                     NormalText(
                         text = s,
-                        color = RatingDropdownText,
+                        color = BeautyBush,
                         fontSize = 15,
                         xOffset = 0,
                         yOffset = 0
@@ -306,7 +305,7 @@ fun Email(){
         ) = createRefs()
         Column(
             modifier = Modifier.constrainAs(line){
-                top.linkTo(email.bottom, margin = -10.dp)
+                top.linkTo(email.bottom, margin = -(10).dp)
                 start.linkTo(parent.start, margin = 0.dp)
                 end.linkTo(parent.end, margin = 0.dp)
             }

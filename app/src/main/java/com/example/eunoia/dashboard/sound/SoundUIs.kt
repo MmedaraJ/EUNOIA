@@ -32,14 +32,13 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.CommentData
 import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
 import com.example.eunoia.backend.CommentBackend
-import com.example.eunoia.backend.PresetBackend
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
@@ -56,14 +55,13 @@ private val meditationBellInterval = mutableStateOf(0)
 private val timerTime = mutableStateOf(0L)
 private val meditationBellMediaPlayer = MutableLiveData<MediaPlayer>()
 private var numCounters = 0
-var displayName = mutableStateOf("")
+var displayName = ""
 
 @Composable
 fun Mixer(
     sound: SoundData,
     context: Context,
-    preset: PresetData,
-    sliderPositions: Array<MutableState<Float>?>,
+    preset: PresetData
 ){
     Card(
         modifier = Modifier
@@ -77,7 +75,7 @@ fun Mixer(
             modifier = Modifier
                 .background(
                     brush = Brush.radialGradient(
-                        colors = listOf(MixerBackground1, MixerBackground2),
+                        colors = listOf(Snuff, SoftPeach),
                         center = Offset.Unspecified,
                         radius = Float.POSITIVE_INFINITY,
                         tileMode = TileMode.Clamp
@@ -129,7 +127,9 @@ fun Mixer(
                                 end.linkTo(parent.end, margin = 16.dp)
                             }
                     ) {
-                        displayName.value = standardCentralizedOutlinedTextInput(sound.displayName, MixerBackground2)
+                        displayName = standardCentralizedOutlinedTextInput(sound.displayName,
+                            SoftPeach
+                        )
                     }
                     Column(
                         modifier = Modifier
@@ -158,7 +158,7 @@ fun Mixer(
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ) {
-                Sliders(sound, sliderPositions)
+                Sliders(sound)
             }
             Column(
                 modifier = Modifier
@@ -169,29 +169,29 @@ fun Mixer(
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                     }
             ) {
-                Controls(sound, preset, context, sliderPositions)
+                Controls(sound, preset, context, true)
             }
         }
     }
 }
 
 @Composable
-fun Sliders(sound: SoundData, sliderPositions: Array<MutableState<Float>?>){
+fun Sliders(sound: SoundData){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
         val colors = arrayOf(
-            Mixer1,
-            Mixer2,
-            Mixer3,
-            Mixer4,
-            Mixer5,
-            Mixer6,
-            Mixer7,
-            Mixer8,
-            Mixer9,
-            Mixer10,
+            GoldSand,
+            JungleMist,
+            PeriwinkleGray,
+            BeautyBush,
+            WaikawaGray,
+            Madang,
+            SeaPink,
+            Twine,
+            DoveGray,
+            Neptune,
         )
         val labels = arrayOf(
             sound.audioNames[0],
@@ -205,7 +205,7 @@ fun Sliders(sound: SoundData, sliderPositions: Array<MutableState<Float>?>){
             sound.audioNames[8],
             sound.audioNames[9],
         )
-        sliderPositions.forEachIndexed {index, sliderPosition ->
+        globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed {index, sliderPosition ->
             ConstraintLayout(
                 modifier = Modifier.size(32.dp, 200.dp)
             ) {
@@ -233,8 +233,8 @@ fun Sliders(sound: SoundData, sliderPositions: Array<MutableState<Float>?>){
                             valueRange = 0f..10f,
                             onValueChange = {
                                 //sound.currentVolumes[index] = it.toInt()
-                                sliderPositions[index]!!.value = it
-                                adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
+                                globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value = it
+                                adjustMediaPlayerVolumes(mediaPlayers, index)
                             },
                             steps = 10,
                             onValueChangeFinished = { Log.i(TAG, "Value Changed") },
@@ -289,7 +289,7 @@ fun Sliders(sound: SoundData, sliderPositions: Array<MutableState<Float>?>){
                 ) {
                     NormalText(
                         text = labels[index],
-                        color = com.example.eunoia.ui.theme.Black,
+                        color = Black,
                         fontSize = 5,
                         xOffset = 0,
                         yOffset = 0
@@ -305,37 +305,39 @@ fun Controls(
     sound: SoundData,
     preset: PresetData,
     applicationContext: Context,
-    sliderPositions: Array<MutableState<Float>?>
+    showAddIcon: Boolean
 ){
-    var uris = remember{mutableListOf<Uri>()}
+    val uris = remember{mutableListOf<Uri>()}
     createMeditationBellMediaPlayer(applicationContext)
-    retrieveAudioUris(sound, uris)
+    retrieveAudioUris(uris, sound)
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        val icons = arrayOf(
-            R.drawable.replay_sound_icon,
-            R.drawable.reset_sliders_icon,
-            R.drawable.sound_timer_icon,
-            R.drawable.play_icon,
-            R.drawable.increase_levels_icon,
-            R.drawable.decrease_levels_icon,
-            R.drawable.meditation_bell_icon,
-        )
-        val addIcon = R.drawable.add_sound_icon
-        icons.forEachIndexed { index, icon ->
+        globalViewModel_!!.icons.forEachIndexed { index, icon ->
             Box(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
-                    .gradientBackground(listOf(Control1, Control2), angle = 45f)
-                    .border(BorderStroke(0.5.dp, Color.Black), RoundedCornerShape(50.dp)),
+                    .gradientBackground(
+                        listOf(
+                            globalViewModel_!!.backgroundControlColor1[index].value,
+                            globalViewModel_!!.backgroundControlColor2[index].value
+                        ),
+                        angle = 45f
+                    )
+                    .border(
+                        BorderStroke(
+                            0.5.dp,
+                            globalViewModel_!!.borderControlColors[index].value),
+                        RoundedCornerShape(50.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                AnImage(
-                    icon,
+                AnImageWithColor(
+                    icon.value,
                     "icon",
+                    globalViewModel_!!.borderControlColors[index].value,
                     12.dp,
                     12.dp,
                     0,
@@ -348,28 +350,30 @@ fun Controls(
                             index,
                             uris.subList(0, 10),
                             applicationContext,
-                            sliderPositions,
                             mediaPlayers
                         )
                     }
                 }
             }
         }
-        Box(
-            modifier = Modifier
-                .size(24.dp)
-                .clip(CircleShape)
-                .background(Black),
-            contentAlignment = Alignment.Center
-        ) {
-            AnImage(
-                addIcon,
-                "icon",
-                10.dp,
-                10.dp,
-                0,
-                0
-            ) {}
+        if(showAddIcon) {
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .background(globalViewModel_!!.borderControlColors[7].value),
+                contentAlignment = Alignment.Center
+            ) {
+                AnImageWithColor(
+                    globalViewModel_!!.addIcon.value,
+                    "icon",
+                    White,
+                    10.dp,
+                    10.dp,
+                    0,
+                    0
+                ) {}
+            }
         }
     }
 }
@@ -381,7 +385,10 @@ fun createMeditationBellMediaPlayer(context: Context){
     )
 }
 
-fun retrieveAudioUris(sound: SoundData, uris: MutableList<Uri>){
+fun retrieveAudioUris(
+    uris: MutableList<Uri>,
+    sound: SoundData
+){
     if(uris.size == 0) {
         SoundBackend.listEunoiaSounds(sound.audioKeyS3) { result ->
             result.items.forEach { item ->
@@ -389,6 +396,7 @@ fun retrieveAudioUris(sound: SoundData, uris: MutableList<Uri>){
                     uris.add(audioUri)
                 }
             }
+            globalViewModel_!!.currentSoundPlayingUris = uris
         }
     }
 }
@@ -396,10 +404,11 @@ fun retrieveAudioUris(sound: SoundData, uris: MutableList<Uri>){
 fun playTenSounds(
     tenSounds: MutableList<Uri>,
     applicationContext: Context,
-    sliderPositions: Array<MutableState<Float>?>,
-    mediaPlayers: MutableList<MediaPlayer>){
-    if(mediaPlayers.size == 0) {
-        tenSounds.forEachIndexed { index, audioUri ->
+    mediaPlayers: MutableList<MediaPlayer>,
+    index: Int
+){
+    if(mediaPlayers.size == 0 && !globalViewModel_!!.isCurrentSoundPlaying) {
+        tenSounds.forEachIndexed { i, audioUri ->
             val mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
                     AudioAttributes.Builder()
@@ -408,8 +417,11 @@ fun playTenSounds(
                         .build()
                 )
                 setDataSource(applicationContext, audioUri)
-                setVolume(sliderPositions[index]!!.value/10, sliderPositions[index]!!.value/10)
-                Log.i(TAG, "New volume for player $index = ${sliderPositions[index]!!.value/10}")
+                setVolume(
+                    globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10,
+                    globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10
+                )
+                Log.i(TAG, "New volume for player $i = ${globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10}")
                 prepare()
                 start()
             }
@@ -421,24 +433,42 @@ fun playTenSounds(
         }
     }
     isPlaying.value = true
+    deActivateControlButton(index)
+    deActivateControlButton(1)
+    globalViewModel_!!.isCurrentSoundPlaying = true
     Toast.makeText(applicationContext, "Sound: playing", Toast.LENGTH_SHORT).show()
 }
 
-fun pauseTenSounds(applicationContext: Context, mediaPlayers: MutableList<MediaPlayer>){
-    if(isPlaying.value) {
+fun pauseTenSounds(
+    applicationContext: Context,
+    mediaPlayers: MutableList<MediaPlayer>,
+    index: Int
+){
+    if(isPlaying.value && globalViewModel_!!.isCurrentSoundPlaying) {
         mediaPlayers.forEach { mediaPlayer ->
             mediaPlayer.pause()
         }
         isPlaying.value = false
+        activateControlButton(index)
+        globalViewModel_!!.isCurrentSoundPlaying = false
         Toast.makeText(applicationContext, "Sound: paused", Toast.LENGTH_SHORT).show()
     }
 }
 
-fun loopTenSounds(applicationContext: Context, mediaPlayers: MutableList<MediaPlayer>){
+fun loopTenSounds(
+    applicationContext: Context,
+    mediaPlayers: MutableList<MediaPlayer>,
+    index: Int
+){
     if(mediaPlayers.size == 10) {
         isLooping.value = !isLooping.value
         mediaPlayers.forEach { mediaPlayer ->
             mediaPlayer.isLooping = isLooping.value
+        }
+        if(isLooping.value){
+            activateControlButton(index)
+        }else{
+            deActivateControlButton(index)
         }
         val loopingInfo = if(isLooping.value) "Sound: looped" else "Sound: not looped"
         Toast.makeText(applicationContext, loopingInfo, Toast.LENGTH_SHORT).show()
@@ -449,8 +479,8 @@ fun resetTenSounds(
     applicationContext: Context,
     mediaPlayers: MutableList<MediaPlayer>,
     sound: SoundData,
-    sliderPositions: Array<MutableState<Float>?>,
-    preset: PresetData
+    preset: PresetData,
+    index: Int
 ){
     if(mediaPlayers.size == 10) {
         mediaPlayers.forEach { mediaPlayer ->
@@ -458,42 +488,72 @@ fun resetTenSounds(
         }
         mediaPlayers.clear()
         isPlaying.value = false
-        resetSliders(sound, sliderPositions, preset)
-        Toast.makeText(applicationContext, "Sound: reset", Toast.LENGTH_SHORT).show()
+        globalViewModel_!!.isCurrentSoundPlaying = false
+        activateControlButton(index)
+        activateControlButton(3)
+        resetSliders(sound, preset)
     }
+}
+
+fun resetAll(applicationContext: Context){
+    mediaPlayers.forEach { mediaPlayer ->
+        mediaPlayer.reset()
+    }
+    mediaPlayers.clear()
+    isPlaying.value = false
+    isLooping.value = false
+    meditationBellInterval.value = 0
+    deActivateControlButton(0)
+    deActivateControlButton(1)
+    deActivateControlButton(2)
+    activateControlButton(3)
+    deActivateControlButton(4)
+    deActivateControlButton(5)
+    deActivateControlButton(6)
+    globalViewModel_!!.isCurrentSoundPlaying = false
+    timerTime.value = 0
+    startCountDownTimer(applicationContext, timerTime.value)
 }
 
 fun resetSliders(
     sound: SoundData,
-    sliderPositions: Array<MutableState<Float>?>,
     preset: PresetData
 ){
-    sliderPositions.forEachIndexed { index, mutableState ->
+    globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed { index, mutableState ->
         mutableState!!.value = preset.presets[1].volumes[index].toFloat()
     }
 }
 
-fun increaseSliderLevels(applicationContext: Context, sliderPositions: Array<MutableState<Float>?>){
-    sliderPositions.forEachIndexed{ index, mutableState ->
+fun increaseSliderLevels(
+    applicationContext: Context,
+    index: Int
+){
+    globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed{ index, mutableState ->
         if(mutableState!!.value < 10) {
             mutableState.value++
-            adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
+            adjustMediaPlayerVolumes(mediaPlayers, index)
         }
     }
     Toast.makeText(applicationContext, "Sound: levels increased", Toast.LENGTH_SHORT).show()
 }
 
-fun decreaseSliderLevels(applicationContext: Context, sliderPositions: Array<MutableState<Float>?>){
-    sliderPositions.forEachIndexed{ index, mutableState ->
+fun decreaseSliderLevels(
+    applicationContext: Context,
+    index: Int
+){
+    globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed{ index, mutableState ->
         if(mutableState!!.value > 0) {
             mutableState.value--
-            adjustMediaPlayerVolumes(mediaPlayers, sliderPositions, index)
+            adjustMediaPlayerVolumes(mediaPlayers, index)
         }
     }
     Toast.makeText(applicationContext, "Sound: levels decreased", Toast.LENGTH_SHORT).show()
 }
 
-fun ringMeditationBell(context: Context){
+fun ringMeditationBell(
+    context: Context,
+    index: Int
+){
     meditationBellInterval.value++
     fixedRateTimer(
         "Meditation Bell Timer",
@@ -503,12 +563,15 @@ fun ringMeditationBell(context: Context){
     ){
         Log.i(TAG, "${meditationBellInterval.value * 60000L}")
         if(meditationBellInterval.value == 0){
+            deActivateControlButton(index)
             cancel()
             Log.i(TAG, "Cancelled meditation bell timer")
         }else{
             if(meditationBellInterval.value <= 5) {
+                activateControlButton(index)
                 meditationBellMediaPlayer.value?.start()
             }else{
+                deActivateControlButton(index)
                 meditationBellInterval.value = 0
             }
         }
@@ -519,7 +582,10 @@ fun ringMeditationBell(context: Context){
     }
 }
 
-fun startCountDownTimer(context: Context, time: Long){
+fun startCountDownTimer(
+    context: Context,
+    time: Long
+){
     object : CountDownTimer(time, 10000) {
         override fun onTick(millisUntilFinished: Long) {
             Log.i(TAG, "Timer has been going for $millisUntilFinished")
@@ -532,6 +598,16 @@ fun startCountDownTimer(context: Context, time: Long){
                     }
                     //mediaPlayers.clear()
                     isPlaying.value = false
+                    isLooping.value = false
+                    meditationBellInterval.value = 0
+                    deActivateControlButton(0)
+                    deActivateControlButton(1)
+                    deActivateControlButton(2)
+                    activateControlButton(3)
+                    deActivateControlButton(4)
+                    deActivateControlButton(5)
+                    deActivateControlButton(6)
+                    globalViewModel_!!.isCurrentSoundPlaying = false
                     Toast.makeText(context, "Sound: timer stopped", Toast.LENGTH_SHORT).show()
                     Log.i(TAG, "Timer stopped")
                     timerTime.value = 0
@@ -546,22 +622,24 @@ fun changeTimerTime(
     mediaPlayers: MutableList<MediaPlayer>,
     tenSoundsURIs: MutableList<Uri>,
     applicationContext: Context,
-    sliderPositions: Array<MutableState<Float>?>
+    index: Int
 ){
     timerTime.value += 60000L
     Log.i(TAG, "Timer time set to ${timerTime.value}")
     if(timerTime.value in 60000L..300000L){
         numCounters++
+        activateControlButton(index)
         if(!isPlaying.value) {
             playTenSounds(
                 tenSoundsURIs,
                 applicationContext,
-                sliderPositions,
-                mediaPlayers
+                mediaPlayers,
+                3
             )
         }
     }else{
         timerTime.value = 0L
+        deActivateControlButton(index)
     }
     startCountDownTimer(applicationContext, timerTime.value)
     Toast.makeText(applicationContext, "Sound: timer set to ${timerTime.value}", Toast.LENGTH_SHORT).show()
@@ -573,56 +651,87 @@ fun activateControls(
     index: Int,
     tenSoundsURIs: MutableList<Uri>,
     applicationContext: Context,
-    sliderPositions: Array<MutableState<Float>?>,
     mediaPlayers: MutableList<MediaPlayer>){
     when(index){
         0 -> loopTenSounds(
                 applicationContext,
-                mediaPlayers
+                mediaPlayers,
+                index
             )
         1 -> resetTenSounds(
                 applicationContext,
                 mediaPlayers,
                 sound,
-                sliderPositions,
-                preset
+                preset,
+                index
             )
         2 -> changeTimerTime(
                 mediaPlayers,
                 tenSoundsURIs,
                 applicationContext,
-                sliderPositions
+                index
             )
         3 -> {
             if(isPlaying.value){
                 pauseTenSounds(
                     applicationContext,
-                    mediaPlayers
+                    mediaPlayers,
+                    index
                 )
             } else {
                 playTenSounds(
                     tenSoundsURIs,
                     applicationContext,
-                    sliderPositions,
-                    mediaPlayers
+                    mediaPlayers,
+                    index
                 )
+                globalViewModel_!!.currentSoundPlaying = sound
+                globalViewModel_!!.currentSoundPlayingPreset = preset
+                globalViewModel_!!.currentSoundPlayingContext = applicationContext
             }
         }
-        4 -> increaseSliderLevels(applicationContext, sliderPositions)
-        5 -> decreaseSliderLevels(applicationContext, sliderPositions)
-        6 -> ringMeditationBell(applicationContext)
+        4 -> increaseSliderLevels(
+                applicationContext,
+                index
+            )
+        5 -> decreaseSliderLevels(
+                applicationContext,
+                index
+            )
+        6 -> ringMeditationBell(
+                applicationContext,
+                index
+            )
         7 -> ""
     }
 }
 
-fun adjustMediaPlayerVolumes(mediaPlayers: MutableList<MediaPlayer>, sliderPositions: Array<MutableState<Float>?>, index: Int){
+fun activateControlButton(index: Int){
+    globalViewModel_!!.borderControlColors[index].value = Black
+    globalViewModel_!!.backgroundControlColor1[index].value = SoftPeach
+    globalViewModel_!!.backgroundControlColor2[index].value = Solitude
+    if(index == 3){
+        globalViewModel_!!.icons[index].value = R.drawable.play_icon
+    }
+}
+
+fun deActivateControlButton(index: Int){
+    globalViewModel_!!.borderControlColors[index].value = Bizarre
+    globalViewModel_!!.backgroundControlColor1[index].value = White
+    globalViewModel_!!.backgroundControlColor2[index].value = White
+    if(index == 3){
+        globalViewModel_!!.icons[index].value = R.drawable.pause_icon
+    }
+}
+
+fun adjustMediaPlayerVolumes(mediaPlayers: MutableList<MediaPlayer>, index: Int){
     if(mediaPlayers.size>0) {
         Log.i(TAG, "Adjusting volumes")
         mediaPlayers[index].setVolume(
-            sliderPositions[index]!!.value / 10,
-            sliderPositions[index]!!.value / 10
+            globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value / 10,
+            globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value / 10
         )
-        Log.i(TAG, "New volume for player $index = ${sliderPositions[index]!!.value / 10}")
+        Log.i(TAG, "New volume for player $index = ${globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value / 10}")
     }
 }
 
@@ -665,7 +774,7 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
             }
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
-        backgroundColor = ControlPanelManualBackground,
+        backgroundColor = BeautyBush,
         elevation = 8.dp
     ){
         ConstraintLayout(
@@ -696,7 +805,7 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                 }else{
                     NormalText(
                         text = "[how to generate Noise Control panel]",
-                        color = ControlPanelManualBackground,
+                        color = BeautyBush,
                         fontSize = 16,
                         xOffset = 0,
                         yOffset = 0
@@ -723,7 +832,7 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                     ExtraLightText(
                         text = "Noise Control panel allows you to create your own white noise and adjust " +
                                 "selected white noise to your taste.",
-                        color = ControlPanelManualBackground,
+                        color = BeautyBush,
                         fontSize = 10,
                         xOffset = 0,
                         yOffset = 0
@@ -751,7 +860,7 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                     AlignedLightText(
                         text = "Each slider controls a particular frequency band, from the lowest to the" +
                                 " highest frequency. Adjust sliders to taste.",
-                        color = ControlPanelManualBackground,
+                        color = BeautyBush,
                         fontSize = 13,
                         xOffset = 0,
                         yOffset = 0
@@ -781,7 +890,7 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                         text = "To mask undesirable noises, focus on bands sharing the same tone as the " +
                                 "noise you want to cover. Doing so achieves a higher efficiency, and quieter " +
                                 "masking noise levels.",
-                        color = ControlPanelManualBackground,
+                        color = BeautyBush,
                         fontSize = 13,
                         xOffset = 0,
                         yOffset = 0
@@ -856,7 +965,7 @@ fun Tip(){
             .wrapContentHeight()
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
-        backgroundColor = TipBackground,
+        backgroundColor = Peach,
         elevation = 8.dp
     ){
         ConstraintLayout(
@@ -921,20 +1030,24 @@ fun Tip(){
 }
 
 @Composable
-fun CommentsForSound(sounds: List<SoundData>, completed: (soundData: SoundData) -> Unit){
+fun CommentsForSound(
+    sounds: MutableList<SoundData>,
+    currentSound: SoundData,
+    navController: NavController,
+    context: Context
+){
     for(sound in sounds){
-        var soundComment: CommentData? by rememberSaveable{ mutableStateOf(null) }
+        var soundComment by remember{ mutableStateOf<CommentData?>(null) }
         Log.i(TAG, "Comments for sound -> $sound")
-        //if(sound.comment != null /*&& sound.currentOwner != UserObject.signedInUser().value!!.data*/){
         getSoundComment(sound){
             soundComment = it
         }
-        if(soundComment != null /*&& sound.currentOwner != UserObject.signedInUser().value!!.data*/) {
-            OtherUsersCommentsUI(sound = sound, soundComment!!) {
-                completed(sound)
-            }
+        if(
+            soundComment != null &&
+            sound != currentSound /*&&
+            sound.currentOwner != UserObject.signedInUser().value!!.data*/) {
+            OtherUsersCommentsUI(sound = sound, soundComment!!, navController, context)
         }
-        //}
     }
 }
 
@@ -945,14 +1058,21 @@ fun getSoundComment(sound: SoundData, completed: (commentData: CommentData) -> U
 }
 
 @Composable
-fun OtherUsersCommentsUI(sound: SoundData, comment: CommentData, lambda: (soundData: SoundData) -> Unit){
+fun OtherUsersCommentsUI(
+    sound: SoundData,
+    comment: CommentData,
+    navController: NavController,
+    context: Context
+){
     var clicked by rememberSaveable{ mutableStateOf(false) }
     var cardModifier = Modifier
         .padding(bottom = 16.dp)
         .wrapContentHeight()
         .clickable {
             clicked = !clicked
-            lambda(sound)
+            resetAll(context)
+            Log.i(TAG, "Navigate to ${Screen.SoundScreen.screen_route}/${sound.displayName}")
+            navController.navigate("${Screen.SoundScreen.screen_route}/${sound.displayName}")
         }
         .fillMaxWidth()
 
@@ -970,7 +1090,7 @@ fun OtherUsersCommentsUI(sound: SoundData, comment: CommentData, lambda: (soundD
         Card(
             modifier = cardModifier,
             shape = MaterialTheme.shapes.small,
-            backgroundColor = OtherUsersFeedbackBackground,
+            backgroundColor = Snuff,
             elevation = 8.dp,
         ) {
             ConstraintLayout(

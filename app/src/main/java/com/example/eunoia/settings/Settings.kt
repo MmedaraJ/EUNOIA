@@ -19,14 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
-fun Settings(navController: NavController){
+fun Settings(navController: NavController, globalViewModel: GlobalViewModel){
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -117,7 +119,7 @@ fun Settings(navController: NavController){
             modifier = Modifier
                 .size(46.dp)
                 .clip(CircleShape)
-                .background(SettingsEditBackground)
+                .background(SwansDown)
                 .border(BorderStroke(0.5.dp, Color.Black), RoundedCornerShape(50.dp))
                 .constrainAs(edit) {
                     top.linkTo(username.bottom, margin = (-10).dp)
@@ -193,7 +195,7 @@ fun OtherUsersFeedback(text: String, lambda: () -> Unit){
     Card(
         modifier = cardModifier,
         shape = MaterialTheme.shapes.small,
-        backgroundColor = createNewSlumberPartyBackground,
+        backgroundColor = GoldSand,
         elevation = 4.dp,
     ){
         ConstraintLayout(
@@ -232,7 +234,8 @@ fun OtherUsersFeedback(text: String, lambda: () -> Unit){
 )
 @Composable
 fun Preview() {
+    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        Settings(rememberNavController())
+        Settings(rememberNavController(), globalViewModel)
     }
 }
