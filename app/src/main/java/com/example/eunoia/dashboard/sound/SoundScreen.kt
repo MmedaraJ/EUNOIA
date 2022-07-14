@@ -2,7 +2,6 @@ package com.example.eunoia.dashboard.sound
 
 import android.content.Context
 import android.content.res.Configuration
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -13,21 +12,20 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.SoundData
+import com.example.eunoia.R
 import com.example.eunoia.backend.*
-import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.*
-import com.example.eunoia.mvvm.commentMvvm.model.CommentModel
-import com.example.eunoia.mvvm.presetMvvm.model.PresetModel
-import com.example.eunoia.mvvm.soundMvvm.model.SoundModel
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.screens.Screen
@@ -35,14 +33,14 @@ import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.math.max
 
 private const val TAG = "SoundScreen"
-private val comment = mutableStateOf("")
-var uris: MutableList<Uri>? = null
 var itSize = 0
 var globalViewModel_: GlobalViewModel? = null
+var showCommentBox by mutableStateOf(false)
+var comment_icon_value by mutableStateOf(R.drawable.comment_icon)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -55,15 +53,13 @@ fun SoundScreen(
     state: ModalBottomSheetState
 ){
     globalViewModel_ = globalViewModel
-    //globalViewModel.currentSoundPlayingContext = context
     var sound by remember{ mutableStateOf<SoundData?>(null) }
     var soundPreset by remember{ mutableStateOf<PresetData?>(null) }
-    SoundBackend.querySoundBasedOnDisplayName(soundDisplayName, LocalContext.current){
+    SoundBackend.querySoundBasedOnDisplayName(soundDisplayName){
         sound = it
-        //globalViewModel.changeCurrentSoundPlaying(sound)
         getSoundPresets(sound!!){presetData ->
             soundPreset = presetData
-            //globalViewModel.changeCurrentSoundPlayingPreset(presetData)
+            globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = soundPreset!!.presets[1]
         }
     }
     if(sound == null || soundPreset == null){
@@ -98,7 +94,9 @@ fun SoundScreen(
                 header,
                 mixer,
                 manual,
+                presetsUI,
                 word_of_mouth_text,
+                comment_icon,
                 user_comment,
                 tip,
                 other_user_feedback,
@@ -139,34 +137,59 @@ fun SoundScreen(
                         top.linkTo(header.bottom, margin = 50.dp)
                     }
             ) {
-                Log.i(TAG, "Volumes0 == ${soundPreset?.presets!!}")
-                Log.i(TAG, "Volumes1 == ${soundPreset!!}")
-                Log.i(TAG, "Volumes2 == $sound")
-                globalViewModel_!!.currentSoundPlayingSliderPositions = arrayOf(
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(0)?.let { mutableStateOf(it.toFloat()) } },
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(1)?.let { mutableStateOf(it.toFloat()) } },
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(2)?.let { mutableStateOf(it.toFloat()) } },
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(3)?.let { mutableStateOf(it.toFloat()) } },
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(4)?.let { mutableStateOf(it.toFloat()) } },
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(5)?.let { mutableStateOf(it.toFloat()) } },
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(6)?.let { mutableStateOf(it.toFloat()) } },
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(7)?.let { mutableStateOf(it.toFloat()) } },
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(8)?.let { mutableStateOf(it.toFloat()) } },
-                    remember { soundPreset?.presets?.get(1)?.volumes?.get(9)?.let { mutableStateOf(it.toFloat()) } },
-                )
+                val volumes = soundPreset?.presets?.get(1)?.volumes!!
+                globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
+                for(volume in volumes){
+                    globalViewModel_!!.currentSoundPlayingSliderPositions.add(remember{ mutableStateOf(volume.toFloat()) })
+                }
                 sound?.let {
                     Mixer(it, context, soundPreset!!)
+                }
+            }
+            SimpleFlowRow(
+                verticalGap = 8.dp,
+                horizontalGap = 8.dp,
+                alignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .constrainAs(presetsUI) {
+                        top.linkTo(manual.bottom, margin = 0.dp)
+                        start.linkTo(parent.start, margin = 0.dp)
+                        end.linkTo(parent.end, margin = 0.dp)
+                    },
+            ) {
+                for(presets in soundPreset?.presets!!){
+                    PresetsUI(sound!!, soundPreset!!, presets, context)
                 }
             }
             Column(
                 modifier = Modifier
                     .constrainAs(word_of_mouth_text) {
-                        top.linkTo(manual.bottom, margin = 0.dp)
+                        top.linkTo(presetsUI.bottom, margin = 8.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ){
                 StarSurroundedText("Word-of-mouth")
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(comment_icon) {
+                        top.linkTo(word_of_mouth_text.top, margin = 0.dp)
+                        bottom.linkTo(word_of_mouth_text.bottom, margin = 0.dp)
+                        end.linkTo(parent.end, margin = 4.dp)
+                    }
+            ){
+                AnImage(
+                    comment_icon_value,
+                    "comment icon",
+                    16.76.dp,
+                    16.79.dp,
+                    0,
+                    0
+                ) {
+                    showCommentBox = false
+                    checkIfUserIsQualifiedToComment(sound!!, soundPreset!!, context)
+                }
             }
             Column(
                 modifier = Modifier
@@ -176,19 +199,21 @@ fun SoundScreen(
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ){
-                bigOutlinedTextInput(
-                    100,
-                    "Share how you feel about this sound",
-                    MaterialTheme.colors.primaryVariant,
-                    MaterialTheme.colors.onPrimary,
-                    MaterialTheme.colors.onPrimary,
-                    MaterialTheme.colors.onPrimary,
-                    Black,
-                    13
-                ) {
-                    if (it != "") {
-                        Log.i(TAG, "Comment input completed: $it")
-                        createComment(sound!!, soundPreset!!, it, context)
+                if(showCommentBox) {
+                    bigOutlinedTextInput(
+                        100,
+                        "Share how you feel about this sound",
+                        MaterialTheme.colors.primaryVariant,
+                        MaterialTheme.colors.onPrimary,
+                        MaterialTheme.colors.onPrimary,
+                        MaterialTheme.colors.onPrimary,
+                        Black,
+                        13
+                    ) {
+                        if (it != "") {
+                            Log.i(TAG, "Comment input completed: $it")
+                            makeSoundObject(sound!!, soundPreset!!, it)
+                        }
                     }
                 }
             }
@@ -230,6 +255,65 @@ fun SoundScreen(
     }
 }
 
+@Composable
+fun SimpleFlowRow(
+    modifier: Modifier = Modifier,
+    alignment: Alignment.Horizontal = Alignment.Start,
+    verticalGap: Dp = 0.dp,
+    horizontalGap: Dp = 0.dp,
+    content: @Composable () -> Unit
+) = Layout(content, modifier) { measurables, constraints ->
+    val hGapPx = horizontalGap.roundToPx()
+    val vGapPx = verticalGap.roundToPx()
+    val rows = mutableListOf<MeasuredRow>()
+    val itemConstraints = constraints.copy(minWidth = 0)
+
+    for (measurable in measurables) {
+        val lastRow = rows.lastOrNull()
+        val placeable = measurable.measure(itemConstraints)
+        if (lastRow != null && lastRow.width + hGapPx + placeable.width <= constraints.maxWidth) {
+            lastRow.items.add(placeable)
+            lastRow.width += hGapPx + placeable.width
+            lastRow.height = max(lastRow.height, placeable.height)
+        } else {
+            val nextRow = MeasuredRow(
+                items = mutableListOf(placeable),
+                width = placeable.width,
+                height = placeable.height
+            )
+            rows.add(nextRow)
+        }
+    }
+
+    val width = rows.maxOfOrNull { row -> row.width } ?: 0
+    val height = rows.sumBy { row -> row.height } + max(vGapPx.times(rows.size - 1), 0)
+    val coercedWidth = width.coerceIn(constraints.minWidth, constraints.maxWidth)
+    val coercedHeight = height.coerceIn(constraints.minHeight, constraints.maxHeight)
+
+    layout(coercedWidth, coercedHeight) {
+        var y = 0
+        for (row in rows) {
+            var x = when(alignment) {
+                Alignment.Start -> 0
+                Alignment.CenterHorizontally -> (coercedWidth - row.width) / 2
+                Alignment.End -> coercedWidth - row.width
+                else -> throw Exception("unsupported alignment")
+            }
+            for (item in row.items) {
+                item.place(x, y)
+                x += item.width + hGapPx
+            }
+            y += row.height + vGapPx
+        }
+    }
+}
+
+private data class MeasuredRow(
+    val items: MutableList<Placeable>,
+    var width: Int,
+    var height: Int
+)
+
 fun getOtherUsersComments(originalSoundName: String, completed: (soundList: List<SoundData>) -> Unit) {
     SoundBackend.querySoundBasedOnOriginalName(originalSoundName){ sounds ->
         completed(sounds)
@@ -250,10 +334,9 @@ fun checkIfSliderPositionsAreDifferentFromOriginalCurrentVolumes(presetData: Pre
     return sameVolume != globalViewModel_!!.currentSoundPlayingSliderPositions.size
 }
 
-fun createComment(
+fun checkIfUserIsQualifiedToComment(
     soundData: SoundData,
     presetData: PresetData,
-    comment: String,
     context: Context
 ){
     Log.i(TAG, "display name for sound iS $displayName")
@@ -261,8 +344,7 @@ fun createComment(
         if(displayName != soundData.displayName)
             if(globalViewModel_!!.currentSoundPlayingSliderPositions.isNotEmpty())
                 if(checkIfSliderPositionsAreDifferentFromOriginalCurrentVolumes(presetData)) {
-                    makeSoundObject(soundData, presetData, comment)
-                    //makeLocalSoundObject(soundData, presetData, context, comment)
+                    showCommentBox = true
                 }
                 else {
                     Log.i(TAG, "You must change the volume before commenting")
@@ -281,88 +363,10 @@ fun createComment(
             ).show()
         }
     else {
-        Log.i(TAG, "Sound name cannot be empty")
-        Toast.makeText(context, "Sound name cannot be empty", Toast.LENGTH_SHORT).show()
+        Log.i(TAG, "Change the sound name")
+        Toast.makeText(context, "Change the sound name", Toast.LENGTH_SHORT).show()
     }
 }
-
-/*
-fun makeLocalSoundObject(
-    soundData: SoundData,
-    soundPresets: PresetData,
-    context: Context,
-    comment: String
-) {
-    if(uris!!.size > 0){
-        val uriStrings = mutableListOf<String>()
-        for(uri in uris!!){
-            uriStrings.add(uri.toString())
-        }
-        for(uri in uriStrings){
-            Log.i(TAG, "fgjdbsjofvndnso uristring is string ${uri is String}")
-        }
-        if(uriStrings.size > 0) {
-            val sound = SoundModel(
-                soundData.originalOwner.username,
-                UserObject.signedInUser().value!!.username,
-                soundData.originalName,
-                soundData.displayName,
-                soundData.shortDescription,
-                soundData.longDescription,
-                soundData.icon,
-                soundData.fullPlayTime,
-                soundData.visibleToOthers,
-                soundData.audioNames,
-                uriStrings,
-            )
-            UserDashboardActivity.soundViewModel.insertSound(context, sound)
-            UserDashboardActivity.soundViewModel.getSoundBasedOnDisplayName(
-                context,
-                soundData.displayName
-            )!!.observe(UserDashboardActivity.owner) {
-                Log.i(TAG, "Sound retrieved $it")
-                if(it.size != 0){
-                    createLocalSoundPreset(it[0], soundPresets, context, comment)
-                }else{
-                    Log.i(TAG, "Size is 0")
-                }
-            }
-        }else{
-            Log.i(TAG, "Uri s iz ${uriStrings.size}")
-        }
-    }
-}
-
-fun createLocalSoundPreset(
-    sound: SoundModel?,
-    soundPresets: PresetData,
-    context: Context,
-    comment: String
-) {
-    for(soundPreset in soundPresets.presets){
-        val preset = PresetModel(
-            sound!!.id!!,
-            soundPreset.key,
-            soundPreset.volumes
-        )
-        UserDashboardActivity.presetViewModel.insertPreset(context, preset)
-    }
-    createLocalSoundComment(sound!!, context, comment)
-}
-
-fun createLocalSoundComment(
-    sound: SoundModel?,
-    context: Context,
-    comment: String
-) {
-    val soundComment = CommentModel(
-        sound!!.id!!,
-        comment
-    )
-    Log.i(TAG, soundComment.commentText)
-    UserDashboardActivity.commentViewModel.insertComment(context, soundComment)
-}
-*/
 
 fun makeSoundObject(
     soundData: SoundData,

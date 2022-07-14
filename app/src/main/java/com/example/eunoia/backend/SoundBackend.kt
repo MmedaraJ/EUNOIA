@@ -37,8 +37,7 @@ object SoundBackend{
 
     fun querySoundBasedOnDisplayName(
         display_name: String,
-        context: Context,
-        completed: (sound: SoundData) -> Unit) {
+        completed: (sound: SoundData?) -> Unit) {
         scope.launch {
             Amplify.API.query(
                 ModelQuery.list(SoundData::class.java, SoundData.DISPLAY_NAME.eq(display_name)),
@@ -49,6 +48,8 @@ object SoundBackend{
                             completed(soundData)
                             break
                         }
+                    }else{
+                        completed(null)
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }

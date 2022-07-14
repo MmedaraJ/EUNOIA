@@ -35,6 +35,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.CommentData
 import com.amplifyframework.datastore.generated.model.PresetData
+import com.amplifyframework.datastore.generated.model.PresetNameAndVolumesMapData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
 import com.example.eunoia.backend.CommentBackend
@@ -127,9 +128,7 @@ fun Mixer(
                                 end.linkTo(parent.end, margin = 16.dp)
                             }
                     ) {
-                        displayName = standardCentralizedOutlinedTextInput(sound.displayName,
-                            SoftPeach
-                        )
+                        displayName = standardCentralizedOutlinedTextInput(sound.displayName, SoftPeach)
                     }
                     Column(
                         modifier = Modifier
@@ -181,30 +180,12 @@ fun Sliders(sound: SoundData){
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        val colors = arrayOf(
-            GoldSand,
-            JungleMist,
-            PeriwinkleGray,
-            BeautyBush,
-            WaikawaGray,
-            Madang,
-            SeaPink,
-            Twine,
-            DoveGray,
-            Neptune,
-        )
-        val labels = arrayOf(
-            sound.audioNames[0],
-            sound.audioNames[1],
-            sound.audioNames[2],
-            sound.audioNames[3],
-            sound.audioNames[4],
-            sound.audioNames[5],
-            sound.audioNames[6],
-            sound.audioNames[7],
-            sound.audioNames[8],
-            sound.audioNames[9],
-        )
+        val colors = mutableListOf<Color>()
+        val labels = mutableListOf<String>()
+        for(i in sound.audioNames.indices){
+            labels.add(sound.audioNames[i])
+            colors.add(globalViewModel_!!.mixerColors[i])
+        }
         globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed {index, sliderPosition ->
             ConstraintLayout(
                 modifier = Modifier.size(32.dp, 200.dp)
@@ -232,7 +213,6 @@ fun Sliders(sound: SoundData){
                             value = sliderPosition.value,
                             valueRange = 0f..10f,
                             onValueChange = {
-                                //sound.currentVolumes[index] = it.toInt()
                                 globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value = it
                                 adjustMediaPlayerVolumes(mediaPlayers, index)
                             },
@@ -329,7 +309,8 @@ fun Controls(
                     .border(
                         BorderStroke(
                             0.5.dp,
-                            globalViewModel_!!.borderControlColors[index].value),
+                            globalViewModel_!!.borderControlColors[index].value
+                        ),
                         RoundedCornerShape(50.dp)
                     ),
                 contentAlignment = Alignment.Center
@@ -343,14 +324,13 @@ fun Controls(
                     0,
                     0
                 ) {
-                    if(uris.size == 10) {
+                    if(uris.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
                         activateControls(
                             sound,
                             preset,
                             index,
-                            uris.subList(0, 10),
-                            applicationContext,
-                            mediaPlayers
+                            uris.subList(0, uris.size),
+                            applicationContext
                         )
                     }
                 }
@@ -401,14 +381,13 @@ fun retrieveAudioUris(
     }
 }
 
-fun playTenSounds(
-    tenSounds: MutableList<Uri>,
+fun playSounds(
+    allSounds: MutableList<Uri>,
     applicationContext: Context,
-    mediaPlayers: MutableList<MediaPlayer>,
     index: Int
 ){
     if(mediaPlayers.size == 0 && !globalViewModel_!!.isCurrentSoundPlaying) {
-        tenSounds.forEachIndexed { i, audioUri ->
+        allSounds.forEachIndexed { i, audioUri ->
             val mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
                     AudioAttributes.Builder()
@@ -429,6 +408,7 @@ fun playTenSounds(
         }
     }else{
         mediaPlayers.forEach { mediaPlayer ->
+            //mediaPlayer.prepare()
             mediaPlayer.start()
         }
     }
@@ -439,9 +419,8 @@ fun playTenSounds(
     Toast.makeText(applicationContext, "Sound: playing", Toast.LENGTH_SHORT).show()
 }
 
-fun pauseTenSounds(
+fun pauseSounds(
     applicationContext: Context,
-    mediaPlayers: MutableList<MediaPlayer>,
     index: Int
 ){
     if(isPlaying.value && globalViewModel_!!.isCurrentSoundPlaying) {
@@ -455,12 +434,11 @@ fun pauseTenSounds(
     }
 }
 
-fun loopTenSounds(
+fun loopSounds(
     applicationContext: Context,
-    mediaPlayers: MutableList<MediaPlayer>,
     index: Int
 ){
-    if(mediaPlayers.size == 10) {
+    if(mediaPlayers.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
         isLooping.value = !isLooping.value
         mediaPlayers.forEach { mediaPlayer ->
             mediaPlayer.isLooping = isLooping.value
@@ -475,23 +453,27 @@ fun loopTenSounds(
     }
 }
 
-fun resetTenSounds(
-    applicationContext: Context,
-    mediaPlayers: MutableList<MediaPlayer>,
-    sound: SoundData,
-    preset: PresetData,
-    index: Int
-){
-    if(mediaPlayers.size == 10) {
+fun resetSounds(){
+    if(mediaPlayers.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
         mediaPlayers.forEach { mediaPlayer ->
-            mediaPlayer.reset()
+            mediaPlayer.pause()
         }
-        mediaPlayers.clear()
         isPlaying.value = false
-        globalViewModel_!!.isCurrentSoundPlaying = false
-        activateControlButton(index)
+        activateControlButton(1)
         activateControlButton(3)
-        resetSliders(sound, preset)
+        resetSliders()
+    }
+}
+
+fun resetSoundsForPresets(){
+    if(mediaPlayers.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
+        mediaPlayers.forEachIndexed { i, mediaPlayer ->
+            mediaPlayer.setVolume(
+                globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10,
+                globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10
+            )
+        }
+        resetSliders()
     }
 }
 
@@ -515,19 +497,14 @@ fun resetAll(applicationContext: Context){
     startCountDownTimer(applicationContext, timerTime.value)
 }
 
-fun resetSliders(
-    sound: SoundData,
-    preset: PresetData
-){
+fun resetSliders(){
     globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed { index, mutableState ->
-        mutableState!!.value = preset.presets[1].volumes[index].toFloat()
+        mutableState!!.value = globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!.volumes[index].toFloat()
     }
+    Log.i(TAG, "Resetting sliders")
 }
 
-fun increaseSliderLevels(
-    applicationContext: Context,
-    index: Int
-){
+fun increaseSliderLevels(applicationContext: Context, index: Int){
     globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed{ index, mutableState ->
         if(mutableState!!.value < 10) {
             mutableState.value++
@@ -619,8 +596,7 @@ fun startCountDownTimer(
 }
 
 fun changeTimerTime(
-    mediaPlayers: MutableList<MediaPlayer>,
-    tenSoundsURIs: MutableList<Uri>,
+    allSoundsURIs: MutableList<Uri>,
     applicationContext: Context,
     index: Int
 ){
@@ -630,10 +606,9 @@ fun changeTimerTime(
         numCounters++
         activateControlButton(index)
         if(!isPlaying.value) {
-            playTenSounds(
-                tenSoundsURIs,
+            playSounds(
+                allSoundsURIs,
                 applicationContext,
-                mediaPlayers,
                 3
             )
         }
@@ -649,40 +624,29 @@ fun activateControls(
     sound: SoundData,
     preset: PresetData,
     index: Int,
-    tenSoundsURIs: MutableList<Uri>,
-    applicationContext: Context,
-    mediaPlayers: MutableList<MediaPlayer>){
+    allSoundsURIs: MutableList<Uri>,
+    applicationContext: Context){
     when(index){
-        0 -> loopTenSounds(
+        0 -> loopSounds(
                 applicationContext,
-                mediaPlayers,
                 index
             )
-        1 -> resetTenSounds(
-                applicationContext,
-                mediaPlayers,
-                sound,
-                preset,
-                index
-            )
+        1 -> resetSounds()
         2 -> changeTimerTime(
-                mediaPlayers,
-                tenSoundsURIs,
+                allSoundsURIs,
                 applicationContext,
                 index
             )
         3 -> {
             if(isPlaying.value){
-                pauseTenSounds(
+                pauseSounds(
                     applicationContext,
-                    mediaPlayers,
                     index
                 )
             } else {
-                playTenSounds(
-                    tenSoundsURIs,
+                playSounds(
+                    allSoundsURIs,
                     applicationContext,
-                    mediaPlayers,
                     index
                 )
                 globalViewModel_!!.currentSoundPlaying = sound
@@ -1113,6 +1077,68 @@ fun OtherUsersCommentsUI(
                         yOffset = 0
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun PresetsUI(
+    sound: SoundData,
+    preset: PresetData,
+    presetNameAndVolumeMapData: PresetNameAndVolumesMapData,
+    context: Context
+){
+    var clicked by rememberSaveable{ mutableStateOf(false) }
+    var changePreset by rememberSaveable{ mutableStateOf(false) }
+    var cardModifier = Modifier
+        .padding(bottom = 8.dp)
+        .wrapContentHeight()
+        .clickable {
+            clicked = !clicked
+            changePreset = true
+        }
+        .wrapContentWidth()
+
+    if(changePreset){
+        globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = presetNameAndVolumeMapData
+        resetSoundsForPresets()
+        changePreset = false
+    }
+
+    if(clicked){
+        cardModifier = cardModifier.then(
+            Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.small)
+        )
+    }
+
+    Card(
+        modifier = cardModifier,
+        shape = MaterialTheme.shapes.small,
+        backgroundColor = BeautyBush,
+        elevation = 8.dp,
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+        ) {
+            val (preset_name) = createRefs()
+            Column(
+                modifier = Modifier
+                    .constrainAs(preset_name) {
+                        top.linkTo(parent.top, margin = 0.dp)
+                        start.linkTo(parent.start, margin = 0.dp)
+                        end.linkTo(parent.end, margin = 0.dp)
+                        bottom.linkTo(parent.bottom, margin = 0.dp)
+                    }
+            ) {
+                LightText(
+                    text = presetNameAndVolumeMapData.key,
+                    color = Black,
+                    fontSize = 16,
+                    xOffset = 0,
+                    yOffset = 0
+                )
             }
         }
     }

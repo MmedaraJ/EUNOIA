@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.amplifyframework.datastore.generated.model.PresetData
+import com.amplifyframework.datastore.generated.model.PresetNameAndVolumesMapData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
 import com.example.eunoia.models.SoundObject
@@ -14,9 +15,11 @@ class GlobalViewModel: ViewModel(){
     //sound
     var currentSoundPlaying by mutableStateOf<SoundData?>(null)
     var currentSoundPlayingPreset by mutableStateOf<PresetData?>(null)
+    var currentSoundPlayingPresetNameAndVolumesMap by mutableStateOf<PresetNameAndVolumesMapData?>(null)
     var currentSoundPlayingContext by mutableStateOf<Context?>(null)
-    var currentSoundPlayingSliderPositions = arrayOf<MutableState<Float>?>()
+    var currentSoundPlayingSliderPositions = mutableListOf<MutableState<Float>?>()
     var currentSoundPlayingUris: MutableList<Uri>? = null
+
 
     var currentRoutinePlaying by mutableStateOf("")
     var currentSelfLovePlaying by mutableStateOf("")
@@ -63,6 +66,18 @@ class GlobalViewModel: ViewModel(){
         mutableStateOf(White),
         mutableStateOf(White),
         mutableStateOf(White),
+    )
+    val mixerColors = arrayOf(
+        GoldSand,
+        JungleMist,
+        PeriwinkleGray,
+        BeautyBush,
+        WaikawaGray,
+        Madang,
+        SeaPink,
+        Twine,
+        DoveGray,
+        Neptune,
     )
 
     fun changeCurrentSoundPlaying(soundData: SoundData?){
