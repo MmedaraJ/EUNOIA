@@ -4,6 +4,7 @@ import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
+import com.amplifyframework.datastore.generated.model.SoundData
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.models.UserObject
 import kotlinx.coroutines.CoroutineScope
@@ -20,9 +21,12 @@ object UserBackend {
             Amplify.API.mutate(
                 ModelMutation.create(user.data),
                 { response ->
-                    if (response.hasErrors()) Log.e(TAG, response.errors.first().message)
-                    else Log.i(TAG, "Created user with id: " + response.data.id)
-                    completed(response.data)
+                    if(response.hasData()){
+                        Log.i(TAG, "Created user: ${response.data}")
+                        completed(response.data)
+                    }else{
+                        Log.i(TAG, response.toString())
+                    }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
             )
@@ -51,20 +55,19 @@ object UserBackend {
         }
     }
 
-    fun getEunoiaUser(completed: (user: UserData) -> Unit){
+    fun updateUser(user: UserData, completed: (user: UserData) -> Unit){
         scope.launch {
-            Amplify.API.query(
-                ModelQuery.list(UserData::class.java, UserData.USERNAME.eq("eunoia")),
+            Amplify.API.mutate(
+                ModelMutation.update(user),
                 { response ->
-                    if(response.hasData()){
-                        for(userData in response.data){
-                            Log.i(TAG, "Gotten Eunoia user: $userData")
-                            completed(userData)
-                            break
-                        }
+                    if(response.hasData()) {
+                        Log.i(TAG, "Successfully updated user: ${response.data}")
+                        completed(response.data)
                     }
                 },
-                { error -> Log.e(TAG, "Query failure", error) }
+                {
+                    Log.i(TAG, "Error while updating user: ", it)
+                }
             )
         }
     }

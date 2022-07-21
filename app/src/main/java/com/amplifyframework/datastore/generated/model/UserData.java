@@ -55,7 +55,13 @@ public final class UserData implements Model {
   private final @ModelField(targetType="String", isRequired = true) String phoneNumber;
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean authenticated;
   private final @ModelField(targetType="String", isRequired = true) String subscription;
-  private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "original_owner", type = SoundData.class) List<SoundData> sounds = null;
+  private final @ModelField(targetType="SoundData", isRequired = true) @HasMany(associatedWith = "soundOwner", type = SoundData.class) List<SoundData> sounds = null;
+  private final @ModelField(targetType="CommentData", isRequired = true) @HasMany(associatedWith = "commentOwner", type = CommentData.class) List<CommentData> comments = null;
+  private final @ModelField(targetType="RoutineData", isRequired = true) @HasMany(associatedWith = "routineOwner", type = RoutineData.class) List<RoutineData> routines = null;
+  private final @ModelField(targetType="StretchData", isRequired = true) @HasMany(associatedWith = "stretchOwner", type = StretchData.class) List<StretchData> stretches = null;
+  private final @ModelField(targetType="BreathingData", isRequired = true) @HasMany(associatedWith = "breathingOwner", type = BreathingData.class) List<BreathingData> breathings = null;
+  private final @ModelField(targetType="SelfLoveData", isRequired = true) @HasMany(associatedWith = "selfLoveOwner", type = SelfLoveData.class) List<SelfLoveData> selfLoves = null;
+  private final @ModelField(targetType="BedtimeStoryData", isRequired = true) @HasMany(associatedWith = "bedtimeStoryOwner", type = BedtimeStoryData.class) List<BedtimeStoryData> bedtimeStories = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -116,6 +122,30 @@ public final class UserData implements Model {
   
   public List<SoundData> getSounds() {
       return sounds;
+  }
+  
+  public List<CommentData> getComments() {
+      return comments;
+  }
+  
+  public List<RoutineData> getRoutines() {
+      return routines;
+  }
+  
+  public List<StretchData> getStretches() {
+      return stretches;
+  }
+  
+  public List<BreathingData> getBreathings() {
+      return breathings;
+  }
+  
+  public List<SelfLoveData> getSelfLoves() {
+      return selfLoves;
+  }
+  
+  public List<BedtimeStoryData> getBedtimeStories() {
+      return bedtimeStories;
   }
   
   public Temporal.DateTime getCreatedAt() {

@@ -33,16 +33,20 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
-import com.amplifyframework.datastore.generated.model.CommentData
-import com.amplifyframework.datastore.generated.model.PresetData
-import com.amplifyframework.datastore.generated.model.PresetNameAndVolumesMapData
-import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.CommentBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.UserBackend
+import com.example.eunoia.models.UserObject
+import com.example.eunoia.ui.alertDialogs.AlertDialogBox
+import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.ui.bottomSheets.openDialogBox
 import com.example.eunoia.ui.components.*
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
+import kotlinx.coroutines.CoroutineScope
 import java.lang.Math.*
 import kotlin.concurrent.fixedRateTimer
 import kotlin.math.pow
@@ -57,12 +61,16 @@ private val timerTime = mutableStateOf(0L)
 private val meditationBellMediaPlayer = MutableLiveData<MediaPlayer>()
 private var numCounters = 0
 var displayName = ""
+var openDialogBoxHere by mutableStateOf(false)
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Mixer(
     sound: SoundData,
     context: Context,
-    preset: PresetData
+    preset: PresetData,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
 ){
     Card(
         modifier = Modifier
@@ -168,7 +176,7 @@ fun Mixer(
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                     }
             ) {
-                Controls(sound, preset, context, true)
+                Controls(sound, preset, context, true, scope, state)
             }
         }
     }
@@ -280,14 +288,18 @@ fun Sliders(sound: SoundData){
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Controls(
     sound: SoundData,
     preset: PresetData,
     applicationContext: Context,
-    showAddIcon: Boolean
+    showAddIcon: Boolean,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
 ){
-    val uris = remember{mutableListOf<Uri>()}
+    val uris = rememberSaveable{mutableListOf<Uri>()}
+    Log.i(TAG, "1. Uris size ${uris.size}")
     createMeditationBellMediaPlayer(applicationContext)
     retrieveAudioUris(uris, sound)
     Row(
@@ -352,7 +364,19 @@ fun Controls(
                     10.dp,
                     0,
                     0
-                ) {}
+                ) {
+                    globalViewModel_!!.currentSoundToBeAdded = sound
+                    Log.i(TAG, "${globalViewModel_!!.currentUser}")
+                    if (!globalViewModel_!!.currentUser!!.sounds.contains(sound)) {
+                        globalViewModel_!!.bottomSheetOpenFor = "addToSoundListOrRoutine"
+                        openBottomSheet(scope, state)
+                    }else{
+                        openDialogBoxHere = true
+                    }
+                }
+                if(openDialogBoxHere){
+                    AlertDialogBox(text = "You already have this sound")
+                }
             }
         }
     }
@@ -369,13 +393,19 @@ fun retrieveAudioUris(
     uris: MutableList<Uri>,
     sound: SoundData
 ){
+    Log.i(TAG, "2. Uris size ${uris.size}")
     if(uris.size == 0) {
+        Log.i(TAG, "3. Uris size ${uris.size}")
         SoundBackend.listEunoiaSounds(sound.audioKeyS3) { result ->
             result.items.forEach { item ->
                 SoundBackend.retrieveAudio(item.key) { audioUri ->
-                    uris.add(audioUri)
+                    if(uris.size < globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
+                        uris.add(audioUri)
+                        Log.i(TAG, "${item.key}. Uris size ${uris.size}")
+                    }
                 }
             }
+            Log.i(TAG, "After all adding. Uris size ${uris.size}")
             globalViewModel_!!.currentSoundPlayingUris = uris
         }
     }
@@ -666,7 +696,6 @@ fun activateControls(
                 applicationContext,
                 index
             )
-        7 -> ""
     }
 }
 
@@ -1002,15 +1031,16 @@ fun CommentsForSound(
 ){
     for(sound in sounds){
         var soundComment by remember{ mutableStateOf<CommentData?>(null) }
-        Log.i(TAG, "Comments for sound -> $sound")
         getSoundComment(sound){
             soundComment = it
         }
         if(
             soundComment != null &&
-            sound != currentSound /*&&
-            sound.currentOwner != UserObject.signedInUser().value!!.data*/) {
-            OtherUsersCommentsUI(sound = sound, soundComment!!, navController, context)
+            sound != currentSound &&
+            sound.soundOwner != UserObject.signedInUser().value!!.data &&
+            sound.approvalStatus.equals(SoundApprovalStatus.APPROVED)
+        ) {
+            OtherUsersCommentsUI(sound, soundComment!!, navController, context, false)
         }
     }
 }
@@ -1026,9 +1056,10 @@ fun OtherUsersCommentsUI(
     sound: SoundData,
     comment: CommentData,
     navController: NavController,
-    context: Context
+    context: Context,
+    isClicked: Boolean
 ){
-    var clicked by rememberSaveable{ mutableStateOf(false) }
+    var clicked by rememberSaveable{ mutableStateOf(isClicked) }
     var cardModifier = Modifier
         .padding(bottom = 16.dp)
         .wrapContentHeight()
@@ -1083,62 +1114,68 @@ fun OtherUsersCommentsUI(
 }
 
 @Composable
-fun PresetsUI(
-    sound: SoundData,
-    preset: PresetData,
-    presetNameAndVolumeMapData: PresetNameAndVolumesMapData,
-    context: Context
-){
-    var clicked by rememberSaveable{ mutableStateOf(false) }
-    var changePreset by rememberSaveable{ mutableStateOf(false) }
-    var cardModifier = Modifier
-        .padding(bottom = 8.dp)
-        .wrapContentHeight()
-        .clickable {
-            clicked = !clicked
-            changePreset = true
-        }
-        .wrapContentWidth()
-
-    if(changePreset){
-        globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = presetNameAndVolumeMapData
-        resetSoundsForPresets()
-        changePreset = false
+fun PresetsUI(allPresetNameAndVolumeMapData: List<PresetNameAndVolumesMapData>){
+    val borders = mutableListOf<MutableState<Boolean>>()
+    for(presetVolume in allPresetNameAndVolumeMapData){
+        borders.add(remember{ mutableStateOf(false) })
     }
-
-    if(clicked){
-        cardModifier = cardModifier.then(
-            Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.small)
-        )
-    }
-
-    Card(
-        modifier = cardModifier,
-        shape = MaterialTheme.shapes.small,
-        backgroundColor = BeautyBush,
-        elevation = 8.dp,
-    ) {
-        ConstraintLayout(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
-        ) {
-            val (preset_name) = createRefs()
-            Column(
-                modifier = Modifier
-                    .constrainAs(preset_name) {
-                        top.linkTo(parent.top, margin = 0.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                        bottom.linkTo(parent.bottom, margin = 0.dp)
+    allPresetNameAndVolumeMapData.forEachIndexed{ index, presetNameAndVolumeMapData ->
+        if(index != 0) {
+            var changePreset by rememberSaveable { mutableStateOf(false) }
+            var cardModifier = Modifier
+                .padding(bottom = 8.dp)
+                .wrapContentHeight()
+                .clickable {
+                    borders.forEach { border ->
+                        border.value = false
                     }
-            ) {
-                LightText(
-                    text = presetNameAndVolumeMapData.key,
-                    color = Black,
-                    fontSize = 16,
-                    xOffset = 0,
-                    yOffset = 0
+                    borders[index].value = !borders[index].value
+                    changePreset = true
+                }
+                .wrapContentWidth()
+
+            if (changePreset) {
+                globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap =
+                    presetNameAndVolumeMapData
+                resetSoundsForPresets()
+                changePreset = false
+            }
+
+            if (borders[index].value) {
+                cardModifier = cardModifier.then(
+                    Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.small)
                 )
+            }
+
+            Card(
+                modifier = cardModifier,
+                shape = MaterialTheme.shapes.small,
+                //backgroundColor = BeautyBush,
+                elevation = 2.dp,
+            ) {
+                ConstraintLayout(
+                    modifier = Modifier
+                        .background(BeautyBush.copy(alpha = 0.5F))
+                ) {
+                    val (preset_name) = createRefs()
+                    Column(
+                        modifier = Modifier
+                            .constrainAs(preset_name) {
+                                top.linkTo(parent.top, margin = 8.dp)
+                                start.linkTo(parent.start, margin = 16.dp)
+                                end.linkTo(parent.end, margin = 16.dp)
+                                bottom.linkTo(parent.bottom, margin = 8.dp)
+                            }
+                    ) {
+                        LightText(
+                            text = presetNameAndVolumeMapData.key,
+                            color = Black,
+                            fontSize = 16,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+                    }
+                }
             }
         }
     }

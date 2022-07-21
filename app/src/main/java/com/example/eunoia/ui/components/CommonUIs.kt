@@ -287,13 +287,14 @@ fun standardPasswordOutlinedTextInput(placeholder: String, offset: Int): String{
 }
 
 @Composable
-fun EunoiaLogo(width: Dp, height: Dp, xOffset: Int, yOffset: Int){
+fun EunoiaLogo(width: Dp, height: Dp, xOffset: Int, yOffset: Int, clicked: () -> Unit){
     Image(
         painter = painterResource(id = R.drawable.eunoia_1),
         contentDescription = stringResource(id = R.string.logo_text),
         modifier = Modifier
             .size(width = width, height = height)
             .offset(xOffset.dp, yOffset.dp)
+            .clickable { clicked() }
     )
 }
 
@@ -594,7 +595,7 @@ fun StarSurroundedTextWithIconLeft(text: String, drawable: Int, drawableWidth: D
 }
 
 @Composable
-fun BackArrowHeader(backArrowClicked: () -> Unit, settingsButtonClicked: () -> Unit){
+fun BackArrowHeader(backArrowClicked: () -> Unit, eunoiaLogoClicked: () -> Unit, settingsButtonClicked: () -> Unit){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -617,7 +618,9 @@ fun BackArrowHeader(backArrowClicked: () -> Unit, settingsButtonClicked: () -> U
             dimensionResource(id = R.dimen.logo_top_height_dimen),
             0,
             6
-        )
+        ){
+            eunoiaLogoClicked()
+        }
         AnImageWithColor(
             id = R.drawable.star_1,
             contentDescription = "Settings",
@@ -633,7 +636,7 @@ fun BackArrowHeader(backArrowClicked: () -> Unit, settingsButtonClicked: () -> U
 }
 
 @Composable
-fun ProfilePictureHeader(profilePictureClicked: () -> Unit, settingsButtonClicked: () -> Unit){
+fun ProfilePictureHeader(profilePictureClicked: () -> Unit, eunoiaLogoClicked: () -> Unit, settingsButtonClicked: () -> Unit){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -652,7 +655,9 @@ fun ProfilePictureHeader(profilePictureClicked: () -> Unit, settingsButtonClicke
             dimensionResource(id = R.dimen.logo_top_height_dimen),
             0,
             6
-        )
+        ){
+            eunoiaLogoClicked()
+        }
         AnImageWithColor(
             id = R.drawable.star_1,
             contentDescription = "Settings",
@@ -668,7 +673,7 @@ fun ProfilePictureHeader(profilePictureClicked: () -> Unit, settingsButtonClicke
 }
 
 @Composable
-fun LogoAndStarHeader(settingsButtonClicked: () -> Unit){
+fun LogoAndStarHeader(eunoiaLogoClicked: () -> Unit, settingsButtonClicked: () -> Unit){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -681,7 +686,9 @@ fun LogoAndStarHeader(settingsButtonClicked: () -> Unit){
             dimensionResource(id = R.dimen.logo_top_height_dimen),
             0,
             6
-        )
+        ){
+            eunoiaLogoClicked()
+        }
         Column(
             modifier = Modifier.rotate(45F)
         ){

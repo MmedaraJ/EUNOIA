@@ -40,7 +40,7 @@ object UserObject {
         val nickname: String,
         val phoneNumber: String,
         val authenticated: Boolean,
-        val subscription: String
+        val subscription: String,
     ) {
         override fun toString(): String = username
         //return an API UserData from this User object

@@ -1,0 +1,4381 @@
+# this is an auto generated file. This will be overwritten
+mutation CreateNoteData(
+  $input: CreateNoteDataInput!
+  $condition: ModelNoteDataConditionInput
+) {
+  createNoteData(input: $input, condition: $condition) {
+    id
+    name
+    description
+    image
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateNoteData(
+  $input: UpdateNoteDataInput!
+  $condition: ModelNoteDataConditionInput
+) {
+  updateNoteData(input: $input, condition: $condition) {
+    id
+    name
+    description
+    image
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteNoteData(
+  $input: DeleteNoteDataInput!
+  $condition: ModelNoteDataConditionInput
+) {
+  deleteNoteData(input: $input, condition: $condition) {
+    id
+    name
+    description
+    image
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateSoundData(
+  $input: CreateSoundDataInput!
+  $condition: ModelSoundDataConditionInput
+) {
+  createSoundData(input: $input, condition: $condition) {
+    id
+    userDataID
+    soundOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    original_name
+    display_name
+    short_description
+    long_description
+    audio_key_s3
+    icon
+    fullPlayTime
+    visible_to_others
+    audio_names
+    approvalStatus
+    comment {
+      id
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      userDataID
+      commentOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      comment
+      createdAt
+      updatedAt
+      owner
+    }
+    preset {
+      id
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      presets {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routines {
+      items {
+        id
+        soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateSoundData(
+  $input: UpdateSoundDataInput!
+  $condition: ModelSoundDataConditionInput
+) {
+  updateSoundData(input: $input, condition: $condition) {
+    id
+    userDataID
+    soundOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    original_name
+    display_name
+    short_description
+    long_description
+    audio_key_s3
+    icon
+    fullPlayTime
+    visible_to_others
+    audio_names
+    approvalStatus
+    comment {
+      id
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      userDataID
+      commentOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      comment
+      createdAt
+      updatedAt
+      owner
+    }
+    preset {
+      id
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      presets {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routines {
+      items {
+        id
+        soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteSoundData(
+  $input: DeleteSoundDataInput!
+  $condition: ModelSoundDataConditionInput
+) {
+  deleteSoundData(input: $input, condition: $condition) {
+    id
+    userDataID
+    soundOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    original_name
+    display_name
+    short_description
+    long_description
+    audio_key_s3
+    icon
+    fullPlayTime
+    visible_to_others
+    audio_names
+    approvalStatus
+    comment {
+      id
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      userDataID
+      commentOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      comment
+      createdAt
+      updatedAt
+      owner
+    }
+    preset {
+      id
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      presets {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routines {
+      items {
+        id
+        soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateCommentData(
+  $input: CreateCommentDataInput!
+  $condition: ModelCommentDataConditionInput
+) {
+  createCommentData(input: $input, condition: $condition) {
+    id
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userDataID
+    commentOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    comment
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateCommentData(
+  $input: UpdateCommentDataInput!
+  $condition: ModelCommentDataConditionInput
+) {
+  updateCommentData(input: $input, condition: $condition) {
+    id
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userDataID
+    commentOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    comment
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteCommentData(
+  $input: DeleteCommentDataInput!
+  $condition: ModelCommentDataConditionInput
+) {
+  deleteCommentData(input: $input, condition: $condition) {
+    id
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userDataID
+    commentOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    comment
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreatePresetNameAndVolumesMapData(
+  $input: CreatePresetNameAndVolumesMapDataInput!
+  $condition: ModelPresetNameAndVolumesMapDataConditionInput
+) {
+  createPresetNameAndVolumesMapData(input: $input, condition: $condition) {
+    key
+    volumes
+    presetID
+    preset {
+      id
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      presets {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    id
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdatePresetNameAndVolumesMapData(
+  $input: UpdatePresetNameAndVolumesMapDataInput!
+  $condition: ModelPresetNameAndVolumesMapDataConditionInput
+) {
+  updatePresetNameAndVolumesMapData(input: $input, condition: $condition) {
+    key
+    volumes
+    presetID
+    preset {
+      id
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      presets {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    id
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeletePresetNameAndVolumesMapData(
+  $input: DeletePresetNameAndVolumesMapDataInput!
+  $condition: ModelPresetNameAndVolumesMapDataConditionInput
+) {
+  deletePresetNameAndVolumesMapData(input: $input, condition: $condition) {
+    key
+    volumes
+    presetID
+    preset {
+      id
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      presets {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    id
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreatePresetData(
+  $input: CreatePresetDataInput!
+  $condition: ModelPresetDataConditionInput
+) {
+  createPresetData(input: $input, condition: $condition) {
+    id
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    presets {
+      items {
+        key
+        volumes
+        presetID
+        id
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdatePresetData(
+  $input: UpdatePresetDataInput!
+  $condition: ModelPresetDataConditionInput
+) {
+  updatePresetData(input: $input, condition: $condition) {
+    id
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    presets {
+      items {
+        key
+        volumes
+        presetID
+        id
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeletePresetData(
+  $input: DeletePresetDataInput!
+  $condition: ModelPresetDataConditionInput
+) {
+  deletePresetData(input: $input, condition: $condition) {
+    id
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    presets {
+      items {
+        key
+        volumes
+        presetID
+        id
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateRoutineData(
+  $input: CreateRoutineDataInput!
+  $condition: ModelRoutineDataConditionInput
+) {
+  createRoutineData(input: $input, condition: $condition) {
+    id
+    userDataID
+    routineOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    numberOfSteps
+    numberOfTimesUsed
+    fullPlayTime
+    icon
+    visible_to_others
+    colorHEX
+    playSoundDuringStretch
+    playSoundDuringBreathing
+    playSoundDuringSelfLove
+    playSoundDuringBedtimeStory
+    playSoundDuringSleep
+    eachSoundPlayTime
+    bedtimeStoryPlayTime
+    selfLovePlayTime
+    stretchTime
+    breathingTime
+    currentBedtimeStoryPlayingIndex
+    currentBedtimeStoryContinuePlayingTime
+    currentSelfLovePlayingIndex
+    currentSelfLoveContinuePlayingTime
+    sounds {
+      items {
+        id
+        soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretches {
+      items {
+        id
+        routineDataID
+        stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathing {
+      items {
+        id
+        routineDataID
+        breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStories {
+      items {
+        id
+        routineDataID
+        bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLoves {
+      items {
+        id
+        routineDataID
+        selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    playingOrder
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateRoutineData(
+  $input: UpdateRoutineDataInput!
+  $condition: ModelRoutineDataConditionInput
+) {
+  updateRoutineData(input: $input, condition: $condition) {
+    id
+    userDataID
+    routineOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    numberOfSteps
+    numberOfTimesUsed
+    fullPlayTime
+    icon
+    visible_to_others
+    colorHEX
+    playSoundDuringStretch
+    playSoundDuringBreathing
+    playSoundDuringSelfLove
+    playSoundDuringBedtimeStory
+    playSoundDuringSleep
+    eachSoundPlayTime
+    bedtimeStoryPlayTime
+    selfLovePlayTime
+    stretchTime
+    breathingTime
+    currentBedtimeStoryPlayingIndex
+    currentBedtimeStoryContinuePlayingTime
+    currentSelfLovePlayingIndex
+    currentSelfLoveContinuePlayingTime
+    sounds {
+      items {
+        id
+        soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretches {
+      items {
+        id
+        routineDataID
+        stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathing {
+      items {
+        id
+        routineDataID
+        breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStories {
+      items {
+        id
+        routineDataID
+        bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLoves {
+      items {
+        id
+        routineDataID
+        selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    playingOrder
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteRoutineData(
+  $input: DeleteRoutineDataInput!
+  $condition: ModelRoutineDataConditionInput
+) {
+  deleteRoutineData(input: $input, condition: $condition) {
+    id
+    userDataID
+    routineOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    numberOfSteps
+    numberOfTimesUsed
+    fullPlayTime
+    icon
+    visible_to_others
+    colorHEX
+    playSoundDuringStretch
+    playSoundDuringBreathing
+    playSoundDuringSelfLove
+    playSoundDuringBedtimeStory
+    playSoundDuringSleep
+    eachSoundPlayTime
+    bedtimeStoryPlayTime
+    selfLovePlayTime
+    stretchTime
+    breathingTime
+    currentBedtimeStoryPlayingIndex
+    currentBedtimeStoryContinuePlayingTime
+    currentSelfLovePlayingIndex
+    currentSelfLoveContinuePlayingTime
+    sounds {
+      items {
+        id
+        soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretches {
+      items {
+        id
+        routineDataID
+        stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathing {
+      items {
+        id
+        routineDataID
+        breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStories {
+      items {
+        id
+        routineDataID
+        bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLoves {
+      items {
+        id
+        routineDataID
+        selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    playingOrder
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateBedtimeStoryData(
+  $input: CreateBedtimeStoryDataInput!
+  $condition: ModelBedtimeStoryDataConditionInput
+) {
+  createBedtimeStoryData(input: $input, condition: $condition) {
+    id
+    userDataID
+    bedtimeStoryOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateBedtimeStoryData(
+  $input: UpdateBedtimeStoryDataInput!
+  $condition: ModelBedtimeStoryDataConditionInput
+) {
+  updateBedtimeStoryData(input: $input, condition: $condition) {
+    id
+    userDataID
+    bedtimeStoryOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteBedtimeStoryData(
+  $input: DeleteBedtimeStoryDataInput!
+  $condition: ModelBedtimeStoryDataConditionInput
+) {
+  deleteBedtimeStoryData(input: $input, condition: $condition) {
+    id
+    userDataID
+    bedtimeStoryOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateSelfLoveData(
+  $input: CreateSelfLoveDataInput!
+  $condition: ModelSelfLoveDataConditionInput
+) {
+  createSelfLoveData(input: $input, condition: $condition) {
+    id
+    userDataID
+    selfLoveOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateSelfLoveData(
+  $input: UpdateSelfLoveDataInput!
+  $condition: ModelSelfLoveDataConditionInput
+) {
+  updateSelfLoveData(input: $input, condition: $condition) {
+    id
+    userDataID
+    selfLoveOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteSelfLoveData(
+  $input: DeleteSelfLoveDataInput!
+  $condition: ModelSelfLoveDataConditionInput
+) {
+  deleteSelfLoveData(input: $input, condition: $condition) {
+    id
+    userDataID
+    selfLoveOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateStretchData(
+  $input: CreateStretchDataInput!
+  $condition: ModelStretchDataConditionInput
+) {
+  createStretchData(input: $input, condition: $condition) {
+    id
+    userDataID
+    stretchOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateStretchData(
+  $input: UpdateStretchDataInput!
+  $condition: ModelStretchDataConditionInput
+) {
+  updateStretchData(input: $input, condition: $condition) {
+    id
+    userDataID
+    stretchOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteStretchData(
+  $input: DeleteStretchDataInput!
+  $condition: ModelStretchDataConditionInput
+) {
+  deleteStretchData(input: $input, condition: $condition) {
+    id
+    userDataID
+    stretchOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateBreathingData(
+  $input: CreateBreathingDataInput!
+  $condition: ModelBreathingDataConditionInput
+) {
+  createBreathingData(input: $input, condition: $condition) {
+    id
+    userDataID
+    breathingOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateBreathingData(
+  $input: UpdateBreathingDataInput!
+  $condition: ModelBreathingDataConditionInput
+) {
+  updateBreathingData(input: $input, condition: $condition) {
+    id
+    userDataID
+    breathingOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteBreathingData(
+  $input: DeleteBreathingDataInput!
+  $condition: ModelBreathingDataConditionInput
+) {
+  deleteBreathingData(input: $input, condition: $condition) {
+    id
+    userDataID
+    breathingOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    display_name
+    routines {
+      items {
+        id
+        routineDataID
+        breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateUserData(
+  $input: CreateUserDataInput!
+  $condition: ModelUserDataConditionInput
+) {
+  createUserData(input: $input, condition: $condition) {
+    id
+    username
+    givenName
+    familyName
+    middleName
+    email
+    profile_picture_key
+    address
+    birthdate
+    gender
+    nickname
+    phoneNumber
+    authenticated
+    subscription
+    sounds {
+      items {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    comments {
+      items {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        userDataID
+        display_name
+        numberOfSteps
+        numberOfTimesUsed
+        fullPlayTime
+        icon
+        visible_to_others
+        colorHEX
+        playSoundDuringStretch
+        playSoundDuringBreathing
+        playSoundDuringSelfLove
+        playSoundDuringBedtimeStory
+        playSoundDuringSleep
+        eachSoundPlayTime
+        bedtimeStoryPlayTime
+        selfLovePlayTime
+        stretchTime
+        breathingTime
+        currentBedtimeStoryPlayingIndex
+        currentBedtimeStoryContinuePlayingTime
+        currentSelfLovePlayingIndex
+        currentSelfLoveContinuePlayingTime
+        playingOrder
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretches {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathings {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLoves {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStories {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateUserData(
+  $input: UpdateUserDataInput!
+  $condition: ModelUserDataConditionInput
+) {
+  updateUserData(input: $input, condition: $condition) {
+    id
+    username
+    givenName
+    familyName
+    middleName
+    email
+    profile_picture_key
+    address
+    birthdate
+    gender
+    nickname
+    phoneNumber
+    authenticated
+    subscription
+    sounds {
+      items {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    comments {
+      items {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        userDataID
+        display_name
+        numberOfSteps
+        numberOfTimesUsed
+        fullPlayTime
+        icon
+        visible_to_others
+        colorHEX
+        playSoundDuringStretch
+        playSoundDuringBreathing
+        playSoundDuringSelfLove
+        playSoundDuringBedtimeStory
+        playSoundDuringSleep
+        eachSoundPlayTime
+        bedtimeStoryPlayTime
+        selfLovePlayTime
+        stretchTime
+        breathingTime
+        currentBedtimeStoryPlayingIndex
+        currentBedtimeStoryContinuePlayingTime
+        currentSelfLovePlayingIndex
+        currentSelfLoveContinuePlayingTime
+        playingOrder
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretches {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathings {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLoves {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStories {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteUserData(
+  $input: DeleteUserDataInput!
+  $condition: ModelUserDataConditionInput
+) {
+  deleteUserData(input: $input, condition: $condition) {
+    id
+    username
+    givenName
+    familyName
+    middleName
+    email
+    profile_picture_key
+    address
+    birthdate
+    gender
+    nickname
+    phoneNumber
+    authenticated
+    subscription
+    sounds {
+      items {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    comments {
+      items {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        userDataID
+        display_name
+        numberOfSteps
+        numberOfTimesUsed
+        fullPlayTime
+        icon
+        visible_to_others
+        colorHEX
+        playSoundDuringStretch
+        playSoundDuringBreathing
+        playSoundDuringSelfLove
+        playSoundDuringBedtimeStory
+        playSoundDuringSleep
+        eachSoundPlayTime
+        bedtimeStoryPlayTime
+        selfLovePlayTime
+        stretchTime
+        breathingTime
+        currentBedtimeStoryPlayingIndex
+        currentBedtimeStoryContinuePlayingTime
+        currentSelfLovePlayingIndex
+        currentSelfLoveContinuePlayingTime
+        playingOrder
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretches {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathings {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLoves {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStories {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateRoutineSounds(
+  $input: CreateRoutineSoundsInput!
+  $condition: ModelRoutineSoundsConditionInput
+) {
+  createRoutineSounds(input: $input, condition: $condition) {
+    id
+    soundDataID
+    routineDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateRoutineSounds(
+  $input: UpdateRoutineSoundsInput!
+  $condition: ModelRoutineSoundsConditionInput
+) {
+  updateRoutineSounds(input: $input, condition: $condition) {
+    id
+    soundDataID
+    routineDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteRoutineSounds(
+  $input: DeleteRoutineSoundsInput!
+  $condition: ModelRoutineSoundsConditionInput
+) {
+  deleteRoutineSounds(input: $input, condition: $condition) {
+    id
+    soundDataID
+    routineDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateRoutineStretches(
+  $input: CreateRoutineStretchesInput!
+  $condition: ModelRoutineStretchesConditionInput
+) {
+  createRoutineStretches(input: $input, condition: $condition) {
+    id
+    routineDataID
+    stretchDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateRoutineStretches(
+  $input: UpdateRoutineStretchesInput!
+  $condition: ModelRoutineStretchesConditionInput
+) {
+  updateRoutineStretches(input: $input, condition: $condition) {
+    id
+    routineDataID
+    stretchDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteRoutineStretches(
+  $input: DeleteRoutineStretchesInput!
+  $condition: ModelRoutineStretchesConditionInput
+) {
+  deleteRoutineStretches(input: $input, condition: $condition) {
+    id
+    routineDataID
+    stretchDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateRoutineBreathings(
+  $input: CreateRoutineBreathingsInput!
+  $condition: ModelRoutineBreathingsConditionInput
+) {
+  createRoutineBreathings(input: $input, condition: $condition) {
+    id
+    routineDataID
+    breathingDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateRoutineBreathings(
+  $input: UpdateRoutineBreathingsInput!
+  $condition: ModelRoutineBreathingsConditionInput
+) {
+  updateRoutineBreathings(input: $input, condition: $condition) {
+    id
+    routineDataID
+    breathingDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteRoutineBreathings(
+  $input: DeleteRoutineBreathingsInput!
+  $condition: ModelRoutineBreathingsConditionInput
+) {
+  deleteRoutineBreathings(input: $input, condition: $condition) {
+    id
+    routineDataID
+    breathingDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateRoutineBedtimeStories(
+  $input: CreateRoutineBedtimeStoriesInput!
+  $condition: ModelRoutineBedtimeStoriesConditionInput
+) {
+  createRoutineBedtimeStories(input: $input, condition: $condition) {
+    id
+    routineDataID
+    bedtimeStoryDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateRoutineBedtimeStories(
+  $input: UpdateRoutineBedtimeStoriesInput!
+  $condition: ModelRoutineBedtimeStoriesConditionInput
+) {
+  updateRoutineBedtimeStories(input: $input, condition: $condition) {
+    id
+    routineDataID
+    bedtimeStoryDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteRoutineBedtimeStories(
+  $input: DeleteRoutineBedtimeStoriesInput!
+  $condition: ModelRoutineBedtimeStoriesConditionInput
+) {
+  deleteRoutineBedtimeStories(input: $input, condition: $condition) {
+    id
+    routineDataID
+    bedtimeStoryDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateRoutineSelfLoves(
+  $input: CreateRoutineSelfLovesInput!
+  $condition: ModelRoutineSelfLovesConditionInput
+) {
+  createRoutineSelfLoves(input: $input, condition: $condition) {
+    id
+    routineDataID
+    selfLoveDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateRoutineSelfLoves(
+  $input: UpdateRoutineSelfLovesInput!
+  $condition: ModelRoutineSelfLovesConditionInput
+) {
+  updateRoutineSelfLoves(input: $input, condition: $condition) {
+    id
+    routineDataID
+    selfLoveDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteRoutineSelfLoves(
+  $input: DeleteRoutineSelfLovesInput!
+  $condition: ModelRoutineSelfLovesConditionInput
+) {
+  deleteRoutineSelfLoves(input: $input, condition: $condition) {
+    id
+    routineDataID
+    selfLoveDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}

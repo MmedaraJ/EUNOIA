@@ -46,16 +46,7 @@
               "userPoolId": "autheunoia26cecbc6e"
             }
           },
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "API_KEY",
-              "apiKeyConfig": {
-                "apiKeyExpirationDays": 365,
-                "apiKeyExpirationDate": "2023-06-30T00:33:43.008Z",
-                "description": "Public API"
-              }
-            }
-          ]
+          "additionalAuthenticationProviders": []
         }
       }
     }

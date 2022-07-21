@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
 }
+//apply plugin: 'kotlin-android'
 
 android {
     compileSdk 32
@@ -50,7 +51,7 @@ android {
 
 dependencies {
     //compose
-    def compose_version = '1.2.0-rc02'
+    def compose_version = '1.3.0-alpha01'
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
@@ -64,10 +65,10 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
     // Amplify core dependency
-    implementation 'com.amplifyframework:core:1.36.0'
-    implementation 'com.amplifyframework:aws-api:1.36.0'
-    implementation 'com.amplifyframework:aws-auth-cognito:1.36.0'
-    implementation 'com.amplifyframework:aws-storage-s3:1.36.0'
+    implementation 'com.amplifyframework:core:1.36.2'
+    implementation 'com.amplifyframework:aws-api:1.36.2'
+    implementation 'com.amplifyframework:aws-auth-cognito:1.36.2'
+    implementation 'com.amplifyframework:aws-storage-s3:1.36.2'
     //For AWSMobileClient only:
     implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.49.0'
     //For the drop-in UI also:
@@ -82,25 +83,23 @@ dependencies {
     //Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
     //compose
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-    implementation 'androidx.activity:activity-compose:1.4.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.0'
+    implementation 'androidx.activity:activity-compose:1.5.0'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.navigation:navigation-compose:2.5.0-rc02"
-    implementation("androidx.compose.runtime:runtime:1.2.0-rc02")
-    implementation("androidx.compose.runtime:runtime-livedata:1.2.0-rc02")
-    implementation("androidx.compose.runtime:runtime-rxjava2:1.2.0-rc02")
+    implementation "androidx.navigation:navigation-compose:2.5.0"
+    implementation("androidx.compose.runtime:runtime:1.3.0-alpha01")
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.0-alpha01")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.3.0-alpha01")
     // Test rules and transitive dependencies:
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
     // Needed for createComposeRule, but not createAndroidComposeRule:
     debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
     //navigation
-    def nav_version = "2.5.0-rc02"
+    def nav_version = "2.5.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     //desugar
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
-    //audio converter
-    implementation 'com.github.adrielcafe:AndroidAudioConverter:0.0.8'
     // - - Room Persistence Library
     def room_version = "2.4.2"
     implementation "androidx.room:room-runtime:$room_version"
@@ -119,4 +118,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     //gson
     implementation 'com.google.code.gson:gson:2.8.9'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //moshi
+    implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
 }

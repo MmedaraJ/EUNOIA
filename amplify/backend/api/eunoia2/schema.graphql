@@ -7,13 +7,18 @@ type NoteData
     image: String
 }
 
+enum SoundApprovalStatus{
+    PENDING
+    APPROVED
+    DISAPPROVED
+}
+
 type SoundData
 @model (queries: { get: "getSoundData", list: "listSoundDatas" })
 @auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
     id: ID!
     userDataID: ID @index(name: "byUserData", sortKeyFields: ["display_name"])
-    original_owner: UserData! @belongsTo(fields: ["userDataID"])
-    current_owner: UserData! @belongsTo(fields: ["userDataID"])
+    soundOwner: UserData! @belongsTo(fields: ["userDataID"])
     original_name: String!
     display_name: String!
     short_description: String!
@@ -23,8 +28,10 @@ type SoundData
     fullPlayTime: Int!
     visible_to_others: Boolean!
     audio_names: [String!]!
-    comment: CommentData @hasOne(fields: ["id"])
-    preset: PresetData @hasOne(fields: ["id"])
+    approvalStatus: SoundApprovalStatus
+    comment: CommentData! @hasOne(fields: ["id"])
+    preset: PresetData! @hasOne(fields: ["id"])
+    routines: [RoutineData!] @manyToMany(relationName: "RoutineSounds")
 }
 
 type CommentData
@@ -33,6 +40,8 @@ type CommentData
     id: ID!
     soundID: ID! @index(name: "bySoundData", sortKeyFields: ["comment"])
     sound: SoundData! @belongsTo(fields: ["soundID"])
+    userDataID: ID! @index(name: "byUserData", sortKeyFields: ["comment"])
+    commentOwner: UserData! @belongsTo(fields: ["userDataID"])
     comment: String!
 }
 
@@ -54,6 +63,81 @@ type PresetData
     presets: [PresetNameAndVolumesMapData!]! @hasMany(indexName: "byPresetData", fields: ["id"])
 }
 
+type RoutineData
+@model (queries: { get: "getRoutineData", list: "listRoutineDatas" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userDataID: ID @index(name: "byUserData", sortKeyFields: ["display_name"])
+    routineOwner: UserData! @belongsTo(fields: ["userDataID"])
+    display_name: String!
+    numberOfSteps: Int!
+    numberOfTimesUsed: Int!
+    fullPlayTime: Int!
+    icon: Int!
+    visible_to_others: Boolean!
+    colorHEX: Int!
+    playSoundDuringStretch: Boolean!
+    playSoundDuringBreathing: Boolean!
+    playSoundDuringSelfLove: Boolean!
+    playSoundDuringBedtimeStory: Boolean!
+    playSoundDuringSleep: Boolean!
+    eachSoundPlayTime: Int!
+    bedtimeStoryPlayTime: Int!
+    selfLovePlayTime: Int!
+    stretchTime: Int!
+    breathingTime: Int!
+    currentBedtimeStoryPlayingIndex: Int!
+    currentBedtimeStoryContinuePlayingTime: Int!
+    currentSelfLovePlayingIndex: Int!
+    currentSelfLoveContinuePlayingTime: Int!
+    sounds: [SoundData!] @manyToMany(relationName: "RoutineSounds")
+    stretches: [StretchData!] @manyToMany(relationName: "RoutineStretches")
+    breathing: [BreathingData!] @manyToMany(relationName: "RoutineBreathings")
+    bedtimeStories: [BedtimeStoryData!] @manyToMany(relationName: "RoutineBedtimeStories")
+    selfLoves: [SelfLoveData!] @manyToMany(relationName: "RoutineSelfLoves")
+    playingOrder: [String!]!
+}
+
+type BedtimeStoryData
+@model (queries: { get: "getBedtimeStoryData", list: "listBedtimeStoryDatas" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userDataID: ID @index(name: "byUserData", sortKeyFields: ["display_name"])
+    bedtimeStoryOwner: UserData! @belongsTo(fields: ["userDataID"])
+    display_name: String!
+    routines: [RoutineData!] @manyToMany(relationName: "RoutineBedtimeStories")
+}
+
+type SelfLoveData
+@model (queries: { get: "getSelfLoveData", list: "listSelfLoveDatas" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userDataID: ID @index(name: "byUserData", sortKeyFields: ["display_name"])
+    selfLoveOwner: UserData! @belongsTo(fields: ["userDataID"])
+    display_name: String!
+    routines: [RoutineData!] @manyToMany(relationName: "RoutineSelfLoves")
+}
+
+type StretchData
+@model (queries: { get: "getStretchData", list: "listStretchDatas" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userDataID: ID @index(name: "byUserData", sortKeyFields: ["display_name"])
+    stretchOwner: UserData! @belongsTo(fields: ["userDataID"])
+    display_name: String!
+    routines: [RoutineData!] @manyToMany(relationName: "RoutineStretches")
+}
+
+type BreathingData
+@model (queries: { get: "getBreathingData", list: "listBreathingDatas" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userDataID: ID @index(name: "byUserData", sortKeyFields: ["display_name"])
+    breathingOwner: UserData! @belongsTo(fields: ["userDataID"])
+    display_name: String!
+    routines: [RoutineData!] @manyToMany(relationName: "RoutineBreathings")
+}
+
 type UserData
 @model (queries: { get: "getUserData", list: "listUserDatas" })
 @auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
@@ -71,5 +155,11 @@ type UserData
     phoneNumber: String!
     authenticated: Boolean!
     subscription: String!
-    sounds: [SoundData] @hasMany(indexName: "byUserData", fields: ["id"])
+    sounds: [SoundData!]! @hasMany(indexName: "byUserData", fields: ["id"])
+    comments: [CommentData!]! @hasMany(indexName: "byUserData", fields: ["id"])
+    routines: [RoutineData!]! @hasMany(indexName: "byUserData", fields: ["id"])
+    stretches: [StretchData!]! @hasMany(indexName: "byUserData", fields: ["id"])
+    breathings: [BreathingData!]! @hasMany(indexName: "byUserData", fields: ["id"])
+    selfLoves: [SelfLoveData!]! @hasMany(indexName: "byUserData", fields: ["id"])
+    bedtimeStories: [BedtimeStoryData!]! @hasMany(indexName: "byUserData", fields: ["id"])
 }

@@ -4,18 +4,19 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Bundle
 import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.amplifyframework.datastore.generated.model.CommentData
-import com.amplifyframework.datastore.generated.model.PresetData
-import com.amplifyframework.datastore.generated.model.SoundData
+import androidx.navigation.NavType
+import com.amplifyframework.datastore.generated.model.*
 import com.amplifyframework.datastore.generated.model.UserData
 import com.amplifyframework.storage.result.StorageListResult
 import com.example.eunoia.backend.SoundBackend
+import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import java.net.CacheResponse
@@ -63,11 +64,11 @@ object SoundObject {
         _sounds.notifyObserver()
     }
 
+    @Parcelize
     // a sound data class
     data class Sound(
         val id: String,
-        val original_owner: UserData,
-        val current_owner: UserData,
+        val soundOwner: @RawValue UserObject.User,
         val original_name: String,
         val display_name: String,
         val short_description: String,
@@ -77,14 +78,15 @@ object SoundObject {
         val fullPlayTime: Int,
         val visible_to_others: Boolean,
         val audio_names: List<String>,
-    ) {
-        override fun toString(): String = "${current_owner.username} - $display_name"
-        var mediaPlayers = mutableListOf<MediaPlayer>()
+        val approvalStatus: SoundApprovalStatus
+    ): Parcelable {
+        override fun toString(): String {
+            return Uri.encode(Gson().toJson(this))
+        }
         // return an API SoundData from this Sound object
         val data: SoundData
             get() = SoundData.builder()
-                .originalOwner(this.original_owner)
-                .currentOwner(this.current_owner)
+                .soundOwner(this.soundOwner.data)
                 .originalName(this.original_name)
                 .displayName(this.display_name)
                 .shortDescription(this.short_description)
@@ -94,16 +96,15 @@ object SoundObject {
                 .fullPlayTime(this.fullPlayTime)
                 .visibleToOthers(this.visible_to_others)
                 .audioNames(this.audio_names)
+                .approvalStatus(this.approvalStatus)
                 .id(this.id)
                 .build()
 
         companion object{
             fun from(soundData: SoundData): Sound{
-                val audioUris = mutableListOf<Uri>()
                 val result = Sound(
                     soundData.id,
-                    soundData.originalOwner,
-                    soundData.currentOwner,
+                    UserObject.User.from(soundData.soundOwner),
                     soundData.originalName,
                     soundData.displayName,
                     soundData.shortDescription,
@@ -112,38 +113,23 @@ object SoundObject {
                     soundData.icon,
                     soundData.fullPlayTime,
                     soundData.visibleToOthers,
-                    soundData.audioNames
+                    soundData.audioNames,
+                    soundData.approvalStatus
                 )
-
-                /*if(soundData.audioKey.isNotEmpty()){
-                    SoundBackend.listEunoiaSounds(soundData.audioKey){ response ->
-                        response.items.forEach { item ->
-                            SoundBackend.retrieveAudio(item.key){ audioUri ->
-                                audioUris.add(audioUri)
-                            }
-                        }
-                        setMediaPlayers(audioUris, context, result)
-                    }
-                }*/
-
                 return result
             }
+        }
+    }
 
-            private fun setMediaPlayers(audioUris: MutableList<Uri>, context: Context, result: Sound){
-                audioUris.forEachIndexed { index, audioUri ->
-                    val mediaPlayer = MediaPlayer().apply {
-                        setAudioAttributes(
-                            AudioAttributes.Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .setUsage(AudioAttributes.USAGE_MEDIA)
-                                .build()
-                        )
-                        setDataSource(context, audioUri)
-                        prepare()
-                    }
-                    result.mediaPlayers[index] = mediaPlayer
-                }
-            }
+    class SoundType : NavType<Sound>(isNullableAllowed = false) {
+        override fun get(bundle: Bundle, key: String): Sound? {
+            return bundle.getParcelable(key)
+        }
+        override fun parseValue(value: String): Sound {
+            return Gson().fromJson(value, Sound::class.java)
+        }
+        override fun put(bundle: Bundle, key: String, value: Sound) {
+            bundle.putParcelable(key, value)
         }
     }
 }

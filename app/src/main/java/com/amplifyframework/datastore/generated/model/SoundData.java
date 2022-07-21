@@ -2,6 +2,7 @@ package com.amplifyframework.datastore.generated.model;
 
 import com.amplifyframework.core.model.annotations.BelongsTo;
 import com.amplifyframework.core.model.annotations.HasOne;
+import com.amplifyframework.core.model.annotations.HasMany;
 import com.amplifyframework.core.model.temporal.Temporal;
 
 import java.util.List;
@@ -21,8 +22,6 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-import kotlinx.parcelize.Parcelize;
-
 /** This is an auto generated class representing the SoundData type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "SoundData", authRules = {
@@ -32,8 +31,7 @@ import kotlinx.parcelize.Parcelize;
 @Index(name = "byUserData", fields = {"userDataID","display_name"})
 public final class SoundData implements Model {
   public static final QueryField ID = field("SoundData", "id");
-  public static final QueryField ORIGINAL_OWNER = field("SoundData", "userDataID");
-  public static final QueryField CURRENT_OWNER = field("SoundData", "userDataID");
+  public static final QueryField SOUND_OWNER = field("SoundData", "userDataID");
   public static final QueryField ORIGINAL_NAME = field("SoundData", "original_name");
   public static final QueryField DISPLAY_NAME = field("SoundData", "display_name");
   public static final QueryField SHORT_DESCRIPTION = field("SoundData", "short_description");
@@ -43,9 +41,9 @@ public final class SoundData implements Model {
   public static final QueryField FULL_PLAY_TIME = field("SoundData", "fullPlayTime");
   public static final QueryField VISIBLE_TO_OTHERS = field("SoundData", "visible_to_others");
   public static final QueryField AUDIO_NAMES = field("SoundData", "audio_names");
+  public static final QueryField APPROVAL_STATUS = field("SoundData", "approvalStatus");
   private final @ModelField(targetType="ID", isRequired = true) String id;
-  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData original_owner;
-  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData current_owner;
+  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData soundOwner;
   private final @ModelField(targetType="String", isRequired = true) String original_name;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="String", isRequired = true) String short_description;
@@ -55,20 +53,18 @@ public final class SoundData implements Model {
   private final @ModelField(targetType="Int", isRequired = true) Integer fullPlayTime;
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean visible_to_others;
   private final @ModelField(targetType="String", isRequired = true) List<String> audio_names;
-  private final @ModelField(targetType="CommentData") @HasOne(associatedWith = "sound", type = CommentData.class) CommentData comment = null;
-  private final @ModelField(targetType="PresetData") @HasOne(associatedWith = "sound", type = PresetData.class) PresetData preset = null;
+  private final @ModelField(targetType="SoundApprovalStatus") SoundApprovalStatus approvalStatus;
+  private final @ModelField(targetType="CommentData", isRequired = true) @HasOne(associatedWith = "sound", type = CommentData.class) CommentData comment = null;
+  private final @ModelField(targetType="PresetData", isRequired = true) @HasOne(associatedWith = "sound", type = PresetData.class) PresetData preset = null;
+  private final @ModelField(targetType="RoutineSounds") @HasMany(associatedWith = "soundData", type = RoutineSounds.class) List<RoutineSounds> routines = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
       return id;
   }
   
-  public UserData getOriginalOwner() {
-      return original_owner;
-  }
-  
-  public UserData getCurrentOwner() {
-      return current_owner;
+  public UserData getSoundOwner() {
+      return soundOwner;
   }
   
   public String getOriginalName() {
@@ -107,12 +103,20 @@ public final class SoundData implements Model {
       return audio_names;
   }
   
+  public SoundApprovalStatus getApprovalStatus() {
+      return approvalStatus;
+  }
+  
   public CommentData getComment() {
       return comment;
   }
   
   public PresetData getPreset() {
       return preset;
+  }
+  
+  public List<RoutineSounds> getRoutines() {
+      return routines;
   }
   
   public Temporal.DateTime getCreatedAt() {
@@ -123,10 +127,9 @@ public final class SoundData implements Model {
       return updatedAt;
   }
   
-  private SoundData(String id, UserData original_owner, UserData current_owner, String original_name, String display_name, String short_description, String long_description, String audio_key_s3, Integer icon, Integer fullPlayTime, Boolean visible_to_others, List<String> audio_names) {
+  private SoundData(String id, UserData soundOwner, String original_name, String display_name, String short_description, String long_description, String audio_key_s3, Integer icon, Integer fullPlayTime, Boolean visible_to_others, List<String> audio_names, SoundApprovalStatus approvalStatus) {
     this.id = id;
-    this.original_owner = original_owner;
-    this.current_owner = current_owner;
+    this.soundOwner = soundOwner;
     this.original_name = original_name;
     this.display_name = display_name;
     this.short_description = short_description;
@@ -136,6 +139,7 @@ public final class SoundData implements Model {
     this.fullPlayTime = fullPlayTime;
     this.visible_to_others = visible_to_others;
     this.audio_names = audio_names;
+    this.approvalStatus = approvalStatus;
   }
   
   @Override
@@ -147,8 +151,7 @@ public final class SoundData implements Model {
       } else {
       SoundData soundData = (SoundData) obj;
       return ObjectsCompat.equals(getId(), soundData.getId()) &&
-              ObjectsCompat.equals(getOriginalOwner(), soundData.getOriginalOwner()) &&
-              ObjectsCompat.equals(getCurrentOwner(), soundData.getCurrentOwner()) &&
+              ObjectsCompat.equals(getSoundOwner(), soundData.getSoundOwner()) &&
               ObjectsCompat.equals(getOriginalName(), soundData.getOriginalName()) &&
               ObjectsCompat.equals(getDisplayName(), soundData.getDisplayName()) &&
               ObjectsCompat.equals(getShortDescription(), soundData.getShortDescription()) &&
@@ -158,6 +161,7 @@ public final class SoundData implements Model {
               ObjectsCompat.equals(getFullPlayTime(), soundData.getFullPlayTime()) &&
               ObjectsCompat.equals(getVisibleToOthers(), soundData.getVisibleToOthers()) &&
               ObjectsCompat.equals(getAudioNames(), soundData.getAudioNames()) &&
+              ObjectsCompat.equals(getApprovalStatus(), soundData.getApprovalStatus()) &&
               ObjectsCompat.equals(getCreatedAt(), soundData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), soundData.getUpdatedAt());
       }
@@ -167,8 +171,7 @@ public final class SoundData implements Model {
    public int hashCode() {
     return new StringBuilder()
       .append(getId())
-      .append(getOriginalOwner())
-      .append(getCurrentOwner())
+      .append(getSoundOwner())
       .append(getOriginalName())
       .append(getDisplayName())
       .append(getShortDescription())
@@ -178,6 +181,7 @@ public final class SoundData implements Model {
       .append(getFullPlayTime())
       .append(getVisibleToOthers())
       .append(getAudioNames())
+      .append(getApprovalStatus())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -189,8 +193,7 @@ public final class SoundData implements Model {
     return new StringBuilder()
       .append("SoundData {")
       .append("id=" + String.valueOf(getId()) + ", ")
-      .append("original_owner=" + String.valueOf(getOriginalOwner()) + ", ")
-      .append("current_owner=" + String.valueOf(getCurrentOwner()) + ", ")
+      .append("soundOwner=" + String.valueOf(getSoundOwner()) + ", ")
       .append("original_name=" + String.valueOf(getOriginalName()) + ", ")
       .append("display_name=" + String.valueOf(getDisplayName()) + ", ")
       .append("short_description=" + String.valueOf(getShortDescription()) + ", ")
@@ -200,13 +203,14 @@ public final class SoundData implements Model {
       .append("fullPlayTime=" + String.valueOf(getFullPlayTime()) + ", ")
       .append("visible_to_others=" + String.valueOf(getVisibleToOthers()) + ", ")
       .append("audio_names=" + String.valueOf(getAudioNames()) + ", ")
+      .append("approvalStatus=" + String.valueOf(getApprovalStatus()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
       .toString();
   }
   
-  public static OriginalOwnerStep builder() {
+  public static SoundOwnerStep builder() {
       return new Builder();
   }
   
@@ -237,8 +241,7 @@ public final class SoundData implements Model {
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      original_owner,
-      current_owner,
+      soundOwner,
       original_name,
       display_name,
       short_description,
@@ -247,15 +250,11 @@ public final class SoundData implements Model {
       icon,
       fullPlayTime,
       visible_to_others,
-      audio_names);
+      audio_names,
+      approvalStatus);
   }
-  public interface OriginalOwnerStep {
-    CurrentOwnerStep originalOwner(UserData originalOwner);
-  }
-  
-
-  public interface CurrentOwnerStep {
-    OriginalNameStep currentOwner(UserData currentOwner);
+  public interface SoundOwnerStep {
+    OriginalNameStep soundOwner(UserData soundOwner);
   }
   
 
@@ -307,13 +306,13 @@ public final class SoundData implements Model {
   public interface BuildStep {
     SoundData build();
     BuildStep id(String id);
+    BuildStep approvalStatus(SoundApprovalStatus approvalStatus);
   }
   
 
-  public static class Builder implements OriginalOwnerStep, CurrentOwnerStep, OriginalNameStep, DisplayNameStep, ShortDescriptionStep, LongDescriptionStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, AudioNamesStep, BuildStep {
+  public static class Builder implements SoundOwnerStep, OriginalNameStep, DisplayNameStep, ShortDescriptionStep, LongDescriptionStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, AudioNamesStep, BuildStep {
     private String id;
-    private UserData original_owner;
-    private UserData current_owner;
+    private UserData soundOwner;
     private String original_name;
     private String display_name;
     private String short_description;
@@ -323,14 +322,14 @@ public final class SoundData implements Model {
     private Integer fullPlayTime;
     private Boolean visible_to_others;
     private List<String> audio_names;
+    private SoundApprovalStatus approvalStatus;
     @Override
      public SoundData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
         return new SoundData(
           id,
-          original_owner,
-          current_owner,
+          soundOwner,
           original_name,
           display_name,
           short_description,
@@ -339,20 +338,14 @@ public final class SoundData implements Model {
           icon,
           fullPlayTime,
           visible_to_others,
-          audio_names);
+          audio_names,
+          approvalStatus);
     }
     
     @Override
-     public CurrentOwnerStep originalOwner(UserData originalOwner) {
-        Objects.requireNonNull(originalOwner);
-        this.original_owner = originalOwner;
-        return this;
-    }
-    
-    @Override
-     public OriginalNameStep currentOwner(UserData currentOwner) {
-        Objects.requireNonNull(currentOwner);
-        this.current_owner = currentOwner;
+     public OriginalNameStep soundOwner(UserData soundOwner) {
+        Objects.requireNonNull(soundOwner);
+        this.soundOwner = soundOwner;
         return this;
     }
     
@@ -419,6 +412,12 @@ public final class SoundData implements Model {
         return this;
     }
     
+    @Override
+     public BuildStep approvalStatus(SoundApprovalStatus approvalStatus) {
+        this.approvalStatus = approvalStatus;
+        return this;
+    }
+    
     /** 
      * @param id id
      * @return Current Builder instance, for fluent method chaining
@@ -431,10 +430,9 @@ public final class SoundData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData originalOwner, UserData currentOwner, String originalName, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> audioNames) {
+    private CopyOfBuilder(String id, UserData soundOwner, String originalName, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> audioNames, SoundApprovalStatus approvalStatus) {
       super.id(id);
-      super.originalOwner(originalOwner)
-        .currentOwner(currentOwner)
+      super.soundOwner(soundOwner)
         .originalName(originalName)
         .displayName(displayName)
         .shortDescription(shortDescription)
@@ -443,17 +441,13 @@ public final class SoundData implements Model {
         .icon(icon)
         .fullPlayTime(fullPlayTime)
         .visibleToOthers(visibleToOthers)
-        .audioNames(audioNames);
+        .audioNames(audioNames)
+        .approvalStatus(approvalStatus);
     }
     
     @Override
-     public CopyOfBuilder originalOwner(UserData originalOwner) {
-      return (CopyOfBuilder) super.originalOwner(originalOwner);
-    }
-    
-    @Override
-     public CopyOfBuilder currentOwner(UserData currentOwner) {
-      return (CopyOfBuilder) super.currentOwner(currentOwner);
+     public CopyOfBuilder soundOwner(UserData soundOwner) {
+      return (CopyOfBuilder) super.soundOwner(soundOwner);
     }
     
     @Override
@@ -499,6 +493,11 @@ public final class SoundData implements Model {
     @Override
      public CopyOfBuilder audioNames(List<String> audioNames) {
       return (CopyOfBuilder) super.audioNames(audioNames);
+    }
+    
+    @Override
+     public CopyOfBuilder approvalStatus(SoundApprovalStatus approvalStatus) {
+      return (CopyOfBuilder) super.approvalStatus(approvalStatus);
     }
   }
   

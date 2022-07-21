@@ -55,7 +55,10 @@ fun Settings(navController: NavController, globalViewModel: GlobalViewModel){
                 }
                 .fillMaxWidth()
         ) {
-            LogoAndStarHeader{ navController.popBackStack() }
+            LogoAndStarHeader(
+                {},
+                { navController.popBackStack() }
+            )
         }
         Column(
             modifier = Modifier

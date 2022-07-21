@@ -30,6 +30,7 @@ import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.components.EunoiaLogo
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.StandardBlueButton
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.EUNOIATheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,7 @@ import java.util.*
 
 class WelcomeActivity : ComponentActivity() {
     private val TAG = "WelcomeActivity"
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,25 +61,77 @@ class WelcomeActivity : ComponentActivity() {
 
     private fun observeIsSignedIn(){
         UserData.isSignedIn.observe(this) { isSignedIn ->
-            // update UI
             Log.i(TAG, "isSignedIn changed : $isSignedIn")
             if (isSignedIn) {
-                Log.i(TAG, "user val : ${UserData.isSignedIn.value!!}")
                 if (UserData.isSignedIn.value!!) {
-                    if(Amplify.Auth.currentUser != null) {
-                        if (Amplify.Auth.currentUser.username == "eunoia") {
+                    getSignedInUser{ userData ->
+                        Log.i(TAG, "ij df sjfnifks  sjf sf s$userData")
+                        if(userData == null){
+                            createUserObject{
+                                scope.launch { UserObject.setSignedInUser(UserObject.User.from(it!!)) }
+                            }
+                        }else{
+                            setSignedInUser{
+                                scope.launch { UserObject.setSignedInUser(UserObject.User.from(it!!)) }
+                            }
+                        }
+                        if(Amplify.Auth.currentUser.username == "eunoia"){
                             val intent = Intent(this, UploadFilesActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
-                        } else {
+                        }else {
                             val intent = Intent(this, UserDashboardActivity::class.java)
                             intent.putExtra("username", Amplify.Auth.currentUser.username)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                         }
                     }
+                } else {
+                    Log.d(TAG, UserData.isSignedIn.value.toString())
                 }
+            } else {
+                Log.d(TAG, isSignedIn.toString())
             }
+        }
+    }
+
+    private fun getSignedInUser(completed: (userData: com.amplifyframework.datastore.generated.model.UserData?) -> Unit){
+        UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){userData ->
+            completed(userData)
+        }
+    }
+
+    private fun createUserObject(completed: (userData: com.amplifyframework.datastore.generated.model.UserData?) -> Unit){
+        AuthBackend.getAuthUserAttributes {
+            val user = UserObject.User(
+                UUID.randomUUID().toString(),
+                Amplify.Auth.currentUser.username,
+                "",
+                "",
+                "",
+                it[2].value,
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                true,
+                "rookie"
+            )
+            UserBackend.createUser(user){ userData ->
+                globalViewModel_!!.currentUser = userData
+                Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel_!!.currentUser}")
+                completed(userData)
+            }
+        }
+    }
+
+    private fun setSignedInUser(completed: (userData: com.amplifyframework.datastore.generated.model.UserData?) -> Unit){
+        UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){
+            globalViewModel_!!.currentUser = it
+            Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel_!!.currentUser}")
+            completed(it)
         }
     }
 
@@ -102,7 +156,7 @@ class WelcomeActivity : ComponentActivity() {
                 dimensionResource(id = R.dimen.big_logo_h),
                 0,
                 0
-            )
+            ){}
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.eight_sp)))
             NormalText(
                 stringResource(id = R.string.eunoia_definition),

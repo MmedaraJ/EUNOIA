@@ -2,6 +2,7 @@ package com.example.eunoia.backend
 
 import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
+import com.amplifyframework.api.graphql.model.ModelPagination
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.CommentData
@@ -37,7 +38,11 @@ object CommentBackend {
     fun queryCommentBasedOnSound(sound: SoundData, completed: (comment: CommentData) -> Unit) {
         scope.launch {
             Amplify.API.query(
-                ModelQuery.list(CommentData::class.java, CommentData.SOUND.eq(sound.id)),
+                ModelQuery.list(
+                    CommentData::class.java,
+                    CommentData.SOUND.eq(sound.id),
+                    ModelPagination.limit(1_00)
+                ),
                 { response ->
                     if(response.hasErrors()){
                         Log.e(TAG, response.errors.first().message)

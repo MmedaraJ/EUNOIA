@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.PresetNameAndVolumesMapData
 import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.ui.theme.*
@@ -19,7 +20,8 @@ class GlobalViewModel: ViewModel(){
     var currentSoundPlayingContext by mutableStateOf<Context?>(null)
     var currentSoundPlayingSliderPositions = mutableListOf<MutableState<Float>?>()
     var currentSoundPlayingUris: MutableList<Uri>? = null
-
+    //adding sound
+    var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)
 
     var currentRoutinePlaying by mutableStateOf("")
     var currentSelfLovePlaying by mutableStateOf("")
@@ -28,6 +30,11 @@ class GlobalViewModel: ViewModel(){
     var isCurrentRoutinePlaying by mutableStateOf(false)
     var isCurrentSelfLovePlaying by mutableStateOf(false)
     var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
+
+    var bottomSheetOpenFor by mutableStateOf("i")
+
+    //user
+    var currentUser by mutableStateOf<UserData?>(null)
 
     val icons = arrayOf(
         mutableStateOf(R.drawable.replay_sound_icon),

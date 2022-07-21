@@ -102,7 +102,7 @@ class HelloUserActivity : ComponentActivity() {
                 dimensionResource(id = R.dimen.logo_top_height_dimen),
                 0,
                 0
-            )
+            ){}
         }
         Column(
             modifier = Modifier

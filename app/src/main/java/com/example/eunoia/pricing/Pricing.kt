@@ -49,7 +49,9 @@ fun PricingUI(navController: NavController, globalViewModel: GlobalViewModel){
         ) {
             BackArrowHeader(
                 { navController.popBackStack() },
-                { navController.navigate(Screen.Settings.screen_route) })
+                {},
+                { navController.navigate(Screen.Settings.screen_route) }
+            )
         }
         Column(
             modifier = Modifier

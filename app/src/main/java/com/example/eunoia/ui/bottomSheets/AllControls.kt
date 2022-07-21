@@ -2,12 +2,14 @@ package com.example.eunoia.ui.bottomSheets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -29,15 +31,27 @@ fun openBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+fun closeBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
+    scope.launch{
+        state.hide()
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BottomSheetAllControls(globalViewModel: GlobalViewModel){
+fun BottomSheetAllControls(
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+){
     Column(
         modifier = Modifier
             .padding(start = 16.dp, top = 16.dp, end = 16.dp)
     ) {
-        val soundPlaying = bottomSheetSoundControl(globalViewModel)
-        val bedtimeStoryPlaying = bottomSheetSoundControl(globalViewModel)
-        val selfLovePlaying = bottomSheetSoundControl(globalViewModel)
+        val soundPlaying = bottomSheetSoundControl(globalViewModel, scope, state)
+        val bedtimeStoryPlaying = bottomSheetSoundControl(globalViewModel, scope, state)
+        val selfLovePlaying = bottomSheetSoundControl(globalViewModel, scope, state)
 
         if(!(soundPlaying && bedtimeStoryPlaying && selfLovePlaying)){
             Card(

@@ -65,7 +65,7 @@ fun ArticleUI(navController: NavController, globalViewModel: GlobalViewModel){
                 }
                 .fillMaxWidth()
         ) {
-            BackArrowHeader({ navController.popBackStack() }, {navController.navigate(Screen.Settings.screen_route)})
+            BackArrowHeader({ navController.popBackStack() }, {}, {navController.navigate(Screen.Settings.screen_route)})
         }
         Column(
             modifier = Modifier

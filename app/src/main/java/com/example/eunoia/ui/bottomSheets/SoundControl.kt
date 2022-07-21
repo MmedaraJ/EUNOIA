@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -22,9 +24,15 @@ import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.Mischka
 import com.example.eunoia.ui.theme.PeriwinkleGray
 import com.example.eunoia.viewModels.GlobalViewModel
+import kotlinx.coroutines.CoroutineScope
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun bottomSheetSoundControl(globalViewModel: GlobalViewModel): Boolean{
+fun bottomSheetSoundControl(
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+): Boolean{
     var showing = false
     if(globalViewModel.currentSoundPlaying != null &&
         globalViewModel.currentSoundPlayingPreset != null &&
@@ -102,7 +110,9 @@ fun bottomSheetSoundControl(globalViewModel: GlobalViewModel): Boolean{
                         globalViewModel.currentSoundPlaying!!,
                         globalViewModel.currentSoundPlayingPreset!!,
                         globalViewModel.currentSoundPlayingContext!!,
-                        false
+                        false,
+                        scope,
+                        state
                     )
                 }
             }

@@ -3,11 +3,13 @@ package com.example.eunoia.ui.navigation
 import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -28,20 +30,26 @@ import com.example.eunoia.settings.Settings
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.viewModels.GlobalViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.eunoia.models.SoundObject
+import com.example.eunoia.ui.bottomSheets.AddToSoundListAndRoutineBottomSheet
 import com.example.eunoia.ui.bottomSheets.BottomSheetAllControls
 import com.example.eunoia.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 
+var globalViewModel_: GlobalViewModel? = null
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MultiBottomNavApp(globalViewModel: GlobalViewModel = viewModel()) {
+    globalViewModel_ = globalViewModel
     val modalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     EunoiaApp(globalViewModel, scope, modalBottomSheetState) {screen ->
         MultiNavTabContent(
             screen = screen,
             globalViewModel,
-            scope, modalBottomSheetState
+            scope,
+            modalBottomSheetState
         )
     }
 }
@@ -66,12 +74,20 @@ fun EunoiaApp(
         ){
             ModalBottomSheetLayout(
                 sheetContent = {
-                    Box(modifier = Modifier.defaultMinSize(minHeight = 1.dp)) {
-                        BottomSheetAllControls(globalViewModel = globalViewModel)
+                    Box(
+                        modifier = Modifier
+                            .defaultMinSize(minHeight = 1.dp)
+                    ) {
+                        if(globalViewModel.bottomSheetOpenFor == "controls") {
+                            BottomSheetAllControls(globalViewModel = globalViewModel, scope, state)
+                        }else if(globalViewModel.bottomSheetOpenFor == "addToSoundListOrRoutine"){
+                            AddToSoundListAndRoutineBottomSheet(scope, state)
+                        }
                     }
                 },
                 sheetState = state,
-                sheetBackgroundColor = OldLace
+                sheetBackgroundColor = OldLace,
+                sheetShape = RoundedCornerShape(topStart =  10.dp, topEnd = 10.dp)
             ) {
                 Scaffold(
                     content = {padding ->
@@ -199,7 +215,12 @@ fun DashboardTab(
             Screen.Dashboard.screen_route
         ) {
             Log.i("Dashboard", "You are now on the Dashboard tab")
-            UserDashboardActivityUI(navController, globalViewModel)
+            UserDashboardActivityUI(
+                navController,
+                globalViewModel,
+                scope,
+                state
+            )
         }
         composable(
             Screen.Sound.screen_route
@@ -208,12 +229,12 @@ fun DashboardTab(
             SoundActivityUI(navController, LocalContext.current, scope, state)
         }
         composable(
-            "${Screen.SoundScreen.screen_route}/{display_name}",
-            arguments = listOf(navArgument("display_name") {type = NavType.StringType})
+            "${Screen.SoundScreen.screen_route}/sound={sound}",
+            arguments = listOf(navArgument("sound") {type = SoundObject.SoundType()})
         ) { backStackEntry ->
-            Log.i("Pouring Rain", "You are now on the Pouring Rain tab")
-            backStackEntry.arguments?.getString("display_name")
-                ?.let { SoundScreen(navController, it, LocalContext.current, globalViewModel, scope, state) }
+            val sound = backStackEntry.arguments?.getParcelable<SoundObject.Sound>("sound")
+            Log.i("Sound Screen", "You are now on the ${sound!!.display_name} tab")
+            SoundScreen(navController, sound.data, LocalContext.current, scope, state)
         }
         composable(Screen.Settings.screen_route) {
             Log.i("Settings", "You are now on the Settings tab")

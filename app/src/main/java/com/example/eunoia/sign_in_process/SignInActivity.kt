@@ -32,6 +32,7 @@ import com.example.eunoia.dashboard.upload_files.UploadFilesActivity
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.theme.Blue
 import com.example.eunoia.ui.components.*
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.EUNOIATheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,6 +79,7 @@ class SignInActivity : ComponentActivity() {
             if (isSignedIn) {
                 if (AuthBackend.isSignedIn.value!!) {
                     getSignedInUser{ userData ->
+                        Log.i(TAG, "ij df sjfnifks  sjf sf s$userData")
                         if(userData == null){
                             createUserObject{
                                 scope.launch { UserObject.setSignedInUser(UserObject.User.from(it!!)) }
@@ -132,6 +134,8 @@ class SignInActivity : ComponentActivity() {
                 "rookie"
             )
             UserBackend.createUser(user){ userData ->
+                globalViewModel_!!.currentUser = userData
+                Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel_!!.currentUser}")
                 completed(userData)
             }
         }
@@ -161,6 +165,8 @@ class SignInActivity : ComponentActivity() {
 
     private fun setSignedInUser(completed: (userData: UserData?) -> Unit){
         UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){
+            globalViewModel_!!.currentUser = it
+            Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel_!!.currentUser}")
             completed(it)
         }
     }
@@ -178,7 +184,7 @@ class SignInActivity : ComponentActivity() {
                 dimensionResource(id = R.dimen.big_logo_h),
                 0,
                 0
-            )
+            ){}
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.eight_sp)))
             NormalText(
                 stringResource(id = R.string.eunoia_definition),

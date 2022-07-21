@@ -71,7 +71,7 @@ class UsernameResetPwActivity : ComponentActivity() {
                 dimensionResource(id = R.dimen.big_logo_h),
                 0,
                 0
-            )
+            ){}
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.eight_sp)))
             NormalText(
                 stringResource(id = R.string.eunoia_definition),

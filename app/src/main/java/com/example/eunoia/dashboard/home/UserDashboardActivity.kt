@@ -37,10 +37,12 @@ import com.example.eunoia.mvvm.presetMvvm.viewModel.PresetViewModel
 import com.example.eunoia.mvvm.soundMvvm.model.SoundModel
 import com.example.eunoia.mvvm.soundMvvm.viewModel.SoundViewModel
 import com.example.eunoia.sign_in_process.SignInActivity
+import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.theme.Grey
 import com.example.eunoia.ui.theme.White
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.MultiBottomNavApp
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -116,8 +118,14 @@ class UserDashboardActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UserDashboardActivityUI(navController: NavHostController, globalViewModel: GlobalViewModel) {
+fun UserDashboardActivityUI(
+    navController: NavHostController,
+    globalViewModel: GlobalViewModel,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     ConstraintLayout(
@@ -143,7 +151,15 @@ fun UserDashboardActivityUI(navController: NavHostController, globalViewModel: G
                 }
                 .fillMaxWidth()
         ){
-            ProfilePictureHeader({}, {navController.navigate(Screen.Settings.screen_route)})
+            ProfilePictureHeader(
+                {},
+                {
+                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    openBottomSheet(scope, state)
+
+                },
+                {navController.navigate(Screen.Settings.screen_route)}
+            )
         }
         Column(
             modifier = Modifier
@@ -222,10 +238,10 @@ private fun OptionsList(context: Context, navController: NavHostController){
         modifier = Modifier
             .fillMaxWidth()
     ){
-        OptionItem(displayName = "sleep", icon = R.drawable.sleep_icon, 71, 71, false, 0, 0){ AuthBackend.signOut() }
-        OptionItem(displayName = "music", icon = R.drawable.music_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(displayName = "meditate", icon = R.drawable.meditate_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(displayName = "sound", icon = R.drawable.sound_icon, 71, 71, false, 0, 0){toSoundActivity(context, navController)}
+        OptionItem(displayName = "sleep", icon = R.drawable.sleep_icon, 71, 71, false, 0, 0, {}){ AuthBackend.signOut() }
+        OptionItem(displayName = "music", icon = R.drawable.music_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "meditate", icon = R.drawable.meditate_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "sound", icon = R.drawable.sound_icon, 71, 71, false, 0, 0, {}){toSoundActivity(context, navController)}
     }
 
     Row(
@@ -233,10 +249,10 @@ private fun OptionsList(context: Context, navController: NavHostController){
         modifier = Modifier
             .fillMaxWidth()
     ){
-        OptionItem(displayName = "self-love", icon = R.drawable.self_love_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(displayName = "stretch", icon = R.drawable.stretch_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(displayName = "slumber party", icon = R.drawable.slumber_party_icon, 71, 71, false, 0, 0){something()}
-        OptionItem(displayName = "bedtime story", icon = R.drawable.bedtime_story_icon, 71, 71, false, 0, 0){something()}
+        OptionItem(displayName = "self-love", icon = R.drawable.self_love_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "stretch", icon = R.drawable.stretch_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "slumber party", icon = R.drawable.slumber_party_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "bedtime story", icon = R.drawable.bedtime_story_icon, 71, 71, false, 0, 0, {}){something()}
     }
 }
 
@@ -249,8 +265,10 @@ fun OptionItem(
     pro: Boolean,
     xOffset: Int,
     yOffset: Int,
+    start: (displayName: String) -> Unit,
     lambda: (displayName: String) -> Unit
 ){
+    start(displayName)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

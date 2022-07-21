@@ -48,7 +48,9 @@ fun FeedbackUI(navController: NavController, context: Context, globalViewModel: 
         ) {
             ProfilePictureHeader(
                 {},
-                { navController.navigate(Screen.Settings.screen_route) })
+                {},
+                { navController.navigate(Screen.Settings.screen_route) }
+            )
         }
         Column(
             modifier = Modifier

@@ -27,12 +27,15 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
 @Index(name = "bySoundData", fields = {"soundID","comment"})
+@Index(name = "byUserData", fields = {"userDataID","comment"})
 public final class CommentData implements Model {
   public static final QueryField ID = field("CommentData", "id");
   public static final QueryField SOUND = field("CommentData", "soundID");
+  public static final QueryField COMMENT_OWNER = field("CommentData", "userDataID");
   public static final QueryField COMMENT = field("CommentData", "comment");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="SoundData", isRequired = true) @BelongsTo(targetName = "soundID", type = SoundData.class) SoundData sound;
+  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData commentOwner;
   private final @ModelField(targetType="String", isRequired = true) String comment;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
@@ -42,6 +45,10 @@ public final class CommentData implements Model {
   
   public SoundData getSound() {
       return sound;
+  }
+  
+  public UserData getCommentOwner() {
+      return commentOwner;
   }
   
   public String getComment() {
@@ -56,9 +63,10 @@ public final class CommentData implements Model {
       return updatedAt;
   }
   
-  private CommentData(String id, SoundData sound, String comment) {
+  private CommentData(String id, SoundData sound, UserData commentOwner, String comment) {
     this.id = id;
     this.sound = sound;
+    this.commentOwner = commentOwner;
     this.comment = comment;
   }
   
@@ -72,6 +80,7 @@ public final class CommentData implements Model {
       CommentData commentData = (CommentData) obj;
       return ObjectsCompat.equals(getId(), commentData.getId()) &&
               ObjectsCompat.equals(getSound(), commentData.getSound()) &&
+              ObjectsCompat.equals(getCommentOwner(), commentData.getCommentOwner()) &&
               ObjectsCompat.equals(getComment(), commentData.getComment()) &&
               ObjectsCompat.equals(getCreatedAt(), commentData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), commentData.getUpdatedAt());
@@ -83,6 +92,7 @@ public final class CommentData implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getSound())
+      .append(getCommentOwner())
       .append(getComment())
       .append(getCreatedAt())
       .append(getUpdatedAt())
@@ -96,6 +106,7 @@ public final class CommentData implements Model {
       .append("CommentData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("sound=" + String.valueOf(getSound()) + ", ")
+      .append("commentOwner=" + String.valueOf(getCommentOwner()) + ", ")
       .append("comment=" + String.valueOf(getComment()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
@@ -119,6 +130,7 @@ public final class CommentData implements Model {
     return new CommentData(
       id,
       null,
+      null,
       null
     );
   }
@@ -126,10 +138,16 @@ public final class CommentData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       sound,
+      commentOwner,
       comment);
   }
   public interface SoundStep {
-    CommentStep sound(SoundData sound);
+    CommentOwnerStep sound(SoundData sound);
+  }
+  
+
+  public interface CommentOwnerStep {
+    CommentStep commentOwner(UserData commentOwner);
   }
   
 
@@ -144,9 +162,10 @@ public final class CommentData implements Model {
   }
   
 
-  public static class Builder implements SoundStep, CommentStep, BuildStep {
+  public static class Builder implements SoundStep, CommentOwnerStep, CommentStep, BuildStep {
     private String id;
     private SoundData sound;
+    private UserData commentOwner;
     private String comment;
     @Override
      public CommentData build() {
@@ -155,13 +174,21 @@ public final class CommentData implements Model {
         return new CommentData(
           id,
           sound,
+          commentOwner,
           comment);
     }
     
     @Override
-     public CommentStep sound(SoundData sound) {
+     public CommentOwnerStep sound(SoundData sound) {
         Objects.requireNonNull(sound);
         this.sound = sound;
+        return this;
+    }
+    
+    @Override
+     public CommentStep commentOwner(UserData commentOwner) {
+        Objects.requireNonNull(commentOwner);
+        this.commentOwner = commentOwner;
         return this;
     }
     
@@ -184,15 +211,21 @@ public final class CommentData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, SoundData sound, String comment) {
+    private CopyOfBuilder(String id, SoundData sound, UserData commentOwner, String comment) {
       super.id(id);
       super.sound(sound)
+        .commentOwner(commentOwner)
         .comment(comment);
     }
     
     @Override
      public CopyOfBuilder sound(SoundData sound) {
       return (CopyOfBuilder) super.sound(sound);
+    }
+    
+    @Override
+     public CopyOfBuilder commentOwner(UserData commentOwner) {
+      return (CopyOfBuilder) super.commentOwner(commentOwner);
     }
     
     @Override

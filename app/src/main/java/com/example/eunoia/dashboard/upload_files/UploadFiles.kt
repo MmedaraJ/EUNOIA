@@ -22,6 +22,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.PresetData
+import com.amplifyframework.datastore.generated.model.SoundApprovalStatus
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
@@ -51,8 +52,8 @@ class UploadFilesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //createEunoiaUser()
-        setSignedInUser()
-        observeCurrentUserChanged()
+        //setSignedInUser()
+        //observeCurrentUserChanged()
         observeIsSignedOut()
         setContent {
             EUNOIATheme {
@@ -107,7 +108,7 @@ class UploadFilesActivity : ComponentActivity() {
     }
 
     private fun createEunoiaUser(){
-        if(currentUser == null) {
+        //if(currentUser == null) {
             if (Amplify.Auth.currentUser.username == "eunoia") {
                 val user = UserObject.User(
                     UUID.randomUUID().toString(),
@@ -131,7 +132,7 @@ class UploadFilesActivity : ComponentActivity() {
                 UserObject.setSignedInUser(user)
                 Log.i(TAG, UserObject.signedInUser().value.toString())
             }
-        }
+        //}
     }
 
     @Composable
@@ -142,17 +143,8 @@ class UploadFilesActivity : ComponentActivity() {
             modifier = Modifier.wrapContentSize()
         ) {
             StandardBlueButton(text = "Pouring Rain") {
+                createEunoiaUser()
                 createPouringRainSound()
-               /* SoundBackend.listEunoiaSounds{ result ->
-                    result.items.forEach { item ->
-                        Log.i(TAG, "Item: ${item.key}")
-                        *//*SoundBackend.retrieveAudio(item.key){ audioUri ->
-                            tenSounds.add(audioUri)
-                        }*//*
-                    }
-                }*/
-                /*SoundBackend.deleteAudio("Routine/Sounds/Eunoia/Pouring_Rain")
-                SoundBackend.deleteAudio("Routine/Sounds/Eunoia/Pouring_Rain1")*/
                 //AuthBackend.signOut()
             }
             StandardBlueButton(text = "play sounds") {
@@ -233,8 +225,7 @@ class UploadFilesActivity : ComponentActivity() {
     private fun createPouringRainSound(){
         val sound = SoundObject.Sound(
             UUID.randomUUID().toString(),
-            currentUser.value!!,
-            currentUser.value!!,
+            UserObject.signedInUser().value!!,
             "pouring rain",
             "pouring rain",
             "The beautiful sound of the pouring rain",
@@ -243,12 +234,11 @@ class UploadFilesActivity : ComponentActivity() {
             R.drawable.pouring_rain_icon,
             180,
             true,
-            listOf("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten")
+            listOf("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"),
+            SoundApprovalStatus.APPROVED
         )
         SoundBackend.createSound(sound){
             createSoundPreset(it)
-            /*Log.i(TAG, "hsjnd sdhskdhsdusjd sdbsj $sound")
-            setSound(sound)*/
         }
 
         /*if(ContextCompat.checkSelfPermission(
@@ -340,18 +330,6 @@ class UploadFilesActivity : ComponentActivity() {
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.type = "audio/aac"
         selectAudiosActivityResult.launch(intent)
-    }
-
-    private fun storeAudio(filePath: String, key: String) {
-        val file = File(filePath)
-
-        Amplify.Storage.uploadFile(
-            key,
-            file,
-            {Log.i(TAG, "Upload Done NIfsfls fksnfja ikd v zdv dkv dhi")},
-            {Log.i(TAG, Amplify.Storage.hashCode().toString())}
-        )
-        //}
     }
 
     @Preview(
