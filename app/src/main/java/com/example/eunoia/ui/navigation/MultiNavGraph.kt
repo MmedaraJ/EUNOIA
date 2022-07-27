@@ -31,8 +31,7 @@ import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.viewModels.GlobalViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.eunoia.models.SoundObject
-import com.example.eunoia.ui.bottomSheets.AddToSoundListAndRoutineBottomSheet
-import com.example.eunoia.ui.bottomSheets.BottomSheetAllControls
+import com.example.eunoia.ui.bottomSheets.*
 import com.example.eunoia.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 
@@ -44,7 +43,11 @@ fun MultiBottomNavApp(globalViewModel: GlobalViewModel = viewModel()) {
     globalViewModel_ = globalViewModel
     val modalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    EunoiaApp(globalViewModel, scope, modalBottomSheetState) {screen ->
+    EunoiaApp(
+        globalViewModel,
+        scope,
+        modalBottomSheetState
+    ) {screen ->
         MultiNavTabContent(
             screen = screen,
             globalViewModel,
@@ -78,10 +81,13 @@ fun EunoiaApp(
                         modifier = Modifier
                             .defaultMinSize(minHeight = 1.dp)
                     ) {
-                        if(globalViewModel.bottomSheetOpenFor == "controls") {
-                            BottomSheetAllControls(globalViewModel = globalViewModel, scope, state)
-                        }else if(globalViewModel.bottomSheetOpenFor == "addToSoundListOrRoutine"){
-                            AddToSoundListAndRoutineBottomSheet(scope, state)
+                        when(globalViewModel.bottomSheetOpenFor){
+                            "controls" -> BottomSheetAllControls(globalViewModel, scope, state)
+                            "addToSoundListOrRoutine" -> AddToSoundListAndRoutineBottomSheet(scope, state)
+                            "addToRoutine" -> SelectRoutine(scope, state)
+                            "inputRoutineName" -> globalViewModel_!!.routineNameToBeAdded = InputRoutineName(scope, state)
+                            "selectRoutineColor" -> SelectRoutineColor(scope, state)
+                            "selectRoutineIcon" -> SelectRoutineIcon(scope, state)
                         }
                     }
                 },
@@ -226,7 +232,12 @@ fun DashboardTab(
             Screen.Sound.screen_route
         ) {
             Log.i("User", "You are now on the User tab")
-            SoundActivityUI(navController, LocalContext.current, scope, state)
+            SoundActivityUI(
+                navController,
+                LocalContext.current,
+                scope,
+                state
+            )
         }
         composable(
             "${Screen.SoundScreen.screen_route}/sound={sound}",
@@ -234,15 +245,27 @@ fun DashboardTab(
         ) { backStackEntry ->
             val sound = backStackEntry.arguments?.getParcelable<SoundObject.Sound>("sound")
             Log.i("Sound Screen", "You are now on the ${sound!!.display_name} tab")
-            SoundScreen(navController, sound.data, LocalContext.current, scope, state)
+            SoundScreen(
+                navController,
+                sound.data,
+                LocalContext.current,
+                scope,
+                state
+            )
         }
         composable(Screen.Settings.screen_route) {
             Log.i("Settings", "You are now on the Settings tab")
-            Settings(navController, globalViewModel)
+            Settings(
+                navController,
+                globalViewModel
+            )
         }
         composable(Screen.Article.screen_route) {
             Log.i("Article", "You are now on the Article tab")
-            ArticleUI(navController, globalViewModel)
+            ArticleUI(
+                navController,
+                globalViewModel
+            )
         }
     }
 }
@@ -280,6 +303,20 @@ fun RoutinesTab(
             Log.i("Routines", "You are now on the Routines tab")
             Text(text = "Routines")
         }
+        composable(
+            "${Screen.SoundScreen.screen_route}/sound={sound}",
+            arguments = listOf(navArgument("sound") {type = SoundObject.SoundType()})
+        ) { backStackEntry ->
+            val sound = backStackEntry.arguments?.getParcelable<SoundObject.Sound>("sound")
+            Log.i("Sound Screen", "You are now on the ${sound!!.display_name} tab")
+            SoundScreen(
+                navController,
+                sound.data,
+                LocalContext.current,
+                scope,
+                state
+            )
+        }
     }
 }
 
@@ -315,6 +352,20 @@ fun SearchTab(
         composable(Screen.Search.screen_route) {
             Log.i("Search", "You are now on the Search tab")
             Text(text = "Search")
+        }
+        composable(
+            "${Screen.SoundScreen.screen_route}/sound={sound}",
+            arguments = listOf(navArgument("sound") {type = SoundObject.SoundType()})
+        ) { backStackEntry ->
+            val sound = backStackEntry.arguments?.getParcelable<SoundObject.Sound>("sound")
+            Log.i("Sound Screen", "You are now on the ${sound!!.display_name} tab")
+            SoundScreen(
+                navController,
+                sound.data,
+                LocalContext.current,
+                scope,
+                state
+            )
         }
     }
 }
@@ -356,6 +407,20 @@ fun FeedbackTab(
             Log.i("Settings", "You are now on the Settings tab")
             Settings(navController, globalViewModel)
         }
+        composable(
+            "${Screen.SoundScreen.screen_route}/sound={sound}",
+            arguments = listOf(navArgument("sound") {type = SoundObject.SoundType()})
+        ) { backStackEntry ->
+            val sound = backStackEntry.arguments?.getParcelable<SoundObject.Sound>("sound")
+            Log.i("Sound Screen", "You are now on the ${sound!!.display_name} tab")
+            SoundScreen(
+                navController,
+                sound.data,
+                LocalContext.current,
+                scope,
+                state
+            )
+        }
     }
 }
 
@@ -395,6 +460,20 @@ fun AccountTab(
         composable(Screen.Settings.screen_route) {
             Log.i("Settings", "You are now on the Settings tab")
             Settings(navController, globalViewModel)
+        }
+        composable(
+            "${Screen.SoundScreen.screen_route}/sound={sound}",
+            arguments = listOf(navArgument("sound") {type = SoundObject.SoundType()})
+        ) { backStackEntry ->
+            val sound = backStackEntry.arguments?.getParcelable<SoundObject.Sound>("sound")
+            Log.i("Sound Screen", "You are now on the ${sound!!.display_name} tab")
+            SoundScreen(
+                navController,
+                sound.data,
+                LocalContext.current,
+                scope,
+                state
+            )
         }
     }
 }

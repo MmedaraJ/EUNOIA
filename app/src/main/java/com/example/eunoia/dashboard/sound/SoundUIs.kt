@@ -37,14 +37,10 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.CommentBackend
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.models.UserObject
-import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.openDialogBox
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import java.lang.Math.*
@@ -61,7 +57,7 @@ private val timerTime = mutableStateOf(0L)
 private val meditationBellMediaPlayer = MutableLiveData<MediaPlayer>()
 private var numCounters = 0
 var displayName = ""
-var openDialogBoxHere by mutableStateOf(false)
+var openUserAlreadyHasSoundDialogBox by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -367,15 +363,8 @@ fun Controls(
                 ) {
                     globalViewModel_!!.currentSoundToBeAdded = sound
                     Log.i(TAG, "${globalViewModel_!!.currentUser}")
-                    if (!globalViewModel_!!.currentUser!!.sounds.contains(sound)) {
-                        globalViewModel_!!.bottomSheetOpenFor = "addToSoundListOrRoutine"
-                        openBottomSheet(scope, state)
-                    }else{
-                        openDialogBoxHere = true
-                    }
-                }
-                if(openDialogBoxHere){
-                    AlertDialogBox(text = "You already have this sound")
+                    globalViewModel_!!.bottomSheetOpenFor = "addToSoundListOrRoutine"
+                    openBottomSheet(scope, state)
                 }
             }
         }
@@ -1066,8 +1055,7 @@ fun OtherUsersCommentsUI(
         .clickable {
             clicked = !clicked
             resetAll(context)
-            Log.i(TAG, "Navigate to ${Screen.SoundScreen.screen_route}/${sound.displayName}")
-            navController.navigate("${Screen.SoundScreen.screen_route}/${sound.displayName}")
+            navigateToSoundScreen(navController, sound)
         }
         .fillMaxWidth()
 

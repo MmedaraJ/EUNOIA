@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
@@ -25,19 +26,18 @@ import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.upload_files.UploadFilesActivity
 import com.example.eunoia.models.UserData
-//import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.components.EunoiaLogo
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.StandardBlueButton
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.EUNOIATheme
+import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
-
 
 class WelcomeActivity : ComponentActivity() {
     private val TAG = "WelcomeActivity"
@@ -129,7 +129,7 @@ class WelcomeActivity : ComponentActivity() {
 
     private fun setSignedInUser(completed: (userData: com.amplifyframework.datastore.generated.model.UserData?) -> Unit){
         UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){
-            globalViewModel_!!.currentUser = it
+            globalViewModel_!!.currentUser = it!!
             Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel_!!.currentUser}")
             completed(it)
         }

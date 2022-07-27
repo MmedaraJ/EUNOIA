@@ -51,22 +51,40 @@ subscription OnCreateSoundData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -157,6 +175,17 @@ subscription OnCreateSoundData($owner: String) {
       createdAt
       updatedAt
       owner
+    }
+    users {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
     }
     routines {
       items {
@@ -193,22 +222,40 @@ subscription OnUpdateSoundData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -299,6 +346,17 @@ subscription OnUpdateSoundData($owner: String) {
       createdAt
       updatedAt
       owner
+    }
+    users {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
     }
     routines {
       items {
@@ -335,22 +393,40 @@ subscription OnDeleteSoundData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -441,6 +517,17 @@ subscription OnDeleteSoundData($owner: String) {
       createdAt
       updatedAt
       owner
+    }
+    users {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
     }
     routines {
       items {
@@ -510,6 +597,9 @@ subscription OnCreateCommentData($owner: String) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -533,22 +623,40 @@ subscription OnCreateCommentData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -616,6 +724,9 @@ subscription OnUpdateCommentData($owner: String) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -639,22 +750,40 @@ subscription OnUpdateCommentData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -722,6 +851,9 @@ subscription OnDeleteCommentData($owner: String) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -745,22 +877,40 @@ subscription OnDeleteCommentData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -942,6 +1092,9 @@ subscription OnCreatePresetData($owner: String) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -1017,6 +1170,9 @@ subscription OnUpdatePresetData($owner: String) {
         createdAt
         updatedAt
         owner
+      }
+      users {
+        nextToken
       }
       routines {
         nextToken
@@ -1094,6 +1250,9 @@ subscription OnDeletePresetData($owner: String) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -1137,22 +1296,40 @@ subscription OnCreateRoutineData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1162,6 +1339,7 @@ subscription OnCreateRoutineData($owner: String) {
       updatedAt
       owner
     }
+    original_name
     display_name
     numberOfSteps
     numberOfTimesUsed
@@ -1232,6 +1410,17 @@ subscription OnCreateRoutineData($owner: String) {
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        routineDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1263,22 +1452,40 @@ subscription OnUpdateRoutineData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1288,6 +1495,7 @@ subscription OnUpdateRoutineData($owner: String) {
       updatedAt
       owner
     }
+    original_name
     display_name
     numberOfSteps
     numberOfTimesUsed
@@ -1358,6 +1566,17 @@ subscription OnUpdateRoutineData($owner: String) {
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        routineDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1389,22 +1608,40 @@ subscription OnDeleteRoutineData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1414,6 +1651,7 @@ subscription OnDeleteRoutineData($owner: String) {
       updatedAt
       owner
     }
+    original_name
     display_name
     numberOfSteps
     numberOfTimesUsed
@@ -1490,6 +1728,17 @@ subscription OnDeleteRoutineData($owner: String) {
       }
       nextToken
     }
+    users {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     playingOrder
     createdAt
     updatedAt
@@ -1515,22 +1764,40 @@ subscription OnCreateBedtimeStoryData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1546,6 +1813,17 @@ subscription OnCreateBedtimeStoryData($owner: String) {
         id
         routineDataID
         bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        bedtimeStoryDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1576,22 +1854,40 @@ subscription OnUpdateBedtimeStoryData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1607,6 +1903,17 @@ subscription OnUpdateBedtimeStoryData($owner: String) {
         id
         routineDataID
         bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        bedtimeStoryDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1637,22 +1944,40 @@ subscription OnDeleteBedtimeStoryData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1668,6 +1993,17 @@ subscription OnDeleteBedtimeStoryData($owner: String) {
         id
         routineDataID
         bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        bedtimeStoryDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1698,22 +2034,40 @@ subscription OnCreateSelfLoveData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1729,6 +2083,17 @@ subscription OnCreateSelfLoveData($owner: String) {
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        selfLoveDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1759,22 +2124,40 @@ subscription OnUpdateSelfLoveData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1790,6 +2173,17 @@ subscription OnUpdateSelfLoveData($owner: String) {
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        selfLoveDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1820,22 +2214,40 @@ subscription OnDeleteSelfLoveData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1851,6 +2263,17 @@ subscription OnDeleteSelfLoveData($owner: String) {
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        selfLoveDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1881,22 +2304,40 @@ subscription OnCreateStretchData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1912,6 +2353,17 @@ subscription OnCreateStretchData($owner: String) {
         id
         routineDataID
         stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        stretchDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1942,22 +2394,40 @@ subscription OnUpdateStretchData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1973,6 +2443,17 @@ subscription OnUpdateStretchData($owner: String) {
         id
         routineDataID
         stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        stretchDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2003,22 +2484,40 @@ subscription OnDeleteStretchData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -2034,6 +2533,17 @@ subscription OnDeleteStretchData($owner: String) {
         id
         routineDataID
         stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        stretchDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2064,22 +2574,40 @@ subscription OnCreateBreathingData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -2095,6 +2623,17 @@ subscription OnCreateBreathingData($owner: String) {
         id
         routineDataID
         breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        breathingDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2125,22 +2664,40 @@ subscription OnUpdateBreathingData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -2156,6 +2713,17 @@ subscription OnUpdateBreathingData($owner: String) {
         id
         routineDataID
         breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        breathingDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2186,22 +2754,40 @@ subscription OnDeleteBreathingData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -2217,6 +2803,17 @@ subscription OnDeleteBreathingData($owner: String) {
         id
         routineDataID
         breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        breathingDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2244,7 +2841,7 @@ subscription OnCreateUserData($owner: String) {
     phoneNumber
     authenticated
     subscription
-    sounds {
+    soundsOwnedByUser {
       items {
         id
         userDataID
@@ -2264,6 +2861,17 @@ subscription OnCreateUserData($owner: String) {
       }
       nextToken
     }
+    sounds {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     comments {
       items {
         id
@@ -2276,10 +2884,11 @@ subscription OnCreateUserData($owner: String) {
       }
       nextToken
     }
-    routines {
+    routinesOwnedByUser {
       items {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -2308,7 +2917,40 @@ subscription OnCreateUserData($owner: String) {
       }
       nextToken
     }
+    routines {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretchesOwnedByUser {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     stretches {
+      items {
+        id
+        stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathingsOwnedByUser {
       items {
         id
         userDataID
@@ -2322,6 +2964,17 @@ subscription OnCreateUserData($owner: String) {
     breathings {
       items {
         id
+        breathingDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLovesOwnedByUser {
+      items {
+        id
         userDataID
         display_name
         createdAt
@@ -2331,6 +2984,17 @@ subscription OnCreateUserData($owner: String) {
       nextToken
     }
     selfLoves {
+      items {
+        id
+        selfLoveDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStoriesOwnedByUser {
       items {
         id
         userDataID
@@ -2344,8 +3008,8 @@ subscription OnCreateUserData($owner: String) {
     bedtimeStories {
       items {
         id
+        bedtimeStoryDataID
         userDataID
-        display_name
         createdAt
         updatedAt
         owner
@@ -2373,7 +3037,7 @@ subscription OnUpdateUserData($owner: String) {
     phoneNumber
     authenticated
     subscription
-    sounds {
+    soundsOwnedByUser {
       items {
         id
         userDataID
@@ -2393,6 +3057,17 @@ subscription OnUpdateUserData($owner: String) {
       }
       nextToken
     }
+    sounds {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     comments {
       items {
         id
@@ -2405,10 +3080,11 @@ subscription OnUpdateUserData($owner: String) {
       }
       nextToken
     }
-    routines {
+    routinesOwnedByUser {
       items {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -2437,7 +3113,40 @@ subscription OnUpdateUserData($owner: String) {
       }
       nextToken
     }
+    routines {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretchesOwnedByUser {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     stretches {
+      items {
+        id
+        stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathingsOwnedByUser {
       items {
         id
         userDataID
@@ -2451,6 +3160,17 @@ subscription OnUpdateUserData($owner: String) {
     breathings {
       items {
         id
+        breathingDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLovesOwnedByUser {
+      items {
+        id
         userDataID
         display_name
         createdAt
@@ -2460,6 +3180,17 @@ subscription OnUpdateUserData($owner: String) {
       nextToken
     }
     selfLoves {
+      items {
+        id
+        selfLoveDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStoriesOwnedByUser {
       items {
         id
         userDataID
@@ -2473,8 +3204,8 @@ subscription OnUpdateUserData($owner: String) {
     bedtimeStories {
       items {
         id
+        bedtimeStoryDataID
         userDataID
-        display_name
         createdAt
         updatedAt
         owner
@@ -2502,7 +3233,7 @@ subscription OnDeleteUserData($owner: String) {
     phoneNumber
     authenticated
     subscription
-    sounds {
+    soundsOwnedByUser {
       items {
         id
         userDataID
@@ -2522,6 +3253,17 @@ subscription OnDeleteUserData($owner: String) {
       }
       nextToken
     }
+    sounds {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     comments {
       items {
         id
@@ -2534,10 +3276,11 @@ subscription OnDeleteUserData($owner: String) {
       }
       nextToken
     }
-    routines {
+    routinesOwnedByUser {
       items {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -2566,7 +3309,40 @@ subscription OnDeleteUserData($owner: String) {
       }
       nextToken
     }
+    routines {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretchesOwnedByUser {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     stretches {
+      items {
+        id
+        stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathingsOwnedByUser {
       items {
         id
         userDataID
@@ -2580,6 +3356,17 @@ subscription OnDeleteUserData($owner: String) {
     breathings {
       items {
         id
+        breathingDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLovesOwnedByUser {
+      items {
+        id
         userDataID
         display_name
         createdAt
@@ -2589,6 +3376,17 @@ subscription OnDeleteUserData($owner: String) {
       nextToken
     }
     selfLoves {
+      items {
+        id
+        selfLoveDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStoriesOwnedByUser {
       items {
         id
         userDataID
@@ -2602,8 +3400,8 @@ subscription OnDeleteUserData($owner: String) {
     bedtimeStories {
       items {
         id
+        bedtimeStoryDataID
         userDataID
-        display_name
         createdAt
         updatedAt
         owner
@@ -2615,8 +3413,386 @@ subscription OnDeleteUserData($owner: String) {
     owner
   }
 }
-subscription OnCreateRoutineSounds($owner: String) {
-  onCreateRoutineSounds(owner: $owner) {
+subscription OnCreateUserSound($owner: String) {
+  onCreateUserSound(owner: $owner) {
+    id
+    soundDataID
+    userDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserSound($owner: String) {
+  onUpdateUserSound(owner: $owner) {
+    id
+    soundDataID
+    userDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserSound($owner: String) {
+  onDeleteUserSound(owner: $owner) {
+    id
+    soundDataID
+    userDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateRoutineSound($owner: String) {
+  onCreateRoutineSound(owner: $owner) {
     id
     soundDataID
     routineDataID
@@ -2668,6 +3844,9 @@ subscription OnCreateRoutineSounds($owner: String) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -2697,6 +3876,7 @@ subscription OnCreateRoutineSounds($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -2733,6 +3913,9 @@ subscription OnCreateRoutineSounds($owner: String) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -2743,8 +3926,8 @@ subscription OnCreateRoutineSounds($owner: String) {
     owner
   }
 }
-subscription OnUpdateRoutineSounds($owner: String) {
-  onUpdateRoutineSounds(owner: $owner) {
+subscription OnUpdateRoutineSound($owner: String) {
+  onUpdateRoutineSound(owner: $owner) {
     id
     soundDataID
     routineDataID
@@ -2796,6 +3979,9 @@ subscription OnUpdateRoutineSounds($owner: String) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -2825,6 +4011,7 @@ subscription OnUpdateRoutineSounds($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -2861,6 +4048,9 @@ subscription OnUpdateRoutineSounds($owner: String) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -2871,8 +4061,8 @@ subscription OnUpdateRoutineSounds($owner: String) {
     owner
   }
 }
-subscription OnDeleteRoutineSounds($owner: String) {
-  onDeleteRoutineSounds(owner: $owner) {
+subscription OnDeleteRoutineSound($owner: String) {
+  onDeleteRoutineSound(owner: $owner) {
     id
     soundDataID
     routineDataID
@@ -2924,6 +4114,9 @@ subscription OnDeleteRoutineSounds($owner: String) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -2953,6 +4146,7 @@ subscription OnDeleteRoutineSounds($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -2989,6 +4183,9 @@ subscription OnDeleteRoutineSounds($owner: String) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -2999,8 +4196,8 @@ subscription OnDeleteRoutineSounds($owner: String) {
     owner
   }
 }
-subscription OnCreateRoutineStretches($owner: String) {
-  onCreateRoutineStretches(owner: $owner) {
+subscription OnCreateRoutineStretch($owner: String) {
+  onCreateRoutineStretch(owner: $owner) {
     id
     routineDataID
     stretchDataID
@@ -3026,6 +4223,7 @@ subscription OnCreateRoutineStretches($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3060,6 +4258,9 @@ subscription OnCreateRoutineStretches($owner: String) {
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3093,6 +4294,9 @@ subscription OnCreateRoutineStretches($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3102,8 +4306,8 @@ subscription OnCreateRoutineStretches($owner: String) {
     owner
   }
 }
-subscription OnUpdateRoutineStretches($owner: String) {
-  onUpdateRoutineStretches(owner: $owner) {
+subscription OnUpdateRoutineStretch($owner: String) {
+  onUpdateRoutineStretch(owner: $owner) {
     id
     routineDataID
     stretchDataID
@@ -3129,6 +4333,7 @@ subscription OnUpdateRoutineStretches($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3163,6 +4368,9 @@ subscription OnUpdateRoutineStretches($owner: String) {
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3196,6 +4404,9 @@ subscription OnUpdateRoutineStretches($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3205,8 +4416,8 @@ subscription OnUpdateRoutineStretches($owner: String) {
     owner
   }
 }
-subscription OnDeleteRoutineStretches($owner: String) {
-  onDeleteRoutineStretches(owner: $owner) {
+subscription OnDeleteRoutineStretch($owner: String) {
+  onDeleteRoutineStretch(owner: $owner) {
     id
     routineDataID
     stretchDataID
@@ -3232,6 +4443,7 @@ subscription OnDeleteRoutineStretches($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3266,6 +4478,9 @@ subscription OnDeleteRoutineStretches($owner: String) {
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3299,6 +4514,9 @@ subscription OnDeleteRoutineStretches($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3308,8 +4526,8 @@ subscription OnDeleteRoutineStretches($owner: String) {
     owner
   }
 }
-subscription OnCreateRoutineBreathings($owner: String) {
-  onCreateRoutineBreathings(owner: $owner) {
+subscription OnCreateRoutineBreathing($owner: String) {
+  onCreateRoutineBreathing(owner: $owner) {
     id
     routineDataID
     breathingDataID
@@ -3335,6 +4553,7 @@ subscription OnCreateRoutineBreathings($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3369,6 +4588,9 @@ subscription OnCreateRoutineBreathings($owner: String) {
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3402,6 +4624,9 @@ subscription OnCreateRoutineBreathings($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3411,8 +4636,8 @@ subscription OnCreateRoutineBreathings($owner: String) {
     owner
   }
 }
-subscription OnUpdateRoutineBreathings($owner: String) {
-  onUpdateRoutineBreathings(owner: $owner) {
+subscription OnUpdateRoutineBreathing($owner: String) {
+  onUpdateRoutineBreathing(owner: $owner) {
     id
     routineDataID
     breathingDataID
@@ -3438,6 +4663,7 @@ subscription OnUpdateRoutineBreathings($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3472,6 +4698,9 @@ subscription OnUpdateRoutineBreathings($owner: String) {
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3505,6 +4734,9 @@ subscription OnUpdateRoutineBreathings($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3514,8 +4746,8 @@ subscription OnUpdateRoutineBreathings($owner: String) {
     owner
   }
 }
-subscription OnDeleteRoutineBreathings($owner: String) {
-  onDeleteRoutineBreathings(owner: $owner) {
+subscription OnDeleteRoutineBreathing($owner: String) {
+  onDeleteRoutineBreathing(owner: $owner) {
     id
     routineDataID
     breathingDataID
@@ -3541,6 +4773,7 @@ subscription OnDeleteRoutineBreathings($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3575,6 +4808,9 @@ subscription OnDeleteRoutineBreathings($owner: String) {
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3608,6 +4844,9 @@ subscription OnDeleteRoutineBreathings($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3617,8 +4856,8 @@ subscription OnDeleteRoutineBreathings($owner: String) {
     owner
   }
 }
-subscription OnCreateRoutineBedtimeStories($owner: String) {
-  onCreateRoutineBedtimeStories(owner: $owner) {
+subscription OnCreateRoutineBedtimeStory($owner: String) {
+  onCreateRoutineBedtimeStory(owner: $owner) {
     id
     routineDataID
     bedtimeStoryDataID
@@ -3644,6 +4883,7 @@ subscription OnCreateRoutineBedtimeStories($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3678,6 +4918,9 @@ subscription OnCreateRoutineBedtimeStories($owner: String) {
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3711,6 +4954,9 @@ subscription OnCreateRoutineBedtimeStories($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3720,8 +4966,8 @@ subscription OnCreateRoutineBedtimeStories($owner: String) {
     owner
   }
 }
-subscription OnUpdateRoutineBedtimeStories($owner: String) {
-  onUpdateRoutineBedtimeStories(owner: $owner) {
+subscription OnUpdateRoutineBedtimeStory($owner: String) {
+  onUpdateRoutineBedtimeStory(owner: $owner) {
     id
     routineDataID
     bedtimeStoryDataID
@@ -3747,6 +4993,7 @@ subscription OnUpdateRoutineBedtimeStories($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3781,6 +5028,9 @@ subscription OnUpdateRoutineBedtimeStories($owner: String) {
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3814,6 +5064,9 @@ subscription OnUpdateRoutineBedtimeStories($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3823,8 +5076,8 @@ subscription OnUpdateRoutineBedtimeStories($owner: String) {
     owner
   }
 }
-subscription OnDeleteRoutineBedtimeStories($owner: String) {
-  onDeleteRoutineBedtimeStories(owner: $owner) {
+subscription OnDeleteRoutineBedtimeStory($owner: String) {
+  onDeleteRoutineBedtimeStory(owner: $owner) {
     id
     routineDataID
     bedtimeStoryDataID
@@ -3850,6 +5103,7 @@ subscription OnDeleteRoutineBedtimeStories($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3884,6 +5138,9 @@ subscription OnDeleteRoutineBedtimeStories($owner: String) {
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3917,6 +5174,9 @@ subscription OnDeleteRoutineBedtimeStories($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3926,8 +5186,8 @@ subscription OnDeleteRoutineBedtimeStories($owner: String) {
     owner
   }
 }
-subscription OnCreateRoutineSelfLoves($owner: String) {
-  onCreateRoutineSelfLoves(owner: $owner) {
+subscription OnCreateRoutineSelfLove($owner: String) {
+  onCreateRoutineSelfLove(owner: $owner) {
     id
     routineDataID
     selfLoveDataID
@@ -3953,6 +5213,7 @@ subscription OnCreateRoutineSelfLoves($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3989,6 +5250,9 @@ subscription OnCreateRoutineSelfLoves($owner: String) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -4020,6 +5284,9 @@ subscription OnCreateRoutineSelfLoves($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -4029,8 +5296,8 @@ subscription OnCreateRoutineSelfLoves($owner: String) {
     owner
   }
 }
-subscription OnUpdateRoutineSelfLoves($owner: String) {
-  onUpdateRoutineSelfLoves(owner: $owner) {
+subscription OnUpdateRoutineSelfLove($owner: String) {
+  onUpdateRoutineSelfLove(owner: $owner) {
     id
     routineDataID
     selfLoveDataID
@@ -4056,6 +5323,7 @@ subscription OnUpdateRoutineSelfLoves($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -4092,6 +5360,9 @@ subscription OnUpdateRoutineSelfLoves($owner: String) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -4123,6 +5394,9 @@ subscription OnUpdateRoutineSelfLoves($owner: String) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -4132,8 +5406,8 @@ subscription OnUpdateRoutineSelfLoves($owner: String) {
     owner
   }
 }
-subscription OnDeleteRoutineSelfLoves($owner: String) {
-  onDeleteRoutineSelfLoves(owner: $owner) {
+subscription OnDeleteRoutineSelfLove($owner: String) {
+  onDeleteRoutineSelfLove(owner: $owner) {
     id
     routineDataID
     selfLoveDataID
@@ -4159,6 +5433,7 @@ subscription OnDeleteRoutineSelfLoves($owner: String) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -4195,6 +5470,9 @@ subscription OnDeleteRoutineSelfLoves($owner: String) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -4224,6 +5502,1626 @@ subscription OnDeleteRoutineSelfLoves($owner: String) {
       }
       display_name
       routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserRoutine($owner: String) {
+  onCreateUserRoutine(owner: $owner) {
+    id
+    routineDataID
+    userDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserRoutine($owner: String) {
+  onUpdateUserRoutine(owner: $owner) {
+    id
+    routineDataID
+    userDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserRoutine($owner: String) {
+  onDeleteUserRoutine(owner: $owner) {
+    id
+    routineDataID
+    userDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserBedtimeStory($owner: String) {
+  onCreateUserBedtimeStory(owner: $owner) {
+    id
+    bedtimeStoryDataID
+    userDataID
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserBedtimeStory($owner: String) {
+  onUpdateUserBedtimeStory(owner: $owner) {
+    id
+    bedtimeStoryDataID
+    userDataID
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserBedtimeStory($owner: String) {
+  onDeleteUserBedtimeStory(owner: $owner) {
+    id
+    bedtimeStoryDataID
+    userDataID
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserSelfLove($owner: String) {
+  onCreateUserSelfLove(owner: $owner) {
+    id
+    selfLoveDataID
+    userDataID
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserSelfLove($owner: String) {
+  onUpdateUserSelfLove(owner: $owner) {
+    id
+    selfLoveDataID
+    userDataID
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserSelfLove($owner: String) {
+  onDeleteUserSelfLove(owner: $owner) {
+    id
+    selfLoveDataID
+    userDataID
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserStretch($owner: String) {
+  onCreateUserStretch(owner: $owner) {
+    id
+    stretchDataID
+    userDataID
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserStretch($owner: String) {
+  onUpdateUserStretch(owner: $owner) {
+    id
+    stretchDataID
+    userDataID
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserStretch($owner: String) {
+  onDeleteUserStretch(owner: $owner) {
+    id
+    stretchDataID
+    userDataID
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserBreathing($owner: String) {
+  onCreateUserBreathing(owner: $owner) {
+    id
+    breathingDataID
+    userDataID
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserBreathing($owner: String) {
+  onUpdateUserBreathing(owner: $owner) {
+    id
+    breathingDataID
+    userDataID
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserBreathing($owner: String) {
+  onDeleteUserBreathing(owner: $owner) {
+    id
+    breathingDataID
+    userDataID
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
         nextToken
       }
       createdAt

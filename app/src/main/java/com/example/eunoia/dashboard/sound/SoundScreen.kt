@@ -2,7 +2,6 @@ package com.example.eunoia.dashboard.sound
 
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -15,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -28,12 +26,9 @@ import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
 import com.example.eunoia.models.*
-import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.openDialogBox
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -55,6 +50,7 @@ fun SoundScreen(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
+    globalViewModel_!!.navController = navController
     showCommentBox = false
     if(globalViewModel_!!.currentSoundPlayingPreset == null){
         var soundPreset by remember{ mutableStateOf<PresetData?>(null) }
@@ -416,13 +412,9 @@ fun makeSoundObject(
         soundData.approvalStatus
     )
     SoundBackend.createSound(sound){
+        UserSoundBackend.createUserSoundObject(it){}
         createSoundPreset(it, soundPresets)
         createSoundComment(it, comment)
-        if(globalViewModel_!!.currentUser != null){
-            globalViewModel_!!.currentUser!!.sounds.add(it)
-            UserBackend.updateUser(globalViewModel_!!.currentUser!!) {
-            }
-        }
     }
 }
 
@@ -471,10 +463,6 @@ private fun createPresetNameAndVolumesMapData(newPresetData: PresetData, current
 
 fun navigateBack(navController: NavController) {
     navController.popBackStack()
-}
-
-fun navigateToNewSound(navController: NavController, soundData: SoundData) {
-    navController.navigate("${Screen.SoundScreen.screen_route}/${soundData.displayName}")
 }
 
 @Preview(

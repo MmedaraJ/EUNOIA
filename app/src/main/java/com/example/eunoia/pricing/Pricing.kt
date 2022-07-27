@@ -16,12 +16,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.ui.components.AlignedLightText
 import com.example.eunoia.ui.components.AlignedNormalText
 import com.example.eunoia.ui.components.BackArrowHeader
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
 fun PricingUI(navController: NavController, globalViewModel: GlobalViewModel){
+    globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier

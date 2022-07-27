@@ -47,22 +47,40 @@ query GetSoundData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -154,6 +172,17 @@ query GetSoundData($id: ID!) {
       updatedAt
       owner
     }
+    users {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -224,6 +253,9 @@ query ListSoundDatas(
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -286,6 +318,9 @@ query GetCommentData($id: ID!) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -309,22 +344,40 @@ query GetCommentData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -513,6 +566,9 @@ query GetPresetData($id: ID!) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -592,22 +648,40 @@ query GetRoutineData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -617,6 +691,7 @@ query GetRoutineData($id: ID!) {
       updatedAt
       owner
     }
+    original_name
     display_name
     numberOfSteps
     numberOfTimesUsed
@@ -693,6 +768,17 @@ query GetRoutineData($id: ID!) {
       }
       nextToken
     }
+    users {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     playingOrder
     createdAt
     updatedAt
@@ -727,6 +813,7 @@ query ListRoutineDatas(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -763,6 +850,9 @@ query ListRoutineDatas(
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -790,22 +880,40 @@ query GetBedtimeStoryData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -821,6 +929,17 @@ query GetBedtimeStoryData($id: ID!) {
         id
         routineDataID
         bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        bedtimeStoryDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -864,6 +983,9 @@ query ListBedtimeStoryDatas(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -890,22 +1012,40 @@ query GetSelfLoveData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -921,6 +1061,17 @@ query GetSelfLoveData($id: ID!) {
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        selfLoveDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -964,6 +1115,9 @@ query ListSelfLoveDatas(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -990,22 +1144,40 @@ query GetStretchData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1021,6 +1193,17 @@ query GetStretchData($id: ID!) {
         id
         routineDataID
         stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        stretchDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1064,6 +1247,9 @@ query ListStretchDatas(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -1090,22 +1276,40 @@ query GetBreathingData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1121,6 +1325,17 @@ query GetBreathingData($id: ID!) {
         id
         routineDataID
         breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        breathingDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1164,6 +1379,9 @@ query ListBreathingDatas(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -1187,7 +1405,7 @@ query GetUserData($id: ID!) {
     phoneNumber
     authenticated
     subscription
-    sounds {
+    soundsOwnedByUser {
       items {
         id
         userDataID
@@ -1207,6 +1425,17 @@ query GetUserData($id: ID!) {
       }
       nextToken
     }
+    sounds {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     comments {
       items {
         id
@@ -1219,10 +1448,11 @@ query GetUserData($id: ID!) {
       }
       nextToken
     }
-    routines {
+    routinesOwnedByUser {
       items {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -1251,7 +1481,40 @@ query GetUserData($id: ID!) {
       }
       nextToken
     }
+    routines {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretchesOwnedByUser {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     stretches {
+      items {
+        id
+        stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathingsOwnedByUser {
       items {
         id
         userDataID
@@ -1265,6 +1528,17 @@ query GetUserData($id: ID!) {
     breathings {
       items {
         id
+        breathingDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLovesOwnedByUser {
+      items {
+        id
         userDataID
         display_name
         createdAt
@@ -1274,6 +1548,17 @@ query GetUserData($id: ID!) {
       nextToken
     }
     selfLoves {
+      items {
+        id
+        selfLoveDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStoriesOwnedByUser {
       items {
         id
         userDataID
@@ -1287,8 +1572,8 @@ query GetUserData($id: ID!) {
     bedtimeStories {
       items {
         id
+        bedtimeStoryDataID
         userDataID
-        display_name
         createdAt
         updatedAt
         owner
@@ -1321,22 +1606,40 @@ query ListUserDatas(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1349,8 +1652,187 @@ query ListUserDatas(
     nextToken
   }
 }
-query GetRoutineSounds($id: ID!) {
-  getRoutineSounds(id: $id) {
+query GetUserSound($id: ID!) {
+  getUserSound(id: $id) {
+    id
+    soundDataID
+    userDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserSounds(
+  $filter: ModelUserSoundFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserSounds(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      soundDataID
+      userDataID
+      soundData {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        fullPlayTime
+        visible_to_others
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      userData {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetRoutineSound($id: ID!) {
+  getRoutineSound(id: $id) {
     id
     soundDataID
     routineDataID
@@ -1402,6 +1884,9 @@ query GetRoutineSounds($id: ID!) {
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -1431,6 +1916,7 @@ query GetRoutineSounds($id: ID!) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -1467,6 +1953,9 @@ query GetRoutineSounds($id: ID!) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -1478,7 +1967,7 @@ query GetRoutineSounds($id: ID!) {
   }
 }
 query ListRoutineSounds(
-  $filter: ModelRoutineSoundsFilterInput
+  $filter: ModelRoutineSoundFilterInput
   $limit: Int
   $nextToken: String
 ) {
@@ -1507,6 +1996,7 @@ query ListRoutineSounds(
       routineData {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -1540,8 +2030,8 @@ query ListRoutineSounds(
     nextToken
   }
 }
-query GetRoutineStretches($id: ID!) {
-  getRoutineStretches(id: $id) {
+query GetRoutineStretch($id: ID!) {
+  getRoutineStretch(id: $id) {
     id
     routineDataID
     stretchDataID
@@ -1567,6 +2057,7 @@ query GetRoutineStretches($id: ID!) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -1603,6 +2094,9 @@ query GetRoutineStretches($id: ID!) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -1634,6 +2128,9 @@ query GetRoutineStretches($id: ID!) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -1644,7 +2141,7 @@ query GetRoutineStretches($id: ID!) {
   }
 }
 query ListRoutineStretches(
-  $filter: ModelRoutineStretchesFilterInput
+  $filter: ModelRoutineStretchFilterInput
   $limit: Int
   $nextToken: String
 ) {
@@ -1656,6 +2153,7 @@ query ListRoutineStretches(
       routineData {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -1697,8 +2195,8 @@ query ListRoutineStretches(
     nextToken
   }
 }
-query GetRoutineBreathings($id: ID!) {
-  getRoutineBreathings(id: $id) {
+query GetRoutineBreathing($id: ID!) {
+  getRoutineBreathing(id: $id) {
     id
     routineDataID
     breathingDataID
@@ -1724,6 +2222,7 @@ query GetRoutineBreathings($id: ID!) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -1760,6 +2259,9 @@ query GetRoutineBreathings($id: ID!) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -1791,6 +2293,9 @@ query GetRoutineBreathings($id: ID!) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -1801,7 +2306,7 @@ query GetRoutineBreathings($id: ID!) {
   }
 }
 query ListRoutineBreathings(
-  $filter: ModelRoutineBreathingsFilterInput
+  $filter: ModelRoutineBreathingFilterInput
   $limit: Int
   $nextToken: String
 ) {
@@ -1813,6 +2318,7 @@ query ListRoutineBreathings(
       routineData {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -1854,8 +2360,8 @@ query ListRoutineBreathings(
     nextToken
   }
 }
-query GetRoutineBedtimeStories($id: ID!) {
-  getRoutineBedtimeStories(id: $id) {
+query GetRoutineBedtimeStory($id: ID!) {
+  getRoutineBedtimeStory(id: $id) {
     id
     routineDataID
     bedtimeStoryDataID
@@ -1881,6 +2387,7 @@ query GetRoutineBedtimeStories($id: ID!) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -1917,6 +2424,9 @@ query GetRoutineBedtimeStories($id: ID!) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -1948,6 +2458,9 @@ query GetRoutineBedtimeStories($id: ID!) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -1958,7 +2471,7 @@ query GetRoutineBedtimeStories($id: ID!) {
   }
 }
 query ListRoutineBedtimeStories(
-  $filter: ModelRoutineBedtimeStoriesFilterInput
+  $filter: ModelRoutineBedtimeStoryFilterInput
   $limit: Int
   $nextToken: String
 ) {
@@ -1974,6 +2487,7 @@ query ListRoutineBedtimeStories(
       routineData {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -2015,8 +2529,8 @@ query ListRoutineBedtimeStories(
     nextToken
   }
 }
-query GetRoutineSelfLoves($id: ID!) {
-  getRoutineSelfLoves(id: $id) {
+query GetRoutineSelfLove($id: ID!) {
+  getRoutineSelfLove(id: $id) {
     id
     routineDataID
     selfLoveDataID
@@ -2042,6 +2556,7 @@ query GetRoutineSelfLoves($id: ID!) {
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -2078,6 +2593,9 @@ query GetRoutineSelfLoves($id: ID!) {
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -2109,6 +2627,9 @@ query GetRoutineSelfLoves($id: ID!) {
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -2119,7 +2640,7 @@ query GetRoutineSelfLoves($id: ID!) {
   }
 }
 query ListRoutineSelfLoves(
-  $filter: ModelRoutineSelfLovesFilterInput
+  $filter: ModelRoutineSelfLoveFilterInput
   $limit: Int
   $nextToken: String
 ) {
@@ -2131,6 +2652,7 @@ query ListRoutineSelfLoves(
       routineData {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -2161,6 +2683,791 @@ query ListRoutineSelfLoves(
         id
         userDataID
         display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserRoutine($id: ID!) {
+  getUserRoutine(id: $id) {
+    id
+    routineDataID
+    userDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserRoutines(
+  $filter: ModelUserRoutineFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserRoutines(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      routineDataID
+      userDataID
+      routineData {
+        id
+        userDataID
+        original_name
+        display_name
+        numberOfSteps
+        numberOfTimesUsed
+        fullPlayTime
+        icon
+        visible_to_others
+        colorHEX
+        playSoundDuringStretch
+        playSoundDuringBreathing
+        playSoundDuringSelfLove
+        playSoundDuringBedtimeStory
+        playSoundDuringSleep
+        eachSoundPlayTime
+        bedtimeStoryPlayTime
+        selfLovePlayTime
+        stretchTime
+        breathingTime
+        currentBedtimeStoryPlayingIndex
+        currentBedtimeStoryContinuePlayingTime
+        currentSelfLovePlayingIndex
+        currentSelfLoveContinuePlayingTime
+        playingOrder
+        createdAt
+        updatedAt
+        owner
+      }
+      userData {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserBedtimeStory($id: ID!) {
+  getUserBedtimeStory(id: $id) {
+    id
+    bedtimeStoryDataID
+    userDataID
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserBedtimeStories(
+  $filter: ModelUserBedtimeStoryFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserBedtimeStories(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      bedtimeStoryDataID
+      userDataID
+      bedtimeStoryData {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      userData {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserSelfLove($id: ID!) {
+  getUserSelfLove(id: $id) {
+    id
+    selfLoveDataID
+    userDataID
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserSelfLoves(
+  $filter: ModelUserSelfLoveFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserSelfLoves(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      selfLoveDataID
+      userDataID
+      selfLoveData {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      userData {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserStretch($id: ID!) {
+  getUserStretch(id: $id) {
+    id
+    stretchDataID
+    userDataID
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserStretches(
+  $filter: ModelUserStretchFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserStretches(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      stretchDataID
+      userDataID
+      stretchData {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      userData {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserBreathing($id: ID!) {
+  getUserBreathing(id: $id) {
+    id
+    breathingDataID
+    userDataID
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserBreathings(
+  $filter: ModelUserBreathingFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserBreathings(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      breathingDataID
+      userDataID
+      breathingData {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      userData {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
         createdAt
         updatedAt
         owner

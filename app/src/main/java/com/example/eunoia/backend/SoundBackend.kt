@@ -62,7 +62,10 @@ object SoundBackend{
         scope.launch {
             val sounds = mutableListOf<SoundData>()
             Amplify.API.query(
-                ModelQuery.list(SoundData::class.java, SoundData.ORIGINAL_NAME.eq(original_name)),
+                ModelQuery.list(
+                    SoundData::class.java,
+                    SoundData.ORIGINAL_NAME.eq(original_name)
+                ),
                 { response ->
                     if(response.hasData()) {
                         for (soundData in response.data) {
@@ -87,8 +90,6 @@ object SoundBackend{
                     if(response.hasData()) {
                         for (soundData in response.data) {
                             Log.i(TAG, soundData.toString())
-                            // TODO should add all the sounds at once instead of one by one (each add triggers a UI refresh)
-                            SoundObject.addSound(SoundObject.Sound.from(soundData))
                         }
                     }
                 },

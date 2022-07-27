@@ -27,7 +27,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "byUserData", fields = {"userDataID","display_name"})
+@Index(name = "BreathingsOwnedByUser", fields = {"userDataID","display_name"})
 public final class BreathingData implements Model {
   public static final QueryField ID = field("BreathingData", "id");
   public static final QueryField BREATHING_OWNER = field("BreathingData", "userDataID");
@@ -35,7 +35,8 @@ public final class BreathingData implements Model {
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData breathingOwner;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
-  private final @ModelField(targetType="RoutineBreathings") @HasMany(associatedWith = "breathingData", type = RoutineBreathings.class) List<RoutineBreathings> routines = null;
+  private final @ModelField(targetType="RoutineBreathingModel") @HasMany(associatedWith = "breathingData", type = RoutineBreathing.class) List<RoutineBreathing> routines = null;
+  private final @ModelField(targetType="UserBreathingModel") @HasMany(associatedWith = "breathingData", type = UserBreathing.class) List<UserBreathing> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -50,8 +51,12 @@ public final class BreathingData implements Model {
       return display_name;
   }
   
-  public List<RoutineBreathings> getRoutines() {
+  public List<RoutineBreathing> getRoutines() {
       return routines;
+  }
+  
+  public List<UserBreathing> getUsers() {
+      return users;
   }
   
   public Temporal.DateTime getCreatedAt() {

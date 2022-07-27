@@ -16,12 +16,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.R
 import com.example.eunoia.ui.components.*
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
 fun ArticleUI(navController: NavController, globalViewModel: GlobalViewModel){
+    globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
     val sub_texts = arrayOf(
         "Your skincare routine ends with a goodnight sleep.\n" +

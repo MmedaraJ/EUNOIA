@@ -27,10 +27,7 @@ import com.amplifyframework.datastore.generated.model.SoundData
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
-import com.example.eunoia.models.PresetNameAndVolumesMapObject
-import com.example.eunoia.models.PresetObject
-import com.example.eunoia.models.SoundObject
-import com.example.eunoia.models.UserObject
+import com.example.eunoia.models.*
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.components.StandardBlueButton
 import com.example.eunoia.ui.theme.EUNOIATheme
@@ -143,7 +140,7 @@ class UploadFilesActivity : ComponentActivity() {
             modifier = Modifier.wrapContentSize()
         ) {
             StandardBlueButton(text = "Pouring Rain") {
-                createEunoiaUser()
+                //createEunoiaUser()
                 createPouringRainSound()
                 //AuthBackend.signOut()
             }
@@ -238,6 +235,7 @@ class UploadFilesActivity : ComponentActivity() {
             SoundApprovalStatus.APPROVED
         )
         SoundBackend.createSound(sound){
+            createUserSound(it)
             createSoundPreset(it)
         }
 
@@ -253,6 +251,17 @@ class UploadFilesActivity : ComponentActivity() {
                 3
             )
         }*/
+    }
+
+    private fun createUserSound(soundData: SoundData){
+        val userSoundModel = UserSoundObject.UserSoundModel(
+            UUID.randomUUID().toString(),
+            SoundObject.Sound.from(soundData),
+            UserObject.signedInUser().value!!
+        )
+        UserSoundBackend.createUserSound(userSoundModel){
+
+        }
     }
 
     private val selectAudiosActivityResult =

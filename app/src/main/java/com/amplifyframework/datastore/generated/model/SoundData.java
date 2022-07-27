@@ -28,7 +28,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "byUserData", fields = {"userDataID","display_name"})
+@Index(name = "SoundsOwnedByUser", fields = {"userDataID","display_name"})
 public final class SoundData implements Model {
   public static final QueryField ID = field("SoundData", "id");
   public static final QueryField SOUND_OWNER = field("SoundData", "userDataID");
@@ -54,9 +54,10 @@ public final class SoundData implements Model {
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean visible_to_others;
   private final @ModelField(targetType="String", isRequired = true) List<String> audio_names;
   private final @ModelField(targetType="SoundApprovalStatus") SoundApprovalStatus approvalStatus;
-  private final @ModelField(targetType="CommentData", isRequired = true) @HasOne(associatedWith = "sound", type = CommentData.class) CommentData comment = null;
-  private final @ModelField(targetType="PresetData", isRequired = true) @HasOne(associatedWith = "sound", type = PresetData.class) PresetData preset = null;
-  private final @ModelField(targetType="RoutineSounds") @HasMany(associatedWith = "soundData", type = RoutineSounds.class) List<RoutineSounds> routines = null;
+  private final @ModelField(targetType="CommentData") @HasOne(associatedWith = "sound", type = CommentData.class) CommentData comment = null;
+  private final @ModelField(targetType="PresetData") @HasOne(associatedWith = "sound", type = PresetData.class) PresetData preset = null;
+  private final @ModelField(targetType="UserSoundModel") @HasMany(associatedWith = "soundData", type = UserSound.class) List<UserSound> users = null;
+  private final @ModelField(targetType="RoutineSoundModel") @HasMany(associatedWith = "soundData", type = RoutineSound.class) List<RoutineSound> routines = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -115,7 +116,11 @@ public final class SoundData implements Model {
       return preset;
   }
   
-  public List<RoutineSounds> getRoutines() {
+  public List<UserSound> getUsers() {
+      return users;
+  }
+  
+  public List<RoutineSound> getRoutines() {
       return routines;
   }
   

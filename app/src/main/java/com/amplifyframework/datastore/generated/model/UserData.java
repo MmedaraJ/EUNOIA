@@ -55,13 +55,19 @@ public final class UserData implements Model {
   private final @ModelField(targetType="String", isRequired = true) String phoneNumber;
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean authenticated;
   private final @ModelField(targetType="String", isRequired = true) String subscription;
-  private final @ModelField(targetType="SoundData", isRequired = true) @HasMany(associatedWith = "soundOwner", type = SoundData.class) List<SoundData> sounds = null;
-  private final @ModelField(targetType="CommentData", isRequired = true) @HasMany(associatedWith = "commentOwner", type = CommentData.class) List<CommentData> comments = null;
-  private final @ModelField(targetType="RoutineData", isRequired = true) @HasMany(associatedWith = "routineOwner", type = RoutineData.class) List<RoutineData> routines = null;
-  private final @ModelField(targetType="StretchData", isRequired = true) @HasMany(associatedWith = "stretchOwner", type = StretchData.class) List<StretchData> stretches = null;
-  private final @ModelField(targetType="BreathingData", isRequired = true) @HasMany(associatedWith = "breathingOwner", type = BreathingData.class) List<BreathingData> breathings = null;
-  private final @ModelField(targetType="SelfLoveData", isRequired = true) @HasMany(associatedWith = "selfLoveOwner", type = SelfLoveData.class) List<SelfLoveData> selfLoves = null;
-  private final @ModelField(targetType="BedtimeStoryData", isRequired = true) @HasMany(associatedWith = "bedtimeStoryOwner", type = BedtimeStoryData.class) List<BedtimeStoryData> bedtimeStories = null;
+  private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "soundOwner", type = SoundData.class) List<SoundData> soundsOwnedByUser = null;
+  private final @ModelField(targetType="UserSoundModel") @HasMany(associatedWith = "userData", type = UserSound.class) List<UserSound> sounds = null;
+  private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "commentOwner", type = CommentData.class) List<CommentData> comments = null;
+  private final @ModelField(targetType="RoutineData") @HasMany(associatedWith = "routineOwner", type = RoutineData.class) List<RoutineData> routinesOwnedByUser = null;
+  private final @ModelField(targetType="UserRoutineModel") @HasMany(associatedWith = "userData", type = UserRoutine.class) List<UserRoutine> routines = null;
+  private final @ModelField(targetType="StretchData") @HasMany(associatedWith = "stretchOwner", type = StretchData.class) List<StretchData> stretchesOwnedByUser = null;
+  private final @ModelField(targetType="UserStretchModel") @HasMany(associatedWith = "userData", type = UserStretch.class) List<UserStretch> stretches = null;
+  private final @ModelField(targetType="BreathingData") @HasMany(associatedWith = "breathingOwner", type = BreathingData.class) List<BreathingData> breathingsOwnedByUser = null;
+  private final @ModelField(targetType="UserBreathingModel") @HasMany(associatedWith = "userData", type = UserBreathing.class) List<UserBreathing> breathings = null;
+  private final @ModelField(targetType="SelfLoveData") @HasMany(associatedWith = "selfLoveOwner", type = SelfLoveData.class) List<SelfLoveData> selfLovesOwnedByUser = null;
+  private final @ModelField(targetType="UserSelfLoveModel") @HasMany(associatedWith = "userData", type = UserSelfLove.class) List<UserSelfLove> selfLoves = null;
+  private final @ModelField(targetType="BedtimeStoryData") @HasMany(associatedWith = "bedtimeStoryOwner", type = BedtimeStoryData.class) List<BedtimeStoryData> bedtimeStoriesOwnedByUser = null;
+  private final @ModelField(targetType="UserBedtimeStoryModel") @HasMany(associatedWith = "userData", type = UserBedtimeStory.class) List<UserBedtimeStory> bedtimeStories = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -120,7 +126,11 @@ public final class UserData implements Model {
       return subscription;
   }
   
-  public List<SoundData> getSounds() {
+  public List<SoundData> getSoundsOwnedByUser() {
+      return soundsOwnedByUser;
+  }
+  
+  public List<UserSound> getSounds() {
       return sounds;
   }
   
@@ -128,23 +138,43 @@ public final class UserData implements Model {
       return comments;
   }
   
-  public List<RoutineData> getRoutines() {
+  public List<RoutineData> getRoutinesOwnedByUser() {
+      return routinesOwnedByUser;
+  }
+  
+  public List<UserRoutine> getRoutines() {
       return routines;
   }
   
-  public List<StretchData> getStretches() {
+  public List<StretchData> getStretchesOwnedByUser() {
+      return stretchesOwnedByUser;
+  }
+  
+  public List<UserStretch> getStretches() {
       return stretches;
   }
   
-  public List<BreathingData> getBreathings() {
+  public List<BreathingData> getBreathingsOwnedByUser() {
+      return breathingsOwnedByUser;
+  }
+  
+  public List<UserBreathing> getBreathings() {
       return breathings;
   }
   
-  public List<SelfLoveData> getSelfLoves() {
+  public List<SelfLoveData> getSelfLovesOwnedByUser() {
+      return selfLovesOwnedByUser;
+  }
+  
+  public List<UserSelfLove> getSelfLoves() {
       return selfLoves;
   }
   
-  public List<BedtimeStoryData> getBedtimeStories() {
+  public List<BedtimeStoryData> getBedtimeStoriesOwnedByUser() {
+      return bedtimeStoriesOwnedByUser;
+  }
+  
+  public List<UserBedtimeStory> getBedtimeStories() {
       return bedtimeStories;
   }
   

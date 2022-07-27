@@ -27,7 +27,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "byUserData", fields = {"userDataID","display_name"})
+@Index(name = "SelfLovesOwnedByUser", fields = {"userDataID","display_name"})
 public final class SelfLoveData implements Model {
   public static final QueryField ID = field("SelfLoveData", "id");
   public static final QueryField SELF_LOVE_OWNER = field("SelfLoveData", "userDataID");
@@ -35,7 +35,8 @@ public final class SelfLoveData implements Model {
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData selfLoveOwner;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
-  private final @ModelField(targetType="RoutineSelfLoves") @HasMany(associatedWith = "selfLoveData", type = RoutineSelfLoves.class) List<RoutineSelfLoves> routines = null;
+  private final @ModelField(targetType="RoutineSelfLoveModel") @HasMany(associatedWith = "selfLoveData", type = RoutineSelfLove.class) List<RoutineSelfLove> routines = null;
+  private final @ModelField(targetType="UserSelfLoveModel") @HasMany(associatedWith = "selfLoveData", type = UserSelfLove.class) List<UserSelfLove> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -50,8 +51,12 @@ public final class SelfLoveData implements Model {
       return display_name;
   }
   
-  public List<RoutineSelfLoves> getRoutines() {
+  public List<RoutineSelfLove> getRoutines() {
       return routines;
+  }
+  
+  public List<UserSelfLove> getUsers() {
+      return users;
   }
   
   public Temporal.DateTime getCreatedAt() {

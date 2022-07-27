@@ -1,6 +1,7 @@
 package com.example.eunoia.ui.bottomSheets
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,8 +19,11 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.eunoia.dashboard.sound.Controls
+import com.example.eunoia.models.SoundObject
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.NormalText
+import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.Mischka
 import com.example.eunoia.ui.theme.PeriwinkleGray
@@ -42,7 +46,15 @@ fun bottomSheetSoundControl(
             modifier = Modifier
                 .padding(bottom = 16.dp)
                 .height(115.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clickable {
+                    if(globalViewModel_!!.navController != null){
+                        closeBottomSheet(scope, state)
+                        globalViewModel_!!.navController!!.navigate(
+                            "${Screen.SoundScreen.screen_route}/sound=${SoundObject.Sound.from(globalViewModel.currentSoundPlaying!!)}"
+                        )
+                    }
+                },
             shape = MaterialTheme.shapes.small,
             elevation = 8.dp
         ) {

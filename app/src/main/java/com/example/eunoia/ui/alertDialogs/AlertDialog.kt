@@ -2,15 +2,16 @@ package com.example.eunoia.ui.alertDialogs
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.eunoia.dashboard.sound.openDialogBoxHere
-import com.example.eunoia.ui.bottomSheets.openDialogBox
+import com.example.eunoia.dashboard.sound.openUserAlreadyHasSoundDialogBox
+import com.example.eunoia.ui.bottomSheets.openRoutineAlreadyHasSoundDialogBox
+import com.example.eunoia.ui.bottomSheets.openSavedSoundDialogBox
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.theme.*
 
@@ -21,11 +22,12 @@ fun AlertDialogBox(text: String){
         AlertDialog(
             onDismissRequest = {
                 openDialog.value = false
-                openDialogBox = false
-                openDialogBoxHere = false
+                openSavedSoundDialogBox = false
+                openUserAlreadyHasSoundDialogBox = false
+                openRoutineAlreadyHasSoundDialogBox = false
             },
             text = {
-                Column {
+                Column{
                     NormalText(
                         text = text,
                         color = Black,
@@ -37,9 +39,9 @@ fun AlertDialogBox(text: String){
             },
             backgroundColor = BeautyBush,
             buttons = {},
+            shape = MaterialTheme.shapes.small,
             modifier = Modifier
-                .wrapContentHeight()
-                .padding(4.dp)
+                .padding(0.dp)
         )
     }
 }

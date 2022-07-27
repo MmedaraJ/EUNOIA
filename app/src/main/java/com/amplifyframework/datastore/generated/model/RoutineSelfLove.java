@@ -17,18 +17,18 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the RoutineBreathings type in your schema. */
+/** This is an auto generated class representing the RoutineSelfLoveModel type in your schema. */
 @SuppressWarnings("all")
-@ModelConfig(pluralName = "RoutineBreathings")
+@ModelConfig(pluralName = "RoutineSelfLoves")
 @Index(name = "byRoutineData", fields = {"routineDataID"})
-@Index(name = "byBreathingData", fields = {"breathingDataID"})
-public final class RoutineBreathings implements Model {
-  public static final QueryField ID = field("RoutineBreathings", "id");
-  public static final QueryField ROUTINE_DATA = field("RoutineBreathings", "routineDataID");
-  public static final QueryField BREATHING_DATA = field("RoutineBreathings", "breathingDataID");
+@Index(name = "bySelfLoveData", fields = {"selfLoveDataID"})
+public final class RoutineSelfLove implements Model {
+  public static final QueryField ID = field("RoutineSelfLoveModel", "id");
+  public static final QueryField ROUTINE_DATA = field("RoutineSelfLoveModel", "routineDataID");
+  public static final QueryField SELF_LOVE_DATA = field("RoutineSelfLoveModel", "selfLoveDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
-  private final @ModelField(targetType="BreathingData", isRequired = true) @BelongsTo(targetName = "breathingDataID", type = BreathingData.class) BreathingData breathingData;
+  private final @ModelField(targetType="SelfLoveData", isRequired = true) @BelongsTo(targetName = "selfLoveDataID", type = SelfLoveData.class) SelfLoveData selfLoveData;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -39,8 +39,8 @@ public final class RoutineBreathings implements Model {
       return routineData;
   }
   
-  public BreathingData getBreathingData() {
-      return breathingData;
+  public SelfLoveData getSelfLoveData() {
+      return selfLoveData;
   }
   
   public Temporal.DateTime getCreatedAt() {
@@ -51,10 +51,10 @@ public final class RoutineBreathings implements Model {
       return updatedAt;
   }
   
-  private RoutineBreathings(String id, RoutineData routineData, BreathingData breathingData) {
+  private RoutineSelfLove(String id, RoutineData routineData, SelfLoveData selfLoveData) {
     this.id = id;
     this.routineData = routineData;
-    this.breathingData = breathingData;
+    this.selfLoveData = selfLoveData;
   }
   
   @Override
@@ -64,12 +64,12 @@ public final class RoutineBreathings implements Model {
       } else if(obj == null || getClass() != obj.getClass()) {
         return false;
       } else {
-      RoutineBreathings routineBreathings = (RoutineBreathings) obj;
-      return ObjectsCompat.equals(getId(), routineBreathings.getId()) &&
-              ObjectsCompat.equals(getRoutineData(), routineBreathings.getRoutineData()) &&
-              ObjectsCompat.equals(getBreathingData(), routineBreathings.getBreathingData()) &&
-              ObjectsCompat.equals(getCreatedAt(), routineBreathings.getCreatedAt()) &&
-              ObjectsCompat.equals(getUpdatedAt(), routineBreathings.getUpdatedAt());
+      RoutineSelfLove routineSelfLove = (RoutineSelfLove) obj;
+      return ObjectsCompat.equals(getId(), routineSelfLove.getId()) &&
+              ObjectsCompat.equals(getRoutineData(), routineSelfLove.getRoutineData()) &&
+              ObjectsCompat.equals(getSelfLoveData(), routineSelfLove.getSelfLoveData()) &&
+              ObjectsCompat.equals(getCreatedAt(), routineSelfLove.getCreatedAt()) &&
+              ObjectsCompat.equals(getUpdatedAt(), routineSelfLove.getUpdatedAt());
       }
   }
   
@@ -78,7 +78,7 @@ public final class RoutineBreathings implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getRoutineData())
-      .append(getBreathingData())
+      .append(getSelfLoveData())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -88,10 +88,10 @@ public final class RoutineBreathings implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("RoutineBreathings {")
+      .append("RoutineSelfLoveModel {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")
-      .append("breathingData=" + String.valueOf(getBreathingData()) + ", ")
+      .append("selfLoveData=" + String.valueOf(getSelfLoveData()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -110,8 +110,8 @@ public final class RoutineBreathings implements Model {
    * @param id the id of the existing item this instance will represent
    * @return an instance of this model with only ID populated
    */
-  public static RoutineBreathings justId(String id) {
-    return new RoutineBreathings(
+  public static RoutineSelfLove justId(String id) {
+    return new RoutineSelfLove(
       id,
       null,
       null
@@ -121,49 +121,49 @@ public final class RoutineBreathings implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       routineData,
-      breathingData);
+      selfLoveData);
   }
   public interface RoutineDataStep {
-    BreathingDataStep routineData(RoutineData routineData);
+    SelfLoveDataStep routineData(RoutineData routineData);
   }
   
 
-  public interface BreathingDataStep {
-    BuildStep breathingData(BreathingData breathingData);
+  public interface SelfLoveDataStep {
+    BuildStep selfLoveData(SelfLoveData selfLoveData);
   }
   
 
   public interface BuildStep {
-    RoutineBreathings build();
+    RoutineSelfLove build();
     BuildStep id(String id);
   }
   
 
-  public static class Builder implements RoutineDataStep, BreathingDataStep, BuildStep {
+  public static class Builder implements RoutineDataStep, SelfLoveDataStep, BuildStep {
     private String id;
     private RoutineData routineData;
-    private BreathingData breathingData;
+    private SelfLoveData selfLoveData;
     @Override
-     public RoutineBreathings build() {
+     public RoutineSelfLove build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
-        return new RoutineBreathings(
+        return new RoutineSelfLove(
           id,
           routineData,
-          breathingData);
+          selfLoveData);
     }
     
     @Override
-     public BreathingDataStep routineData(RoutineData routineData) {
+     public SelfLoveDataStep routineData(RoutineData routineData) {
         Objects.requireNonNull(routineData);
         this.routineData = routineData;
         return this;
     }
     
     @Override
-     public BuildStep breathingData(BreathingData breathingData) {
-        Objects.requireNonNull(breathingData);
-        this.breathingData = breathingData;
+     public BuildStep selfLoveData(SelfLoveData selfLoveData) {
+        Objects.requireNonNull(selfLoveData);
+        this.selfLoveData = selfLoveData;
         return this;
     }
     
@@ -179,10 +179,10 @@ public final class RoutineBreathings implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, RoutineData routineData, BreathingData breathingData) {
+    private CopyOfBuilder(String id, RoutineData routineData, SelfLoveData selfLoveData) {
       super.id(id);
       super.routineData(routineData)
-        .breathingData(breathingData);
+        .selfLoveData(selfLoveData);
     }
     
     @Override
@@ -191,8 +191,8 @@ public final class RoutineBreathings implements Model {
     }
     
     @Override
-     public CopyOfBuilder breathingData(BreathingData breathingData) {
-      return (CopyOfBuilder) super.breathingData(breathingData);
+     public CopyOfBuilder selfLoveData(SelfLoveData selfLoveData) {
+      return (CopyOfBuilder) super.selfLoveData(selfLoveData);
     }
   }
   

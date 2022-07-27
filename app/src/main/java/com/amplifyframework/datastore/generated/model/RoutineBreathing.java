@@ -17,18 +17,18 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the RoutineBedtimeStories type in your schema. */
+/** This is an auto generated class representing the RoutineBreathingModel type in your schema. */
 @SuppressWarnings("all")
-@ModelConfig(pluralName = "RoutineBedtimeStories")
+@ModelConfig(pluralName = "RoutineBreathings")
 @Index(name = "byRoutineData", fields = {"routineDataID"})
-@Index(name = "byBedtimeStoryData", fields = {"bedtimeStoryDataID"})
-public final class RoutineBedtimeStories implements Model {
-  public static final QueryField ID = field("RoutineBedtimeStories", "id");
-  public static final QueryField ROUTINE_DATA = field("RoutineBedtimeStories", "routineDataID");
-  public static final QueryField BEDTIME_STORY_DATA = field("RoutineBedtimeStories", "bedtimeStoryDataID");
+@Index(name = "byBreathingData", fields = {"breathingDataID"})
+public final class RoutineBreathing implements Model {
+  public static final QueryField ID = field("RoutineBreathingModel", "id");
+  public static final QueryField ROUTINE_DATA = field("RoutineBreathingModel", "routineDataID");
+  public static final QueryField BREATHING_DATA = field("RoutineBreathingModel", "breathingDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
-  private final @ModelField(targetType="BedtimeStoryData", isRequired = true) @BelongsTo(targetName = "bedtimeStoryDataID", type = BedtimeStoryData.class) BedtimeStoryData bedtimeStoryData;
+  private final @ModelField(targetType="BreathingData", isRequired = true) @BelongsTo(targetName = "breathingDataID", type = BreathingData.class) BreathingData breathingData;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -39,8 +39,8 @@ public final class RoutineBedtimeStories implements Model {
       return routineData;
   }
   
-  public BedtimeStoryData getBedtimeStoryData() {
-      return bedtimeStoryData;
+  public BreathingData getBreathingData() {
+      return breathingData;
   }
   
   public Temporal.DateTime getCreatedAt() {
@@ -51,10 +51,10 @@ public final class RoutineBedtimeStories implements Model {
       return updatedAt;
   }
   
-  private RoutineBedtimeStories(String id, RoutineData routineData, BedtimeStoryData bedtimeStoryData) {
+  private RoutineBreathing(String id, RoutineData routineData, BreathingData breathingData) {
     this.id = id;
     this.routineData = routineData;
-    this.bedtimeStoryData = bedtimeStoryData;
+    this.breathingData = breathingData;
   }
   
   @Override
@@ -64,12 +64,12 @@ public final class RoutineBedtimeStories implements Model {
       } else if(obj == null || getClass() != obj.getClass()) {
         return false;
       } else {
-      RoutineBedtimeStories routineBedtimeStories = (RoutineBedtimeStories) obj;
-      return ObjectsCompat.equals(getId(), routineBedtimeStories.getId()) &&
-              ObjectsCompat.equals(getRoutineData(), routineBedtimeStories.getRoutineData()) &&
-              ObjectsCompat.equals(getBedtimeStoryData(), routineBedtimeStories.getBedtimeStoryData()) &&
-              ObjectsCompat.equals(getCreatedAt(), routineBedtimeStories.getCreatedAt()) &&
-              ObjectsCompat.equals(getUpdatedAt(), routineBedtimeStories.getUpdatedAt());
+      RoutineBreathing routineBreathing = (RoutineBreathing) obj;
+      return ObjectsCompat.equals(getId(), routineBreathing.getId()) &&
+              ObjectsCompat.equals(getRoutineData(), routineBreathing.getRoutineData()) &&
+              ObjectsCompat.equals(getBreathingData(), routineBreathing.getBreathingData()) &&
+              ObjectsCompat.equals(getCreatedAt(), routineBreathing.getCreatedAt()) &&
+              ObjectsCompat.equals(getUpdatedAt(), routineBreathing.getUpdatedAt());
       }
   }
   
@@ -78,7 +78,7 @@ public final class RoutineBedtimeStories implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getRoutineData())
-      .append(getBedtimeStoryData())
+      .append(getBreathingData())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -88,10 +88,10 @@ public final class RoutineBedtimeStories implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("RoutineBedtimeStories {")
+      .append("RoutineBreathingModel {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")
-      .append("bedtimeStoryData=" + String.valueOf(getBedtimeStoryData()) + ", ")
+      .append("breathingData=" + String.valueOf(getBreathingData()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -110,8 +110,8 @@ public final class RoutineBedtimeStories implements Model {
    * @param id the id of the existing item this instance will represent
    * @return an instance of this model with only ID populated
    */
-  public static RoutineBedtimeStories justId(String id) {
-    return new RoutineBedtimeStories(
+  public static RoutineBreathing justId(String id) {
+    return new RoutineBreathing(
       id,
       null,
       null
@@ -121,49 +121,49 @@ public final class RoutineBedtimeStories implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       routineData,
-      bedtimeStoryData);
+      breathingData);
   }
   public interface RoutineDataStep {
-    BedtimeStoryDataStep routineData(RoutineData routineData);
+    BreathingDataStep routineData(RoutineData routineData);
   }
   
 
-  public interface BedtimeStoryDataStep {
-    BuildStep bedtimeStoryData(BedtimeStoryData bedtimeStoryData);
+  public interface BreathingDataStep {
+    BuildStep breathingData(BreathingData breathingData);
   }
   
 
   public interface BuildStep {
-    RoutineBedtimeStories build();
+    RoutineBreathing build();
     BuildStep id(String id);
   }
   
 
-  public static class Builder implements RoutineDataStep, BedtimeStoryDataStep, BuildStep {
+  public static class Builder implements RoutineDataStep, BreathingDataStep, BuildStep {
     private String id;
     private RoutineData routineData;
-    private BedtimeStoryData bedtimeStoryData;
+    private BreathingData breathingData;
     @Override
-     public RoutineBedtimeStories build() {
+     public RoutineBreathing build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
-        return new RoutineBedtimeStories(
+        return new RoutineBreathing(
           id,
           routineData,
-          bedtimeStoryData);
+          breathingData);
     }
     
     @Override
-     public BedtimeStoryDataStep routineData(RoutineData routineData) {
+     public BreathingDataStep routineData(RoutineData routineData) {
         Objects.requireNonNull(routineData);
         this.routineData = routineData;
         return this;
     }
     
     @Override
-     public BuildStep bedtimeStoryData(BedtimeStoryData bedtimeStoryData) {
-        Objects.requireNonNull(bedtimeStoryData);
-        this.bedtimeStoryData = bedtimeStoryData;
+     public BuildStep breathingData(BreathingData breathingData) {
+        Objects.requireNonNull(breathingData);
+        this.breathingData = breathingData;
         return this;
     }
     
@@ -179,10 +179,10 @@ public final class RoutineBedtimeStories implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, RoutineData routineData, BedtimeStoryData bedtimeStoryData) {
+    private CopyOfBuilder(String id, RoutineData routineData, BreathingData breathingData) {
       super.id(id);
       super.routineData(routineData)
-        .bedtimeStoryData(bedtimeStoryData);
+        .breathingData(breathingData);
     }
     
     @Override
@@ -191,8 +191,8 @@ public final class RoutineBedtimeStories implements Model {
     }
     
     @Override
-     public CopyOfBuilder bedtimeStoryData(BedtimeStoryData bedtimeStoryData) {
-      return (CopyOfBuilder) super.bedtimeStoryData(bedtimeStoryData);
+     public CopyOfBuilder breathingData(BreathingData breathingData) {
+      return (CopyOfBuilder) super.breathingData(breathingData);
     }
   }
   

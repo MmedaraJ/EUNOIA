@@ -27,7 +27,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "byUserData", fields = {"userDataID","display_name"})
+@Index(name = "BedtimeStoriesOwnedByUser", fields = {"userDataID","display_name"})
 public final class BedtimeStoryData implements Model {
   public static final QueryField ID = field("BedtimeStoryData", "id");
   public static final QueryField BEDTIME_STORY_OWNER = field("BedtimeStoryData", "userDataID");
@@ -35,7 +35,8 @@ public final class BedtimeStoryData implements Model {
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData bedtimeStoryOwner;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
-  private final @ModelField(targetType="RoutineBedtimeStories") @HasMany(associatedWith = "bedtimeStoryData", type = RoutineBedtimeStories.class) List<RoutineBedtimeStories> routines = null;
+  private final @ModelField(targetType="RoutineBedtimeStory") @HasMany(associatedWith = "bedtimeStoryData", type = RoutineBedtimeStory.class) List<RoutineBedtimeStory> routines = null;
+  private final @ModelField(targetType="UserBedtimeStoryModel") @HasMany(associatedWith = "bedtimeStoryData", type = UserBedtimeStory.class) List<UserBedtimeStory> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -50,8 +51,12 @@ public final class BedtimeStoryData implements Model {
       return display_name;
   }
   
-  public List<RoutineBedtimeStories> getRoutines() {
+  public List<RoutineBedtimeStory> getRoutines() {
       return routines;
+  }
+  
+  public List<UserBedtimeStory> getUsers() {
+      return users;
   }
   
   public Temporal.DateTime getCreatedAt() {

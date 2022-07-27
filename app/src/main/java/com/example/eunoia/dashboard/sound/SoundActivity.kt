@@ -1,39 +1,30 @@
 package com.example.eunoia.dashboard.sound
 
 import android.content.Context
-import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.dashboard.home.*
 import com.example.eunoia.models.SoundObject
-import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.viewModels.GlobalViewModel
-import com.google.gson.Gson
-import com.squareup.moshi.Moshi
 import kotlinx.coroutines.*
 
 private const val TAG = "Sound Activity"
@@ -46,6 +37,7 @@ fun SoundActivityUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState,
 ) {
+    globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -186,9 +178,9 @@ private fun OptionsList(navController: NavController, context: Context){
             }
         ){ displayName ->
             if (sound != null) {
-                toSoundScreen(navController, sound!!)
+                navigateToSoundScreen(navController, sound!!)
             }else{
-                toSoundScreen(navController, globalViewModel_!!.currentSoundPlaying!!)
+                navigateToSoundScreen(navController, globalViewModel_!!.currentSoundPlaying!!)
             }
         }
         OptionItem(displayName = "coffee house", icon = R.drawable.coffee_house_icon, 71, 71, true, 35, -10, {}){ something() }
@@ -249,7 +241,7 @@ private fun ArticlesList(){
     }
 }
 
-private fun toSoundScreen(navController: NavController, soundData: SoundData){
+fun navigateToSoundScreen(navController: NavController, soundData: SoundData){
     globalViewModel_!!.currentSoundPlaying = soundData
     navController.navigate("${Screen.SoundScreen.screen_route}/sound=${SoundObject.Sound.from(soundData)}")
 }

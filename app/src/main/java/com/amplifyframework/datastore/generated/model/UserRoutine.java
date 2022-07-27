@@ -17,30 +17,30 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the RoutineSelfLoves type in your schema. */
+/** This is an auto generated class representing the UserRoutineModel type in your schema. */
 @SuppressWarnings("all")
-@ModelConfig(pluralName = "RoutineSelfLoves")
+@ModelConfig(pluralName = "UserRoutines")
+@Index(name = "byUserData", fields = {"userDataID"})
 @Index(name = "byRoutineData", fields = {"routineDataID"})
-@Index(name = "bySelfLoveData", fields = {"selfLoveDataID"})
-public final class RoutineSelfLoves implements Model {
-  public static final QueryField ID = field("RoutineSelfLoves", "id");
-  public static final QueryField ROUTINE_DATA = field("RoutineSelfLoves", "routineDataID");
-  public static final QueryField SELF_LOVE_DATA = field("RoutineSelfLoves", "selfLoveDataID");
+public final class UserRoutine implements Model {
+  public static final QueryField ID = field("UserRoutineModel", "id");
+  public static final QueryField USER_DATA = field("UserRoutineModel", "userDataID");
+  public static final QueryField ROUTINE_DATA = field("UserRoutineModel", "routineDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
+  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData userData;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
-  private final @ModelField(targetType="SelfLoveData", isRequired = true) @BelongsTo(targetName = "selfLoveDataID", type = SelfLoveData.class) SelfLoveData selfLoveData;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
       return id;
   }
   
-  public RoutineData getRoutineData() {
-      return routineData;
+  public UserData getUserData() {
+      return userData;
   }
   
-  public SelfLoveData getSelfLoveData() {
-      return selfLoveData;
+  public RoutineData getRoutineData() {
+      return routineData;
   }
   
   public Temporal.DateTime getCreatedAt() {
@@ -51,10 +51,10 @@ public final class RoutineSelfLoves implements Model {
       return updatedAt;
   }
   
-  private RoutineSelfLoves(String id, RoutineData routineData, SelfLoveData selfLoveData) {
+  private UserRoutine(String id, UserData userData, RoutineData routineData) {
     this.id = id;
+    this.userData = userData;
     this.routineData = routineData;
-    this.selfLoveData = selfLoveData;
   }
   
   @Override
@@ -64,12 +64,12 @@ public final class RoutineSelfLoves implements Model {
       } else if(obj == null || getClass() != obj.getClass()) {
         return false;
       } else {
-      RoutineSelfLoves routineSelfLoves = (RoutineSelfLoves) obj;
-      return ObjectsCompat.equals(getId(), routineSelfLoves.getId()) &&
-              ObjectsCompat.equals(getRoutineData(), routineSelfLoves.getRoutineData()) &&
-              ObjectsCompat.equals(getSelfLoveData(), routineSelfLoves.getSelfLoveData()) &&
-              ObjectsCompat.equals(getCreatedAt(), routineSelfLoves.getCreatedAt()) &&
-              ObjectsCompat.equals(getUpdatedAt(), routineSelfLoves.getUpdatedAt());
+      UserRoutine userRoutine = (UserRoutine) obj;
+      return ObjectsCompat.equals(getId(), userRoutine.getId()) &&
+              ObjectsCompat.equals(getUserData(), userRoutine.getUserData()) &&
+              ObjectsCompat.equals(getRoutineData(), userRoutine.getRoutineData()) &&
+              ObjectsCompat.equals(getCreatedAt(), userRoutine.getCreatedAt()) &&
+              ObjectsCompat.equals(getUpdatedAt(), userRoutine.getUpdatedAt());
       }
   }
   
@@ -77,8 +77,8 @@ public final class RoutineSelfLoves implements Model {
    public int hashCode() {
     return new StringBuilder()
       .append(getId())
+      .append(getUserData())
       .append(getRoutineData())
-      .append(getSelfLoveData())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -88,17 +88,17 @@ public final class RoutineSelfLoves implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("RoutineSelfLoves {")
+      .append("UserRoutineModel {")
       .append("id=" + String.valueOf(getId()) + ", ")
+      .append("userData=" + String.valueOf(getUserData()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")
-      .append("selfLoveData=" + String.valueOf(getSelfLoveData()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
       .toString();
   }
   
-  public static RoutineDataStep builder() {
+  public static UserDataStep builder() {
       return new Builder();
   }
   
@@ -110,8 +110,8 @@ public final class RoutineSelfLoves implements Model {
    * @param id the id of the existing item this instance will represent
    * @return an instance of this model with only ID populated
    */
-  public static RoutineSelfLoves justId(String id) {
-    return new RoutineSelfLoves(
+  public static UserRoutine justId(String id) {
+    return new UserRoutine(
       id,
       null,
       null
@@ -120,50 +120,50 @@ public final class RoutineSelfLoves implements Model {
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      routineData,
-      selfLoveData);
+      userData,
+      routineData);
   }
-  public interface RoutineDataStep {
-    SelfLoveDataStep routineData(RoutineData routineData);
+  public interface UserDataStep {
+    RoutineDataStep userData(UserData userData);
   }
   
 
-  public interface SelfLoveDataStep {
-    BuildStep selfLoveData(SelfLoveData selfLoveData);
+  public interface RoutineDataStep {
+    BuildStep routineData(RoutineData routineData);
   }
   
 
   public interface BuildStep {
-    RoutineSelfLoves build();
+    UserRoutine build();
     BuildStep id(String id);
   }
   
 
-  public static class Builder implements RoutineDataStep, SelfLoveDataStep, BuildStep {
+  public static class Builder implements UserDataStep, RoutineDataStep, BuildStep {
     private String id;
+    private UserData userData;
     private RoutineData routineData;
-    private SelfLoveData selfLoveData;
     @Override
-     public RoutineSelfLoves build() {
+     public UserRoutine build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
-        return new RoutineSelfLoves(
+        return new UserRoutine(
           id,
-          routineData,
-          selfLoveData);
+          userData,
+          routineData);
     }
     
     @Override
-     public SelfLoveDataStep routineData(RoutineData routineData) {
-        Objects.requireNonNull(routineData);
-        this.routineData = routineData;
+     public RoutineDataStep userData(UserData userData) {
+        Objects.requireNonNull(userData);
+        this.userData = userData;
         return this;
     }
     
     @Override
-     public BuildStep selfLoveData(SelfLoveData selfLoveData) {
-        Objects.requireNonNull(selfLoveData);
-        this.selfLoveData = selfLoveData;
+     public BuildStep routineData(RoutineData routineData) {
+        Objects.requireNonNull(routineData);
+        this.routineData = routineData;
         return this;
     }
     
@@ -179,20 +179,20 @@ public final class RoutineSelfLoves implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, RoutineData routineData, SelfLoveData selfLoveData) {
+    private CopyOfBuilder(String id, UserData userData, RoutineData routineData) {
       super.id(id);
-      super.routineData(routineData)
-        .selfLoveData(selfLoveData);
+      super.userData(userData)
+        .routineData(routineData);
+    }
+    
+    @Override
+     public CopyOfBuilder userData(UserData userData) {
+      return (CopyOfBuilder) super.userData(userData);
     }
     
     @Override
      public CopyOfBuilder routineData(RoutineData routineData) {
       return (CopyOfBuilder) super.routineData(routineData);
-    }
-    
-    @Override
-     public CopyOfBuilder selfLoveData(SelfLoveData selfLoveData) {
-      return (CopyOfBuilder) super.selfLoveData(selfLoveData);
     }
   }
   

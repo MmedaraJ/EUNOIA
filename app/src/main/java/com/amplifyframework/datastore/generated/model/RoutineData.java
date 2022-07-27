@@ -27,10 +27,11 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "byUserData", fields = {"userDataID","display_name"})
+@Index(name = "RoutinesOwnedByUser", fields = {"userDataID","display_name"})
 public final class RoutineData implements Model {
   public static final QueryField ID = field("RoutineData", "id");
   public static final QueryField ROUTINE_OWNER = field("RoutineData", "userDataID");
+  public static final QueryField ORIGINAL_NAME = field("RoutineData", "original_name");
   public static final QueryField DISPLAY_NAME = field("RoutineData", "display_name");
   public static final QueryField NUMBER_OF_STEPS = field("RoutineData", "numberOfSteps");
   public static final QueryField NUMBER_OF_TIMES_USED = field("RoutineData", "numberOfTimesUsed");
@@ -55,6 +56,7 @@ public final class RoutineData implements Model {
   public static final QueryField PLAYING_ORDER = field("RoutineData", "playingOrder");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData routineOwner;
+  private final @ModelField(targetType="String", isRequired = true) String original_name;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="Int", isRequired = true) Integer numberOfSteps;
   private final @ModelField(targetType="Int", isRequired = true) Integer numberOfTimesUsed;
@@ -76,11 +78,12 @@ public final class RoutineData implements Model {
   private final @ModelField(targetType="Int", isRequired = true) Integer currentBedtimeStoryContinuePlayingTime;
   private final @ModelField(targetType="Int", isRequired = true) Integer currentSelfLovePlayingIndex;
   private final @ModelField(targetType="Int", isRequired = true) Integer currentSelfLoveContinuePlayingTime;
-  private final @ModelField(targetType="RoutineSounds") @HasMany(associatedWith = "routineData", type = RoutineSounds.class) List<RoutineSounds> sounds = null;
-  private final @ModelField(targetType="RoutineStretches") @HasMany(associatedWith = "routineData", type = RoutineStretches.class) List<RoutineStretches> stretches = null;
-  private final @ModelField(targetType="RoutineBreathings") @HasMany(associatedWith = "routineData", type = RoutineBreathings.class) List<RoutineBreathings> breathing = null;
-  private final @ModelField(targetType="RoutineBedtimeStories") @HasMany(associatedWith = "routineData", type = RoutineBedtimeStories.class) List<RoutineBedtimeStories> bedtimeStories = null;
-  private final @ModelField(targetType="RoutineSelfLoves") @HasMany(associatedWith = "routineData", type = RoutineSelfLoves.class) List<RoutineSelfLoves> selfLoves = null;
+  private final @ModelField(targetType="RoutineSoundModel") @HasMany(associatedWith = "routineData", type = RoutineSound.class) List<RoutineSound> sounds = null;
+  private final @ModelField(targetType="RoutineStretchModel") @HasMany(associatedWith = "routineData", type = RoutineStretch.class) List<RoutineStretch> stretches = null;
+  private final @ModelField(targetType="RoutineBreathingModel") @HasMany(associatedWith = "routineData", type = RoutineBreathing.class) List<RoutineBreathing> breathing = null;
+  private final @ModelField(targetType="RoutineBedtimeStory") @HasMany(associatedWith = "routineData", type = RoutineBedtimeStory.class) List<RoutineBedtimeStory> bedtimeStories = null;
+  private final @ModelField(targetType="RoutineSelfLoveModel") @HasMany(associatedWith = "routineData", type = RoutineSelfLove.class) List<RoutineSelfLove> selfLoves = null;
+  private final @ModelField(targetType="UserRoutineModel") @HasMany(associatedWith = "routineData", type = UserRoutine.class) List<UserRoutine> users = null;
   private final @ModelField(targetType="String", isRequired = true) List<String> playingOrder;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
@@ -90,6 +93,10 @@ public final class RoutineData implements Model {
   
   public UserData getRoutineOwner() {
       return routineOwner;
+  }
+  
+  public String getOriginalName() {
+      return original_name;
   }
   
   public String getDisplayName() {
@@ -176,24 +183,28 @@ public final class RoutineData implements Model {
       return currentSelfLoveContinuePlayingTime;
   }
   
-  public List<RoutineSounds> getSounds() {
+  public List<RoutineSound> getSounds() {
       return sounds;
   }
   
-  public List<RoutineStretches> getStretches() {
+  public List<RoutineStretch> getStretches() {
       return stretches;
   }
   
-  public List<RoutineBreathings> getBreathing() {
+  public List<RoutineBreathing> getBreathing() {
       return breathing;
   }
   
-  public List<RoutineBedtimeStories> getBedtimeStories() {
+  public List<RoutineBedtimeStory> getBedtimeStories() {
       return bedtimeStories;
   }
   
-  public List<RoutineSelfLoves> getSelfLoves() {
+  public List<RoutineSelfLove> getSelfLoves() {
       return selfLoves;
+  }
+  
+  public List<UserRoutine> getUsers() {
+      return users;
   }
   
   public List<String> getPlayingOrder() {
@@ -208,9 +219,10 @@ public final class RoutineData implements Model {
       return updatedAt;
   }
   
-  private RoutineData(String id, UserData routineOwner, String display_name, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visible_to_others, Integer colorHEX, Boolean playSoundDuringStretch, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, List<String> playingOrder) {
+  private RoutineData(String id, UserData routineOwner, String original_name, String display_name, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visible_to_others, Integer colorHEX, Boolean playSoundDuringStretch, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, List<String> playingOrder) {
     this.id = id;
     this.routineOwner = routineOwner;
+    this.original_name = original_name;
     this.display_name = display_name;
     this.numberOfSteps = numberOfSteps;
     this.numberOfTimesUsed = numberOfTimesUsed;
@@ -245,6 +257,7 @@ public final class RoutineData implements Model {
       RoutineData routineData = (RoutineData) obj;
       return ObjectsCompat.equals(getId(), routineData.getId()) &&
               ObjectsCompat.equals(getRoutineOwner(), routineData.getRoutineOwner()) &&
+              ObjectsCompat.equals(getOriginalName(), routineData.getOriginalName()) &&
               ObjectsCompat.equals(getDisplayName(), routineData.getDisplayName()) &&
               ObjectsCompat.equals(getNumberOfSteps(), routineData.getNumberOfSteps()) &&
               ObjectsCompat.equals(getNumberOfTimesUsed(), routineData.getNumberOfTimesUsed()) &&
@@ -277,6 +290,7 @@ public final class RoutineData implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getRoutineOwner())
+      .append(getOriginalName())
       .append(getDisplayName())
       .append(getNumberOfSteps())
       .append(getNumberOfTimesUsed())
@@ -311,6 +325,7 @@ public final class RoutineData implements Model {
       .append("RoutineData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("routineOwner=" + String.valueOf(getRoutineOwner()) + ", ")
+      .append("original_name=" + String.valueOf(getOriginalName()) + ", ")
       .append("display_name=" + String.valueOf(getDisplayName()) + ", ")
       .append("numberOfSteps=" + String.valueOf(getNumberOfSteps()) + ", ")
       .append("numberOfTimesUsed=" + String.valueOf(getNumberOfTimesUsed()) + ", ")
@@ -376,6 +391,7 @@ public final class RoutineData implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -383,6 +399,7 @@ public final class RoutineData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       routineOwner,
+      original_name,
       display_name,
       numberOfSteps,
       numberOfTimesUsed,
@@ -407,7 +424,12 @@ public final class RoutineData implements Model {
       playingOrder);
   }
   public interface RoutineOwnerStep {
-    DisplayNameStep routineOwner(UserData routineOwner);
+    OriginalNameStep routineOwner(UserData routineOwner);
+  }
+  
+
+  public interface OriginalNameStep {
+    DisplayNameStep originalName(String originalName);
   }
   
 
@@ -527,9 +549,10 @@ public final class RoutineData implements Model {
   }
   
 
-  public static class Builder implements RoutineOwnerStep, DisplayNameStep, NumberOfStepsStep, NumberOfTimesUsedStep, FullPlayTimeStep, IconStep, VisibleToOthersStep, ColorHexStep, PlaySoundDuringStretchStep, PlaySoundDuringBreathingStep, PlaySoundDuringSelfLoveStep, PlaySoundDuringBedtimeStoryStep, PlaySoundDuringSleepStep, EachSoundPlayTimeStep, BedtimeStoryPlayTimeStep, SelfLovePlayTimeStep, StretchTimeStep, BreathingTimeStep, CurrentBedtimeStoryPlayingIndexStep, CurrentBedtimeStoryContinuePlayingTimeStep, CurrentSelfLovePlayingIndexStep, CurrentSelfLoveContinuePlayingTimeStep, PlayingOrderStep, BuildStep {
+  public static class Builder implements RoutineOwnerStep, OriginalNameStep, DisplayNameStep, NumberOfStepsStep, NumberOfTimesUsedStep, FullPlayTimeStep, IconStep, VisibleToOthersStep, ColorHexStep, PlaySoundDuringStretchStep, PlaySoundDuringBreathingStep, PlaySoundDuringSelfLoveStep, PlaySoundDuringBedtimeStoryStep, PlaySoundDuringSleepStep, EachSoundPlayTimeStep, BedtimeStoryPlayTimeStep, SelfLovePlayTimeStep, StretchTimeStep, BreathingTimeStep, CurrentBedtimeStoryPlayingIndexStep, CurrentBedtimeStoryContinuePlayingTimeStep, CurrentSelfLovePlayingIndexStep, CurrentSelfLoveContinuePlayingTimeStep, PlayingOrderStep, BuildStep {
     private String id;
     private UserData routineOwner;
+    private String original_name;
     private String display_name;
     private Integer numberOfSteps;
     private Integer numberOfTimesUsed;
@@ -559,6 +582,7 @@ public final class RoutineData implements Model {
         return new RoutineData(
           id,
           routineOwner,
+          original_name,
           display_name,
           numberOfSteps,
           numberOfTimesUsed,
@@ -584,9 +608,16 @@ public final class RoutineData implements Model {
     }
     
     @Override
-     public DisplayNameStep routineOwner(UserData routineOwner) {
+     public OriginalNameStep routineOwner(UserData routineOwner) {
         Objects.requireNonNull(routineOwner);
         this.routineOwner = routineOwner;
+        return this;
+    }
+    
+    @Override
+     public DisplayNameStep originalName(String originalName) {
+        Objects.requireNonNull(originalName);
+        this.original_name = originalName;
         return this;
     }
     
@@ -756,9 +787,10 @@ public final class RoutineData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData routineOwner, String displayName, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visibleToOthers, Integer colorHex, Boolean playSoundDuringStretch, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, List<String> playingOrder) {
+    private CopyOfBuilder(String id, UserData routineOwner, String originalName, String displayName, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visibleToOthers, Integer colorHex, Boolean playSoundDuringStretch, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, List<String> playingOrder) {
       super.id(id);
       super.routineOwner(routineOwner)
+        .originalName(originalName)
         .displayName(displayName)
         .numberOfSteps(numberOfSteps)
         .numberOfTimesUsed(numberOfTimesUsed)
@@ -786,6 +818,11 @@ public final class RoutineData implements Model {
     @Override
      public CopyOfBuilder routineOwner(UserData routineOwner) {
       return (CopyOfBuilder) super.routineOwner(routineOwner);
+    }
+    
+    @Override
+     public CopyOfBuilder originalName(String originalName) {
+      return (CopyOfBuilder) super.originalName(originalName);
     }
     
     @Override

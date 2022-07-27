@@ -3,7 +3,9 @@ package com.example.eunoia.viewModels
 import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.PresetNameAndVolumesMapData
 import com.amplifyframework.datastore.generated.model.SoundData
@@ -22,8 +24,12 @@ class GlobalViewModel: ViewModel(){
     var currentSoundPlayingUris: MutableList<Uri>? = null
     //adding sound
     var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)
-
+    //routine
     var currentRoutinePlaying by mutableStateOf("")
+    var routineNameToBeAdded by mutableStateOf("")
+    var routineColorToBeAdded by mutableStateOf<Long?>(null)
+    var routineIconToBeAdded by mutableStateOf<Int?>(null)
+
     var currentSelfLovePlaying by mutableStateOf("")
     var currentBedtimeStoryPlaying by mutableStateOf("")
     var isCurrentSoundPlaying by mutableStateOf(false)
@@ -35,6 +41,9 @@ class GlobalViewModel: ViewModel(){
 
     //user
     var currentUser by mutableStateOf<UserData?>(null)
+
+    //navController
+    var navController by mutableStateOf<NavController?>(null)
 
     val icons = arrayOf(
         mutableStateOf(R.drawable.replay_sound_icon),

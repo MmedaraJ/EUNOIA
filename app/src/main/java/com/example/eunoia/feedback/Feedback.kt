@@ -16,12 +16,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.ui.components.*
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
 fun FeedbackUI(navController: NavController, context: Context, globalViewModel: GlobalViewModel) {
+    globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier

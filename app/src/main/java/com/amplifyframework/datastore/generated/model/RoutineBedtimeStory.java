@@ -17,18 +17,18 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the RoutineStretches type in your schema. */
+/** This is an auto generated class representing the RoutineBedtimeStory type in your schema. */
 @SuppressWarnings("all")
-@ModelConfig(pluralName = "RoutineStretches")
+@ModelConfig(pluralName = "RoutineBedtimeStories")
 @Index(name = "byRoutineData", fields = {"routineDataID"})
-@Index(name = "byStretchData", fields = {"stretchDataID"})
-public final class RoutineStretches implements Model {
-  public static final QueryField ID = field("RoutineStretches", "id");
-  public static final QueryField ROUTINE_DATA = field("RoutineStretches", "routineDataID");
-  public static final QueryField STRETCH_DATA = field("RoutineStretches", "stretchDataID");
+@Index(name = "byBedtimeStoryData", fields = {"bedtimeStoryDataID"})
+public final class RoutineBedtimeStory implements Model {
+  public static final QueryField ID = field("RoutineBedtimeStory", "id");
+  public static final QueryField ROUTINE_DATA = field("RoutineBedtimeStory", "routineDataID");
+  public static final QueryField BEDTIME_STORY_DATA = field("RoutineBedtimeStory", "bedtimeStoryDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
-  private final @ModelField(targetType="StretchData", isRequired = true) @BelongsTo(targetName = "stretchDataID", type = StretchData.class) StretchData stretchData;
+  private final @ModelField(targetType="BedtimeStoryData", isRequired = true) @BelongsTo(targetName = "bedtimeStoryDataID", type = BedtimeStoryData.class) BedtimeStoryData bedtimeStoryData;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -39,8 +39,8 @@ public final class RoutineStretches implements Model {
       return routineData;
   }
   
-  public StretchData getStretchData() {
-      return stretchData;
+  public BedtimeStoryData getBedtimeStoryData() {
+      return bedtimeStoryData;
   }
   
   public Temporal.DateTime getCreatedAt() {
@@ -51,10 +51,10 @@ public final class RoutineStretches implements Model {
       return updatedAt;
   }
   
-  private RoutineStretches(String id, RoutineData routineData, StretchData stretchData) {
+  private RoutineBedtimeStory(String id, RoutineData routineData, BedtimeStoryData bedtimeStoryData) {
     this.id = id;
     this.routineData = routineData;
-    this.stretchData = stretchData;
+    this.bedtimeStoryData = bedtimeStoryData;
   }
   
   @Override
@@ -64,12 +64,12 @@ public final class RoutineStretches implements Model {
       } else if(obj == null || getClass() != obj.getClass()) {
         return false;
       } else {
-      RoutineStretches routineStretches = (RoutineStretches) obj;
-      return ObjectsCompat.equals(getId(), routineStretches.getId()) &&
-              ObjectsCompat.equals(getRoutineData(), routineStretches.getRoutineData()) &&
-              ObjectsCompat.equals(getStretchData(), routineStretches.getStretchData()) &&
-              ObjectsCompat.equals(getCreatedAt(), routineStretches.getCreatedAt()) &&
-              ObjectsCompat.equals(getUpdatedAt(), routineStretches.getUpdatedAt());
+      RoutineBedtimeStory routineBedtimeStory = (RoutineBedtimeStory) obj;
+      return ObjectsCompat.equals(getId(), routineBedtimeStory.getId()) &&
+              ObjectsCompat.equals(getRoutineData(), routineBedtimeStory.getRoutineData()) &&
+              ObjectsCompat.equals(getBedtimeStoryData(), routineBedtimeStory.getBedtimeStoryData()) &&
+              ObjectsCompat.equals(getCreatedAt(), routineBedtimeStory.getCreatedAt()) &&
+              ObjectsCompat.equals(getUpdatedAt(), routineBedtimeStory.getUpdatedAt());
       }
   }
   
@@ -78,7 +78,7 @@ public final class RoutineStretches implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getRoutineData())
-      .append(getStretchData())
+      .append(getBedtimeStoryData())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -88,10 +88,10 @@ public final class RoutineStretches implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("RoutineStretches {")
+      .append("RoutineBedtimeStory {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")
-      .append("stretchData=" + String.valueOf(getStretchData()) + ", ")
+      .append("bedtimeStoryData=" + String.valueOf(getBedtimeStoryData()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -110,8 +110,8 @@ public final class RoutineStretches implements Model {
    * @param id the id of the existing item this instance will represent
    * @return an instance of this model with only ID populated
    */
-  public static RoutineStretches justId(String id) {
-    return new RoutineStretches(
+  public static RoutineBedtimeStory justId(String id) {
+    return new RoutineBedtimeStory(
       id,
       null,
       null
@@ -121,49 +121,49 @@ public final class RoutineStretches implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       routineData,
-      stretchData);
+      bedtimeStoryData);
   }
   public interface RoutineDataStep {
-    StretchDataStep routineData(RoutineData routineData);
+    BedtimeStoryDataStep routineData(RoutineData routineData);
   }
   
 
-  public interface StretchDataStep {
-    BuildStep stretchData(StretchData stretchData);
+  public interface BedtimeStoryDataStep {
+    BuildStep bedtimeStoryData(BedtimeStoryData bedtimeStoryData);
   }
   
 
   public interface BuildStep {
-    RoutineStretches build();
+    RoutineBedtimeStory build();
     BuildStep id(String id);
   }
   
 
-  public static class Builder implements RoutineDataStep, StretchDataStep, BuildStep {
+  public static class Builder implements RoutineDataStep, BedtimeStoryDataStep, BuildStep {
     private String id;
     private RoutineData routineData;
-    private StretchData stretchData;
+    private BedtimeStoryData bedtimeStoryData;
     @Override
-     public RoutineStretches build() {
+     public RoutineBedtimeStory build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
-        return new RoutineStretches(
+        return new RoutineBedtimeStory(
           id,
           routineData,
-          stretchData);
+          bedtimeStoryData);
     }
     
     @Override
-     public StretchDataStep routineData(RoutineData routineData) {
+     public BedtimeStoryDataStep routineData(RoutineData routineData) {
         Objects.requireNonNull(routineData);
         this.routineData = routineData;
         return this;
     }
     
     @Override
-     public BuildStep stretchData(StretchData stretchData) {
-        Objects.requireNonNull(stretchData);
-        this.stretchData = stretchData;
+     public BuildStep bedtimeStoryData(BedtimeStoryData bedtimeStoryData) {
+        Objects.requireNonNull(bedtimeStoryData);
+        this.bedtimeStoryData = bedtimeStoryData;
         return this;
     }
     
@@ -179,10 +179,10 @@ public final class RoutineStretches implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, RoutineData routineData, StretchData stretchData) {
+    private CopyOfBuilder(String id, RoutineData routineData, BedtimeStoryData bedtimeStoryData) {
       super.id(id);
       super.routineData(routineData)
-        .stretchData(stretchData);
+        .bedtimeStoryData(bedtimeStoryData);
     }
     
     @Override
@@ -191,8 +191,8 @@ public final class RoutineStretches implements Model {
     }
     
     @Override
-     public CopyOfBuilder stretchData(StretchData stretchData) {
-      return (CopyOfBuilder) super.stretchData(stretchData);
+     public CopyOfBuilder bedtimeStoryData(BedtimeStoryData bedtimeStoryData) {
+      return (CopyOfBuilder) super.bedtimeStoryData(bedtimeStoryData);
     }
   }
   

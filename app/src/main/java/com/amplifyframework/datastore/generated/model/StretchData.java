@@ -27,7 +27,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "byUserData", fields = {"userDataID","display_name"})
+@Index(name = "StretchesOwnedByUser", fields = {"userDataID","display_name"})
 public final class StretchData implements Model {
   public static final QueryField ID = field("StretchData", "id");
   public static final QueryField STRETCH_OWNER = field("StretchData", "userDataID");
@@ -35,7 +35,8 @@ public final class StretchData implements Model {
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData stretchOwner;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
-  private final @ModelField(targetType="RoutineStretches") @HasMany(associatedWith = "stretchData", type = RoutineStretches.class) List<RoutineStretches> routines = null;
+  private final @ModelField(targetType="RoutineStretchModel") @HasMany(associatedWith = "stretchData", type = RoutineStretch.class) List<RoutineStretch> routines = null;
+  private final @ModelField(targetType="UserStretchModel") @HasMany(associatedWith = "stretchData", type = UserStretch.class) List<UserStretch> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -50,8 +51,12 @@ public final class StretchData implements Model {
       return display_name;
   }
   
-  public List<RoutineStretches> getRoutines() {
+  public List<RoutineStretch> getRoutines() {
       return routines;
+  }
+  
+  public List<UserStretch> getUsers() {
+      return users;
   }
   
   public Temporal.DateTime getCreatedAt() {

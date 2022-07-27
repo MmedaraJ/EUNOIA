@@ -126,6 +126,7 @@ fun UserDashboardActivityUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
+    globalViewModel_!!.navController = navController
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     ConstraintLayout(

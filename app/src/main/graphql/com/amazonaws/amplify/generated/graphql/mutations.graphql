@@ -63,22 +63,40 @@ mutation CreateSoundData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -169,6 +187,17 @@ mutation CreateSoundData(
       createdAt
       updatedAt
       owner
+    }
+    users {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
     }
     routines {
       items {
@@ -208,22 +237,40 @@ mutation UpdateSoundData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -314,6 +361,17 @@ mutation UpdateSoundData(
       createdAt
       updatedAt
       owner
+    }
+    users {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
     }
     routines {
       items {
@@ -353,22 +411,40 @@ mutation DeleteSoundData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -459,6 +535,17 @@ mutation DeleteSoundData(
       createdAt
       updatedAt
       owner
+    }
+    users {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
     }
     routines {
       items {
@@ -531,6 +618,9 @@ mutation CreateCommentData(
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -554,22 +644,40 @@ mutation CreateCommentData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -640,6 +748,9 @@ mutation UpdateCommentData(
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -663,22 +774,40 @@ mutation UpdateCommentData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -749,6 +878,9 @@ mutation DeleteCommentData(
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -772,22 +904,40 @@ mutation DeleteCommentData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -981,6 +1131,9 @@ mutation CreatePresetData(
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -1059,6 +1212,9 @@ mutation UpdatePresetData(
         createdAt
         updatedAt
         owner
+      }
+      users {
+        nextToken
       }
       routines {
         nextToken
@@ -1139,6 +1295,9 @@ mutation DeletePresetData(
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -1185,22 +1344,40 @@ mutation CreateRoutineData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1210,6 +1387,7 @@ mutation CreateRoutineData(
       updatedAt
       owner
     }
+    original_name
     display_name
     numberOfSteps
     numberOfTimesUsed
@@ -1280,6 +1458,17 @@ mutation CreateRoutineData(
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        routineDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1314,22 +1503,40 @@ mutation UpdateRoutineData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1339,6 +1546,7 @@ mutation UpdateRoutineData(
       updatedAt
       owner
     }
+    original_name
     display_name
     numberOfSteps
     numberOfTimesUsed
@@ -1409,6 +1617,17 @@ mutation UpdateRoutineData(
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        routineDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1443,22 +1662,40 @@ mutation DeleteRoutineData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1468,6 +1705,7 @@ mutation DeleteRoutineData(
       updatedAt
       owner
     }
+    original_name
     display_name
     numberOfSteps
     numberOfTimesUsed
@@ -1544,6 +1782,17 @@ mutation DeleteRoutineData(
       }
       nextToken
     }
+    users {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     playingOrder
     createdAt
     updatedAt
@@ -1572,22 +1821,40 @@ mutation CreateBedtimeStoryData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1603,6 +1870,17 @@ mutation CreateBedtimeStoryData(
         id
         routineDataID
         bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        bedtimeStoryDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1636,22 +1914,40 @@ mutation UpdateBedtimeStoryData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1667,6 +1963,17 @@ mutation UpdateBedtimeStoryData(
         id
         routineDataID
         bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        bedtimeStoryDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1700,22 +2007,40 @@ mutation DeleteBedtimeStoryData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1731,6 +2056,17 @@ mutation DeleteBedtimeStoryData(
         id
         routineDataID
         bedtimeStoryDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        bedtimeStoryDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1764,22 +2100,40 @@ mutation CreateSelfLoveData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1795,6 +2149,17 @@ mutation CreateSelfLoveData(
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        selfLoveDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1828,22 +2193,40 @@ mutation UpdateSelfLoveData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1859,6 +2242,17 @@ mutation UpdateSelfLoveData(
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        selfLoveDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1892,22 +2286,40 @@ mutation DeleteSelfLoveData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1923,6 +2335,17 @@ mutation DeleteSelfLoveData(
         id
         routineDataID
         selfLoveDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        selfLoveDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -1956,22 +2379,40 @@ mutation CreateStretchData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -1987,6 +2428,17 @@ mutation CreateStretchData(
         id
         routineDataID
         stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        stretchDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2020,22 +2472,40 @@ mutation UpdateStretchData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -2051,6 +2521,17 @@ mutation UpdateStretchData(
         id
         routineDataID
         stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        stretchDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2084,22 +2565,40 @@ mutation DeleteStretchData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -2115,6 +2614,17 @@ mutation DeleteStretchData(
         id
         routineDataID
         stretchDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        stretchDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2148,22 +2658,40 @@ mutation CreateBreathingData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -2179,6 +2707,17 @@ mutation CreateBreathingData(
         id
         routineDataID
         breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        breathingDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2212,22 +2751,40 @@ mutation UpdateBreathingData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -2243,6 +2800,17 @@ mutation UpdateBreathingData(
         id
         routineDataID
         breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        breathingDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2276,22 +2844,40 @@ mutation DeleteBreathingData(
       phoneNumber
       authenticated
       subscription
+      soundsOwnedByUser {
+        nextToken
+      }
       sounds {
         nextToken
       }
       comments {
         nextToken
       }
+      routinesOwnedByUser {
+        nextToken
+      }
       routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
         nextToken
       }
       stretches {
         nextToken
       }
+      breathingsOwnedByUser {
+        nextToken
+      }
       breathings {
         nextToken
       }
+      selfLovesOwnedByUser {
+        nextToken
+      }
       selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
         nextToken
       }
       bedtimeStories {
@@ -2307,6 +2893,17 @@ mutation DeleteBreathingData(
         id
         routineDataID
         breathingDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        breathingDataID
+        userDataID
         createdAt
         updatedAt
         owner
@@ -2337,7 +2934,7 @@ mutation CreateUserData(
     phoneNumber
     authenticated
     subscription
-    sounds {
+    soundsOwnedByUser {
       items {
         id
         userDataID
@@ -2357,6 +2954,17 @@ mutation CreateUserData(
       }
       nextToken
     }
+    sounds {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     comments {
       items {
         id
@@ -2369,10 +2977,11 @@ mutation CreateUserData(
       }
       nextToken
     }
-    routines {
+    routinesOwnedByUser {
       items {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -2401,7 +3010,40 @@ mutation CreateUserData(
       }
       nextToken
     }
+    routines {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretchesOwnedByUser {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     stretches {
+      items {
+        id
+        stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathingsOwnedByUser {
       items {
         id
         userDataID
@@ -2415,6 +3057,17 @@ mutation CreateUserData(
     breathings {
       items {
         id
+        breathingDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLovesOwnedByUser {
+      items {
+        id
         userDataID
         display_name
         createdAt
@@ -2424,6 +3077,17 @@ mutation CreateUserData(
       nextToken
     }
     selfLoves {
+      items {
+        id
+        selfLoveDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStoriesOwnedByUser {
       items {
         id
         userDataID
@@ -2437,8 +3101,8 @@ mutation CreateUserData(
     bedtimeStories {
       items {
         id
+        bedtimeStoryDataID
         userDataID
-        display_name
         createdAt
         updatedAt
         owner
@@ -2469,7 +3133,7 @@ mutation UpdateUserData(
     phoneNumber
     authenticated
     subscription
-    sounds {
+    soundsOwnedByUser {
       items {
         id
         userDataID
@@ -2489,6 +3153,17 @@ mutation UpdateUserData(
       }
       nextToken
     }
+    sounds {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     comments {
       items {
         id
@@ -2501,10 +3176,11 @@ mutation UpdateUserData(
       }
       nextToken
     }
-    routines {
+    routinesOwnedByUser {
       items {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -2533,7 +3209,40 @@ mutation UpdateUserData(
       }
       nextToken
     }
+    routines {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretchesOwnedByUser {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     stretches {
+      items {
+        id
+        stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathingsOwnedByUser {
       items {
         id
         userDataID
@@ -2547,6 +3256,17 @@ mutation UpdateUserData(
     breathings {
       items {
         id
+        breathingDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLovesOwnedByUser {
+      items {
+        id
         userDataID
         display_name
         createdAt
@@ -2556,6 +3276,17 @@ mutation UpdateUserData(
       nextToken
     }
     selfLoves {
+      items {
+        id
+        selfLoveDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStoriesOwnedByUser {
       items {
         id
         userDataID
@@ -2569,8 +3300,8 @@ mutation UpdateUserData(
     bedtimeStories {
       items {
         id
+        bedtimeStoryDataID
         userDataID
-        display_name
         createdAt
         updatedAt
         owner
@@ -2601,7 +3332,7 @@ mutation DeleteUserData(
     phoneNumber
     authenticated
     subscription
-    sounds {
+    soundsOwnedByUser {
       items {
         id
         userDataID
@@ -2621,6 +3352,17 @@ mutation DeleteUserData(
       }
       nextToken
     }
+    sounds {
+      items {
+        id
+        soundDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     comments {
       items {
         id
@@ -2633,10 +3375,11 @@ mutation DeleteUserData(
       }
       nextToken
     }
-    routines {
+    routinesOwnedByUser {
       items {
         id
         userDataID
+        original_name
         display_name
         numberOfSteps
         numberOfTimesUsed
@@ -2665,7 +3408,40 @@ mutation DeleteUserData(
       }
       nextToken
     }
+    routines {
+      items {
+        id
+        routineDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    stretchesOwnedByUser {
+      items {
+        id
+        userDataID
+        display_name
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     stretches {
+      items {
+        id
+        stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    breathingsOwnedByUser {
       items {
         id
         userDataID
@@ -2679,6 +3455,17 @@ mutation DeleteUserData(
     breathings {
       items {
         id
+        breathingDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    selfLovesOwnedByUser {
+      items {
+        id
         userDataID
         display_name
         createdAt
@@ -2688,6 +3475,17 @@ mutation DeleteUserData(
       nextToken
     }
     selfLoves {
+      items {
+        id
+        selfLoveDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    bedtimeStoriesOwnedByUser {
       items {
         id
         userDataID
@@ -2701,8 +3499,8 @@ mutation DeleteUserData(
     bedtimeStories {
       items {
         id
+        bedtimeStoryDataID
         userDataID
-        display_name
         createdAt
         updatedAt
         owner
@@ -2714,11 +3512,398 @@ mutation DeleteUserData(
     owner
   }
 }
-mutation CreateRoutineSounds(
-  $input: CreateRoutineSoundsInput!
-  $condition: ModelRoutineSoundsConditionInput
+mutation CreateUserSound(
+  $input: CreateUserSoundInput!
+  $condition: ModelUserSoundConditionInput
 ) {
-  createRoutineSounds(input: $input, condition: $condition) {
+  createUserSound(input: $input, condition: $condition) {
+    id
+    soundDataID
+    userDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateUserSound(
+  $input: UpdateUserSoundInput!
+  $condition: ModelUserSoundConditionInput
+) {
+  updateUserSound(input: $input, condition: $condition) {
+    id
+    soundDataID
+    userDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteUserSound(
+  $input: DeleteUserSoundInput!
+  $condition: ModelUserSoundConditionInput
+) {
+  deleteUserSound(input: $input, condition: $condition) {
+    id
+    soundDataID
+    userDataID
+    soundData {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      fullPlayTime
+      visible_to_others
+      audio_names
+      approvalStatus
+      comment {
+        id
+        soundID
+        userDataID
+        comment
+        createdAt
+        updatedAt
+        owner
+      }
+      preset {
+        id
+        soundID
+        createdAt
+        updatedAt
+        owner
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateRoutineSound(
+  $input: CreateRoutineSoundInput!
+  $condition: ModelRoutineSoundConditionInput
+) {
+  createRoutineSound(input: $input, condition: $condition) {
     id
     soundDataID
     routineDataID
@@ -2770,6 +3955,9 @@ mutation CreateRoutineSounds(
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -2799,6 +3987,7 @@ mutation CreateRoutineSounds(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -2835,6 +4024,9 @@ mutation CreateRoutineSounds(
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -2845,11 +4037,11 @@ mutation CreateRoutineSounds(
     owner
   }
 }
-mutation UpdateRoutineSounds(
-  $input: UpdateRoutineSoundsInput!
-  $condition: ModelRoutineSoundsConditionInput
+mutation UpdateRoutineSound(
+  $input: UpdateRoutineSoundInput!
+  $condition: ModelRoutineSoundConditionInput
 ) {
-  updateRoutineSounds(input: $input, condition: $condition) {
+  updateRoutineSound(input: $input, condition: $condition) {
     id
     soundDataID
     routineDataID
@@ -2901,6 +4093,9 @@ mutation UpdateRoutineSounds(
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -2930,6 +4125,7 @@ mutation UpdateRoutineSounds(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -2966,6 +4162,9 @@ mutation UpdateRoutineSounds(
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -2976,11 +4175,11 @@ mutation UpdateRoutineSounds(
     owner
   }
 }
-mutation DeleteRoutineSounds(
-  $input: DeleteRoutineSoundsInput!
-  $condition: ModelRoutineSoundsConditionInput
+mutation DeleteRoutineSound(
+  $input: DeleteRoutineSoundInput!
+  $condition: ModelRoutineSoundConditionInput
 ) {
-  deleteRoutineSounds(input: $input, condition: $condition) {
+  deleteRoutineSound(input: $input, condition: $condition) {
     id
     soundDataID
     routineDataID
@@ -3032,6 +4231,9 @@ mutation DeleteRoutineSounds(
         updatedAt
         owner
       }
+      users {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -3061,6 +4263,7 @@ mutation DeleteRoutineSounds(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3097,6 +4300,9 @@ mutation DeleteRoutineSounds(
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -3107,11 +4313,11 @@ mutation DeleteRoutineSounds(
     owner
   }
 }
-mutation CreateRoutineStretches(
-  $input: CreateRoutineStretchesInput!
-  $condition: ModelRoutineStretchesConditionInput
+mutation CreateRoutineStretch(
+  $input: CreateRoutineStretchInput!
+  $condition: ModelRoutineStretchConditionInput
 ) {
-  createRoutineStretches(input: $input, condition: $condition) {
+  createRoutineStretch(input: $input, condition: $condition) {
     id
     routineDataID
     stretchDataID
@@ -3137,6 +4343,7 @@ mutation CreateRoutineStretches(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3171,6 +4378,9 @@ mutation CreateRoutineStretches(
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3204,6 +4414,9 @@ mutation CreateRoutineStretches(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3213,11 +4426,11 @@ mutation CreateRoutineStretches(
     owner
   }
 }
-mutation UpdateRoutineStretches(
-  $input: UpdateRoutineStretchesInput!
-  $condition: ModelRoutineStretchesConditionInput
+mutation UpdateRoutineStretch(
+  $input: UpdateRoutineStretchInput!
+  $condition: ModelRoutineStretchConditionInput
 ) {
-  updateRoutineStretches(input: $input, condition: $condition) {
+  updateRoutineStretch(input: $input, condition: $condition) {
     id
     routineDataID
     stretchDataID
@@ -3243,6 +4456,7 @@ mutation UpdateRoutineStretches(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3277,6 +4491,9 @@ mutation UpdateRoutineStretches(
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3310,6 +4527,9 @@ mutation UpdateRoutineStretches(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3319,11 +4539,11 @@ mutation UpdateRoutineStretches(
     owner
   }
 }
-mutation DeleteRoutineStretches(
-  $input: DeleteRoutineStretchesInput!
-  $condition: ModelRoutineStretchesConditionInput
+mutation DeleteRoutineStretch(
+  $input: DeleteRoutineStretchInput!
+  $condition: ModelRoutineStretchConditionInput
 ) {
-  deleteRoutineStretches(input: $input, condition: $condition) {
+  deleteRoutineStretch(input: $input, condition: $condition) {
     id
     routineDataID
     stretchDataID
@@ -3349,6 +4569,7 @@ mutation DeleteRoutineStretches(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3383,6 +4604,9 @@ mutation DeleteRoutineStretches(
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3416,6 +4640,9 @@ mutation DeleteRoutineStretches(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3425,11 +4652,11 @@ mutation DeleteRoutineStretches(
     owner
   }
 }
-mutation CreateRoutineBreathings(
-  $input: CreateRoutineBreathingsInput!
-  $condition: ModelRoutineBreathingsConditionInput
+mutation CreateRoutineBreathing(
+  $input: CreateRoutineBreathingInput!
+  $condition: ModelRoutineBreathingConditionInput
 ) {
-  createRoutineBreathings(input: $input, condition: $condition) {
+  createRoutineBreathing(input: $input, condition: $condition) {
     id
     routineDataID
     breathingDataID
@@ -3455,6 +4682,7 @@ mutation CreateRoutineBreathings(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3489,6 +4717,9 @@ mutation CreateRoutineBreathings(
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3522,6 +4753,9 @@ mutation CreateRoutineBreathings(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3531,11 +4765,11 @@ mutation CreateRoutineBreathings(
     owner
   }
 }
-mutation UpdateRoutineBreathings(
-  $input: UpdateRoutineBreathingsInput!
-  $condition: ModelRoutineBreathingsConditionInput
+mutation UpdateRoutineBreathing(
+  $input: UpdateRoutineBreathingInput!
+  $condition: ModelRoutineBreathingConditionInput
 ) {
-  updateRoutineBreathings(input: $input, condition: $condition) {
+  updateRoutineBreathing(input: $input, condition: $condition) {
     id
     routineDataID
     breathingDataID
@@ -3561,6 +4795,7 @@ mutation UpdateRoutineBreathings(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3595,6 +4830,9 @@ mutation UpdateRoutineBreathings(
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3628,6 +4866,9 @@ mutation UpdateRoutineBreathings(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3637,11 +4878,11 @@ mutation UpdateRoutineBreathings(
     owner
   }
 }
-mutation DeleteRoutineBreathings(
-  $input: DeleteRoutineBreathingsInput!
-  $condition: ModelRoutineBreathingsConditionInput
+mutation DeleteRoutineBreathing(
+  $input: DeleteRoutineBreathingInput!
+  $condition: ModelRoutineBreathingConditionInput
 ) {
-  deleteRoutineBreathings(input: $input, condition: $condition) {
+  deleteRoutineBreathing(input: $input, condition: $condition) {
     id
     routineDataID
     breathingDataID
@@ -3667,6 +4908,7 @@ mutation DeleteRoutineBreathings(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3701,6 +4943,9 @@ mutation DeleteRoutineBreathings(
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3734,6 +4979,9 @@ mutation DeleteRoutineBreathings(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3743,11 +4991,11 @@ mutation DeleteRoutineBreathings(
     owner
   }
 }
-mutation CreateRoutineBedtimeStories(
-  $input: CreateRoutineBedtimeStoriesInput!
-  $condition: ModelRoutineBedtimeStoriesConditionInput
+mutation CreateRoutineBedtimeStory(
+  $input: CreateRoutineBedtimeStoryInput!
+  $condition: ModelRoutineBedtimeStoryConditionInput
 ) {
-  createRoutineBedtimeStories(input: $input, condition: $condition) {
+  createRoutineBedtimeStory(input: $input, condition: $condition) {
     id
     routineDataID
     bedtimeStoryDataID
@@ -3773,6 +5021,7 @@ mutation CreateRoutineBedtimeStories(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3807,6 +5056,9 @@ mutation CreateRoutineBedtimeStories(
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3840,6 +5092,9 @@ mutation CreateRoutineBedtimeStories(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3849,11 +5104,11 @@ mutation CreateRoutineBedtimeStories(
     owner
   }
 }
-mutation UpdateRoutineBedtimeStories(
-  $input: UpdateRoutineBedtimeStoriesInput!
-  $condition: ModelRoutineBedtimeStoriesConditionInput
+mutation UpdateRoutineBedtimeStory(
+  $input: UpdateRoutineBedtimeStoryInput!
+  $condition: ModelRoutineBedtimeStoryConditionInput
 ) {
-  updateRoutineBedtimeStories(input: $input, condition: $condition) {
+  updateRoutineBedtimeStory(input: $input, condition: $condition) {
     id
     routineDataID
     bedtimeStoryDataID
@@ -3879,6 +5134,7 @@ mutation UpdateRoutineBedtimeStories(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -3913,6 +5169,9 @@ mutation UpdateRoutineBedtimeStories(
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -3946,6 +5205,9 @@ mutation UpdateRoutineBedtimeStories(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -3955,11 +5217,11 @@ mutation UpdateRoutineBedtimeStories(
     owner
   }
 }
-mutation DeleteRoutineBedtimeStories(
-  $input: DeleteRoutineBedtimeStoriesInput!
-  $condition: ModelRoutineBedtimeStoriesConditionInput
+mutation DeleteRoutineBedtimeStory(
+  $input: DeleteRoutineBedtimeStoryInput!
+  $condition: ModelRoutineBedtimeStoryConditionInput
 ) {
-  deleteRoutineBedtimeStories(input: $input, condition: $condition) {
+  deleteRoutineBedtimeStory(input: $input, condition: $condition) {
     id
     routineDataID
     bedtimeStoryDataID
@@ -3985,6 +5247,7 @@ mutation DeleteRoutineBedtimeStories(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -4019,6 +5282,9 @@ mutation DeleteRoutineBedtimeStories(
         nextToken
       }
       selfLoves {
+        nextToken
+      }
+      users {
         nextToken
       }
       playingOrder
@@ -4052,6 +5318,9 @@ mutation DeleteRoutineBedtimeStories(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -4061,11 +5330,11 @@ mutation DeleteRoutineBedtimeStories(
     owner
   }
 }
-mutation CreateRoutineSelfLoves(
-  $input: CreateRoutineSelfLovesInput!
-  $condition: ModelRoutineSelfLovesConditionInput
+mutation CreateRoutineSelfLove(
+  $input: CreateRoutineSelfLoveInput!
+  $condition: ModelRoutineSelfLoveConditionInput
 ) {
-  createRoutineSelfLoves(input: $input, condition: $condition) {
+  createRoutineSelfLove(input: $input, condition: $condition) {
     id
     routineDataID
     selfLoveDataID
@@ -4091,6 +5360,7 @@ mutation CreateRoutineSelfLoves(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -4127,6 +5397,9 @@ mutation CreateRoutineSelfLoves(
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -4158,6 +5431,9 @@ mutation CreateRoutineSelfLoves(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -4167,11 +5443,11 @@ mutation CreateRoutineSelfLoves(
     owner
   }
 }
-mutation UpdateRoutineSelfLoves(
-  $input: UpdateRoutineSelfLovesInput!
-  $condition: ModelRoutineSelfLovesConditionInput
+mutation UpdateRoutineSelfLove(
+  $input: UpdateRoutineSelfLoveInput!
+  $condition: ModelRoutineSelfLoveConditionInput
 ) {
-  updateRoutineSelfLoves(input: $input, condition: $condition) {
+  updateRoutineSelfLove(input: $input, condition: $condition) {
     id
     routineDataID
     selfLoveDataID
@@ -4197,6 +5473,7 @@ mutation UpdateRoutineSelfLoves(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -4233,6 +5510,9 @@ mutation UpdateRoutineSelfLoves(
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -4264,6 +5544,9 @@ mutation UpdateRoutineSelfLoves(
       routines {
         nextToken
       }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -4273,11 +5556,11 @@ mutation UpdateRoutineSelfLoves(
     owner
   }
 }
-mutation DeleteRoutineSelfLoves(
-  $input: DeleteRoutineSelfLovesInput!
-  $condition: ModelRoutineSelfLovesConditionInput
+mutation DeleteRoutineSelfLove(
+  $input: DeleteRoutineSelfLoveInput!
+  $condition: ModelRoutineSelfLoveConditionInput
 ) {
-  deleteRoutineSelfLoves(input: $input, condition: $condition) {
+  deleteRoutineSelfLove(input: $input, condition: $condition) {
     id
     routineDataID
     selfLoveDataID
@@ -4303,6 +5586,7 @@ mutation DeleteRoutineSelfLoves(
         updatedAt
         owner
       }
+      original_name
       display_name
       numberOfSteps
       numberOfTimesUsed
@@ -4339,6 +5623,9 @@ mutation DeleteRoutineSelfLoves(
       selfLoves {
         nextToken
       }
+      users {
+        nextToken
+      }
       playingOrder
       createdAt
       updatedAt
@@ -4368,6 +5655,1671 @@ mutation DeleteRoutineSelfLoves(
       }
       display_name
       routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateUserRoutine(
+  $input: CreateUserRoutineInput!
+  $condition: ModelUserRoutineConditionInput
+) {
+  createUserRoutine(input: $input, condition: $condition) {
+    id
+    routineDataID
+    userDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateUserRoutine(
+  $input: UpdateUserRoutineInput!
+  $condition: ModelUserRoutineConditionInput
+) {
+  updateUserRoutine(input: $input, condition: $condition) {
+    id
+    routineDataID
+    userDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteUserRoutine(
+  $input: DeleteUserRoutineInput!
+  $condition: ModelUserRoutineConditionInput
+) {
+  deleteUserRoutine(input: $input, condition: $condition) {
+    id
+    routineDataID
+    userDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateUserBedtimeStory(
+  $input: CreateUserBedtimeStoryInput!
+  $condition: ModelUserBedtimeStoryConditionInput
+) {
+  createUserBedtimeStory(input: $input, condition: $condition) {
+    id
+    bedtimeStoryDataID
+    userDataID
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateUserBedtimeStory(
+  $input: UpdateUserBedtimeStoryInput!
+  $condition: ModelUserBedtimeStoryConditionInput
+) {
+  updateUserBedtimeStory(input: $input, condition: $condition) {
+    id
+    bedtimeStoryDataID
+    userDataID
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteUserBedtimeStory(
+  $input: DeleteUserBedtimeStoryInput!
+  $condition: ModelUserBedtimeStoryConditionInput
+) {
+  deleteUserBedtimeStory(input: $input, condition: $condition) {
+    id
+    bedtimeStoryDataID
+    userDataID
+    bedtimeStoryData {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateUserSelfLove(
+  $input: CreateUserSelfLoveInput!
+  $condition: ModelUserSelfLoveConditionInput
+) {
+  createUserSelfLove(input: $input, condition: $condition) {
+    id
+    selfLoveDataID
+    userDataID
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateUserSelfLove(
+  $input: UpdateUserSelfLoveInput!
+  $condition: ModelUserSelfLoveConditionInput
+) {
+  updateUserSelfLove(input: $input, condition: $condition) {
+    id
+    selfLoveDataID
+    userDataID
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteUserSelfLove(
+  $input: DeleteUserSelfLoveInput!
+  $condition: ModelUserSelfLoveConditionInput
+) {
+  deleteUserSelfLove(input: $input, condition: $condition) {
+    id
+    selfLoveDataID
+    userDataID
+    selfLoveData {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateUserStretch(
+  $input: CreateUserStretchInput!
+  $condition: ModelUserStretchConditionInput
+) {
+  createUserStretch(input: $input, condition: $condition) {
+    id
+    stretchDataID
+    userDataID
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateUserStretch(
+  $input: UpdateUserStretchInput!
+  $condition: ModelUserStretchConditionInput
+) {
+  updateUserStretch(input: $input, condition: $condition) {
+    id
+    stretchDataID
+    userDataID
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteUserStretch(
+  $input: DeleteUserStretchInput!
+  $condition: ModelUserStretchConditionInput
+) {
+  deleteUserStretch(input: $input, condition: $condition) {
+    id
+    stretchDataID
+    userDataID
+    stretchData {
+      id
+      userDataID
+      stretchOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateUserBreathing(
+  $input: CreateUserBreathingInput!
+  $condition: ModelUserBreathingConditionInput
+) {
+  createUserBreathing(input: $input, condition: $condition) {
+    id
+    breathingDataID
+    userDataID
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateUserBreathing(
+  $input: UpdateUserBreathingInput!
+  $condition: ModelUserBreathingConditionInput
+) {
+  updateUserBreathing(input: $input, condition: $condition) {
+    id
+    breathingDataID
+    userDataID
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteUserBreathing(
+  $input: DeleteUserBreathingInput!
+  $condition: ModelUserBreathingConditionInput
+) {
+  deleteUserBreathing(input: $input, condition: $condition) {
+    id
+    breathingDataID
+    userDataID
+    breathingData {
+      id
+      userDataID
+      breathingOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
         nextToken
       }
       createdAt
