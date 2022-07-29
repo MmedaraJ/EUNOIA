@@ -112,6 +112,7 @@ mutation CreateSoundData(
     long_description
     audio_key_s3
     icon
+    colorHEX
     fullPlayTime
     visible_to_others
     audio_names
@@ -128,6 +129,7 @@ mutation CreateSoundData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -173,6 +175,7 @@ mutation CreateSoundData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -286,6 +289,7 @@ mutation UpdateSoundData(
     long_description
     audio_key_s3
     icon
+    colorHEX
     fullPlayTime
     visible_to_others
     audio_names
@@ -302,6 +306,7 @@ mutation UpdateSoundData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -347,6 +352,7 @@ mutation UpdateSoundData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -460,6 +466,7 @@ mutation DeleteSoundData(
     long_description
     audio_key_s3
     icon
+    colorHEX
     fullPlayTime
     visible_to_others
     audio_names
@@ -476,6 +483,7 @@ mutation DeleteSoundData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -521,6 +529,7 @@ mutation DeleteSoundData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -598,6 +607,7 @@ mutation CreateCommentData(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -728,6 +738,7 @@ mutation UpdateCommentData(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -858,6 +869,7 @@ mutation DeleteCommentData(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -973,6 +985,7 @@ mutation CreatePresetNameAndVolumesMapData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -1014,6 +1027,7 @@ mutation UpdatePresetNameAndVolumesMapData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -1055,6 +1069,7 @@ mutation DeletePresetNameAndVolumesMapData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -1111,6 +1126,7 @@ mutation CreatePresetData(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -1193,6 +1209,7 @@ mutation UpdatePresetData(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -1275,6 +1292,7 @@ mutation DeletePresetData(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -2944,6 +2962,7 @@ mutation CreateUserData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -3143,6 +3162,7 @@ mutation UpdateUserData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -3342,6 +3362,7 @@ mutation DeleteUserData(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -3548,6 +3569,7 @@ mutation CreateUserSound(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -3677,6 +3699,7 @@ mutation UpdateUserSound(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -3806,6 +3829,7 @@ mutation DeleteUserSound(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -3935,6 +3959,7 @@ mutation CreateRoutineSound(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -4073,6 +4098,7 @@ mutation UpdateRoutineSound(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -4211,6 +4237,7 @@ mutation DeleteRoutineSound(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names

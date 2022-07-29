@@ -17,15 +17,15 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the UserStretchModel type in your schema. */
+/** This is an auto generated class representing the UserStretch type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "UserStretches")
 @Index(name = "byUserData", fields = {"userDataID"})
 @Index(name = "byStretchData", fields = {"stretchDataID"})
 public final class UserStretch implements Model {
-  public static final QueryField ID = field("UserStretchModel", "id");
-  public static final QueryField USER_DATA = field("UserStretchModel", "userDataID");
-  public static final QueryField STRETCH_DATA = field("UserStretchModel", "stretchDataID");
+  public static final QueryField ID = field("UserStretch", "id");
+  public static final QueryField USER_DATA = field("UserStretch", "userDataID");
+  public static final QueryField STRETCH_DATA = field("UserStretch", "stretchDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData userData;
   private final @ModelField(targetType="StretchData", isRequired = true) @BelongsTo(targetName = "stretchDataID", type = StretchData.class) StretchData stretchData;
@@ -88,7 +88,7 @@ public final class UserStretch implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("UserStretchModel {")
+      .append("UserStretch {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("userData=" + String.valueOf(getUserData()) + ", ")
       .append("stretchData=" + String.valueOf(getStretchData()) + ", ")

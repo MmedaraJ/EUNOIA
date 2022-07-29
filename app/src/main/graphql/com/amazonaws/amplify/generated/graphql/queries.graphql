@@ -96,6 +96,7 @@ query GetSoundData($id: ID!) {
     long_description
     audio_key_s3
     icon
+    colorHEX
     fullPlayTime
     visible_to_others
     audio_names
@@ -112,6 +113,7 @@ query GetSoundData($id: ID!) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -157,6 +159,7 @@ query GetSoundData($id: ID!) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -233,6 +236,7 @@ query ListSoundDatas(
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -298,6 +302,7 @@ query GetCommentData($id: ID!) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -411,6 +416,7 @@ query ListCommentDatas(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -464,6 +470,7 @@ query GetPresetNameAndVolumesMapData($id: ID!) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -546,6 +553,7 @@ query GetPresetData($id: ID!) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -611,6 +619,7 @@ query ListPresetDatas(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -1415,6 +1424,7 @@ query GetUserData($id: ID!) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -1685,6 +1695,7 @@ query GetUserSound($id: ID!) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -1797,6 +1808,7 @@ query ListUserSounds(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -1864,6 +1876,7 @@ query GetRoutineSound($id: ID!) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -1985,6 +1998,7 @@ query ListRoutineSounds(
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names

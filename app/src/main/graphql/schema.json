@@ -2450,6 +2450,22 @@
                         "deprecationReason": null
                     },
                     {
+                        "name": "colorHEX",
+                        "description": null,
+                        "args": [],
+                        "type": {
+                            "kind": "NON_NULL",
+                            "name": null,
+                            "ofType": {
+                                "kind": "SCALAR",
+                                "name": "Int",
+                                "ofType": null
+                            }
+                        },
+                        "isDeprecated": false,
+                        "deprecationReason": null
+                    },
+                    {
                         "name": "fullPlayTime",
                         "description": null,
                         "args": [],
@@ -3898,6 +3914,16 @@
                     },
                     {
                         "name": "icon",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelIntInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "colorHEX",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -13465,6 +13491,20 @@
                         "defaultValue": null
                     },
                     {
+                        "name": "colorHEX",
+                        "description": null,
+                        "type": {
+                            "kind": "NON_NULL",
+                            "name": null,
+                            "ofType": {
+                                "kind": "SCALAR",
+                                "name": "Int",
+                                "ofType": null
+                            }
+                        },
+                        "defaultValue": null
+                    },
+                    {
                         "name": "fullPlayTime",
                         "description": null,
                         "type": {
@@ -13597,6 +13637,16 @@
                     },
                     {
                         "name": "icon",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelIntInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "colorHEX",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -13770,6 +13820,16 @@
                     },
                     {
                         "name": "icon",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "Int",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "colorHEX",
                         "description": null,
                         "type": {
                             "kind": "SCALAR",

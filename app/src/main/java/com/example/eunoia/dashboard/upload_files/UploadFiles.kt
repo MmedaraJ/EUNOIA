@@ -230,6 +230,7 @@ class UploadFilesActivity : ComponentActivity() {
             "Routine/Sounds/Eunoia/Pouring_Rain/",
             R.drawable.pouring_rain_icon,
             180,
+            (0xFFEBBA9A).toInt(),
             true,
             listOf("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"),
             SoundApprovalStatus.APPROVED

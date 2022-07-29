@@ -17,15 +17,15 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the UserRoutineModel type in your schema. */
+/** This is an auto generated class representing the UserRoutine type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "UserRoutines")
 @Index(name = "byUserData", fields = {"userDataID"})
 @Index(name = "byRoutineData", fields = {"routineDataID"})
 public final class UserRoutine implements Model {
-  public static final QueryField ID = field("UserRoutineModel", "id");
-  public static final QueryField USER_DATA = field("UserRoutineModel", "userDataID");
-  public static final QueryField ROUTINE_DATA = field("UserRoutineModel", "routineDataID");
+  public static final QueryField ID = field("UserRoutine", "id");
+  public static final QueryField USER_DATA = field("UserRoutine", "userDataID");
+  public static final QueryField ROUTINE_DATA = field("UserRoutine", "routineDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData userData;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
@@ -88,7 +88,7 @@ public final class UserRoutine implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("UserRoutineModel {")
+      .append("UserRoutine {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("userData=" + String.valueOf(getUserData()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")

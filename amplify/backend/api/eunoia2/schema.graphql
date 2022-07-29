@@ -25,6 +25,7 @@ type SoundData
     long_description: String!
     audio_key_s3: String!
     icon: Int!
+    colorHEX: Int!
     fullPlayTime: Int!
     visible_to_others: Boolean!
     audio_names: [String!]!

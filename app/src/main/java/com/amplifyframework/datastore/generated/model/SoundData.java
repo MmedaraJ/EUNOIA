@@ -38,6 +38,7 @@ public final class SoundData implements Model {
   public static final QueryField LONG_DESCRIPTION = field("SoundData", "long_description");
   public static final QueryField AUDIO_KEY_S3 = field("SoundData", "audio_key_s3");
   public static final QueryField ICON = field("SoundData", "icon");
+  public static final QueryField COLOR_HEX = field("SoundData", "colorHEX");
   public static final QueryField FULL_PLAY_TIME = field("SoundData", "fullPlayTime");
   public static final QueryField VISIBLE_TO_OTHERS = field("SoundData", "visible_to_others");
   public static final QueryField AUDIO_NAMES = field("SoundData", "audio_names");
@@ -50,14 +51,15 @@ public final class SoundData implements Model {
   private final @ModelField(targetType="String", isRequired = true) String long_description;
   private final @ModelField(targetType="String", isRequired = true) String audio_key_s3;
   private final @ModelField(targetType="Int", isRequired = true) Integer icon;
+  private final @ModelField(targetType="Int", isRequired = true) Integer colorHEX;
   private final @ModelField(targetType="Int", isRequired = true) Integer fullPlayTime;
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean visible_to_others;
   private final @ModelField(targetType="String", isRequired = true) List<String> audio_names;
   private final @ModelField(targetType="SoundApprovalStatus") SoundApprovalStatus approvalStatus;
   private final @ModelField(targetType="CommentData") @HasOne(associatedWith = "sound", type = CommentData.class) CommentData comment = null;
   private final @ModelField(targetType="PresetData") @HasOne(associatedWith = "sound", type = PresetData.class) PresetData preset = null;
-  private final @ModelField(targetType="UserSoundModel") @HasMany(associatedWith = "soundData", type = UserSound.class) List<UserSound> users = null;
-  private final @ModelField(targetType="RoutineSoundModel") @HasMany(associatedWith = "soundData", type = RoutineSound.class) List<RoutineSound> routines = null;
+  private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "soundData", type = UserSound.class) List<UserSound> users = null;
+  private final @ModelField(targetType="RoutineSound") @HasMany(associatedWith = "soundData", type = RoutineSound.class) List<RoutineSound> routines = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -90,6 +92,10 @@ public final class SoundData implements Model {
   
   public Integer getIcon() {
       return icon;
+  }
+  
+  public Integer getColorHex() {
+      return colorHEX;
   }
   
   public Integer getFullPlayTime() {
@@ -132,7 +138,7 @@ public final class SoundData implements Model {
       return updatedAt;
   }
   
-  private SoundData(String id, UserData soundOwner, String original_name, String display_name, String short_description, String long_description, String audio_key_s3, Integer icon, Integer fullPlayTime, Boolean visible_to_others, List<String> audio_names, SoundApprovalStatus approvalStatus) {
+  private SoundData(String id, UserData soundOwner, String original_name, String display_name, String short_description, String long_description, String audio_key_s3, Integer icon, Integer colorHEX, Integer fullPlayTime, Boolean visible_to_others, List<String> audio_names, SoundApprovalStatus approvalStatus) {
     this.id = id;
     this.soundOwner = soundOwner;
     this.original_name = original_name;
@@ -141,6 +147,7 @@ public final class SoundData implements Model {
     this.long_description = long_description;
     this.audio_key_s3 = audio_key_s3;
     this.icon = icon;
+    this.colorHEX = colorHEX;
     this.fullPlayTime = fullPlayTime;
     this.visible_to_others = visible_to_others;
     this.audio_names = audio_names;
@@ -163,6 +170,7 @@ public final class SoundData implements Model {
               ObjectsCompat.equals(getLongDescription(), soundData.getLongDescription()) &&
               ObjectsCompat.equals(getAudioKeyS3(), soundData.getAudioKeyS3()) &&
               ObjectsCompat.equals(getIcon(), soundData.getIcon()) &&
+              ObjectsCompat.equals(getColorHex(), soundData.getColorHex()) &&
               ObjectsCompat.equals(getFullPlayTime(), soundData.getFullPlayTime()) &&
               ObjectsCompat.equals(getVisibleToOthers(), soundData.getVisibleToOthers()) &&
               ObjectsCompat.equals(getAudioNames(), soundData.getAudioNames()) &&
@@ -183,6 +191,7 @@ public final class SoundData implements Model {
       .append(getLongDescription())
       .append(getAudioKeyS3())
       .append(getIcon())
+      .append(getColorHex())
       .append(getFullPlayTime())
       .append(getVisibleToOthers())
       .append(getAudioNames())
@@ -205,6 +214,7 @@ public final class SoundData implements Model {
       .append("long_description=" + String.valueOf(getLongDescription()) + ", ")
       .append("audio_key_s3=" + String.valueOf(getAudioKeyS3()) + ", ")
       .append("icon=" + String.valueOf(getIcon()) + ", ")
+      .append("colorHEX=" + String.valueOf(getColorHex()) + ", ")
       .append("fullPlayTime=" + String.valueOf(getFullPlayTime()) + ", ")
       .append("visible_to_others=" + String.valueOf(getVisibleToOthers()) + ", ")
       .append("audio_names=" + String.valueOf(getAudioNames()) + ", ")
@@ -240,6 +250,7 @@ public final class SoundData implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -253,6 +264,7 @@ public final class SoundData implements Model {
       long_description,
       audio_key_s3,
       icon,
+      colorHEX,
       fullPlayTime,
       visible_to_others,
       audio_names,
@@ -289,7 +301,12 @@ public final class SoundData implements Model {
   
 
   public interface IconStep {
-    FullPlayTimeStep icon(Integer icon);
+    ColorHexStep icon(Integer icon);
+  }
+  
+
+  public interface ColorHexStep {
+    FullPlayTimeStep colorHex(Integer colorHex);
   }
   
 
@@ -315,7 +332,7 @@ public final class SoundData implements Model {
   }
   
 
-  public static class Builder implements SoundOwnerStep, OriginalNameStep, DisplayNameStep, ShortDescriptionStep, LongDescriptionStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, AudioNamesStep, BuildStep {
+  public static class Builder implements SoundOwnerStep, OriginalNameStep, DisplayNameStep, ShortDescriptionStep, LongDescriptionStep, AudioKeyS3Step, IconStep, ColorHexStep, FullPlayTimeStep, VisibleToOthersStep, AudioNamesStep, BuildStep {
     private String id;
     private UserData soundOwner;
     private String original_name;
@@ -324,6 +341,7 @@ public final class SoundData implements Model {
     private String long_description;
     private String audio_key_s3;
     private Integer icon;
+    private Integer colorHEX;
     private Integer fullPlayTime;
     private Boolean visible_to_others;
     private List<String> audio_names;
@@ -341,6 +359,7 @@ public final class SoundData implements Model {
           long_description,
           audio_key_s3,
           icon,
+          colorHEX,
           fullPlayTime,
           visible_to_others,
           audio_names,
@@ -390,9 +409,16 @@ public final class SoundData implements Model {
     }
     
     @Override
-     public FullPlayTimeStep icon(Integer icon) {
+     public ColorHexStep icon(Integer icon) {
         Objects.requireNonNull(icon);
         this.icon = icon;
+        return this;
+    }
+    
+    @Override
+     public FullPlayTimeStep colorHex(Integer colorHex) {
+        Objects.requireNonNull(colorHex);
+        this.colorHEX = colorHex;
         return this;
     }
     
@@ -435,7 +461,7 @@ public final class SoundData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData soundOwner, String originalName, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> audioNames, SoundApprovalStatus approvalStatus) {
+    private CopyOfBuilder(String id, UserData soundOwner, String originalName, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer colorHex, Integer fullPlayTime, Boolean visibleToOthers, List<String> audioNames, SoundApprovalStatus approvalStatus) {
       super.id(id);
       super.soundOwner(soundOwner)
         .originalName(originalName)
@@ -444,6 +470,7 @@ public final class SoundData implements Model {
         .longDescription(longDescription)
         .audioKeyS3(audioKeyS3)
         .icon(icon)
+        .colorHex(colorHex)
         .fullPlayTime(fullPlayTime)
         .visibleToOthers(visibleToOthers)
         .audioNames(audioNames)
@@ -483,6 +510,11 @@ public final class SoundData implements Model {
     @Override
      public CopyOfBuilder icon(Integer icon) {
       return (CopyOfBuilder) super.icon(icon);
+    }
+    
+    @Override
+     public CopyOfBuilder colorHex(Integer colorHex) {
+      return (CopyOfBuilder) super.colorHex(colorHex);
     }
     
     @Override

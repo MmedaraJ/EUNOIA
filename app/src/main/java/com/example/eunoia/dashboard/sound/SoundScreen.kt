@@ -57,8 +57,11 @@ fun SoundScreen(
         getSoundPresets(soundData) { presetData ->
             soundPreset = presetData
             globalViewModel_!!.currentSoundPlayingPreset = soundPreset
-            globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap =
-                soundPreset!!.presets[1]
+            for(preset in globalViewModel_!!.currentSoundPlayingPreset?.presets!!){
+                if(preset.key == "current_volumes"){
+                    globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = preset
+                }
+            }
         }
         ConstraintLayout{
             val (progressBar) = createRefs()
@@ -108,6 +111,7 @@ fun SoundScreen(
             ) {
                 BackArrowHeader(
                     {
+                        //showControls = false
                         navigateBack(navController)
                     },
                     {
@@ -137,10 +141,16 @@ fun SoundScreen(
                         top.linkTo(header.bottom, margin = 50.dp)
                     }
             ) {
-                val volumes = globalViewModel_!!.currentSoundPlayingPreset?.presets?.get(1)?.volumes!!
+                var volumes = listOf<Int>()
+                for(preset in globalViewModel_!!.currentSoundPlayingPreset?.presets!!){
+                    if(preset.key == "current_volumes"){
+                        volumes = preset.volumes
+                    }
+                }
+                Log.i(TAG, "Volumes ==>> $volumes")
                 globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
                 for(volume in volumes){
-                    globalViewModel_!!.currentSoundPlayingSliderPositions.add(remember{ mutableStateOf(volume.toFloat()) })
+                    globalViewModel_!!.currentSoundPlayingSliderPositions.add(remember{mutableStateOf(volume.toFloat())})
                 }
                 Mixer(
                     soundData,
@@ -253,6 +263,20 @@ fun SoundScreen(
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
+    }
+}
+
+fun setSliderPositions(){
+    var volumes = listOf<Int>()
+    for(preset in globalViewModel_!!.currentSoundPlayingPreset?.presets!!){
+        if(preset.key == "current_volumes"){
+            volumes = preset.volumes
+        }
+    }
+    Log.i(TAG, "Volumes ==>> $volumes")
+    globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
+    for(volume in volumes){
+        globalViewModel_!!.currentSoundPlayingSliderPositions.add(mutableStateOf(volume.toFloat()))
     }
 }
 
@@ -406,13 +430,29 @@ fun makeSoundObject(
         soundData.longDescription,
         soundData.audioKeyS3,
         soundData.icon,
+        soundData.colorHex,
         soundData.fullPlayTime,
         true,
         soundData.audioNames,
         soundData.approvalStatus
     )
     SoundBackend.createSound(sound){
-        UserSoundBackend.createUserSoundObject(it){}
+        if (globalViewModel_!!.currentUser != null) {
+            var userAlreadyHasSound = false
+            for (userSound in globalViewModel_!!.currentUser!!.sounds) {
+                if (
+                    userSound.soundData.id == it.id &&
+                    userSound.userData.id == globalViewModel_!!.currentUser!!.id
+                ) {
+                    userAlreadyHasSound = true
+                }
+            }
+            if (!userAlreadyHasSound) {
+                UserSoundBackend.createUserSoundObject(it) {
+
+                }
+            }
+        }
         createSoundPreset(it, soundPresets)
         createSoundComment(it, comment)
     }
@@ -443,12 +483,16 @@ private fun createSoundPreset(soundData: SoundData, soundPresets: PresetData){
 private fun createPresetNameAndVolumesMapData(newPresetData: PresetData, currentPresetData: PresetData){
     for(i in currentPresetData.presets.indices){
         val volumes = mutableListOf<Int>()
-        if(i == 1)
-            for(j in globalViewModel_!!.currentSoundPlayingSliderPositions.indices)
+        if(currentPresetData.presets[i].key == "current_volumes") {
+            for (j in globalViewModel_!!.currentSoundPlayingSliderPositions.indices){
                 volumes.add(globalViewModel_!!.currentSoundPlayingSliderPositions[j]!!.value.toInt())
-        else
-            for(j in currentPresetData.presets[i].volumes.indices)
+            }
+        }
+        else {
+            for (j in currentPresetData.presets[i].volumes.indices) {
                 volumes.add(currentPresetData.presets[i].volumes[j].toInt())
+            }
+        }
         val presetVolume = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
             currentPresetData.presets[i].key,
             volumes,

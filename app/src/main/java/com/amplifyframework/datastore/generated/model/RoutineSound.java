@@ -17,15 +17,15 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the RoutineSoundModel type in your schema. */
+/** This is an auto generated class representing the RoutineSound type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "RoutineSounds")
 @Index(name = "bySoundData", fields = {"soundDataID"})
 @Index(name = "byRoutineData", fields = {"routineDataID"})
 public final class RoutineSound implements Model {
-  public static final QueryField ID = field("RoutineSoundModel", "id");
-  public static final QueryField SOUND_DATA = field("RoutineSoundModel", "soundDataID");
-  public static final QueryField ROUTINE_DATA = field("RoutineSoundModel", "routineDataID");
+  public static final QueryField ID = field("RoutineSound", "id");
+  public static final QueryField SOUND_DATA = field("RoutineSound", "soundDataID");
+  public static final QueryField ROUTINE_DATA = field("RoutineSound", "routineDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="SoundData", isRequired = true) @BelongsTo(targetName = "soundDataID", type = SoundData.class) SoundData soundData;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
@@ -88,7 +88,7 @@ public final class RoutineSound implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("RoutineSoundModel {")
+      .append("RoutineSound {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("soundData=" + String.valueOf(getSoundData()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")

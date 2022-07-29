@@ -17,15 +17,15 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the RoutineSelfLoveModel type in your schema. */
+/** This is an auto generated class representing the RoutineSelfLove type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "RoutineSelfLoves")
 @Index(name = "byRoutineData", fields = {"routineDataID"})
 @Index(name = "bySelfLoveData", fields = {"selfLoveDataID"})
 public final class RoutineSelfLove implements Model {
-  public static final QueryField ID = field("RoutineSelfLoveModel", "id");
-  public static final QueryField ROUTINE_DATA = field("RoutineSelfLoveModel", "routineDataID");
-  public static final QueryField SELF_LOVE_DATA = field("RoutineSelfLoveModel", "selfLoveDataID");
+  public static final QueryField ID = field("RoutineSelfLove", "id");
+  public static final QueryField ROUTINE_DATA = field("RoutineSelfLove", "routineDataID");
+  public static final QueryField SELF_LOVE_DATA = field("RoutineSelfLove", "selfLoveDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
   private final @ModelField(targetType="SelfLoveData", isRequired = true) @BelongsTo(targetName = "selfLoveDataID", type = SelfLoveData.class) SelfLoveData selfLoveData;
@@ -88,7 +88,7 @@ public final class RoutineSelfLove implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("RoutineSelfLoveModel {")
+      .append("RoutineSelfLove {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")
       .append("selfLoveData=" + String.valueOf(getSelfLoveData()) + ", ")

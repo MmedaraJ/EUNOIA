@@ -35,8 +35,8 @@ public final class StretchData implements Model {
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData stretchOwner;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
-  private final @ModelField(targetType="RoutineStretchModel") @HasMany(associatedWith = "stretchData", type = RoutineStretch.class) List<RoutineStretch> routines = null;
-  private final @ModelField(targetType="UserStretchModel") @HasMany(associatedWith = "stretchData", type = UserStretch.class) List<UserStretch> users = null;
+  private final @ModelField(targetType="RoutineStretch") @HasMany(associatedWith = "stretchData", type = RoutineStretch.class) List<RoutineStretch> routines = null;
+  private final @ModelField(targetType="UserStretch") @HasMany(associatedWith = "stretchData", type = UserStretch.class) List<UserStretch> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {

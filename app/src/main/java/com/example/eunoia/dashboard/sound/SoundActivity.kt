@@ -1,12 +1,17 @@
 package com.example.eunoia.dashboard.sound
 
 import android.content.Context
+import android.net.Uri
+import android.os.Bundle
+import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,11 +19,15 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.UserRoutineBackend
+import com.example.eunoia.backend.UserSoundBackend
 import com.example.eunoia.dashboard.home.*
+import com.example.eunoia.models.PresetNameAndVolumesMapObject
 import com.example.eunoia.models.SoundObject
+import com.example.eunoia.mvvm.soundMvvm.model.SoundModel
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -27,7 +36,7 @@ import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.*
 
-private const val TAG = "Sound Activity"
+private val TAG = "Sound Activity"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -39,6 +48,11 @@ fun SoundActivityUI(
 ) {
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
+    globalViewModel_!!.currentUser?.let {
+        UserSoundBackend.queryUserSoundBasedOnUser(it) { userSound ->
+            globalViewModel_!!.currentUsersSounds = userSound.toMutableList()
+        }
+    }
     ConstraintLayout(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -48,8 +62,8 @@ fun SoundActivityUI(
             header,
             introTitle,
             options,
-            favorite_routine_title,
-            emptyRoutine,
+            favorite_sounds_title,
+            emptySoundList,
             articles_title,
             articles,
             endSpace
@@ -96,7 +110,7 @@ fun SoundActivityUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(favorite_routine_title) {
+                .constrainAs(favorite_sounds_title) {
                     top.linkTo(options.bottom, margin = 0.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
@@ -106,17 +120,88 @@ fun SoundActivityUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(emptyRoutine) {
-                    top.linkTo(favorite_routine_title.bottom, margin = 18.dp)
+                .constrainAs(emptySoundList) {
+                    top.linkTo(favorite_sounds_title.bottom, margin = 18.dp)
                 }
                 .padding(bottom = 12.dp)
         ){
-            UserSoundList()
+            if(globalViewModel_!!.currentUsersSounds != null){
+                if(globalViewModel_!!.currentUsersSounds!!.size > 0)
+                {
+                    for(sound in globalViewModel_!!.currentUsersSounds!!){
+                        if(sound!!.soundData.approvalStatus == SoundApprovalStatus.APPROVED){
+                            var soundPreset by remember{mutableStateOf<PresetData?>(null)}
+                            var soundPresetMap by remember{mutableStateOf<PresetNameAndVolumesMapData?>(null)}
+                            val uris = remember{mutableListOf<Uri>()}
+                            DisplayUsersSounds(
+                                sound.soundData,
+                                {
+                                    getSoundPresets(sound.soundData) { presetData ->
+                                        soundPreset = presetData
+                                        for(preset in soundPreset!!.presets){
+                                            if(preset.key == "current_volumes"){
+                                                soundPresetMap = preset
+                                                globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = preset
+                                            }
+                                        }
+                                    }
+                                    retrieveAudioUris(uris, sound.soundData)
+                                },
+                                {startText ->
+                                    if(startText == "start"){
+                                        globalViewModel_!!.currentSoundPlayingPreset = null
+                                        resetAll(context)
+                                        globalViewModel_!!.currentSoundPlaying = sound.soundData
+                                        globalViewModel_!!.currentSoundPlayingContext = context
+                                        if(soundPreset != null) {
+                                            globalViewModel_!!.currentSoundPlayingPreset = soundPreset
+                                            globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = soundPresetMap
+                                            var volumes = listOf<Int>()
+                                            for (preset in soundPreset!!.presets) {
+                                                if (preset.key == "current_volumes") {
+                                                    volumes = preset.volumes
+                                                }
+                                            }
+                                            Log.i(TAG, "Volumes ==>> $volumes")
+                                            globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
+                                            for (volume in volumes) {
+                                                globalViewModel_!!.currentSoundPlayingSliderPositions.add(
+                                                    mutableStateOf(volume.toFloat())
+                                                )
+                                            }
+                                            createMeditationBellMediaPlayer(context)
+                                            Log.i(TAG, "Uris ==>> $uris")
+                                            if(uris.size > 0) {
+                                                playSounds(
+                                                    uris,
+                                                    context,
+                                                    3
+                                                )
+                                            }
+                                        }
+                                    }else if(startText == "stop"){
+                                        pauseSounds(context, 3)
+                                    }
+                                },
+                                {
+                                    globalViewModel_!!.currentSoundPlayingPreset = null
+                                    resetAll(context)
+                                    navigateToSoundScreen(navController, sound.soundData)
+                                }
+                            )
+                        }
+                    }
+                }else{
+                    SurpriseMeSound{}
+                }
+            }else{
+                SurpriseMeSound{}
+            }
         }
         Column(
             modifier = Modifier
                 .constrainAs(articles_title) {
-                    top.linkTo(emptyRoutine.bottom, margin = 0.dp)
+                    top.linkTo(emptySoundList.bottom, margin = 0.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -160,6 +245,7 @@ private fun OptionsList(navController: NavController, context: Context){
             0,
             0,
             { displayName ->
+                Log.i(TAG, "About to get pouring rain again")
                 if(globalViewModel_!!.currentSoundPlaying == null) {
                     SoundBackend.querySoundBasedOnDisplayName(displayName) {
                         if (it.isNotEmpty()) {
@@ -176,7 +262,7 @@ private fun OptionsList(navController: NavController, context: Context){
                     }
                 }
             }
-        ){ displayName ->
+        ){
             if (sound != null) {
                 navigateToSoundScreen(navController, sound!!)
             }else{

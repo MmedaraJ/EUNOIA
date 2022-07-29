@@ -100,6 +100,7 @@ subscription OnCreateSoundData($owner: String) {
     long_description
     audio_key_s3
     icon
+    colorHEX
     fullPlayTime
     visible_to_others
     audio_names
@@ -116,6 +117,7 @@ subscription OnCreateSoundData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -161,6 +163,7 @@ subscription OnCreateSoundData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -271,6 +274,7 @@ subscription OnUpdateSoundData($owner: String) {
     long_description
     audio_key_s3
     icon
+    colorHEX
     fullPlayTime
     visible_to_others
     audio_names
@@ -287,6 +291,7 @@ subscription OnUpdateSoundData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -332,6 +337,7 @@ subscription OnUpdateSoundData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -442,6 +448,7 @@ subscription OnDeleteSoundData($owner: String) {
     long_description
     audio_key_s3
     icon
+    colorHEX
     fullPlayTime
     visible_to_others
     audio_names
@@ -458,6 +465,7 @@ subscription OnDeleteSoundData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -503,6 +511,7 @@ subscription OnDeleteSoundData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -577,6 +586,7 @@ subscription OnCreateCommentData($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -704,6 +714,7 @@ subscription OnUpdateCommentData($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -831,6 +842,7 @@ subscription OnDeleteCommentData($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -943,6 +955,7 @@ subscription OnCreatePresetNameAndVolumesMapData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -981,6 +994,7 @@ subscription OnUpdatePresetNameAndVolumesMapData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -1019,6 +1033,7 @@ subscription OnDeletePresetNameAndVolumesMapData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -1072,6 +1087,7 @@ subscription OnCreatePresetData($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -1151,6 +1167,7 @@ subscription OnUpdatePresetData($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -1230,6 +1247,7 @@ subscription OnDeletePresetData($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -2851,6 +2869,7 @@ subscription OnCreateUserData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -3047,6 +3066,7 @@ subscription OnUpdateUserData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -3243,6 +3263,7 @@ subscription OnDeleteUserData($owner: String) {
         long_description
         audio_key_s3
         icon
+        colorHEX
         fullPlayTime
         visible_to_others
         audio_names
@@ -3446,6 +3467,7 @@ subscription OnCreateUserSound($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -3572,6 +3594,7 @@ subscription OnUpdateUserSound($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -3698,6 +3721,7 @@ subscription OnDeleteUserSound($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -3824,6 +3848,7 @@ subscription OnCreateRoutineSound($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -3959,6 +3984,7 @@ subscription OnUpdateRoutineSound($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names
@@ -4094,6 +4120,7 @@ subscription OnDeleteRoutineSound($owner: String) {
       long_description
       audio_key_s3
       icon
+      colorHEX
       fullPlayTime
       visible_to_others
       audio_names

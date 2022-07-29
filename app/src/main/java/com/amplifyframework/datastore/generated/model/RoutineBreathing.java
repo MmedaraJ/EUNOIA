@@ -17,15 +17,15 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the RoutineBreathingModel type in your schema. */
+/** This is an auto generated class representing the RoutineBreathing type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "RoutineBreathings")
 @Index(name = "byRoutineData", fields = {"routineDataID"})
 @Index(name = "byBreathingData", fields = {"breathingDataID"})
 public final class RoutineBreathing implements Model {
-  public static final QueryField ID = field("RoutineBreathingModel", "id");
-  public static final QueryField ROUTINE_DATA = field("RoutineBreathingModel", "routineDataID");
-  public static final QueryField BREATHING_DATA = field("RoutineBreathingModel", "breathingDataID");
+  public static final QueryField ID = field("RoutineBreathing", "id");
+  public static final QueryField ROUTINE_DATA = field("RoutineBreathing", "routineDataID");
+  public static final QueryField BREATHING_DATA = field("RoutineBreathing", "breathingDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
   private final @ModelField(targetType="BreathingData", isRequired = true) @BelongsTo(targetName = "breathingDataID", type = BreathingData.class) BreathingData breathingData;
@@ -88,7 +88,7 @@ public final class RoutineBreathing implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("RoutineBreathingModel {")
+      .append("RoutineBreathing {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")
       .append("breathingData=" + String.valueOf(getBreathingData()) + ", ")

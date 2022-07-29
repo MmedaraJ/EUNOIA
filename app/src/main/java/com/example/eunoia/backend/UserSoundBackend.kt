@@ -62,7 +62,7 @@ object UserSoundBackend {
             Amplify.API.query(
                 ModelQuery.list(
                     UserSound::class.java,
-                    UserSound.USER_DATA.eq(userData),
+                    UserSound.USER_DATA.eq(userData.id),
                 ),
                 { response ->
                     if(response.hasData()) {

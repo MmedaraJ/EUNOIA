@@ -23,6 +23,7 @@ object SoundObject {
         val long_description: String,
         val audio_key_s3: String,
         val icon: Int,
+        val colorHex: Int,
         val fullPlayTime: Int,
         val visible_to_others: Boolean,
         val audio_names: List<String>,
@@ -41,6 +42,7 @@ object SoundObject {
                 .longDescription(this.long_description)
                 .audioKeyS3(this.audio_key_s3)
                 .icon(this.icon)
+                .colorHex(this.colorHex)
                 .fullPlayTime(this.fullPlayTime)
                 .visibleToOthers(this.visible_to_others)
                 .audioNames(this.audio_names)
@@ -59,6 +61,7 @@ object SoundObject {
                     soundData.longDescription,
                     soundData.audioKeyS3,
                     soundData.icon,
+                    soundData.colorHex,
                     soundData.fullPlayTime,
                     soundData.visibleToOthers,
                     soundData.audioNames,

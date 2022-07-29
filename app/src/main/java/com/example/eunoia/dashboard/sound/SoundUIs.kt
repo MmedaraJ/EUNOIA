@@ -33,10 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.CommentBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.UserSoundBackend
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -57,6 +59,7 @@ private val timerTime = mutableStateOf(0L)
 private val meditationBellMediaPlayer = MutableLiveData<MediaPlayer>()
 private var numCounters = 0
 var displayName = ""
+var showControls by mutableStateOf(false)
 var openUserAlreadyHasSoundDialogBox by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -294,79 +297,90 @@ fun Controls(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
+    showControls = !globalViewModel_!!.currentSoundPlayingUris.isNullOrEmpty()
     val uris = rememberSaveable{mutableListOf<Uri>()}
-    Log.i(TAG, "1. Uris size ${uris.size}")
     createMeditationBellMediaPlayer(applicationContext)
     retrieveAudioUris(uris, sound)
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        globalViewModel_!!.icons.forEachIndexed { index, icon ->
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .gradientBackground(
-                        listOf(
-                            globalViewModel_!!.backgroundControlColor1[index].value,
-                            globalViewModel_!!.backgroundControlColor2[index].value
-                        ),
-                        angle = 45f
-                    )
-                    .border(
-                        BorderStroke(
-                            0.5.dp,
-                            globalViewModel_!!.borderControlColors[index].value
-                        ),
-                        RoundedCornerShape(50.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                AnImageWithColor(
-                    icon.value,
-                    "icon",
-                    globalViewModel_!!.borderControlColors[index].value,
-                    12.dp,
-                    12.dp,
-                    0,
-                    0
-                ) {
-                    if(uris.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
-                        activateControls(
-                            sound,
-                            preset,
-                            index,
-                            uris.subList(0, uris.size),
-                            applicationContext
+        Log.i(TAG, "ShowControls value ==>> ${showControls}")
+        if(showControls) {
+            globalViewModel_!!.icons.forEachIndexed { index, icon ->
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .gradientBackground(
+                            listOf(
+                                globalViewModel_!!.backgroundControlColor1[index].value,
+                                globalViewModel_!!.backgroundControlColor2[index].value
+                            ),
+                            angle = 45f
                         )
+                        .border(
+                            BorderStroke(
+                                0.5.dp,
+                                globalViewModel_!!.borderControlColors[index].value
+                            ),
+                            RoundedCornerShape(50.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AnImageWithColor(
+                        icon.value,
+                        "icon",
+                        globalViewModel_!!.borderControlColors[index].value,
+                        12.dp,
+                        12.dp,
+                        0,
+                        0
+                    ) {
+                        if (uris.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
+                            activateControls(
+                                sound,
+                                preset,
+                                index,
+                                uris.subList(0, uris.size),
+                                applicationContext
+                            )
+                        }
                     }
                 }
             }
-        }
-        if(showAddIcon) {
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .background(globalViewModel_!!.borderControlColors[7].value),
-                contentAlignment = Alignment.Center
-            ) {
-                AnImageWithColor(
-                    globalViewModel_!!.addIcon.value,
-                    "icon",
-                    White,
-                    10.dp,
-                    10.dp,
-                    0,
-                    0
+            if(showAddIcon) {
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(globalViewModel_!!.borderControlColors[7].value),
+                    contentAlignment = Alignment.Center
                 ) {
-                    globalViewModel_!!.currentSoundToBeAdded = sound
-                    Log.i(TAG, "${globalViewModel_!!.currentUser}")
-                    globalViewModel_!!.bottomSheetOpenFor = "addToSoundListOrRoutine"
-                    openBottomSheet(scope, state)
+                    AnImageWithColor(
+                        globalViewModel_!!.addIcon.value,
+                        "icon",
+                        White,
+                        10.dp,
+                        10.dp,
+                        0,
+                        0
+                    ) {
+                        globalViewModel_!!.currentSoundToBeAdded = sound
+                        Log.i(TAG, "${globalViewModel_!!.currentUser}")
+                        globalViewModel_!!.bottomSheetOpenFor = "addToSoundListOrRoutine"
+                        openBottomSheet(scope, state)
+                    }
                 }
             }
+        }else{
+            NormalText(
+                text = "Loading..",
+                color = Black,
+                fontSize = 10,
+                xOffset = 0,
+                yOffset = 0
+            )
         }
     }
 }
@@ -383,6 +397,7 @@ fun retrieveAudioUris(
     sound: SoundData
 ){
     Log.i(TAG, "2. Uris size ${uris.size}")
+    var count by mutableStateOf(0)
     if(uris.size == 0) {
         Log.i(TAG, "3. Uris size ${uris.size}")
         SoundBackend.listEunoiaSounds(sound.audioKeyS3) { result ->
@@ -391,6 +406,9 @@ fun retrieveAudioUris(
                     if(uris.size < globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
                         uris.add(audioUri)
                         Log.i(TAG, "${item.key}. Uris size ${uris.size}")
+                        count++
+                    }else{
+                        showControls = true
                     }
                 }
             }
@@ -435,7 +453,9 @@ fun playSounds(
     deActivateControlButton(index)
     deActivateControlButton(1)
     globalViewModel_!!.isCurrentSoundPlaying = true
-    Toast.makeText(applicationContext, "Sound: playing", Toast.LENGTH_SHORT).show()
+    runOnUiThread{
+        Toast.makeText(applicationContext, "Sound: playing", Toast.LENGTH_SHORT).show()
+    }
 }
 
 fun pauseSounds(
@@ -503,6 +523,7 @@ fun resetAll(applicationContext: Context){
     mediaPlayers.clear()
     isPlaying.value = false
     isLooping.value = false
+    showControls = false
     meditationBellInterval.value = 0
     deActivateControlButton(0)
     deActivateControlButton(1)
@@ -512,6 +533,7 @@ fun resetAll(applicationContext: Context){
     deActivateControlButton(5)
     deActivateControlButton(6)
     globalViewModel_!!.isCurrentSoundPlaying = false
+    globalViewModel_!!.currentSoundPlayingUris = null
     timerTime.value = 0
     startCountDownTimer(applicationContext, timerTime.value)
 }
@@ -1023,10 +1045,20 @@ fun CommentsForSound(
         getSoundComment(sound){
             soundComment = it
         }
+        var userAlreadyHasSound = false
+        for (userSound in globalViewModel_!!.currentUser!!.sounds) {
+            if (
+                userSound.soundData.id == sound.id &&
+                userSound.userData.id == globalViewModel_!!.currentUser!!.id
+            ) {
+                userAlreadyHasSound = true
+            }
+        }
         if(
+            !userAlreadyHasSound &&
             soundComment != null &&
-            sound != currentSound &&
-            sound.soundOwner != UserObject.signedInUser().value!!.data &&
+            sound.id != currentSound.id &&
+            sound.soundOwner.id != globalViewModel_!!.currentUser!!.id &&
             sound.approvalStatus.equals(SoundApprovalStatus.APPROVED)
         ) {
             OtherUsersCommentsUI(sound, soundComment!!, navController, context, false)
@@ -1054,6 +1086,7 @@ fun OtherUsersCommentsUI(
         .wrapContentHeight()
         .clickable {
             clicked = !clicked
+            globalViewModel_!!.currentSoundPlayingPreset = null
             resetAll(context)
             navigateToSoundScreen(navController, sound)
         }
@@ -1104,11 +1137,15 @@ fun OtherUsersCommentsUI(
 @Composable
 fun PresetsUI(allPresetNameAndVolumeMapData: List<PresetNameAndVolumesMapData>){
     val borders = mutableListOf<MutableState<Boolean>>()
-    for(presetVolume in allPresetNameAndVolumeMapData){
-        borders.add(remember{ mutableStateOf(false) })
+    for(presetNameAndVolumeMapData in allPresetNameAndVolumeMapData){
+        if(presetNameAndVolumeMapData.key == "current_volumes"){
+            borders.add(remember{ mutableStateOf(true) })
+        }else {
+            borders.add(remember { mutableStateOf(false) })
+        }
     }
     allPresetNameAndVolumeMapData.forEachIndexed{ index, presetNameAndVolumeMapData ->
-        if(index != 0) {
+        if(presetNameAndVolumeMapData.key != "original_volumes") {
             var changePreset by rememberSaveable { mutableStateOf(false) }
             var cardModifier = Modifier
                 .padding(bottom = 8.dp)
@@ -1123,6 +1160,7 @@ fun PresetsUI(allPresetNameAndVolumeMapData: List<PresetNameAndVolumesMapData>){
                 .wrapContentWidth()
 
             if (changePreset) {
+                Log.i(TAG, "presetNameAndVolumeMapData ==>> $presetNameAndVolumeMapData")
                 globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap =
                     presetNameAndVolumeMapData
                 resetSoundsForPresets()
@@ -1138,7 +1176,6 @@ fun PresetsUI(allPresetNameAndVolumeMapData: List<PresetNameAndVolumesMapData>){
             Card(
                 modifier = cardModifier,
                 shape = MaterialTheme.shapes.small,
-                //backgroundColor = BeautyBush,
                 elevation = 2.dp,
             ) {
                 ConstraintLayout(

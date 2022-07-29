@@ -28,9 +28,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.UserData
+import com.amplifyframework.datastore.generated.model.UserRoutine
 import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.backend.UserBackend
+import com.example.eunoia.backend.UserRoutineBackend
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.mvvm.commentMvvm.viewModel.CommentViewModel
 import com.example.eunoia.mvvm.presetMvvm.viewModel.PresetViewModel
@@ -38,6 +40,7 @@ import com.example.eunoia.mvvm.soundMvvm.model.SoundModel
 import com.example.eunoia.mvvm.soundMvvm.viewModel.SoundViewModel
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.ui.bottomSheets.userRoutinesSize
 import com.example.eunoia.ui.theme.Grey
 import com.example.eunoia.ui.theme.White
 import com.example.eunoia.ui.components.*
@@ -52,15 +55,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class UserDashboardActivity : ComponentActivity() {
-    private val TAG = "UserDashboardActivity"
     private val _currentUser = MutableLiveData<UserData>(null)
     var currentUser: LiveData<UserData> = _currentUser
 
     companion object{
-        lateinit var soundViewModel: SoundViewModel
-        lateinit var presetViewModel: PresetViewModel
-        lateinit var commentViewModel: CommentViewModel
         lateinit var owner: LifecycleOwner
+        val TAG = "UserDashboardActivity"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,9 +69,6 @@ class UserDashboardActivity : ComponentActivity() {
         setSignedInUser()
         observeIsSignedOut()
         owner = this
-        soundViewModel = ViewModelProvider(this)[SoundViewModel::class.java]
-        presetViewModel = ViewModelProvider(this)[PresetViewModel::class.java]
-        commentViewModel = ViewModelProvider(this)[CommentViewModel::class.java]
         setContent {
             MultiBottomNavApp()
         }
@@ -129,6 +126,14 @@ fun UserDashboardActivityUI(
     globalViewModel_!!.navController = navController
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    //if(globalViewModel_!!.currentUsersRoutines == null) {
+        Log.i(UserDashboardActivity.TAG, "User ${globalViewModel_!!.currentUser}")
+        globalViewModel_!!.currentUser?.let {
+            UserRoutineBackend.queryUserRoutineBasedOnUser(it) { userRoutines ->
+                globalViewModel_!!.currentUsersRoutines = userRoutines.toMutableList()
+            }
+        }
+    //}
     ConstraintLayout(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -200,7 +205,21 @@ fun UserDashboardActivityUI(
                 }
                 .padding(bottom = 12.dp)
         ){
-            RoutineListWhenEmpty()
+            Log.i(UserDashboardActivity.TAG, "User Routines ==>> ${globalViewModel_!!.currentUsersRoutines}")
+            if(globalViewModel_!!.currentUsersRoutines != null){
+                if(globalViewModel_!!.currentUsersRoutines!!.size > 0)
+                {
+                    for(routine in globalViewModel_!!.currentUsersRoutines!!){
+                        Routine(routine!!.routineData){
+
+                        }
+                    }
+                }else{
+                    RoutineListWhenEmpty()
+                }
+            }else{
+                RoutineListWhenEmpty()
+            }
         }
         Column(
             modifier = Modifier

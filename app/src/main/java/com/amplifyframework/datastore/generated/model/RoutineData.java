@@ -78,12 +78,12 @@ public final class RoutineData implements Model {
   private final @ModelField(targetType="Int", isRequired = true) Integer currentBedtimeStoryContinuePlayingTime;
   private final @ModelField(targetType="Int", isRequired = true) Integer currentSelfLovePlayingIndex;
   private final @ModelField(targetType="Int", isRequired = true) Integer currentSelfLoveContinuePlayingTime;
-  private final @ModelField(targetType="RoutineSoundModel") @HasMany(associatedWith = "routineData", type = RoutineSound.class) List<RoutineSound> sounds = null;
-  private final @ModelField(targetType="RoutineStretchModel") @HasMany(associatedWith = "routineData", type = RoutineStretch.class) List<RoutineStretch> stretches = null;
-  private final @ModelField(targetType="RoutineBreathingModel") @HasMany(associatedWith = "routineData", type = RoutineBreathing.class) List<RoutineBreathing> breathing = null;
+  private final @ModelField(targetType="RoutineSound") @HasMany(associatedWith = "routineData", type = RoutineSound.class) List<RoutineSound> sounds = null;
+  private final @ModelField(targetType="RoutineStretch") @HasMany(associatedWith = "routineData", type = RoutineStretch.class) List<RoutineStretch> stretches = null;
+  private final @ModelField(targetType="RoutineBreathing") @HasMany(associatedWith = "routineData", type = RoutineBreathing.class) List<RoutineBreathing> breathing = null;
   private final @ModelField(targetType="RoutineBedtimeStory") @HasMany(associatedWith = "routineData", type = RoutineBedtimeStory.class) List<RoutineBedtimeStory> bedtimeStories = null;
-  private final @ModelField(targetType="RoutineSelfLoveModel") @HasMany(associatedWith = "routineData", type = RoutineSelfLove.class) List<RoutineSelfLove> selfLoves = null;
-  private final @ModelField(targetType="UserRoutineModel") @HasMany(associatedWith = "routineData", type = UserRoutine.class) List<UserRoutine> users = null;
+  private final @ModelField(targetType="RoutineSelfLove") @HasMany(associatedWith = "routineData", type = RoutineSelfLove.class) List<RoutineSelfLove> selfLoves = null;
+  private final @ModelField(targetType="UserRoutine") @HasMany(associatedWith = "routineData", type = UserRoutine.class) List<UserRoutine> users = null;
   private final @ModelField(targetType="String", isRequired = true) List<String> playingOrder;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;

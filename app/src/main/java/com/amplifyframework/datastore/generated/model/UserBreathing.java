@@ -17,15 +17,15 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the UserBreathingModel type in your schema. */
+/** This is an auto generated class representing the UserBreathing type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "UserBreathings")
 @Index(name = "byUserData", fields = {"userDataID"})
 @Index(name = "byBreathingData", fields = {"breathingDataID"})
 public final class UserBreathing implements Model {
-  public static final QueryField ID = field("UserBreathingModel", "id");
-  public static final QueryField USER_DATA = field("UserBreathingModel", "userDataID");
-  public static final QueryField BREATHING_DATA = field("UserBreathingModel", "breathingDataID");
+  public static final QueryField ID = field("UserBreathing", "id");
+  public static final QueryField USER_DATA = field("UserBreathing", "userDataID");
+  public static final QueryField BREATHING_DATA = field("UserBreathing", "breathingDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData userData;
   private final @ModelField(targetType="BreathingData", isRequired = true) @BelongsTo(targetName = "breathingDataID", type = BreathingData.class) BreathingData breathingData;
@@ -88,7 +88,7 @@ public final class UserBreathing implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("UserBreathingModel {")
+      .append("UserBreathing {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("userData=" + String.valueOf(getUserData()) + ", ")
       .append("breathingData=" + String.valueOf(getBreathingData()) + ", ")

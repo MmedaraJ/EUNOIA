@@ -35,8 +35,8 @@ public final class BreathingData implements Model {
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData breathingOwner;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
-  private final @ModelField(targetType="RoutineBreathingModel") @HasMany(associatedWith = "breathingData", type = RoutineBreathing.class) List<RoutineBreathing> routines = null;
-  private final @ModelField(targetType="UserBreathingModel") @HasMany(associatedWith = "breathingData", type = UserBreathing.class) List<UserBreathing> users = null;
+  private final @ModelField(targetType="RoutineBreathing") @HasMany(associatedWith = "breathingData", type = RoutineBreathing.class) List<RoutineBreathing> routines = null;
+  private final @ModelField(targetType="UserBreathing") @HasMany(associatedWith = "breathingData", type = UserBreathing.class) List<UserBreathing> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {

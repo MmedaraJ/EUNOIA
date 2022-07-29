@@ -56,18 +56,18 @@ public final class UserData implements Model {
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean authenticated;
   private final @ModelField(targetType="String", isRequired = true) String subscription;
   private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "soundOwner", type = SoundData.class) List<SoundData> soundsOwnedByUser = null;
-  private final @ModelField(targetType="UserSoundModel") @HasMany(associatedWith = "userData", type = UserSound.class) List<UserSound> sounds = null;
+  private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "userData", type = UserSound.class) List<UserSound> sounds = null;
   private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "commentOwner", type = CommentData.class) List<CommentData> comments = null;
   private final @ModelField(targetType="RoutineData") @HasMany(associatedWith = "routineOwner", type = RoutineData.class) List<RoutineData> routinesOwnedByUser = null;
-  private final @ModelField(targetType="UserRoutineModel") @HasMany(associatedWith = "userData", type = UserRoutine.class) List<UserRoutine> routines = null;
+  private final @ModelField(targetType="UserRoutine") @HasMany(associatedWith = "userData", type = UserRoutine.class) List<UserRoutine> routines = null;
   private final @ModelField(targetType="StretchData") @HasMany(associatedWith = "stretchOwner", type = StretchData.class) List<StretchData> stretchesOwnedByUser = null;
-  private final @ModelField(targetType="UserStretchModel") @HasMany(associatedWith = "userData", type = UserStretch.class) List<UserStretch> stretches = null;
+  private final @ModelField(targetType="UserStretch") @HasMany(associatedWith = "userData", type = UserStretch.class) List<UserStretch> stretches = null;
   private final @ModelField(targetType="BreathingData") @HasMany(associatedWith = "breathingOwner", type = BreathingData.class) List<BreathingData> breathingsOwnedByUser = null;
-  private final @ModelField(targetType="UserBreathingModel") @HasMany(associatedWith = "userData", type = UserBreathing.class) List<UserBreathing> breathings = null;
+  private final @ModelField(targetType="UserBreathing") @HasMany(associatedWith = "userData", type = UserBreathing.class) List<UserBreathing> breathings = null;
   private final @ModelField(targetType="SelfLoveData") @HasMany(associatedWith = "selfLoveOwner", type = SelfLoveData.class) List<SelfLoveData> selfLovesOwnedByUser = null;
-  private final @ModelField(targetType="UserSelfLoveModel") @HasMany(associatedWith = "userData", type = UserSelfLove.class) List<UserSelfLove> selfLoves = null;
+  private final @ModelField(targetType="UserSelfLove") @HasMany(associatedWith = "userData", type = UserSelfLove.class) List<UserSelfLove> selfLoves = null;
   private final @ModelField(targetType="BedtimeStoryData") @HasMany(associatedWith = "bedtimeStoryOwner", type = BedtimeStoryData.class) List<BedtimeStoryData> bedtimeStoriesOwnedByUser = null;
-  private final @ModelField(targetType="UserBedtimeStoryModel") @HasMany(associatedWith = "userData", type = UserBedtimeStory.class) List<UserBedtimeStory> bedtimeStories = null;
+  private final @ModelField(targetType="UserBedtimeStory") @HasMany(associatedWith = "userData", type = UserBedtimeStory.class) List<UserBedtimeStory> bedtimeStories = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {

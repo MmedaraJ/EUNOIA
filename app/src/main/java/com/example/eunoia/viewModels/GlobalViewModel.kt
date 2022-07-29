@@ -3,15 +3,10 @@ package com.example.eunoia.viewModels
 import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.amplifyframework.datastore.generated.model.PresetData
-import com.amplifyframework.datastore.generated.model.PresetNameAndVolumesMapData
-import com.amplifyframework.datastore.generated.model.SoundData
-import com.amplifyframework.datastore.generated.model.UserData
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
-import com.example.eunoia.models.SoundObject
 import com.example.eunoia.ui.theme.*
 
 class GlobalViewModel: ViewModel(){
@@ -22,13 +17,16 @@ class GlobalViewModel: ViewModel(){
     var currentSoundPlayingContext by mutableStateOf<Context?>(null)
     var currentSoundPlayingSliderPositions = mutableListOf<MutableState<Float>?>()
     var currentSoundPlayingUris: MutableList<Uri>? = null
+    var currentUsersSounds by mutableStateOf<MutableList<UserSound?>?>(null)
     //adding sound
     var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)
+
     //routine
     var currentRoutinePlaying by mutableStateOf("")
     var routineNameToBeAdded by mutableStateOf("")
     var routineColorToBeAdded by mutableStateOf<Long?>(null)
     var routineIconToBeAdded by mutableStateOf<Int?>(null)
+    var currentUsersRoutines by mutableStateOf<MutableList<UserRoutine?>?>(null)
 
     var currentSelfLovePlaying by mutableStateOf("")
     var currentBedtimeStoryPlaying by mutableStateOf("")

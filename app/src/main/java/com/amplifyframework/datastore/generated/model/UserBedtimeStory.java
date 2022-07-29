@@ -17,15 +17,15 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the UserBedtimeStoryModel type in your schema. */
+/** This is an auto generated class representing the UserBedtimeStory type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "UserBedtimeStories")
 @Index(name = "byUserData", fields = {"userDataID"})
 @Index(name = "byBedtimeStoryData", fields = {"bedtimeStoryDataID"})
 public final class UserBedtimeStory implements Model {
-  public static final QueryField ID = field("UserBedtimeStoryModel", "id");
-  public static final QueryField USER_DATA = field("UserBedtimeStoryModel", "userDataID");
-  public static final QueryField BEDTIME_STORY_DATA = field("UserBedtimeStoryModel", "bedtimeStoryDataID");
+  public static final QueryField ID = field("UserBedtimeStory", "id");
+  public static final QueryField USER_DATA = field("UserBedtimeStory", "userDataID");
+  public static final QueryField BEDTIME_STORY_DATA = field("UserBedtimeStory", "bedtimeStoryDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData userData;
   private final @ModelField(targetType="BedtimeStoryData", isRequired = true) @BelongsTo(targetName = "bedtimeStoryDataID", type = BedtimeStoryData.class) BedtimeStoryData bedtimeStoryData;
@@ -88,7 +88,7 @@ public final class UserBedtimeStory implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("UserBedtimeStoryModel {")
+      .append("UserBedtimeStory {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("userData=" + String.valueOf(getUserData()) + ", ")
       .append("bedtimeStoryData=" + String.valueOf(getBedtimeStoryData()) + ", ")

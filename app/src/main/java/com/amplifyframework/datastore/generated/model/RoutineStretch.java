@@ -17,15 +17,15 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the RoutineStretchModel type in your schema. */
+/** This is an auto generated class representing the RoutineStretch type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "RoutineStretches")
 @Index(name = "byRoutineData", fields = {"routineDataID"})
 @Index(name = "byStretchData", fields = {"stretchDataID"})
 public final class RoutineStretch implements Model {
-  public static final QueryField ID = field("RoutineStretchModel", "id");
-  public static final QueryField ROUTINE_DATA = field("RoutineStretchModel", "routineDataID");
-  public static final QueryField STRETCH_DATA = field("RoutineStretchModel", "stretchDataID");
+  public static final QueryField ID = field("RoutineStretch", "id");
+  public static final QueryField ROUTINE_DATA = field("RoutineStretch", "routineDataID");
+  public static final QueryField STRETCH_DATA = field("RoutineStretch", "stretchDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
   private final @ModelField(targetType="StretchData", isRequired = true) @BelongsTo(targetName = "stretchDataID", type = StretchData.class) StretchData stretchData;
@@ -88,7 +88,7 @@ public final class RoutineStretch implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("RoutineStretchModel {")
+      .append("RoutineStretch {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")
       .append("stretchData=" + String.valueOf(getStretchData()) + ", ")

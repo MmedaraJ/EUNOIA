@@ -39,7 +39,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.amplifyframework.datastore.generated.model.RoutineData
+import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
 
 val bioRhymeFonts = FontFamily(
@@ -798,6 +801,240 @@ fun EmptyRoutine(lambda: () -> Unit){
 }
 
 @Composable
+fun Routine(routine: RoutineData, clicked: () -> Unit){
+    Card(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .height(height = 163.dp)
+            .clickable { clicked() }
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.small,
+        backgroundColor = Color(routine.colorHex),
+        elevation = 8.dp
+    ){
+        ConstraintLayout(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            val (
+                title,
+                times_used,
+                steps,
+                shuffle,
+                image
+            ) = createRefs()
+            Column(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        top.linkTo(parent.top, margin = 0.dp)
+                    }
+            ) {
+                NormalText(
+                    text = "[${routine.displayName}]",
+                    color = Black,
+                    fontSize = 14,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(times_used) {
+                        top.linkTo(title.bottom, margin = 2.dp)
+                    }
+            ) {
+                ExtraLightText(
+                    text = "You have used this routine ${routine.numberOfTimesUsed} times.",
+                    color = Black,
+                    fontSize = 10,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(steps) {
+                        top.linkTo(times_used.bottom, margin = 2.dp)
+                    }
+            ) {
+                val step = if(routine.numberOfSteps > 1) "steps" else "step"
+                val minute = if(routine.fullPlayTime > 1) "minutes" else "minute"
+                LightText(
+                    text = "${routine.numberOfSteps} $step ~ ${routine.fullPlayTime} $minute",
+                    color = Grey,
+                    fontSize = 7,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(46.dp)
+                    .clip(CircleShape)
+                    .background(Color.Black)
+                    .constrainAs(shuffle) {
+                        bottom.linkTo(parent.bottom, margin = 0.dp)
+                        start.linkTo(parent.start, margin = 0.dp)
+                    },
+                contentAlignment = Alignment.Center
+            ){
+                MorgeNormalText(
+                    text = "start",
+                    color = Color.White,
+                    fontSize = 15,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(image) {
+                        bottom.linkTo(parent.bottom, margin = 0.dp)
+                        end.linkTo(parent.end, margin = 0.dp)
+                        top.linkTo(times_used.bottom, 2.dp)
+                    }
+            ) {
+                AnImage(
+                    routine.icon,
+                    "${routine.displayName} icon",
+                    97.dp,
+                    104.dp,
+                    0,
+                    0
+                ){}
+            }
+        }
+    }
+}
+
+@Composable
+fun DisplayUsersSounds(
+    sound: SoundData,
+    before: () -> Unit,
+    startClicked: (startText: String) -> Unit,
+    clicked: () -> Unit
+){
+    val text = if(globalViewModel_!!.currentSoundPlaying != null) {
+        if (
+            globalViewModel_!!.currentSoundPlaying!!.id == sound.id &&
+            globalViewModel_!!.isCurrentSoundPlaying
+        ) {
+            "stop"
+        }else{
+            "start"
+        }
+    }else{
+        "start"
+    }
+    var startText by rememberSaveable{ mutableStateOf(text)}
+    before()
+    Card(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .height(height = 163.dp)
+            .clickable { clicked() }
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.small,
+        backgroundColor = Color(sound.colorHex),
+        elevation = 8.dp
+    ){
+        ConstraintLayout(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            val (
+                title,
+                times_used,
+                steps,
+                shuffle,
+                image
+            ) = createRefs()
+            Column(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        top.linkTo(parent.top, margin = 0.dp)
+                    }
+            ) {
+                NormalText(
+                    text = "[${sound.displayName}]",
+                    color = Black,
+                    fontSize = 14,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(times_used) {
+                        top.linkTo(title.bottom, margin = 2.dp)
+                    }
+            ) {
+                ExtraLightText(
+                    text = sound.shortDescription,
+                    color = Black,
+                    fontSize = 10,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(steps) {
+                        top.linkTo(times_used.bottom, margin = 2.dp)
+                    }
+            ) {
+                val minute = if(sound.fullPlayTime > 1) "minutes" else "minute"
+                LightText(
+                    text = "${sound.fullPlayTime} $minute",
+                    color = Grey,
+                    fontSize = 7,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(46.dp)
+                    .clip(CircleShape)
+                    .background(Color.Black)
+                    .constrainAs(shuffle) {
+                        bottom.linkTo(parent.bottom, margin = 0.dp)
+                        start.linkTo(parent.start, margin = 0.dp)
+                    }
+                    .clickable {
+                        startClicked(startText)
+                        startText = if(startText == "start") "stop" else "start"
+                    },
+                contentAlignment = Alignment.Center
+            ){
+                MorgeNormalText(
+                    text = startText,
+                    color = Color.White,
+                    fontSize = 15,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(image) {
+                        bottom.linkTo(parent.bottom, margin = 0.dp)
+                        end.linkTo(parent.end, margin = 0.dp)
+                        top.linkTo(times_used.bottom, 2.dp)
+                    }
+            ) {
+                AnImage(
+                    sound.icon,
+                    "${sound.displayName} icon",
+                    97.dp,
+                    104.dp,
+                    0,
+                    0
+                ){}
+            }
+        }
+    }
+}
+
+@Composable
 fun SurpriseMeRoutine(lambda: () -> Unit){
     Card(
         modifier = Modifier
@@ -840,6 +1077,95 @@ fun SurpriseMeRoutine(lambda: () -> Unit){
             ) {
                 ExtraLightText(
                     text = "Try out new activities and routines by other users.",
+                    color = Black,
+                    fontSize = 10,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(46.dp)
+                    .clip(CircleShape)
+                    .background(Color.Black)
+                    .constrainAs(shuffle) {
+                        bottom.linkTo(parent.bottom, margin = 0.dp)
+                        start.linkTo(parent.start, margin = 0.dp)
+                    },
+                contentAlignment = Alignment.Center
+            ){
+                MorgeNormalText(
+                    text = "shuffle",
+                    color = Color.White,
+                    fontSize = 15,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(image) {
+                        bottom.linkTo(parent.bottom, margin = 0.dp)
+                        end.linkTo(parent.end, margin = 0.dp)
+                        top.linkTo(tryout_text.bottom, 2.dp)
+                    }
+            ) {
+                AnImage(
+                    R.drawable.miroodles_sticker,
+                    "Miroodles Sticker",
+                    97.dp,
+                    104.dp,
+                    0,
+                    0
+                ){}
+            }
+        }
+    }
+}
+
+@Composable
+fun SurpriseMeSound(lambda: () -> Unit){
+    Card(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .height(height = 163.dp)
+            .clickable { lambda() }
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.small,
+        backgroundColor = SwansDown,
+        elevation = 8.dp
+    ){
+        ConstraintLayout(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            val (
+                title,
+                tryout_text,
+                shuffle,
+                image
+            ) = createRefs()
+            Column(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        top.linkTo(parent.top, margin = 0.dp)
+                    }
+            ) {
+                NormalText(
+                    text = "[surprise me with something different]",
+                    color = Black,
+                    fontSize = 14,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(tryout_text) {
+                        top.linkTo(title.bottom, margin = 2.dp)
+                    }
+            ) {
+                ExtraLightText(
+                    text = "Try out new sounds by other users.",
                     color = Black,
                     fontSize = 10,
                     xOffset = 0,

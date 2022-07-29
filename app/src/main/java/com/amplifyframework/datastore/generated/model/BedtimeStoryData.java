@@ -36,7 +36,7 @@ public final class BedtimeStoryData implements Model {
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData bedtimeStoryOwner;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="RoutineBedtimeStory") @HasMany(associatedWith = "bedtimeStoryData", type = RoutineBedtimeStory.class) List<RoutineBedtimeStory> routines = null;
-  private final @ModelField(targetType="UserBedtimeStoryModel") @HasMany(associatedWith = "bedtimeStoryData", type = UserBedtimeStory.class) List<UserBedtimeStory> users = null;
+  private final @ModelField(targetType="UserBedtimeStory") @HasMany(associatedWith = "bedtimeStoryData", type = UserBedtimeStory.class) List<UserBedtimeStory> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
