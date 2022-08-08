@@ -23,7 +23,7 @@ import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
 fun FeedbackUI(navController: NavController, context: Context, globalViewModel: GlobalViewModel) {
-    globalViewModel_!!.navController = navController
+    //globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -98,7 +98,14 @@ fun FeedbackUI(navController: NavController, context: Context, globalViewModel: 
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            DropdownMenu()
+            val topics = listOf(
+                "Topic1",
+                "Topic2",
+                "Topic3",
+                "Topic4",
+                "Topic5"
+            )
+            DropdownMenu(topics, "Select a topic")
         }
         Column(
             modifier = Modifier

@@ -9,7 +9,6 @@ import com.example.eunoia.R
 }*/
 
 sealed class Screen(var title: String, var icon: Int, var screen_route: String) {
-    object Routines: Screen("Routines", R.drawable.create_button,"routines")
     object Search: Screen("Search", R.drawable.search,"search")
     object Feedback: Screen("Feedback", R.drawable.feedback_icon,"feedback")
     object Account: Screen("Account", R.drawable.feedback_icon,"account")
@@ -18,17 +17,18 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
         val routeWithArg: String = "$screen_route?arg={arg}"
         fun withArg(arg: String): String = routeWithArg.replace("{arg}", arg)
     }
-    /*object Phrases : Screen("Phrases")
-    object PhraseDetail : Screen("PhraseDetail?phrase={phrase}") {
-        fun routeWithPhrase(phrase: String): String = screen_route.replace("{phrase}", phrase)
-    }
-    object DashboardDetail : Screen("DashboardDetail")*/
 
     object Sound: Screen("User", -1, "sound")
     object SoundScreen: Screen("Sound Screen", -1, "sound_screen")
     object Settings: Screen("Settings", -1, "settings")
     object Article: Screen("Article", -1, "article")
     object Pricing: Screen("Pricing", -1, "pricing")
+
+    //create element
+    object Create: Screen("Create", R.drawable.create_button,"create")
+    object NameSound: Screen("NameSound", -1,"name_sound")
+    object UploadSounds: Screen("UploadSounds", -1,"upload_sounds")
+    object CreatePreset: Screen("CreatePreset", -1,"create_preset")
 
     //
     fun saveState(): Bundle {
@@ -40,7 +40,10 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
             val title = bundle.getString(KEY_SCREEN, Dashboard.screen_route)
             return when (title) {
                 Dashboard.screen_route -> Dashboard
-                Routines.screen_route -> Routines
+                Create.screen_route -> Create
+                NameSound.screen_route -> NameSound
+                UploadSounds.screen_route -> UploadSounds
+                CreatePreset.screen_route -> CreatePreset
                 Search.screen_route -> Search
                 Feedback.screen_route -> Feedback
                 Account.screen_route -> Account

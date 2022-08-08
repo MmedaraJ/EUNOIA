@@ -517,7 +517,7 @@ fun SelectRoutineColor(
         SimpleFlowRow(
             verticalGap = 8.dp,
             horizontalGap = 8.dp,
-            alignment = Alignment.CenterHorizontally,
+            alignment = Alignment.Start,
             modifier = Modifier
                 .constrainAs(colors) {
                     top.linkTo(title.bottom, margin = 8.dp)

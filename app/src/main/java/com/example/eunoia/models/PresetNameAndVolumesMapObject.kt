@@ -9,7 +9,7 @@ object PresetNameAndVolumesMapObject{
     data class PresetNameAndVolumesMap(
         val key: String,
         val volumes: List<Int>,
-        val preset: PresetData
+        var preset: PresetData?
     ){
         override fun toString(): String = key
         //return an API PresetNameAndVolumesMapData from this PresetNameAndVolumesMapObject

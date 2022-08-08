@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.eunoia">
 
@@ -20,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EUNOIA"
         tools:targetApi="31">
-        <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
         <activity
             android:name=".sign_in_process.HelloUserActivity"
             android:exported="false"
@@ -82,15 +84,19 @@
             android:theme="@style/Theme.EUNOIA" >
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
-                <data android:mimeType="audio/*" />
+                <data android:mimeType="audio/aac" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- The OPENABLE category declares that the returned file is accessible
                      from a content provider that supports OpenableColumns
                      and ContentResolver.openFileDescriptor() -->
-                <category android:name="android.intent.category.OPENABLE" />
-                <category android:name="android.intent.category.EXTRA_ALLOW_MULTIPLE" />
+                <!--<category android:name="android.intent.category.OPENABLE" />-->
+                <!--<category android:name="android.intent.category.EXTRA_ALLOW_MULTIPLE" />-->
             </intent-filter>
         </activity>
+        <!--<provider
+            android:authorities="com.google.android.apps.docs.storage.legacy"
+            android:exported="false"
+            android:name=".dashboard.home.UserDashboardActivity" />-->
     </application>
 
 </manifest>

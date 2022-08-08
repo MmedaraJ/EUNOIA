@@ -1,5 +1,6 @@
 package com.example.eunoia.dashboard.home
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -8,12 +9,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,39 +28,43 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.UserData
-import com.amplifyframework.datastore.generated.model.UserRoutine
 import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.backend.UserRoutineBackend
+import com.example.eunoia.create.createSound.fileColors
+import com.example.eunoia.create.createSound.uploadedFiles
+import com.example.eunoia.create.createSound.fileUris
+import com.example.eunoia.create.createSound.selectedIndex
 import com.example.eunoia.models.UserObject
-import com.example.eunoia.mvvm.commentMvvm.viewModel.CommentViewModel
-import com.example.eunoia.mvvm.presetMvvm.viewModel.PresetViewModel
-import com.example.eunoia.mvvm.soundMvvm.model.SoundModel
-import com.example.eunoia.mvvm.soundMvvm.viewModel.SoundViewModel
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.userRoutinesSize
-import com.example.eunoia.ui.theme.Grey
-import com.example.eunoia.ui.theme.White
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.MultiBottomNavApp
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
+import com.example.eunoia.ui.theme.Grey
+import com.example.eunoia.ui.theme.Peach
+import com.example.eunoia.ui.theme.White
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.lang.ref.WeakReference
 
 class UserDashboardActivity : ComponentActivity() {
     private val _currentUser = MutableLiveData<UserData>(null)
     var currentUser: LiveData<UserData> = _currentUser
 
     companion object{
-        lateinit var owner: LifecycleOwner
         val TAG = "UserDashboardActivity"
+        lateinit var weakActivity: WeakReference<UserDashboardActivity>
+
+        fun getInstanceActivity(): UserDashboardActivity{
+            return weakActivity.get()!!
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,9 +72,56 @@ class UserDashboardActivity : ComponentActivity() {
         observeCurrentUserChanged()
         setSignedInUser()
         observeIsSignedOut()
-        owner = this
+        weakActivity = WeakReference<UserDashboardActivity>(this@UserDashboardActivity)
         setContent {
             MultiBottomNavApp()
+        }
+    }
+
+    fun selectAudio(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        intent.type = "audio/aac"
+        selectAudioActivityResult.launch(intent)
+    }
+
+    private val selectAudioActivityResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if(result.resultCode == Activity.RESULT_OK){
+                val data: Intent? = result.data
+                if(data?.data != null){
+                    val audioUri: Uri? = data.data
+                    fileUris[selectedIndex]!!.value = audioUri!!
+                    Log.i(TAG, "Audio Uri ==>> $audioUri")
+                    val audioStream = audioUri.let {
+                        Log.i(TAG, "$it")
+                        contentResolver.openInputStream(it)
+                    }
+                    val tempFile = File.createTempFile("audio", ".aac")
+                    copyStreamToFile(audioStream!!, tempFile)
+                    uploadedFiles[selectedIndex]!!.value = tempFile
+                    fileColors[selectedIndex]!!.value = Peach
+                    Log.i(TAG, "Names 3 ==>> ${uploadedFiles[selectedIndex]!!.value.name}")
+                    Log.i(TAG, "Names 4 ==>> ${uploadedFiles[selectedIndex]!!.value.path}")
+                }
+            }
+        }
+
+    private fun copyStreamToFile(inputStream: InputStream, outputFile: File) {
+        inputStream.use { input ->
+            val outputStream = FileOutputStream(outputFile)
+            outputStream.use { output ->
+                val buffer = ByteArray(4 * 1024) // buffer size
+                while (true) {
+                    val byteCount = input.read(buffer)
+                    if (byteCount < 0) break
+                    output.write(buffer, 0, byteCount)
+                }
+                output.flush()
+                output.close()
+            }
         }
     }
 
@@ -259,7 +310,7 @@ private fun OptionsList(context: Context, navController: NavHostController){
             .fillMaxWidth()
     ){
         OptionItem(displayName = "sleep", icon = R.drawable.sleep_icon, 71, 71, false, 0, 0, {}){ AuthBackend.signOut() }
-        OptionItem(displayName = "music", icon = R.drawable.music_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "music", icon = R.drawable.music_icon, 71, 71, false, 0, 0, {}){}
         OptionItem(displayName = "meditate", icon = R.drawable.meditate_icon, 71, 71, false, 0, 0, {}){something()}
         OptionItem(displayName = "sound", icon = R.drawable.sound_icon, 71, 71, false, 0, 0, {}){toSoundActivity(context, navController)}
     }
@@ -271,8 +322,8 @@ private fun OptionsList(context: Context, navController: NavHostController){
     ){
         OptionItem(displayName = "self-love", icon = R.drawable.self_love_icon, 71, 71, false, 0, 0, {}){something()}
         OptionItem(displayName = "stretch", icon = R.drawable.stretch_icon, 71, 71, false, 0, 0, {}){something()}
-        OptionItem(displayName = "slumber party", icon = R.drawable.slumber_party_icon, 71, 71, false, 0, 0, {}){something()}
-        OptionItem(displayName = "bedtime story", icon = R.drawable.bedtime_story_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "slumber\n  party", icon = R.drawable.slumber_party_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "bedtime\n  story", icon = R.drawable.bedtime_story_icon, 71, 71, false, 0, 0, {}){something()}
     }
 }
 
@@ -300,6 +351,7 @@ fun OptionItem(
             Card(
                 modifier = Modifier
                     .size(width.dp, height.dp)
+                    //.fillMaxWidth(0.2F),
                     .fillMaxWidth(),
                 shape = MaterialTheme.shapes.small,
                 backgroundColor = White,
@@ -337,13 +389,18 @@ fun OptionItem(
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
-        NormalText(
-            text = displayName,
-            color = MaterialTheme.colors.primary,
-            fontSize = 9,
-            xOffset = 0,
-            yOffset = 0
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+        ){
+            NormalText(
+                text = displayName,
+                color = MaterialTheme.colors.primary,
+                fontSize = 9,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
     }
 }
 
@@ -389,13 +446,6 @@ private fun ArticlesList(navController: NavController){
 }
 
 private fun toSoundActivity(context: Context, navController: NavHostController){
-   /* val i = Intent(context, SoundActivity::class.java)
-    context.startActivity(i)*/
-   /* val sounds = SoundObject.sounds().value
-    val isEmpty = sounds?.isEmpty() ?: false
-    if(isEmpty){
-        SoundBackend.querySound()
-    }*/
     navController.navigate(Screen.Sound.screen_route)
 }
 

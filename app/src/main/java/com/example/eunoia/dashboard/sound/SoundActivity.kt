@@ -2,16 +2,13 @@ package com.example.eunoia.dashboard.sound
 
 import android.content.Context
 import android.net.Uri
-import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,12 +19,9 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserRoutineBackend
 import com.example.eunoia.backend.UserSoundBackend
 import com.example.eunoia.dashboard.home.*
-import com.example.eunoia.models.PresetNameAndVolumesMapObject
 import com.example.eunoia.models.SoundObject
-import com.example.eunoia.mvvm.soundMvvm.model.SoundModel
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -136,19 +130,20 @@ fun SoundActivityUI(
                             DisplayUsersSounds(
                                 sound.soundData,
                                 {
-                                    getSoundPresets(sound.soundData) { presetData ->
-                                        soundPreset = presetData
-                                        for(preset in soundPreset!!.presets){
-                                            if(preset.key == "current_volumes"){
-                                                soundPresetMap = preset
-                                                globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = preset
-                                            }
-                                        }
-                                    }
-                                    retrieveAudioUris(uris, sound.soundData)
+
                                 },
                                 {startText ->
                                     if(startText == "start"){
+                                        getSoundPresets(sound.soundData) { presetData ->
+                                            soundPreset = presetData
+                                            for(preset in soundPreset!!.presets){
+                                                if(preset.key == "current_volumes"){
+                                                    soundPresetMap = preset
+                                                    globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = preset
+                                                }
+                                            }
+                                        }
+                                        retrieveAudioUris(uris, sound.soundData)
                                         globalViewModel_!!.currentSoundPlayingPreset = null
                                         resetAll(context)
                                         globalViewModel_!!.currentSoundPlaying = sound.soundData
@@ -237,7 +232,7 @@ private fun OptionsList(navController: NavController, context: Context){
             .fillMaxWidth()
     ){
         OptionItem(
-            displayName = "pouring rain",
+            displayName = "pouring\n   rain",
             icon = R.drawable.pouring_rain_icon,
             71,
             71,
@@ -247,14 +242,14 @@ private fun OptionsList(navController: NavController, context: Context){
             { displayName ->
                 Log.i(TAG, "About to get pouring rain again")
                 if(globalViewModel_!!.currentSoundPlaying == null) {
-                    SoundBackend.querySoundBasedOnDisplayName(displayName) {
+                    SoundBackend.querySoundBasedOnDisplayName("pouring rain") {
                         if (it.isNotEmpty()) {
                             sound = it[0]
                         }
                     }
                 }else{
-                    if (globalViewModel_!!.currentSoundPlaying!!.displayName != displayName) {
-                        SoundBackend.querySoundBasedOnDisplayName(displayName) {
+                    if (globalViewModel_!!.currentSoundPlaying!!.displayName != "pouring rain") {
+                        SoundBackend.querySoundBasedOnDisplayName("pouring rain") {
                             if (it.isNotEmpty()) {
                                 sound = it[0]
                             }
@@ -269,7 +264,7 @@ private fun OptionsList(navController: NavController, context: Context){
                 navigateToSoundScreen(navController, globalViewModel_!!.currentSoundPlaying!!)
             }
         }
-        OptionItem(displayName = "coffee house", icon = R.drawable.coffee_house_icon, 71, 71, true, 35, -10, {}){ something() }
+        OptionItem(displayName = "coffee\nhouse", icon = R.drawable.coffee_house_icon, 71, 71, true, 35, -10, {}){ something() }
         OptionItem(displayName = "library", icon = R.drawable.library_icon, 71, 71, false, 0, 0, {}){ something() }
         OptionItem(displayName = "baking", icon = R.drawable.baking_icon, 71, 71, false, 0, 0, {}){ something() }
     }
@@ -279,10 +274,10 @@ private fun OptionsList(navController: NavController, context: Context){
         modifier = Modifier
             .fillMaxWidth()
     ){
-        OptionItem(displayName = "beach waves", icon = R.drawable.beach_waves_icon, 71, 71, false, 0, 0, {}){ something() }
+        OptionItem(displayName = "beach\nwaves", icon = R.drawable.beach_waves_icon, 71, 71, false, 0, 0, {}){ something() }
         OptionItem(displayName = "next door", icon = R.drawable.next_door_icon, 71, 71, false, 0, 0, {}){ something() }
         OptionItem(displayName = "keyboard", icon = R.drawable.keyboard_icon, 71, 71, true, 35, -10, {}){ something() }
-        OptionItem(displayName = "train track", icon = R.drawable.train_track_icon, 71, 71, true, 35, -10, {}){ something() }
+        OptionItem(displayName = "train\ntrack", icon = R.drawable.train_track_icon, 71, 71, true, 35, -10, {}){ something() }
     }
 }
 

@@ -1,6 +1,9 @@
-package com.example.eunoia.dashboard.sound
+package com.example.eunoia.create.createSound
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.media.AudioAttributes
 import android.media.MediaPlayer
@@ -8,6 +11,8 @@ import android.net.Uri
 import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,42 +21,41 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ResetTv
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
-import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
-import com.example.eunoia.backend.CommentBackend
-import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserSoundBackend
-import com.example.eunoia.models.UserObject
-import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.dashboard.home.UserDashboardActivity
+import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
-import kotlinx.coroutines.CoroutineScope
-import java.lang.Math.*
+import com.example.eunoia.viewModels.GlobalViewModel
+import java.io.File
+import java.lang.IllegalStateException
 import kotlin.concurrent.fixedRateTimer
-import kotlin.math.pow
-import kotlin.math.sqrt
 
-private const val TAG = "Mixer"
-private var mediaPlayers = mutableListOf<MediaPlayer>()
 private val isPlaying = mutableStateOf(false)
 private val isLooping = mutableStateOf(false)
 private val meditationBellInterval = mutableStateOf(0)
@@ -59,18 +63,217 @@ private val timerTime = mutableStateOf(0L)
 private val meditationBellMediaPlayer = MutableLiveData<MediaPlayer>()
 private var numCounters = 0
 var displayName = ""
-var showControls by mutableStateOf(false)
-var openUserAlreadyHasSoundDialogBox by mutableStateOf(false)
+
+@Composable
+fun SoundUploader(
+    index: Int,
+){
+    val context = LocalContext.current
+    var fileName by rememberSaveable{ mutableStateOf("") }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(1F)
+            .wrapContentHeight()
+    ){
+        fileName = customizedOutlinedTextInput(
+            width = 0,
+            height = 55,
+            color = SoftPeach,
+            focusedBorderColor = BeautyBush,
+            inputFontSize = 16,
+            placeholder = "Name of this audio",
+            placeholderFontSize = 16,
+            offset = 0
+        )
+        fileNames[index]!!.value = fileName
+        Spacer(modifier = Modifier.height(6.dp))
+        SwipeToResetUI(index, context){
+            selectedIndex = it
+            UserDashboardActivity.getInstanceActivity().selectAudio()
+        }
+    }
+}
+
+@Composable
+fun SavePreset(){
+    val context = LocalContext.current
+    var fileName by rememberSaveable{ mutableStateOf("") }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(1F)
+            .wrapContentHeight()
+    ){
+        fileName = customizedOutlinedTextInput(
+            width = 0,
+            height = 55,
+            color = SoftPeach,
+            focusedBorderColor = BeautyBush,
+            inputFontSize = 16,
+            placeholder = "Name of this audio",
+            placeholderFontSize = 16,
+            offset = 0
+        )
+        presetName = fileName
+        if(presetName.isEmpty()) {
+            nameErrorMessage = "Name this preset"
+        }else{
+            nameErrorMessage = ""
+        }
+        if(!nameDoesNotAlreadyExist()){
+            nameErrorMessage = "Name already exists"
+        }
+    }
+}
+
+fun nameDoesNotAlreadyExist(): Boolean{
+    for(map in soundPresetNameAndVolumesMap){
+        if(map!!.value.key == presetName){
+            return false
+        }
+    }
+    return true
+}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Mixer(
-    sound: SoundData,
+fun SwipeToResetUI(
+    index: Int,
     context: Context,
-    preset: PresetData,
-    scope: CoroutineScope,
-    state: ModalBottomSheetState
+    fileUploaded: (index: Int) -> Unit
 ){
+    val dismissState = rememberDismissState(
+        initialValue = DismissValue.Default,
+        confirmStateChange = {
+            Log.i(TAG, "Confirm state change ==>> $it")
+            if(it == DismissValue.DismissedToStart){
+                resetSoundUploadUI(index)
+            }
+            true
+        }
+    )
+    if (dismissState.currentValue != DismissValue.Default) {
+        LaunchedEffect(Unit) {
+            dismissState.reset()
+        }
+    }
+    SwipeToDismiss(
+        state = dismissState,
+        /***  create dismiss alert Background */
+        background = {
+            val color by animateColorAsState(
+                targetValue = when (dismissState.dismissDirection) {
+                    DismissDirection.StartToEnd -> Color.Transparent
+                    DismissDirection.EndToStart -> Color.Red
+                    null -> Color.Transparent
+                }
+            )
+            val scale by animateFloatAsState(
+                targetValue = if(dismissState.targetValue == DismissValue.Default) 0.8f else 1.2f
+            )
+            val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
+            if (direction == DismissDirection.EndToStart) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color)
+                        .padding(8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ResetTv,
+                            contentDescription = "reset",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .scale(scale)
+                        )
+                        NormalText(
+                            text = "Reset",
+                            color = White,
+                            fontSize = 13,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+                    }
+                }
+            }
+        },
+        /**** Dismiss Content */
+        dismissContent = {
+            CustomizableButton(
+                text = uploadedFiles[index]!!.value.name,
+                height = 55,
+                fontSize = 16,
+                textColor = Black,
+                backgroundColor = fileColors[index]!!.value,
+                corner = 10,
+                borderStroke = 0.0,
+                borderColor = Black.copy(alpha = 0F),
+                textType = "light",
+                maxWidthFraction = 1F
+            ) {
+                if(uploadedFiles[index]!!.value.name == "Choose a file"){
+                    if (ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        fileUploaded(index)
+                    } else {
+                        ActivityCompat.requestPermissions(
+                            context as Activity,
+                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                            3
+                        )
+                    }
+                }else{
+                    if(fileMediaPlayers[index]!!.value.isPlaying){
+                        fileMediaPlayers[index]!!.value.stop()
+                        fileMediaPlayers[index]!!.value.reset()
+                    }else {
+                        fileMediaPlayers[index]!!.value.apply {
+                            setAudioAttributes(
+                                AudioAttributes.Builder()
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                                    .build()
+                            )
+                            setDataSource(context, fileUris[index]!!.value)
+                            setVolume(1f, 1f)
+                            prepare()
+                            start()
+                        }
+                    }
+                }
+            }
+        },
+        dismissThresholds = { direction ->
+            FractionalThreshold(if (direction == DismissDirection.EndToStart) 0.1f else 0.05f)
+        },
+        /*** Set Direction to dismiss */
+        directions = setOf(DismissDirection.EndToStart),
+    )
+}
+
+fun resetSoundUploadUI(index: Int) {
+    Log.i(TAG, "About to reset UI $index")
+    uploadedFiles[index]!!.value = File("Choose a file")
+    fileColors[index]!!.value = WePeep
+    fileUris[index]!!.value = "".toUri()
+    if(fileMediaPlayers[index]!!.value.isPlaying) {
+        fileMediaPlayers[index]!!.value.stop()
+    }
+    fileMediaPlayers[index]!!.value.reset()
+    fileMediaPlayers[index]!!.value.release()
+    val mediaPlayer = MediaPlayer()
+    fileMediaPlayers[index]!!.value = mediaPlayer
+}
+
+@Composable
+fun CreatePresetMixer(context: Context){
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)
@@ -135,7 +338,7 @@ fun Mixer(
                                 end.linkTo(parent.end, margin = 16.dp)
                             }
                     ) {
-                        displayName = standardCentralizedOutlinedTextInput(sound.displayName, SoftPeach, false)
+                        standardCentralizedOutlinedTextInput(soundName, SoftPeach, true)
                     }
                     Column(
                         modifier = Modifier
@@ -164,7 +367,7 @@ fun Mixer(
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ) {
-                Sliders(sound)
+                Sliders()
             }
             Column(
                 modifier = Modifier
@@ -175,25 +378,20 @@ fun Mixer(
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                     }
             ) {
-                Controls(sound, preset, context, true, scope, state)
+                Controls(context)
             }
         }
     }
 }
 
 @Composable
-fun Sliders(sound: SoundData){
+fun Sliders(){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        val colors = mutableListOf<Color>()
-        val labels = mutableListOf<String>()
-        for(i in sound.audioNames.indices){
-            labels.add(sound.audioNames[i])
-            colors.add(globalViewModel_!!.mixerColors[i])
-        }
-        globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed {index, sliderPosition ->
+        sliderVolumes.forEachIndexed { index, volume ->
+            Log.i(TAG, "Uri index ==>>> $index")
             ConstraintLayout(
                 modifier = Modifier.size(32.dp, 200.dp)
             ) {
@@ -211,26 +409,26 @@ fun Sliders(sound: SoundData){
                 ) {
                     val ripple = rememberRipple(
                         bounded = true,
-                        color = colors[index]
+                        color = globalViewModel_!!.mixerColors[index]
                     )
                     var tapped by remember { mutableStateOf(false) }
                     val interactionSource = remember { MutableInteractionSource() }
-                    if (sliderPosition != null) {
+                    if (volume != null) {
                         Slider(
-                            value = sliderPosition.value,
+                            value = volume.value.toFloat(),
                             valueRange = 0f..10f,
                             onValueChange = {
-                                globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value = it
-                                adjustMediaPlayerVolumes(mediaPlayers, index)
+                                volume.value = it.toInt()
+                                adjustMediaPlayerVolumes(index, fileMediaPlayers[index]!!)
                             },
                             steps = 10,
                             onValueChangeFinished = { Log.i(TAG, "Value Changed") },
                             colors = SliderDefaults.colors(
-                                thumbColor = colors[index],
-                                activeTrackColor = colors[index],
+                                thumbColor = globalViewModel_!!.mixerColors[index],
+                                activeTrackColor = globalViewModel_!!.mixerColors[index],
                                 activeTickColor = Color.Transparent,
                                 inactiveTickColor = Color.Transparent,
-                                inactiveTrackColor = colors[index],
+                                inactiveTrackColor = globalViewModel_!!.mixerColors[index],
                             ),
                             modifier = Modifier
                                 .size(32.dp, 190.dp)
@@ -274,8 +472,12 @@ fun Sliders(sound: SoundData){
                             end.linkTo(parent.end, margin = 0.dp)
                         }
                 ) {
+                    val name = if(fileNames[index]!!.value.length > 4)
+                                    fileNames[index]!!.value.substring(0, 4)
+                                else
+                                    fileNames[index]!!.value
                     NormalText(
-                        text = labels[index],
+                        text = name,
                         color = Black,
                         fontSize = 5,
                         xOffset = 0,
@@ -287,100 +489,49 @@ fun Sliders(sound: SoundData){
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Controls(
-    sound: SoundData,
-    preset: PresetData,
-    applicationContext: Context,
-    showAddIcon: Boolean,
-    scope: CoroutineScope,
-    state: ModalBottomSheetState
-){
-    showControls = !globalViewModel_!!.currentSoundPlayingUris.isNullOrEmpty()
-    val uris = rememberSaveable{mutableListOf<Uri>()}
+fun Controls(applicationContext: Context){
     createMeditationBellMediaPlayer(applicationContext)
-    retrieveAudioUris(uris, sound)
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Log.i(TAG, "ShowControls value ==>> ${showControls}")
-        if(showControls) {
-            globalViewModel_!!.icons.forEachIndexed { index, icon ->
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .gradientBackground(
-                            listOf(
-                                globalViewModel_!!.backgroundControlColor1[index].value,
-                                globalViewModel_!!.backgroundControlColor2[index].value
-                            ),
-                            angle = 45f
-                        )
-                        .border(
-                            BorderStroke(
-                                0.5.dp,
-                                globalViewModel_!!.borderControlColors[index].value
-                            ),
-                            RoundedCornerShape(50.dp)
+        globalViewModel_!!.icons.forEachIndexed { index, icon ->
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .gradientBackground(
+                        listOf(
+                            globalViewModel_!!.backgroundControlColor1[index].value,
+                            globalViewModel_!!.backgroundControlColor2[index].value
                         ),
-                    contentAlignment = Alignment.Center
+                        angle = 45f
+                    )
+                    .border(
+                        BorderStroke(
+                            0.5.dp,
+                            globalViewModel_!!.borderControlColors[index].value
+                        ),
+                        RoundedCornerShape(50.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                AnImageWithColor(
+                    icon.value,
+                    "icon",
+                    globalViewModel_!!.borderControlColors[index].value,
+                    12.dp,
+                    12.dp,
+                    0,
+                    0
                 ) {
-                    AnImageWithColor(
-                        icon.value,
-                        "icon",
-                        globalViewModel_!!.borderControlColors[index].value,
-                        12.dp,
-                        12.dp,
-                        0,
-                        0
-                    ) {
-                        if (uris.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
-                            activateControls(
-                                sound,
-                                preset,
-                                index,
-                                uris.subList(0, uris.size),
-                                applicationContext
-                            )
-                        }
-                    }
+                    activateControls(
+                        index,
+                        applicationContext
+                    )
                 }
             }
-            if(showAddIcon) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(globalViewModel_!!.borderControlColors[7].value),
-                    contentAlignment = Alignment.Center
-                ) {
-                    AnImageWithColor(
-                        globalViewModel_!!.addIcon.value,
-                        "icon",
-                        White,
-                        10.dp,
-                        10.dp,
-                        0,
-                        0
-                    ) {
-                        globalViewModel_!!.currentSoundToBeAdded = sound
-                        Log.i(TAG, "${globalViewModel_!!.currentUser}")
-                        globalViewModel_!!.bottomSheetOpenFor = "addToSoundListOrRoutine"
-                        openBottomSheet(scope, state)
-                    }
-                }
-            }
-        }else{
-            NormalText(
-                text = "Loading..",
-                color = Black,
-                fontSize = 10,
-                xOffset = 0,
-                yOffset = 0
-            )
         }
     }
 }
@@ -389,98 +540,44 @@ fun createMeditationBellMediaPlayer(context: Context){
     var resID = context.resources?.getIdentifier("bell", "raw", context.packageName)
 
     resID?.let {
-        // No fike found when it == 0
         if (it == 0) {
             val errorString = "Error occured."
             return
         }
         meditationBellMediaPlayer.value = MediaPlayer.create(context, it)
-        //mediaPlayer?.start()
         return
     }
-    /*meditationBellMediaPlayer.value = MediaPlayer.create(
-        context,
-        R.raw.bell
-    )*/
 }
 
-fun retrieveAudioUris(
-    uris: MutableList<Uri>,
-    sound: SoundData
-){
-    Log.i(TAG, "2. Uris size ${uris.size}")
-    var count by mutableStateOf(0)
-    if(uris.size == 0) {
-        Log.i(TAG, "3. Uris size ${uris.size}")
-        SoundBackend.listEunoiaSounds(sound.audioKeyS3) { result ->
-            result.items.forEach { item ->
-                SoundBackend.retrieveAudio(item.key) { audioUri ->
-                    if(uris.size < globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
-                        uris.add(audioUri)
-                        Log.i(TAG, "${item.key}. Uris size ${uris.size}")
-                        count++
-                    }else{
-                        showControls = true
-                    }
-                }
-            }
-            Log.i(TAG, "After all adding. Uris size ${uris.size}")
-            globalViewModel_!!.currentSoundPlayingUris = uris
-        }
-    }
-}
-
-fun playSounds(
-    allSounds: MutableList<Uri>,
-    applicationContext: Context,
-    index: Int
-){
-    if(mediaPlayers.size == 0 && !globalViewModel_!!.isCurrentSoundPlaying) {
-        allSounds.forEachIndexed { i, audioUri ->
-            val mediaPlayer = MediaPlayer().apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-                setDataSource(applicationContext, audioUri)
-                setVolume(
-                    globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10,
-                    globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10
-                )
-                Log.i(TAG, "New volume for player $i = ${globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10}")
-                prepare()
-                start()
-            }
-            mediaPlayers.add(mediaPlayer)
-        }
-    }else{
-        mediaPlayers.forEach { mediaPlayer ->
-            //mediaPlayer.prepare()
-            mediaPlayer.start()
+fun playSoundsPreset(applicationContext: Context, index: Int){
+    fileMediaPlayers.forEachIndexed { i,  media ->
+        try {
+            media!!.value.start()
+        }catch(e: IllegalStateException){
+            Log.i(TAG, "$e")
         }
     }
     isPlaying.value = true
     deActivateControlButton(index)
     deActivateControlButton(1)
-    globalViewModel_!!.isCurrentSoundPlaying = true
-    runOnUiThread{
+    runOnUiThread {
         Toast.makeText(applicationContext, "Sound: playing", Toast.LENGTH_SHORT).show()
     }
 }
 
-fun pauseSounds(
-    applicationContext: Context,
-    index: Int
-){
-    if(isPlaying.value && globalViewModel_!!.isCurrentSoundPlaying) {
-        mediaPlayers.forEach { mediaPlayer ->
-            mediaPlayer.pause()
+fun pauseSounds(applicationContext: Context, index: Int){
+    fileMediaPlayers.forEachIndexed { i, media ->
+        if(media!!.value.isPlaying) {
+            try {
+                media.value.pause()
+            }catch(e: IllegalStateException){
+                Log.i(TAG, "$e")
+            }
         }
-        isPlaying.value = false
-        activateControlButton(index)
-        globalViewModel_!!.isCurrentSoundPlaying = false
+    }
+    isPlaying.value = false
+    activateControlButton(index)
+    runOnUiThread {
         Toast.makeText(applicationContext, "Sound: paused", Toast.LENGTH_SHORT).show()
     }
 }
@@ -489,55 +586,37 @@ fun loopSounds(
     applicationContext: Context,
     index: Int
 ){
-    if(mediaPlayers.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
-        isLooping.value = !isLooping.value
-        mediaPlayers.forEach { mediaPlayer ->
-            mediaPlayer.isLooping = isLooping.value
-        }
-        if(isLooping.value){
-            activateControlButton(index)
-        }else{
-            deActivateControlButton(index)
-        }
-        val loopingInfo = if(isLooping.value) "Sound: looped" else "Sound: not looped"
-        Toast.makeText(applicationContext, loopingInfo, Toast.LENGTH_SHORT).show()
+    isLooping.value = !isLooping.value
+    fileMediaPlayers.forEach { media ->
+        media!!.value.isLooping = isLooping.value
     }
+    if(isLooping.value){
+        activateControlButton(index)
+    }else{
+        deActivateControlButton(index)
+    }
+    val loopingInfo = if(isLooping.value) "Sound: looped" else "Sound: not looped"
+    Toast.makeText(applicationContext, loopingInfo, Toast.LENGTH_SHORT).show()
 }
 
 fun resetSounds(){
-    if(mediaPlayers.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
-        mediaPlayers.forEach { mediaPlayer ->
-            mediaPlayer.pause()
-        }
-        isPlaying.value = false
-        activateControlButton(1)
-        activateControlButton(3)
-        resetSliders()
+    fileMediaPlayers.forEachIndexed { i, media ->
+        media!!.value.pause()
     }
-}
-
-fun resetSoundsForPresets(){
-    if(mediaPlayers.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
-        mediaPlayers.forEachIndexed { i, mediaPlayer ->
-            mediaPlayer.setVolume(
-                globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10,
-                globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10
-            )
-        }
-        resetSliders()
-    }
+    isPlaying.value = false
+    activateControlButton(1)
+    activateControlButton(3)
+    resetSliders()
 }
 
 fun resetAll(applicationContext: Context){
-    mediaPlayers.forEach { mediaPlayer ->
-        mediaPlayer.stop()
-        mediaPlayer.reset()
-        mediaPlayer.release()
+    fileMediaPlayers.forEach { media ->
+        media!!.value.stop()
+        media.value.reset()
+        media.value.release()
     }
-    mediaPlayers.clear()
     isPlaying.value = false
     isLooping.value = false
-    showControls = false
     meditationBellInterval.value = 0
     deActivateControlButton(0)
     deActivateControlButton(1)
@@ -546,40 +625,33 @@ fun resetAll(applicationContext: Context){
     deActivateControlButton(4)
     deActivateControlButton(5)
     deActivateControlButton(6)
-    globalViewModel_!!.isCurrentSoundPlaying = false
-    globalViewModel_!!.currentSoundPlayingUris = null
     timerTime.value = 0
     startCountDownTimer(applicationContext, timerTime.value)
 }
 
 fun resetSliders(){
-    globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed { index, mutableState ->
-        mutableState!!.value = globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!.volumes[index].toFloat()
+    sliderVolumes.forEach { volume ->
+        volume!!.value = 5
     }
-    Log.i(TAG, "Resetting sliders")
 }
 
-fun increaseSliderLevels(applicationContext: Context, index: Int){
-    globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed{ index, mutableState ->
-        if(mutableState!!.value < 10) {
-            mutableState.value++
-            adjustMediaPlayerVolumes(mediaPlayers, index)
+fun increaseSliderLevelsPreset(){
+    Log.i(TAG, "Slider volumes size ==>> ${sliderVolumes.size}")
+    sliderVolumes.forEachIndexed{ index, volume ->
+        if(volume!!.value < 10) {
+            volume.value++
+            adjustMediaPlayerVolumes(index, fileMediaPlayers[index]!!)
         }
     }
-    //Toast.makeText(applicationContext, "Sound: levels increased", Toast.LENGTH_SHORT).show()
 }
 
-fun decreaseSliderLevels(
-    applicationContext: Context,
-    index: Int
-){
-    globalViewModel_!!.currentSoundPlayingSliderPositions.forEachIndexed{ index, mutableState ->
-        if(mutableState!!.value > 0) {
-            mutableState.value--
-            adjustMediaPlayerVolumes(mediaPlayers, index)
+fun decreaseSliderLevelsPreset(){
+    sliderVolumes.forEachIndexed{ index, volume ->
+        if(volume!!.value > 0) {
+            volume.value--
+            adjustMediaPlayerVolumes(index, fileMediaPlayers[index]!!)
         }
     }
-    //Toast.makeText(applicationContext, "Sound: levels decreased", Toast.LENGTH_SHORT).show()
 }
 
 fun ringMeditationBell(
@@ -625,10 +697,9 @@ fun startCountDownTimer(
         override fun onFinish() {
             if(numCounters == 1){
                 if(timerTime.value > 0) {
-                    mediaPlayers.forEach { mediaPlayer ->
-                        mediaPlayer.pause()
+                    fileMediaPlayers.forEach { mediaPlayer ->
+                        mediaPlayer!!.value.pause()
                     }
-                    //mediaPlayers.clear()
                     isPlaying.value = false
                     isLooping.value = false
                     meditationBellInterval.value = 0
@@ -651,7 +722,6 @@ fun startCountDownTimer(
 }
 
 fun changeTimerTime(
-    allSoundsURIs: MutableList<Uri>,
     applicationContext: Context,
     index: Int
 ){
@@ -661,8 +731,7 @@ fun changeTimerTime(
         numCounters++
         activateControlButton(index)
         if(!isPlaying.value) {
-            playSounds(
-                allSoundsURIs,
+            playSoundsPreset(
                 applicationContext,
                 3
             )
@@ -676,22 +745,18 @@ fun changeTimerTime(
 }
 
 fun activateControls(
-    sound: SoundData,
-    preset: PresetData,
     index: Int,
-    allSoundsURIs: MutableList<Uri>,
     applicationContext: Context){
     when(index){
         0 -> loopSounds(
-                applicationContext,
-                index
-            )
+            applicationContext,
+            index
+        )
         1 -> resetSounds()
         2 -> changeTimerTime(
-                allSoundsURIs,
-                applicationContext,
-                index
-            )
+            applicationContext,
+            index
+        )
         3 -> {
             if(isPlaying.value){
                 pauseSounds(
@@ -699,28 +764,18 @@ fun activateControls(
                     index
                 )
             } else {
-                playSounds(
-                    allSoundsURIs,
+                playSoundsPreset(
                     applicationContext,
                     index
                 )
-                globalViewModel_!!.currentSoundPlaying = sound
-                globalViewModel_!!.currentSoundPlayingPreset = preset
-                globalViewModel_!!.currentSoundPlayingContext = applicationContext
             }
         }
-        4 -> increaseSliderLevels(
-                applicationContext,
-                index
-            )
-        5 -> decreaseSliderLevels(
-                applicationContext,
-                index
-            )
+        4 -> increaseSliderLevelsPreset()
+        5 -> decreaseSliderLevelsPreset()
         6 -> ringMeditationBell(
-                applicationContext,
-                index
-            )
+            applicationContext,
+            index
+        )
     }
 }
 
@@ -742,41 +797,13 @@ fun deActivateControlButton(index: Int){
     }
 }
 
-fun adjustMediaPlayerVolumes(mediaPlayers: MutableList<MediaPlayer>, index: Int){
-    if(mediaPlayers.size>0) {
-        Log.i(TAG, "Adjusting volumes")
-        mediaPlayers[index].setVolume(
-            globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value / 10,
-            globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value / 10
-        )
-        Log.i(TAG, "New volume for player $index = ${globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value / 10}")
-    }
+fun adjustMediaPlayerVolumes(index: Int, volume: MutableState<MediaPlayer>){
+    volume.value.setVolume(
+        sliderVolumes[index]!!.value.toFloat() / 10,
+        sliderVolumes[index]!!.value.toFloat() / 10
+    )
+    Log.i(TAG, "Volume for media player ==>> ${sliderVolumes[index]!!.value.toFloat()}")
 }
-
-fun Modifier.gradientBackground(colors: List<Color>, angle: Float) = this.then(
-    Modifier.drawBehind {
-        val angleRad = angle / 180f * PI
-        val x = cos(angleRad).toFloat() //Fractional x
-        val y = sin(angleRad).toFloat() //Fractional y
-
-        val radius = sqrt(size.width.pow(2) + size.height.pow(2)) / 2f
-        val offset = center + Offset(x * radius, y * radius)
-
-        val exactOffset = Offset(
-            x = min(offset.x.coerceAtLeast(0f), size.width),
-            y = size.height - min(offset.y.coerceAtLeast(0f), size.height)
-        )
-
-        drawRect(
-            brush = Brush.linearGradient(
-                colors = colors,
-                start = Offset(size.width, size.height),
-                end = exactOffset
-            ),
-            size = size
-        )
-    }
-)
 
 @Composable
 fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
@@ -975,251 +1002,6 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
     }
 }
 
-@Composable
-fun Tip(){
-    Card(
-        modifier = Modifier
-            .padding(bottom = 16.dp)
-            .wrapContentHeight()
-            .fillMaxWidth(),
-        shape = MaterialTheme.shapes.small,
-        backgroundColor = Peach,
-        elevation = 8.dp
-    ){
-        ConstraintLayout(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            val (
-                title,
-                icon,
-                info
-            ) = createRefs()
-            Column(
-                modifier = Modifier
-                    .constrainAs(title) {
-                        top.linkTo(parent.top, margin = 0.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                    }
-            ) {
-                NormalText(
-                    text = "[tip]",
-                    color = Black,
-                    fontSize = 13,
-                    xOffset = 0,
-                    yOffset = 0
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(icon) {
-                        top.linkTo(title.top, margin = 0.dp)
-                        bottom.linkTo(title.bottom, margin = 0.dp)
-                        start.linkTo(title.end, margin = 4.dp)
-                    }
-            ) {
-                AnImage(
-                    R.drawable.tip_icon,
-                    "tip",
-                    9.dp,
-                    11.dp,
-                    0,
-                    0
-                ) {}
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(info) {
-                        top.linkTo(title.bottom, margin = 2.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                        bottom.linkTo(parent.bottom, margin = 0.dp)
-                    }
-            ) {
-                LightText(
-                    text = "Click a comment card to load the user's sound on Noise Control panel",
-                    color = Black,
-                    fontSize = 13,
-                    xOffset = 0,
-                    yOffset = 0
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun CommentsForSound(
-    sounds: MutableList<SoundData>,
-    currentSound: SoundData,
-    navController: NavController,
-    context: Context
-){
-    for(sound in sounds){
-        var soundComment by remember{ mutableStateOf<CommentData?>(null) }
-        getSoundComment(sound){
-            soundComment = it
-        }
-        var userAlreadyHasSound = false
-        for (userSound in globalViewModel_!!.currentUser!!.sounds) {
-            if (
-                userSound.soundData.id == sound.id &&
-                userSound.userData.id == globalViewModel_!!.currentUser!!.id
-            ) {
-                userAlreadyHasSound = true
-            }
-        }
-        if(
-            !userAlreadyHasSound &&
-            soundComment != null &&
-            sound.id != currentSound.id &&
-            sound.soundOwner.id != globalViewModel_!!.currentUser!!.id &&
-            sound.approvalStatus.equals(SoundApprovalStatus.APPROVED)
-        ) {
-            OtherUsersCommentsUI(sound, soundComment!!, navController, context, false)
-        }
-    }
-}
-
-fun getSoundComment(sound: SoundData, completed: (commentData: CommentData) -> Unit){
-    CommentBackend.queryCommentBasedOnSound(sound){
-        completed(it)
-    }
-}
-
-@Composable
-fun OtherUsersCommentsUI(
-    sound: SoundData,
-    comment: CommentData,
-    navController: NavController,
-    context: Context,
-    isClicked: Boolean
-){
-    var clicked by rememberSaveable{ mutableStateOf(isClicked) }
-    var cardModifier = Modifier
-        .padding(bottom = 16.dp)
-        .wrapContentHeight()
-        .clickable {
-            clicked = !clicked
-            globalViewModel_!!.currentSoundPlayingPreset = null
-            resetAll(context)
-            navigateToSoundScreen(navController, sound)
-        }
-        .fillMaxWidth()
-
-    if(clicked){
-        cardModifier = cardModifier.then(
-            Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.small)
-        )
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-    ) {
-        Card(
-            modifier = cardModifier,
-            shape = MaterialTheme.shapes.small,
-            backgroundColor = Snuff,
-            elevation = 8.dp,
-        ) {
-            ConstraintLayout(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                val (user_feedback) = createRefs()
-                Column(
-                    modifier = Modifier
-                        .constrainAs(user_feedback) {
-                            top.linkTo(parent.top, margin = 0.dp)
-                            start.linkTo(parent.start, margin = 0.dp)
-                            bottom.linkTo(parent.bottom, margin = 0.dp)
-                        }
-                ) {
-                    LightText(
-                        text = comment.comment,
-                        color = Black,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun PresetsUI(allPresetNameAndVolumeMapData: List<PresetNameAndVolumesMapData>){
-    val borders = mutableListOf<MutableState<Boolean>>()
-    for(presetNameAndVolumeMapData in allPresetNameAndVolumeMapData){
-        if(presetNameAndVolumeMapData.key == "current_volumes"){
-            borders.add(remember{ mutableStateOf(true) })
-        }else {
-            borders.add(remember { mutableStateOf(false) })
-        }
-    }
-    allPresetNameAndVolumeMapData.forEachIndexed{ index, presetNameAndVolumeMapData ->
-        if(presetNameAndVolumeMapData.key != "original_volumes") {
-            var changePreset by rememberSaveable { mutableStateOf(false) }
-            var cardModifier = Modifier
-                .padding(bottom = 8.dp)
-                .wrapContentHeight()
-                .clickable {
-                    borders.forEach { border ->
-                        border.value = false
-                    }
-                    borders[index].value = !borders[index].value
-                    changePreset = true
-                }
-                .wrapContentWidth()
-
-            if (changePreset) {
-                Log.i(TAG, "presetNameAndVolumeMapData ==>> $presetNameAndVolumeMapData")
-                globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap =
-                    presetNameAndVolumeMapData
-                resetSoundsForPresets()
-                changePreset = false
-            }
-
-            if (borders[index].value) {
-                cardModifier = cardModifier.then(
-                    Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.small)
-                )
-            }
-
-            Card(
-                modifier = cardModifier,
-                shape = MaterialTheme.shapes.small,
-                elevation = 2.dp,
-            ) {
-                ConstraintLayout(
-                    modifier = Modifier
-                        .background(BeautyBush.copy(alpha = 0.5F))
-                ) {
-                    val (preset_name) = createRefs()
-                    Column(
-                        modifier = Modifier
-                            .constrainAs(preset_name) {
-                                top.linkTo(parent.top, margin = 8.dp)
-                                start.linkTo(parent.start, margin = 16.dp)
-                                end.linkTo(parent.end, margin = 16.dp)
-                                bottom.linkTo(parent.bottom, margin = 8.dp)
-                            }
-                    ) {
-                        LightText(
-                            text = presetNameAndVolumeMapData.key,
-                            color = Black,
-                            fontSize = 16,
-                            xOffset = 0,
-                            yOffset = 0
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
 @Preview(
     showBackground = true,
     name = "Light mode"
@@ -1230,8 +1012,9 @@ fun PresetsUI(allPresetNameAndVolumeMapData: List<PresetNameAndVolumesMapData>){
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
-fun PreviewUI() {
+fun SoundUploaderPreview() {
+    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        //OtherUsersFeedback("geujhfkejkfekfehf"){}
+        //SoundUploader(0){}
     }
 }

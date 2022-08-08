@@ -44,6 +44,7 @@ class UploadFilesActivity : ComponentActivity() {
         private var tenSounds = mutableListOf<Uri>()
         private val _currentUser = MutableLiveData<UserData>()
         var currentUser: LiveData<UserData> = _currentUser
+        lateinit var componentActivity: ComponentActivity
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -265,56 +266,26 @@ class UploadFilesActivity : ComponentActivity() {
         }
     }
 
-    private val selectAudiosActivityResult =
+    fun selectAudio(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "audio/mp3"
+        selectAudioActivityResult.launch(intent)
+    }
+
+    private val selectAudioActivityResult =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if(result.resultCode == Activity.RESULT_OK){
                 val data: Intent? = result.data
-                //if multiple audio files selected
-                if(data?.clipData != null){
-                    val count = data.clipData?.itemCount ?: 0
-                    for(i in  0 until count){
-                        val audioUri: Uri? = data.clipData?.getItemAt(i)?.uri
-                        //Log.i(TAG, "Multiple files selected; ${data.clipData?.getItemAt(i)}")
-                        val audioStream = audioUri?.let { contentResolver.openInputStream(it) }
-                        val tempFile = File.createTempFile("audio", ".aac")
-                        //convertMp3ToAAC(tempFile){ aacFile ->
-                        //convertAudioToAAC(tempFile.name, "convertedaac.aac")
-                        copyStreamToFile(audioStream!!, tempFile)
-                        soundAudioPath = tempFile.absolutePath
-                        if(soundAudioPath != null){
-                            SoundBackend.storeAudio(soundAudioPath!!, "Routine/Sounds/Eunoia/Pouring_Rain/${tempFile.name}")
-                        }
-                        //}
-                    }
-                }
-                //if one audio file is selected
-                else if(data?.data != null){
-                    val audioUri: Uri? = data.data
-                    //SoundBackend.storeAudioUri(audioUri, contentResolver)
-                    val audioStream = audioUri?.let { contentResolver.openInputStream(it) }
-                    val tempFile = File.createTempFile("audio", ".aac")
-                    copyStreamToFile(audioStream!!, tempFile)
-                    soundAudioPath = tempFile.absolutePath
-                    if(soundAudioPath != null){
-                        SoundBackend.storeAudio(soundAudioPath!!, "Routine/Sounds/Eunoia/Pouring_Rain/${tempFile.name}")
-                    }
-                    //Log.i(TAG, "One file selected; ${data.data}")
-                    //SoundBackend.deleteAudio("Routine/Sounds/Eunoia/Pouring_Rain")
-                    /*val mediaPlayer = MediaPlayer().apply {
-                        setAudioAttributes(
-                            AudioAttributes.Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .setUsage(AudioAttributes.USAGE_MEDIA)
-                                .build()
-                        )
-                        if (mp3Uri != null) {
-                            setDataSource(applicationContext, mp3Uri)
-                        }
-                        prepare()
-                        start()
-                    }*/
+                val audioUri: Uri? = data!!.data
+                //SoundBackend.storeAudioUri(audioUri, contentResolver)
+                val audioStream = audioUri?.let { contentResolver.openInputStream(it) }
+                val tempFile = File.createTempFile("audio", ".aac")
+                copyStreamToFile(audioStream!!, tempFile)
+                UploadFilesActivity.soundAudioPath = tempFile.absolutePath
+                if(UploadFilesActivity.soundAudioPath != null){
+                    SoundBackend.storeAudio(UploadFilesActivity.soundAudioPath!!, "Routine/Sounds/Eunoia/Pouring_Rain/${tempFile.name}")
                 }
             }
         }
@@ -333,13 +304,6 @@ class UploadFilesActivity : ComponentActivity() {
                 output.close()
             }
         }
-    }
-
-    private fun selectAudios(){
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        intent.type = "audio/aac"
-        selectAudiosActivityResult.launch(intent)
     }
 
     @Preview(

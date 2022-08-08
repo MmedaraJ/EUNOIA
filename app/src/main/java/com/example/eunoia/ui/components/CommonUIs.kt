@@ -98,22 +98,55 @@ fun StandardSubscribeButton(text: String, lambda: () -> Unit){
 }
 
 @Composable
-fun ContributorSubscribeButton(text: String, lambda: () -> Unit){
+fun CustomizableButton(
+    text: String,
+    height: Int,
+    fontSize: Int,
+    textColor: Color,
+    backgroundColor: Color,
+    corner: Int,
+    borderStroke: Double,
+    borderColor: Color,
+    textType: String,
+    maxWidthFraction: Float,
+    clicked: () -> Unit
+){
     Button(
-        onClick = { lambda() },
-        colors = ButtonDefaults.buttonColors(backgroundColor = ClassicRose),
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
-        border = BorderStroke(0.5.dp, Black),
+        onClick = {
+            clicked()
+        },
+        colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor),
+        shape = RoundedCornerShape(corner),
+        border = BorderStroke(borderStroke.dp, borderColor),
         modifier = Modifier
-            .height(height = 43.dp)
+            .height(height = height.dp)
+            .fillMaxWidth(maxWidthFraction)
     ) {
-        NormalText(
-            text,
-            Black,
-            12,
-            0,
-            0
-        )
+        if(textType == "normal") {
+            NormalText(
+                text,
+                textColor,
+                fontSize,
+                0,
+                0
+            )
+        }else if(textType == "light"){
+            LightText(
+                text,
+                textColor,
+                fontSize,
+                0,
+                0
+            )
+        }else if(textType == "morge"){
+            MorgeNormalText(
+                text,
+                textColor,
+                fontSize,
+                0,
+                0
+            )
+        }
     }
 }
 
@@ -153,7 +186,57 @@ fun standardOutlinedTextInput(width: Int, height: Int, placeholder: String, offs
 }
 
 @Composable
-fun standardCentralizedOutlinedTextInput(placeholder: String, color: Color): String{
+fun customizedOutlinedTextInput(
+    width: Int,
+    height: Int,
+    color: Color,
+    focusedBorderColor: Color,
+    inputFontSize: Int,
+    placeholder: String,
+    placeholderFontSize: Int,
+    offset: Int
+): String{
+    var text by rememberSaveable{ mutableStateOf("") }
+    OutlinedTextField(
+        value = text,
+        onValueChange = {
+            text = it
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            backgroundColor = color,
+            focusedBorderColor = focusedBorderColor,
+            unfocusedBorderColor = color,
+            textColor = BeautyBush
+        ),
+        singleLine = true,
+        textStyle = TextStyle(
+            textAlign = TextAlign.Start,
+            fontFamily = bioRhymeFonts,
+            fontWeight = FontWeight.Light,
+            fontSize = inputFontSize.sp
+        ),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
+        placeholder = {
+            Text(
+                text = placeholder,
+                style = MaterialTheme.typography.h4,
+                color = BeautyBush,
+                fontSize = placeholderFontSize.sp,
+                modifier = Modifier
+                    .padding(0.dp)
+                    .offset(x = offset.dp)
+            )
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height.dp)
+            .padding(0.dp)
+    )
+    return text
+}
+
+@Composable
+fun standardCentralizedOutlinedTextInput(placeholder: String, color: Color, readOnly: Boolean): String{
     var text by rememberSaveable{ mutableStateOf(placeholder) }
     val context = LocalContext.current
     val maxLength = 30
@@ -161,7 +244,7 @@ fun standardCentralizedOutlinedTextInput(placeholder: String, color: Color): Str
         value = text,
         onValueChange = {
             if (it.length <= maxLength) text = it
-            else Toast.makeText(context, "Sound name cannot be more than $maxLength characters", Toast.LENGTH_SHORT).show()
+            else Toast.makeText(context, "Name cannot be more than $maxLength characters", Toast.LENGTH_SHORT).show()
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = color.copy(alpha = 0f),
@@ -175,6 +258,7 @@ fun standardCentralizedOutlinedTextInput(placeholder: String, color: Color): Str
             fontWeight = FontWeight.Normal,
             fontSize = 18.sp
         ),
+        readOnly = readOnly,
         singleLine = true,
         modifier = Modifier
             .wrapContentSize()
@@ -230,6 +314,57 @@ fun bigOutlinedTextInput(
                 }
             ){
                 Icon(imageVector  = image, description)
+            }
+        },
+        modifier = Modifier
+            .height(height.dp)
+            .padding(0.dp)
+            .fillMaxWidth()
+    )
+    return text
+}
+
+@Composable
+fun customizableBigOutlinedTextInput(
+    height: Int,
+    placeholder: String,
+    backgroundColor: Color,
+    focusedBorderColor: Color,
+    unfocusedBorderColor: Color,
+    textColor: Color,
+    placeholderColor: Color,
+    placeholderTextSize: Int,
+    inputFontSize: Int,
+    completed: (comment: String) -> Unit
+): String{
+    var text by rememberSaveable{ mutableStateOf("") }
+    OutlinedTextField(
+        value = text,
+        onValueChange = {
+            text = it
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            backgroundColor = backgroundColor,
+            focusedBorderColor = focusedBorderColor,
+            unfocusedBorderColor = unfocusedBorderColor,
+            textColor = textColor
+        ),
+        textStyle = TextStyle(
+            textAlign = TextAlign.Start,
+            fontFamily = bioRhymeFonts,
+            fontWeight = FontWeight.Light,
+            fontSize = inputFontSize.sp
+        ),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
+        placeholder = {
+            Column(verticalArrangement = Arrangement.Top){
+                LightText(
+                    placeholder,
+                    placeholderColor,
+                    placeholderTextSize,
+                    0,
+                    0
+                )
             }
         },
         modifier = Modifier
@@ -913,7 +1048,7 @@ fun DisplayUsersSounds(
     startClicked: (startText: String) -> Unit,
     clicked: () -> Unit
 ){
-    val text = if(globalViewModel_!!.currentSoundPlaying != null) {
+    val text: String = if(globalViewModel_!!.currentSoundPlaying != null) {
         if (
             globalViewModel_!!.currentSoundPlaying!!.id == sound.id &&
             globalViewModel_!!.isCurrentSoundPlaying
@@ -1299,6 +1434,131 @@ fun Article(title: String, summary: String, icon: Int, lambda: () -> Unit){
             }
         }
     }
+}
+
+@Composable
+fun DropdownMenu(list: List<String>, title: String): String{
+    var expanded by remember { mutableStateOf(false)}
+    var selectedIndex by remember { mutableStateOf(-1) }
+
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        val (
+            select,
+            dropdown,
+        ) = createRefs()
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(
+                    onClick = { expanded = true }
+                )
+                .constrainAs(select) {
+                    top.linkTo(parent.top, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                },
+            shape = MaterialTheme.shapes.small,
+        ){
+            Column(
+                modifier = Modifier
+                    .background(SoftPeach)
+            ){
+                if(selectedIndex > -1){
+                    Row(
+                        modifier = Modifier
+                            .padding(
+                                vertical = 8.dp,
+                                horizontal = 12.dp,
+                            )
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        NormalText(
+                            text = list[selectedIndex],
+                            color = BeautyBush,
+                            fontSize = 15,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+                        AnImage(
+                            R.drawable.dropdown_icon,
+                            "dropdown icon",
+                            14.dp,
+                            8.dp,
+                            0,
+                            0
+                        ) {expanded = true }
+                    }
+                }else{
+                    Row(
+                        modifier = Modifier
+                            .padding(
+                                vertical = 8.dp,
+                                horizontal = 12.dp,
+                            )
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        LightText(
+                            title,
+                            color = BeautyBush,
+                            fontSize = 15,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+                        AnImage(
+                            R.drawable.dropdown_icon,
+                            "dropdown icon",
+                            14.dp,
+                            8.dp,
+                            0,
+                            0
+                        ) {expanded = true }
+                    }
+                }
+            }
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(SoftPeach)
+                .constrainAs(dropdown) {
+                    top.linkTo(select.bottom, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+                .wrapContentHeight(),
+        ) {
+            list.forEachIndexed { index, s ->
+                DropdownMenuItem(
+                    onClick = {
+                        selectedIndex = index
+                        expanded = false
+                    }
+                ) {
+                    NormalText(
+                        text = s,
+                        color = BeautyBush,
+                        fontSize = 15,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
+                }
+            }
+        }
+    }
+    if(selectedIndex > -1) {
+        return list[selectedIndex]
+    }
+    return "0"
 }
 
 @Preview(

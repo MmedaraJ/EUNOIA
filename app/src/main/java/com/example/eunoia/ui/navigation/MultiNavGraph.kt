@@ -9,13 +9,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -30,6 +28,10 @@ import com.example.eunoia.settings.Settings
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.viewModels.GlobalViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.eunoia.create.createSound.NameSoundUI
+import com.example.eunoia.create.CreateUI
+import com.example.eunoia.create.createSound.CreatePresetUI
+import com.example.eunoia.create.createSound.UploadSoundsUI
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.ui.bottomSheets.*
 import com.example.eunoia.ui.theme.*
@@ -107,8 +109,8 @@ fun EunoiaApp(
                     bottomBar = {
                         val items = listOf(
                             Screen.Dashboard,
-                            Screen.Routines,
                             Screen.Search,
+                            Screen.Create,
                             Screen.Feedback,
                             Screen.Account
                         )
@@ -166,7 +168,7 @@ fun MultiNavTabContent(
     val dashboardNavState = rememberSaveable(
         saver = navStateSaver()
     ) { mutableStateOf(Bundle()) }
-    val routinesNavState = rememberSaveable(
+    val createNavState = rememberSaveable(
         saver = navStateSaver()
     ) { mutableStateOf(Bundle()) }
     val searchNavState = rememberSaveable(
@@ -180,7 +182,7 @@ fun MultiNavTabContent(
     ) { mutableStateOf(Bundle()) }
     when (screen) {
         Screen.Dashboard -> DashboardTab(dashboardNavState, globalViewModel, scope, state)
-        Screen.Routines -> RoutinesTab(routinesNavState, globalViewModel, scope, state)
+        Screen.Create -> CreateTab(createNavState, globalViewModel, scope, state)
         Screen.Search -> SearchTab(searchNavState, globalViewModel, scope, state)
         Screen.Feedback -> FeedbackTab(feedbackNavState, globalViewModel, scope, state)
         Screen.Account -> AccountTab(accountNavState, globalViewModel, scope, state)
@@ -231,7 +233,7 @@ fun DashboardTab(
         composable(
             Screen.Sound.screen_route
         ) {
-            Log.i("User", "You are now on the User tab")
+            Log.i("Sound", "You are now on the Sound tab")
             SoundActivityUI(
                 navController,
                 LocalContext.current,
@@ -272,7 +274,7 @@ fun DashboardTab(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RoutinesTab(
+fun CreateTab(
     navState: MutableState<Bundle>,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
@@ -297,11 +299,16 @@ fun RoutinesTab(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Routines.screen_route
+        startDestination = Screen.Create.screen_route //navController.currentDestination.
     ) {
-        composable(Screen.Routines.screen_route) {
-            Log.i("Routines", "You are now on the Routines tab")
-            Text(text = "Routines")
+        composable(Screen.Create.screen_route) {
+            Log.i("Create", "You are now on the Create tab")
+            CreateUI(
+                navController = navController,
+                globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
+            )
         }
         composable(
             "${Screen.SoundScreen.screen_route}/sound={sound}",
@@ -315,6 +322,34 @@ fun RoutinesTab(
                 LocalContext.current,
                 scope,
                 state
+            )
+        }
+        composable(Screen.NameSound.screen_route) {
+            Log.i("CreateSound", "You are now on the CreateSound tab")
+            NameSoundUI(
+                navController = navController,
+                globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
+            )
+        }
+        composable(Screen.UploadSounds.screen_route) {
+            Log.i("UploadSounds", "You are now on the UploadSounds tab")
+            UploadSoundsUI(
+                navController = navController,
+                globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
+            )
+        }
+        composable(Screen.CreatePreset.screen_route) {
+            Log.i("CreatePreset", "You are now on the CreatePreset tab")
+            CreatePresetUI(
+                navController = navController,
+                LocalContext.current,
+                //globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
             )
         }
     }
@@ -479,8 +514,8 @@ fun AccountTab(
 }
 
 /**
-* Saver to save and restore the current tab across config change and process death.
-*/
+ * Saver to save and restore the current tab across config change and process death.
+ */
 fun screenSaver(): Saver<MutableState<Screen>, *> = Saver(
     save = { it.value.saveState() },
     restore = { mutableStateOf(Screen.restoreState(it)) }

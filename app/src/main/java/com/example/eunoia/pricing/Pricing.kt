@@ -23,7 +23,7 @@ import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
 fun PricingUI(navController: NavController, globalViewModel: GlobalViewModel){
-    globalViewModel_!!.navController = navController
+    //globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -34,7 +34,7 @@ fun PricingUI(navController: NavController, globalViewModel: GlobalViewModel){
             header,
             title,
             intro,
-            rookies,
+            prices,
             master6,
             master9,
             contributor,
@@ -83,50 +83,18 @@ fun PricingUI(navController: NavController, globalViewModel: GlobalViewModel){
         }
         Column(
             modifier = Modifier
-                .constrainAs(rookies) {
+                .constrainAs(prices) {
                     top.linkTo(intro.bottom, margin = 24.dp)
                     start.linkTo(parent.start, margin = 0.dp)
-                    end.linkTo(master6.start, margin = 4.dp)
-                }
-        ) {
-            Rookie{}
-        }
-        Column(
-            modifier = Modifier
-                .constrainAs(master6) {
-                    top.linkTo(rookies.top, margin = 0.dp)
-                    bottom.linkTo(rookies.bottom, margin = 0.dp)
-                    start.linkTo(rookies.end, margin = 4.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            MasterSix{}
-        }
-        Column(
-            modifier = Modifier
-                .constrainAs(master9) {
-                    top.linkTo(rookies.bottom, margin = 0.dp)
-                    start.linkTo(parent.start, margin = 0.dp)
-                    end.linkTo(contributor.start, margin = 4.dp)
-                }
-        ) {
-            MasterNine{}
-        }
-        Column(
-            modifier = Modifier
-                .constrainAs(contributor) {
-                    top.linkTo(master9.top, margin = 0.dp)
-                    start.linkTo(master9.end, margin = 4.dp)
-                    end.linkTo(parent.end, margin = 0.dp)
-                    bottom.linkTo(master9.bottom, margin = 0.dp)
-                }
-        ) {
-            Contributor{}
+            AllPricingUIs(navController)
         }
         Column(
             modifier = Modifier
                 .constrainAs(select_membership) {
-                    top.linkTo(master9.bottom, margin = 24.dp)
+                    top.linkTo(prices.bottom, margin = 24.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }

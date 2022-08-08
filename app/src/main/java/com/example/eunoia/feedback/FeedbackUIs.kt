@@ -166,134 +166,6 @@ fun AllTextRatings(){
 }
 
 @Composable
-fun DropdownMenu(){
-    var expanded by remember { mutableStateOf(false)}
-    val topics = listOf(
-        "Topic1",
-        "Topic2",
-        "Topic3",
-        "Topic4",
-        "Topic5"
-    )
-    var selectedIndex by remember { mutableStateOf(-1) }
-
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-    ) {
-        val (
-            select,
-            dropdown,
-        ) = createRefs()
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(
-                    onClick = { expanded = true }
-                )
-                .constrainAs(select) {
-                    top.linkTo(parent.top, margin = 0.dp)
-                    start.linkTo(parent.start, margin = 0.dp)
-                    end.linkTo(parent.end, margin = 0.dp)
-                },
-            shape = MaterialTheme.shapes.small,
-        ){
-            Column(
-                modifier = Modifier
-                    .background(SoftPeach)
-            ){
-                if(selectedIndex > -1){
-                    Row(
-                        modifier = Modifier
-                            .padding(
-                                vertical = 8.dp,
-                                horizontal = 12.dp,
-                            )
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        NormalText(
-                            text = topics[selectedIndex],
-                            color = BeautyBush,
-                            fontSize = 15,
-                            xOffset = 0,
-                            yOffset = 0
-                        )
-                        AnImage(
-                            R.drawable.dropdown_icon,
-                            "dropdown icon",
-                            14.dp,
-                            8.dp,
-                            0,
-                            0
-                        ) {expanded = true }
-                    }
-                }else{
-                    Row(
-                        modifier = Modifier
-                            .padding(
-                                vertical = 8.dp,
-                                horizontal = 12.dp,
-                            )
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        LightText(
-                            "Select a topic",
-                            color = BeautyBush,
-                            fontSize = 15,
-                            xOffset = 0,
-                            yOffset = 0
-                        )
-                        AnImage(
-                            R.drawable.dropdown_icon,
-                            "dropdown icon",
-                            14.dp,
-                            8.dp,
-                            0,
-                            0
-                        ) {expanded = true }
-                    }
-                }
-            }
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(SoftPeach)
-                .constrainAs(dropdown) {
-                    top.linkTo(select.bottom, margin = 0.dp)
-                    start.linkTo(parent.start, margin = 0.dp)
-                    end.linkTo(parent.end, margin = 0.dp)
-                }
-                .wrapContentHeight(),
-        ) {
-            topics.forEachIndexed { index, s ->
-                DropdownMenuItem(
-                    onClick = {
-                        selectedIndex = index
-                        expanded = false
-                    }
-                ) {
-                    NormalText(
-                        text = s,
-                        color = BeautyBush,
-                        fontSize = 15,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun Email(){
     ConstraintLayout(
         modifier = Modifier
@@ -352,15 +224,20 @@ fun ContactText(){
                 yOffset = 0
             )
             Spacer(modifier = Modifier.width(2.dp))
-            Email()
         }
-        LightText(
-            "if you have any questions or ideas for us.",
-            color = MaterialTheme.colors.primary,
-            fontSize = 15,
-            xOffset = 0,
-            yOffset = 0
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+        ) {
+            Email()
+            LightText(
+                "if you have any questions or ideas for us.",
+                color = MaterialTheme.colors.primary,
+                fontSize = 15,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
         Column(
             modifier = Modifier
         ){

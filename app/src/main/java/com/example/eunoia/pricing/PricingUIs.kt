@@ -20,8 +20,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.example.eunoia.R
+import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.ui.components.*
+import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 
 @Composable
@@ -92,7 +95,7 @@ fun Rookie(lambda: () -> Unit) {
     var cardModifier = Modifier
         .padding(bottom = 16.dp)
         .wrapContentHeight()
-        .wrapContentWidth()
+        .fillMaxWidth(0.45F)
         .clickable {
             clicked = !clicked
             lambda()
@@ -204,7 +207,18 @@ fun Rookie(lambda: () -> Unit) {
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
             ) {
-                StandardSubscribeButton(text = "subscribe") {}
+                CustomizableButton(
+                    text = "subscribe",
+                    height = 43,
+                    fontSize = 12,
+                    textColor = Black,
+                    backgroundColor = OldLace,
+                    corner = 10,
+                    borderStroke = 0.5,
+                    borderColor = Black,
+                    textType = "normal",
+                    maxWidthFraction = 1F
+                ) {}
             }
         }
     }
@@ -216,7 +230,7 @@ fun MasterSix(lambda: () -> Unit) {
     var cardModifier = Modifier
         .padding(bottom = 16.dp)
         .wrapContentHeight()
-        .wrapContentWidth()
+        .fillMaxWidth(0.45F)
         .clickable {
             clicked = !clicked
             lambda()
@@ -358,9 +372,21 @@ fun MasterSix(lambda: () -> Unit) {
                         end.linkTo(parent.end, margin = 0.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         bottom.linkTo(parent.bottom, margin = 0.dp)
-                    }.widthIn()
+                    }
+                    .widthIn()
             ) {
-                StandardSubscribeButton(text = "subscribe") {}
+                CustomizableButton(
+                    text = "subscribe",
+                    height = 43,
+                    fontSize = 12,
+                    textColor = Black,
+                    backgroundColor = OldLace,
+                    corner = 10,
+                    borderStroke = 0.5,
+                    borderColor = Black,
+                    textType = "normal",
+                    maxWidthFraction = 1F
+                ) {}
             }
         }
     }
@@ -372,7 +398,7 @@ fun MasterNine(lambda: () -> Unit) {
     var cardModifier = Modifier
         .padding(bottom = 16.dp)
         .wrapContentHeight()
-        .wrapContentWidth()
+        .fillMaxWidth(0.45F)
         .clickable {
             clicked = !clicked
             lambda()
@@ -516,7 +542,18 @@ fun MasterNine(lambda: () -> Unit) {
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
             ) {
-                StandardSubscribeButton(text = "subscribe") {}
+                CustomizableButton(
+                    text = "subscribe",
+                    height = 43,
+                    fontSize = 12,
+                    textColor = Black,
+                    backgroundColor = OldLace,
+                    corner = 10,
+                    borderStroke = 0.5,
+                    borderColor = Black,
+                    textType = "normal",
+                    maxWidthFraction = 1F
+                ) {}
             }
         }
     }
@@ -528,7 +565,7 @@ fun Contributor(lambda: () -> Unit) {
     var cardModifier = Modifier
         .padding(bottom = 16.dp)
         .wrapContentHeight()
-        .wrapContentWidth()
+        .fillMaxWidth(0.45F)
         .clickable {
             clicked = !clicked
             lambda()
@@ -694,8 +731,46 @@ fun Contributor(lambda: () -> Unit) {
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
             ) {
-                ContributorSubscribeButton(text = "subscribe") {}
+                CustomizableButton(
+                    text = "subscribe",
+                    height = 43,
+                    fontSize = 12,
+                    textColor = Black,
+                    backgroundColor = ClassicRose,
+                    corner = 10,
+                    borderStroke = 0.5,
+                    borderColor = Black,
+                    textType = "normal",
+                    maxWidthFraction = 1F
+                ) {}
             }
+        }
+    }
+}
+
+
+@Composable
+fun AllPricingUIs(navController: NavController){
+    ConstraintLayout{
+        val (
+            prices,
+        ) = createRefs()
+        SimpleFlowRow(
+            verticalGap = 12.dp,
+            horizontalGap = 12.dp,
+            alignment = Alignment.Start,
+            modifier = Modifier
+                .constrainAs(prices) {
+                    top.linkTo(parent.top, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    bottom.linkTo(parent.bottom, margin = 0.dp)
+                }
+        ) {
+            Rookie{}
+            MasterSix{}
+            MasterNine{}
+            Contributor{}
         }
     }
 }
@@ -712,6 +787,6 @@ fun Contributor(lambda: () -> Unit) {
 @Composable
 fun PreviewUI() {
     EUNOIATheme {
-        Contributor{}
+        MasterNine{}
     }
 }
