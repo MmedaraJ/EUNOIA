@@ -174,7 +174,6 @@ fun UploadSoundsUI(
                 }
             }
         }
-
         Column(
             modifier = Modifier
                 .constrainAs(next) {
