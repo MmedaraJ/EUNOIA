@@ -4,9 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,18 +30,19 @@ import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.amplifyframework.core.Amplify
+import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.backend.UserRoutineBackend
-import com.example.eunoia.create.createSound.fileColors
-import com.example.eunoia.create.createSound.uploadedFiles
-import com.example.eunoia.create.createSound.fileUris
-import com.example.eunoia.create.createSound.selectedIndex
+import com.example.eunoia.create.createBedtimeStory.RecordedAudioData
+import com.example.eunoia.create.createBedtimeStory.addAmplitude
+import com.example.eunoia.create.createSound.*
+import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.sign_in_process.SignInActivity
-import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.ui.bottomSheets.*
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.MultiBottomNavApp
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -47,14 +51,16 @@ import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.ui.theme.Grey
 import com.example.eunoia.ui.theme.Peach
 import com.example.eunoia.ui.theme.White
+import com.example.eunoia.utils.Timer
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.lang.ref.WeakReference
+import java.util.*
 
-class UserDashboardActivity : ComponentActivity() {
+class UserDashboardActivity : ComponentActivity(), Timer.OnTimerTickListener {
     private val _currentUser = MutableLiveData<UserData>(null)
     var currentUser: LiveData<UserData> = _currentUser
 
@@ -101,9 +107,13 @@ class UserDashboardActivity : ComponentActivity() {
                     }
                     val tempFile = File.createTempFile("audio", ".aac")
                     copyStreamToFile(audioStream!!, tempFile)
+                    val mdt = MediaMetadataRetriever()
+                    mdt.setDataSource(tempFile.absolutePath)
+                    var durationStr = mdt.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                    audioFileLengthMilliSeconds[selectedIndex]!!.value = durationStr!!.toLong()
                     uploadedFiles[selectedIndex]!!.value = tempFile
                     fileColors[selectedIndex]!!.value = Peach
-                    Log.i(TAG, "Names 3 ==>> ${uploadedFiles[selectedIndex]!!.value.name}")
+                    Log.i(TAG, "Names 3 ==>> ${uploadedFiles[selectedIndex]!!.value.absolutePath}")
                     Log.i(TAG, "Names 4 ==>> ${uploadedFiles[selectedIndex]!!.value.path}")
                 }
             }
@@ -164,6 +174,106 @@ class UserDashboardActivity : ComponentActivity() {
             }
         }
     }
+
+    fun startSpeechRecognizer() {
+        /*speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+        Log.i(TAG, "Speech recognizer $speechRecognizer")
+        speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        Log.i(TAG, "Speech recognizer intent $speechRecognizerIntent")
+
+        speechRecognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(bundle: Bundle) {
+                Log.i(TAG, "Speech recognizer is active00")
+            }
+            override fun onBeginningOfSpeech() {
+                isRecognizingSpeech.value = true
+                Log.i(TAG, "Speech recognizer is active")
+            }
+            override fun onRmsChanged(v: Float) {}
+            override fun onBufferReceived(bytes: ByteArray) {}
+            override fun onEndOfSpeech() {
+                isRecognizingSpeech.value = false
+                Log.i(TAG, "Speech recognizer is inactive")
+            }
+            override fun onError(i: Int) {}
+            override fun onResults(bundle: Bundle) {
+                val data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                recognizedSpeech = data!![0]
+                Log.i(TAG, "Speech recognizer result $recognizedSpeech")
+            }
+            override fun onPartialResults(bundle: Bundle) {}
+            override fun onEvent(i: Int, bundle: Bundle) {}
+        })*/
+        // on below line we are calling speech recognizer intent.
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        // on below line we are passing language model
+        // and model free form in our intent
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        // on below line we are passing our
+        // language as a default language.
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE,
+            Locale.getDefault()
+        )
+        // on below line we are specifying a prompt
+        // message as speak to text on below line.
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text")
+        // on below line we are specifying a try catch block.
+        // in this block we are calling a start activity
+        // for result method and passing our result code.
+        try {
+            speechRecognitionActivityResult.launch(intent)
+        } catch (e: Exception) {
+            // on below line we are displaying error message in toast
+            Toast
+                .makeText(
+                    this, " " + e.message,
+                    Toast.LENGTH_SHORT
+                )
+                .show()
+        }
+    }
+
+    private val speechRecognitionActivityResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if(result.resultCode == Activity.RESULT_OK && result.data != null){
+                val data: Intent? = result.data
+                // in that case we are extracting the
+                // data from our array list
+                val res: ArrayList<String> =
+                    data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
+                recognizedSpeech = Objects.requireNonNull(res)[0]
+                Log.i(TAG, "Recognized speech ==>> $recognizedSpeech")
+            }
+        }
+
+    override fun onTimerTick(durationString: String, durationMilliSeconds: Long) {
+        recordingTimeDisplay.value = durationString
+        addAmplitude(
+            RecordedAudioData(
+                recorder!!.maxAmplitude.toFloat(),
+                durationMilliSeconds,
+                recordingFile!!.length().toInt(),
+                //audioRecordedMediaPlayer!!.currentPosition
+            )
+        )
+    }
+
+    override fun justTick(durationString: String, durationMilliSeconds: Long) {
+        recordingTimeDisplay.value = durationString
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //speechRecognizer.destroy()
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -209,7 +319,9 @@ fun UserDashboardActivityUI(
                 .fillMaxWidth()
         ){
             ProfilePictureHeader(
-                {},
+                {
+                    globalViewModel_!!.bottomSheetOpenFor = "recordAudio"
+                    openBottomSheet(scope, state)},
                 {
                     globalViewModel_!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
@@ -262,7 +374,7 @@ fun UserDashboardActivityUI(
                 {
                     for(routine in globalViewModel_!!.currentUsersRoutines!!){
                         Routine(routine!!.routineData){
-
+                            navigateToRoutineScreen(navController, routine.routineData)
                         }
                     }
                 }else{
@@ -451,6 +563,10 @@ private fun toSoundActivity(context: Context, navController: NavHostController){
 
 private fun something(){
 
+}
+
+fun navigateToRoutineScreen(navController: NavController, routineData: RoutineData){
+    navController.navigate("${Screen.RoutineScreen.screen_route}/routine=${RoutineObject.Routine.from(routineData)}")
 }
 
 @Preview(

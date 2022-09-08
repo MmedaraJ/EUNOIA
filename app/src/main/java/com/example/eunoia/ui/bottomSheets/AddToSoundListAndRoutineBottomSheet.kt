@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -197,10 +198,11 @@ fun AddToSoundListAndRoutineBottomSheet(
                     AnImage(
                         R.drawable.little_right_arrow,
                         "add to routine",
-                        6.dp,
-                        4.dp,
+                        6.0,
+                        4.0,
                         0,
-                        0
+                        0,
+                        LocalContext.current
                     ) {
 
                     }
@@ -327,6 +329,12 @@ fun SelectRoutine(
                                             }
                                         }
                                         if (!routineAlreadyHasSound) {
+                                            if(!userRoutine.routineData.playingOrder.contains("sound")){
+                                                userRoutine.routineData.playingOrder.add("sound")
+                                                RoutineBackend.updateRoutine(userRoutine.routineData){
+
+                                                }
+                                            }
                                             RoutineSoundBackend.createRoutineSoundObject(
                                                 globalViewModel_!!.currentSoundToBeAdded!!,
                                                 userRoutine.routineData
@@ -428,7 +436,7 @@ fun InputRoutineName(
                     start.linkTo(parent.start, margin = 16.dp)
                 }
         ) {
-            name = standardOutlinedTextInput(211, 50, "Routine name", 0)
+            name = standardOutlinedTextInputMax30(211, 50, "Routine name", 0)
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -631,7 +639,7 @@ fun SelectRoutineIcon(
                                 globalViewModel_!!.routineNameToBeAdded,
                                 2,
                                 0,
-                                globalViewModel_!!.currentSoundPlaying!!.fullPlayTime,
+                                globalViewModel_!!.currentSoundPlaying!!.fullPlayTime.toLong(),
                                 globalViewModel_!!.routineIconToBeAdded!!,
                                 false,
                                 globalViewModel_!!.routineColorToBeAdded!!.toInt(),
@@ -649,7 +657,7 @@ fun SelectRoutineIcon(
                                 -1,
                                 -1,
                                 -1,
-                                listOf()
+                                listOf("sleep", "sound")
                             )
                             RoutineBackend.createRoutine(routine) {
                                 UserRoutineBackend.createUserRoutineObject(it) { userRoutine ->

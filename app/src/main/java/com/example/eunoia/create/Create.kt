@@ -22,8 +22,11 @@ import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.EUNOIATheme
+import com.example.eunoia.viewModels.CreateSoundViewModel
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
+
+var createSoundViewModel: CreateSoundViewModel? = null
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -33,7 +36,7 @@ fun CreateUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    //globalViewModel_!!.navController = navController!!
+    createSoundViewModel =  viewModel()
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier

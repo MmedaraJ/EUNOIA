@@ -135,7 +135,7 @@ object SoundBackend{
         }
     }
 
-    fun storeAudio(filePath: String, key: String) {
+    fun storeAudio(filePath: String, key: String, completed: (key: String) -> Unit) {
         val file = File(filePath)
         val options = StorageUploadFileOptions.builder()
             .accessLevel(StorageAccessLevel.PROTECTED)
@@ -147,7 +147,10 @@ object SoundBackend{
                 file,
                 options,
                 { progress -> Log.i(TAG, "Fraction completed: ${progress.fractionCompleted}") },
-                { result -> Log.i(TAG, "Successfully uploaded: " + result.key) },
+                { result ->
+                    Log.i(TAG, "Successfully uploaded: " + result.key)
+                    completed(result.key)
+                },
                 { error -> Log.e(TAG, "Upload failed", error) }
             )
         }

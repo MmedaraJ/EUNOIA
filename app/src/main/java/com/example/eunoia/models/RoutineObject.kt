@@ -18,7 +18,7 @@ object RoutineObject{
         val displayName: String,
         val numberOfSteps: Int,
         val numberOfTimesUsed: Int,
-        val fullPlayTime: Int,
+        val fullPlayTime: Long,
         val icon: Int,
         val visibleToOthers: Boolean,
         val colorHex: Int,
@@ -49,7 +49,7 @@ object RoutineObject{
                 .displayName(this.displayName)
                 .numberOfSteps(this.numberOfSteps)
                 .numberOfTimesUsed(this.numberOfTimesUsed)
-                .fullPlayTime(this.fullPlayTime)
+                .fullPlayTime(this.fullPlayTime.toInt())
                 .icon(this.icon)
                 .visibleToOthers(this.visibleToOthers)
                 .colorHex(this.colorHex)
@@ -80,7 +80,7 @@ object RoutineObject{
                     routineData.displayName,
                     routineData.numberOfSteps,
                     routineData.numberOfTimesUsed,
-                    routineData.fullPlayTime,
+                    routineData.fullPlayTime.toLong(),
                     routineData.icon,
                     routineData.visibleToOthers,
                     routineData.colorHex,

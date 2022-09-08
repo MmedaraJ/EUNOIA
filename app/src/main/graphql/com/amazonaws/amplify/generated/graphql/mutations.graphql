@@ -1464,7 +1464,7 @@ mutation CreateRoutineData(
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1623,7 +1623,7 @@ mutation UpdateRoutineData(
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1782,7 +1782,7 @@ mutation DeleteRoutineData(
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1817,11 +1817,11 @@ mutation DeleteRoutineData(
     owner
   }
 }
-mutation CreateBedtimeStoryData(
-  $input: CreateBedtimeStoryDataInput!
-  $condition: ModelBedtimeStoryDataConditionInput
+mutation CreateBedtimeStoryInfoData(
+  $input: CreateBedtimeStoryInfoDataInput!
+  $condition: ModelBedtimeStoryInfoDataConditionInput
 ) {
-  createBedtimeStoryData(input: $input, condition: $condition) {
+  createBedtimeStoryInfoData(input: $input, condition: $condition) {
     id
     userDataID
     bedtimeStoryOwner {
@@ -1882,12 +1882,20 @@ mutation CreateBedtimeStoryData(
       updatedAt
       owner
     }
-    display_name
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    audioSource
+    approvalStatus
+    creationStatus
     routines {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1897,8 +1905,20 @@ mutation CreateBedtimeStoryData(
     users {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    chapters {
+      items {
+        id
+        display_name
+        chapterNumber
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1910,11 +1930,11 @@ mutation CreateBedtimeStoryData(
     owner
   }
 }
-mutation UpdateBedtimeStoryData(
-  $input: UpdateBedtimeStoryDataInput!
-  $condition: ModelBedtimeStoryDataConditionInput
+mutation UpdateBedtimeStoryInfoData(
+  $input: UpdateBedtimeStoryInfoDataInput!
+  $condition: ModelBedtimeStoryInfoDataConditionInput
 ) {
-  updateBedtimeStoryData(input: $input, condition: $condition) {
+  updateBedtimeStoryInfoData(input: $input, condition: $condition) {
     id
     userDataID
     bedtimeStoryOwner {
@@ -1975,12 +1995,20 @@ mutation UpdateBedtimeStoryData(
       updatedAt
       owner
     }
-    display_name
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    audioSource
+    approvalStatus
+    creationStatus
     routines {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1990,8 +2018,20 @@ mutation UpdateBedtimeStoryData(
     users {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    chapters {
+      items {
+        id
+        display_name
+        chapterNumber
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -2003,11 +2043,11 @@ mutation UpdateBedtimeStoryData(
     owner
   }
 }
-mutation DeleteBedtimeStoryData(
-  $input: DeleteBedtimeStoryDataInput!
-  $condition: ModelBedtimeStoryDataConditionInput
+mutation DeleteBedtimeStoryInfoData(
+  $input: DeleteBedtimeStoryInfoDataInput!
+  $condition: ModelBedtimeStoryInfoDataConditionInput
 ) {
-  deleteBedtimeStoryData(input: $input, condition: $condition) {
+  deleteBedtimeStoryInfoData(input: $input, condition: $condition) {
     id
     userDataID
     bedtimeStoryOwner {
@@ -2068,12 +2108,20 @@ mutation DeleteBedtimeStoryData(
       updatedAt
       owner
     }
-    display_name
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    audioSource
+    approvalStatus
+    creationStatus
     routines {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -2083,8 +2131,20 @@ mutation DeleteBedtimeStoryData(
     users {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    chapters {
+      items {
+        id
+        display_name
+        chapterNumber
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -3110,7 +3170,15 @@ mutation CreateUserData(
       items {
         id
         userDataID
-        display_name
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
         createdAt
         updatedAt
         owner
@@ -3120,7 +3188,7 @@ mutation CreateUserData(
     bedtimeStories {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
         createdAt
         updatedAt
@@ -3310,7 +3378,15 @@ mutation UpdateUserData(
       items {
         id
         userDataID
-        display_name
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
         createdAt
         updatedAt
         owner
@@ -3320,7 +3396,7 @@ mutation UpdateUserData(
     bedtimeStories {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
         createdAt
         updatedAt
@@ -3510,7 +3586,15 @@ mutation DeleteUserData(
       items {
         id
         userDataID
-        display_name
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
         createdAt
         updatedAt
         owner
@@ -3520,13 +3604,361 @@ mutation DeleteUserData(
     bedtimeStories {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
         createdAt
         updatedAt
         owner
       }
       nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateBedtimeStoryInfoChapterData(
+  $input: CreateBedtimeStoryInfoChapterDataInput!
+  $condition: ModelBedtimeStoryInfoChapterDataConditionInput
+) {
+  createBedtimeStoryInfoChapterData(input: $input, condition: $condition) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateBedtimeStoryInfoChapterData(
+  $input: UpdateBedtimeStoryInfoChapterDataInput!
+  $condition: ModelBedtimeStoryInfoChapterDataConditionInput
+) {
+  updateBedtimeStoryInfoChapterData(input: $input, condition: $condition) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteBedtimeStoryInfoChapterData(
+  $input: DeleteBedtimeStoryInfoChapterDataInput!
+  $condition: ModelBedtimeStoryInfoChapterDataConditionInput
+) {
+  deleteBedtimeStoryInfoChapterData(input: $input, condition: $condition) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateChapterPageData(
+  $input: CreateChapterPageDataInput!
+  $condition: ModelChapterPageDataConditionInput
+) {
+  createChapterPageData(input: $input, condition: $condition) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateChapterPageData(
+  $input: UpdateChapterPageDataInput!
+  $condition: ModelChapterPageDataConditionInput
+) {
+  updateChapterPageData(input: $input, condition: $condition) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteChapterPageData(
+  $input: DeleteChapterPageDataInput!
+  $condition: ModelChapterPageDataConditionInput
+) {
+  deleteChapterPageData(input: $input, condition: $condition) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
     }
     createdAt
     updatedAt
@@ -5018,14 +5450,14 @@ mutation DeleteRoutineBreathing(
     owner
   }
 }
-mutation CreateRoutineBedtimeStory(
-  $input: CreateRoutineBedtimeStoryInput!
-  $condition: ModelRoutineBedtimeStoryConditionInput
+mutation CreateRoutineBedtimeStoryInfo(
+  $input: CreateRoutineBedtimeStoryInfoInput!
+  $condition: ModelRoutineBedtimeStoryInfoConditionInput
 ) {
-  createRoutineBedtimeStory(input: $input, condition: $condition) {
+  createRoutineBedtimeStoryInfo(input: $input, condition: $condition) {
     id
     routineDataID
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     routineData {
       id
       userDataID
@@ -5093,7 +5525,7 @@ mutation CreateRoutineBedtimeStory(
       updatedAt
       owner
     }
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -5115,11 +5547,22 @@ mutation CreateRoutineBedtimeStory(
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -5131,14 +5574,14 @@ mutation CreateRoutineBedtimeStory(
     owner
   }
 }
-mutation UpdateRoutineBedtimeStory(
-  $input: UpdateRoutineBedtimeStoryInput!
-  $condition: ModelRoutineBedtimeStoryConditionInput
+mutation UpdateRoutineBedtimeStoryInfo(
+  $input: UpdateRoutineBedtimeStoryInfoInput!
+  $condition: ModelRoutineBedtimeStoryInfoConditionInput
 ) {
-  updateRoutineBedtimeStory(input: $input, condition: $condition) {
+  updateRoutineBedtimeStoryInfo(input: $input, condition: $condition) {
     id
     routineDataID
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     routineData {
       id
       userDataID
@@ -5206,7 +5649,7 @@ mutation UpdateRoutineBedtimeStory(
       updatedAt
       owner
     }
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -5228,11 +5671,22 @@ mutation UpdateRoutineBedtimeStory(
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -5244,14 +5698,14 @@ mutation UpdateRoutineBedtimeStory(
     owner
   }
 }
-mutation DeleteRoutineBedtimeStory(
-  $input: DeleteRoutineBedtimeStoryInput!
-  $condition: ModelRoutineBedtimeStoryConditionInput
+mutation DeleteRoutineBedtimeStoryInfo(
+  $input: DeleteRoutineBedtimeStoryInfoInput!
+  $condition: ModelRoutineBedtimeStoryInfoConditionInput
 ) {
-  deleteRoutineBedtimeStory(input: $input, condition: $condition) {
+  deleteRoutineBedtimeStoryInfo(input: $input, condition: $condition) {
     id
     routineDataID
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     routineData {
       id
       userDataID
@@ -5319,7 +5773,7 @@ mutation DeleteRoutineBedtimeStory(
       updatedAt
       owner
     }
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -5341,11 +5795,22 @@ mutation DeleteRoutineBedtimeStory(
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -6110,15 +6575,15 @@ mutation DeleteUserRoutine(
     owner
   }
 }
-mutation CreateUserBedtimeStory(
-  $input: CreateUserBedtimeStoryInput!
-  $condition: ModelUserBedtimeStoryConditionInput
+mutation CreateUserBedtimeStoryInfo(
+  $input: CreateUserBedtimeStoryInfoInput!
+  $condition: ModelUserBedtimeStoryInfoConditionInput
 ) {
-  createUserBedtimeStory(input: $input, condition: $condition) {
+  createUserBedtimeStoryInfo(input: $input, condition: $condition) {
     id
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     userDataID
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -6140,11 +6605,22 @@ mutation CreateUserBedtimeStory(
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -6214,15 +6690,15 @@ mutation CreateUserBedtimeStory(
     owner
   }
 }
-mutation UpdateUserBedtimeStory(
-  $input: UpdateUserBedtimeStoryInput!
-  $condition: ModelUserBedtimeStoryConditionInput
+mutation UpdateUserBedtimeStoryInfo(
+  $input: UpdateUserBedtimeStoryInfoInput!
+  $condition: ModelUserBedtimeStoryInfoConditionInput
 ) {
-  updateUserBedtimeStory(input: $input, condition: $condition) {
+  updateUserBedtimeStoryInfo(input: $input, condition: $condition) {
     id
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     userDataID
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -6244,11 +6720,22 @@ mutation UpdateUserBedtimeStory(
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -6318,15 +6805,15 @@ mutation UpdateUserBedtimeStory(
     owner
   }
 }
-mutation DeleteUserBedtimeStory(
-  $input: DeleteUserBedtimeStoryInput!
-  $condition: ModelUserBedtimeStoryConditionInput
+mutation DeleteUserBedtimeStoryInfo(
+  $input: DeleteUserBedtimeStoryInfoInput!
+  $condition: ModelUserBedtimeStoryInfoConditionInput
 ) {
-  deleteUserBedtimeStory(input: $input, condition: $condition) {
+  deleteUserBedtimeStoryInfo(input: $input, condition: $condition) {
     id
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     userDataID
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -6348,11 +6835,22 @@ mutation DeleteUserBedtimeStory(
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt

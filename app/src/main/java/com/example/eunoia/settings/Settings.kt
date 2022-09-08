@@ -1,12 +1,15 @@
 package com.example.eunoia.settings
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,15 +24,22 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
+import kotlinx.coroutines.CoroutineScope
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Settings(navController: NavController, globalViewModel: GlobalViewModel){
+fun Settings(
+    navController: NavController,
+    globalViewModel: GlobalViewModel,
+    context: Context,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+){
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
     ConstraintLayout(
@@ -118,7 +128,7 @@ fun Settings(navController: NavController, globalViewModel: GlobalViewModel){
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ){
-            SettingsBlockOne()
+            SettingsBlockOne(navController)
         }
         Box(
             modifier = Modifier
@@ -168,7 +178,7 @@ fun Settings(navController: NavController, globalViewModel: GlobalViewModel){
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ){
-            OtherUsersFeedback("Create a new slumber party"){}
+            SlumberParty("Create a new slumber party"){}
         }
         Column(
             modifier = Modifier
@@ -182,7 +192,7 @@ fun Settings(navController: NavController, globalViewModel: GlobalViewModel){
 }
 
 @Composable
-fun OtherUsersFeedback(text: String, lambda: () -> Unit){
+fun SlumberParty(text: String, lambda: () -> Unit){
     var clicked by rememberSaveable{ mutableStateOf(false) }
     var cardModifier = Modifier
         .wrapContentHeight()
@@ -241,6 +251,6 @@ fun OtherUsersFeedback(text: String, lambda: () -> Unit){
 fun Preview() {
     val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        Settings(rememberNavController(), globalViewModel)
+        //Settings(rememberNavController(), globalViewModel)
     }
 }

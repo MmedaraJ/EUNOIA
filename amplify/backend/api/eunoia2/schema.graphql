@@ -96,21 +96,46 @@ type RoutineData
     sounds: [SoundData!] @manyToMany(relationName: "RoutineSound")
     stretches: [StretchData!] @manyToMany(relationName: "RoutineStretch")
     breathing: [BreathingData!] @manyToMany(relationName: "RoutineBreathing")
-    bedtimeStories: [BedtimeStoryData!] @manyToMany(relationName: "RoutineBedtimeStory")
+    bedtimeStories: [BedtimeStoryInfoData!] @manyToMany(relationName: "RoutineBedtimeStoryInfo")
     selfLoves: [SelfLoveData!] @manyToMany(relationName: "RoutineSelfLove")
     users: [UserData!] @manyToMany(relationName: "UserRoutine")
     playingOrder: [String!]!
 }
 
-type BedtimeStoryData
-@model (queries: { get: "getBedtimeStoryData", list: "listBedtimeStoryDatas" })
+enum BedtimeStoryAudioSource{
+    UPLOADED
+    RECORDED
+}
+
+enum BedtimeStoryApprovalStatus{
+    PENDING
+    APPROVED
+    DISAPPROVED
+}
+
+enum BedtimeStoryCreationStatus{
+    COMPLETED
+    INCOMPLETE
+}
+
+type BedtimeStoryInfoData
+@model (queries: { get: "getBedtimeStoryInfoData", list: "listBedtimeStoryInfoDatas" })
 @auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
     id: ID!
-    userDataID: ID! @index(name: "BedtimeStoriesOwnedByUser", sortKeyFields: ["display_name"])
+    userDataID: ID! @index(name: "BedtimeStoriesOwnedByUser", sortKeyFields: ["displayName"])
     bedtimeStoryOwner: UserData! @belongsTo(fields: ["userDataID"])
-    display_name: String!
-    routines: [RoutineData!] @manyToMany(relationName: "RoutineBedtimeStory")
-    users: [UserData!] @manyToMany(relationName: "UserBedtimeStory")
+    displayName: String!
+    description: String!
+    audioKeyS3: String!
+    icon: Int!
+    fullPlayTime: Int!
+    visibleToOthers: Boolean!
+    audioSource: BedtimeStoryAudioSource
+    approvalStatus: BedtimeStoryApprovalStatus
+    creationStatus: BedtimeStoryCreationStatus
+    routines: [RoutineData!] @manyToMany(relationName: "RoutineBedtimeStoryInfo")
+    users: [UserData!] @manyToMany(relationName: "UserBedtimeStoryInfo")
+    chapters: [BedtimeStoryInfoChapterData!] @hasMany(indexName: "BedtimeStoryInfoChapters", fields: ["id"])
 }
 
 type SelfLoveData
@@ -174,6 +199,29 @@ type UserData
     breathings: [BreathingData!] @manyToMany(relationName: "UserBreathing")
     selfLovesOwnedByUser: [SelfLoveData!] @hasMany(indexName: "SelfLovesOwnedByUser", fields: ["id"])
     selfLoves: [SelfLoveData!] @manyToMany(relationName: "UserSelfLove")
-    bedtimeStoriesOwnedByUser: [BedtimeStoryData!] @hasMany(indexName: "BedtimeStoriesOwnedByUser", fields: ["id"])
-    bedtimeStories: [BedtimeStoryData!] @manyToMany(relationName: "UserBedtimeStory")
+    bedtimeStoriesOwnedByUser: [BedtimeStoryInfoData!] @hasMany(indexName: "BedtimeStoriesOwnedByUser", fields: ["id"])
+    bedtimeStories: [BedtimeStoryInfoData!] @manyToMany(relationName: "UserBedtimeStoryInfo")
+}
+
+type BedtimeStoryInfoChapterData
+@model (queries: { get: "getBedtimeStoryInfoChapterData", list: "listBedtimeStoryInfoChapterDatas" })
+@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
+    id: ID!
+    display_name: String!
+    chapterNumber: Int!
+    bedtimeStoryInfoDataID: ID! @index(name: "BedtimeStoryInfoChapters", sortKeyFields: ["chapterNumber"])
+    bedtimeStoryInfo: BedtimeStoryInfoData! @belongsTo(fields: ["bedtimeStoryInfoDataID"])
+    pages: [ChapterPageData!] @hasMany(indexName: "ChapterPages", fields: ["id"])
+}
+
+type ChapterPageData
+@model (queries: { get: "getChapterPageData", list: "listChapterPageDatas" })
+@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
+    id: ID!
+    display_name: String!
+    pageNumber: Int!
+    audioKeysS3: [String!]!
+    audioNames: [String!]!
+    bedtimeStoryInfoChapterDataID: ID! @index(name: "ChapterPages", sortKeyFields: ["pageNumber"])
+    bedtimeStoryInfoChapter: BedtimeStoryInfoChapterData! @belongsTo(fields: ["bedtimeStoryInfoChapterDataID"])
 }

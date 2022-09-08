@@ -5,9 +5,11 @@ import android.content.res.Configuration
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -27,6 +29,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -39,6 +42,7 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.CommentBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSoundBackend
+import com.example.eunoia.create.createSound.fileMediaPlayers
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -51,7 +55,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 private const val TAG = "Mixer"
-private var mediaPlayers = mutableListOf<MediaPlayer>()
+var mediaPlayers = mutableListOf<MediaPlayer>()
 private val isPlaying = mutableStateOf(false)
 private val isLooping = mutableStateOf(false)
 private val meditationBellInterval = mutableStateOf(0)
@@ -305,7 +309,6 @@ fun Controls(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Log.i(TAG, "ShowControls value ==>> ${showControls}")
         if(showControls) {
             globalViewModel_!!.icons.forEachIndexed { index, icon ->
                 Box(
@@ -435,11 +438,13 @@ fun playSounds(
     applicationContext: Context,
     index: Int
 ){
+    clearFileMediaPlayers()
     if(mediaPlayers.size == 0 && !globalViewModel_!!.isCurrentSoundPlaying) {
         allSounds.forEachIndexed { i, audioUri ->
             val mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
-                    AudioAttributes.Builder()
+                    AudioAttributes
+                        .Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .setUsage(AudioAttributes.USAGE_MEDIA)
                         .build()
@@ -449,7 +454,6 @@ fun playSounds(
                     globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10,
                     globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10
                 )
-                Log.i(TAG, "New volume for player $i = ${globalViewModel_!!.currentSoundPlayingSliderPositions[i]!!.value/10}")
                 prepare()
                 start()
             }
@@ -516,6 +520,19 @@ fun resetSounds(){
     }
 }
 
+fun clearFileMediaPlayers(){
+    if(fileMediaPlayers.isNotEmpty()) {
+        fileMediaPlayers.forEach { mediaPlayer ->
+            if(mediaPlayer!!.value.isPlaying) {
+                mediaPlayer.value.stop()
+            }
+            mediaPlayer.value.reset()
+            mediaPlayer.value.release()
+        }
+        fileMediaPlayers.clear()
+    }
+}
+
 fun resetSoundsForPresets(){
     if(mediaPlayers.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
         mediaPlayers.forEachIndexed { i, mediaPlayer ->
@@ -548,6 +565,8 @@ fun resetAll(applicationContext: Context){
     deActivateControlButton(6)
     globalViewModel_!!.isCurrentSoundPlaying = false
     globalViewModel_!!.currentSoundPlayingUris = null
+    globalViewModel_!!.currentSoundPlayingPreset = null
+    globalViewModel_!!.currentSoundPlayingContext = null
     timerTime.value = 0
     startCountDownTimer(applicationContext, timerTime.value)
 }
@@ -959,10 +978,11 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                             AnImage(
                                 R.drawable.increase_levels_icon,
                                 "noise control manual",
-                                7.dp,
-                                12.dp,
+                                7.0,
+                                12.0,
                                 0,
-                                0
+                                0,
+                                LocalContext.current
                             ) {
                                 showTapColumn = !showTapColumn
                                 lambda()
@@ -1020,10 +1040,11 @@ fun Tip(){
                 AnImage(
                     R.drawable.tip_icon,
                     "tip",
-                    9.dp,
-                    11.dp,
+                    9.0,
+                    11.0,
                     0,
-                    0
+                    0,
+                    LocalContext.current
                 ) {}
             }
             Column(

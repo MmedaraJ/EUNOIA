@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -185,10 +186,11 @@ fun Email(){
             AnImage(
                 R.drawable.pink_line,
                 "email line",
-                150.dp,
-                9.dp,
+                150.0,
+                9.0,
                 0,
-                0
+                0,
+                LocalContext.current
             ) {}
         }
         Column(

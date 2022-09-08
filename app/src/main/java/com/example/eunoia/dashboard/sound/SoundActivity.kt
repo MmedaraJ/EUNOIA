@@ -31,6 +31,8 @@ import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.*
 
 private val TAG = "Sound Activity"
+var playButtonText = mutableListOf<MutableState<String>?>()
+var playSounds = mutableListOf<MutableState<Boolean>?>()
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -119,69 +121,67 @@ fun SoundActivityUI(
                 }
                 .padding(bottom = 12.dp)
         ){
+            playButtonText.clear()
             if(globalViewModel_!!.currentUsersSounds != null){
                 if(globalViewModel_!!.currentUsersSounds!!.size > 0)
                 {
-                    for(sound in globalViewModel_!!.currentUsersSounds!!){
-                        if(sound!!.soundData.approvalStatus == SoundApprovalStatus.APPROVED){
-                            var soundPreset by remember{mutableStateOf<PresetData?>(null)}
-                            var soundPresetMap by remember{mutableStateOf<PresetNameAndVolumesMapData?>(null)}
-                            val uris = remember{mutableListOf<Uri>()}
+                    for(i in globalViewModel_!!.currentUsersSounds!!.indices){
+                        if(globalViewModel_!!.currentSoundPlaying != null){
+                            if(
+                                globalViewModel_!!.currentSoundPlaying!!.id ==
+                                globalViewModel_!!.currentUsersSounds!![i]!!.soundData.id
+                            ) {
+                                playButtonText.add(remember { mutableStateOf("stop") })
+                            }
+                            else{
+                                playButtonText.add(remember{mutableStateOf("start")})
+                            }
+                        }
+                        else{
+                            playButtonText.add(remember{mutableStateOf("start")})
+                        }
+                        playSounds.add(remember{mutableStateOf(false)})
+                        if(globalViewModel_!!.currentUsersSounds!![i]!!.soundData.approvalStatus == SoundApprovalStatus.APPROVED){
                             DisplayUsersSounds(
-                                sound.soundData,
+                                globalViewModel_!!.currentUsersSounds!![i]!!.soundData,
+                                i,
                                 {
-
                                 },
-                                {startText ->
-                                    if(startText == "start"){
-                                        getSoundPresets(sound.soundData) { presetData ->
-                                            soundPreset = presetData
-                                            for(preset in soundPreset!!.presets){
-                                                if(preset.key == "current_volumes"){
-                                                    soundPresetMap = preset
-                                                    globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = preset
-                                                }
+                                { index ->
+                                    for(j in playButtonText.indices){
+                                        if(j != index){
+                                            if(playButtonText[j]!!.value != "start") {
+                                                playButtonText[j]!!.value = "start"
                                             }
                                         }
-                                        retrieveAudioUris(uris, sound.soundData)
-                                        globalViewModel_!!.currentSoundPlayingPreset = null
+                                    }
+                                    if(playButtonText[index]!!.value == "start"){
+                                        playButtonText[index]!!.value = "wait"
+                                        for(bool in playSounds){
+                                            bool!!.value = false
+                                        }
                                         resetAll(context)
-                                        globalViewModel_!!.currentSoundPlaying = sound.soundData
-                                        globalViewModel_!!.currentSoundPlayingContext = context
-                                        if(soundPreset != null) {
-                                            globalViewModel_!!.currentSoundPlayingPreset = soundPreset
-                                            globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = soundPresetMap
-                                            var volumes = listOf<Int>()
-                                            for (preset in soundPreset!!.presets) {
-                                                if (preset.key == "current_volumes") {
-                                                    volumes = preset.volumes
+                                        createMeditationBellMediaPlayer(context)
+                                        globalViewModel_!!.currentSoundPlayingPreset = null
+                                        getSoundPresets(globalViewModel_!!.currentUsersSounds!![index]!!.soundData) { presetData ->
+                                            globalViewModel_!!.currentSoundPlayingPreset = presetData
+                                            for(preset in presetData.presets){
+                                                if(preset.key == "current_volumes"){
+                                                    globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = preset
+                                                    prepareToPlay(index, context)
+                                                    break
                                                 }
                                             }
-                                            Log.i(TAG, "Volumes ==>> $volumes")
-                                            globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-                                            for (volume in volumes) {
-                                                globalViewModel_!!.currentSoundPlayingSliderPositions.add(
-                                                    mutableStateOf(volume.toFloat())
-                                                )
-                                            }
-                                            createMeditationBellMediaPlayer(context)
-                                            Log.i(TAG, "Uris ==>> $uris")
-                                            if(uris.size > 0) {
-                                                playSounds(
-                                                    uris,
-                                                    context,
-                                                    3
-                                                )
-                                            }
                                         }
-                                    }else if(startText == "stop"){
+                                    }else if(playButtonText[index]!!.value == "stop" || playButtonText[index]!!.value == "wait"){
                                         pauseSounds(context, 3)
+                                        playButtonText[index]!!.value = "start"
                                     }
                                 },
-                                {
+                                { index ->
                                     globalViewModel_!!.currentSoundPlayingPreset = null
                                     resetAll(context)
-                                    navigateToSoundScreen(navController, sound.soundData)
+                                    navigateToSoundScreen(navController, globalViewModel_!!.currentUsersSounds!![index]!!.soundData)
                                 }
                             )
                         }
@@ -219,6 +219,62 @@ fun SoundActivityUI(
                 }
         ){
             Spacer(modifier = Modifier.height(20.dp))
+        }
+    }
+}
+
+fun prepareToPlay(i: Int, context: Context){
+    var volumes = listOf<Int>()
+    //var uris = mutableListOf<MutableState<Uri>?>()
+    val uris = mutableStateOf(mutableListOf<Uri>())
+    for (preset in globalViewModel_!!.currentSoundPlayingPreset!!.presets) {
+        if (preset.key == "current_volumes") {
+            volumes = preset.volumes
+        }
+    }
+    Log.i(TAG, "Volumes ==>> $volumes")
+    globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
+    for (volume in volumes) {
+        globalViewModel_!!.currentSoundPlayingSliderPositions.add(
+            mutableStateOf(volume.toFloat())
+        )
+    }
+    Log.i(TAG, "sliders vsf ==->> ${globalViewModel_!!.currentSoundPlayingSliderPositions}")
+    retrieveUris(uris.value, globalViewModel_!!.currentUsersSounds!![i]!!.soundData, i, context)
+    Log.i(TAG, "Uris ==>> $uris")
+}
+
+fun playNow(context: Context, i: Int){
+    playSounds(
+        globalViewModel_!!.currentSoundPlayingUris!!,
+        context,
+        3
+    )
+    globalViewModel_!!.currentSoundPlaying = globalViewModel_!!.currentUsersSounds!![i]!!.soundData
+    globalViewModel_!!.currentSoundPlayingContext = context
+    playButtonText[i]!!.value = "stop"
+}
+
+fun retrieveUris(
+    uris: MutableList<Uri>,
+    sound: SoundData,
+    i: Int,
+    context: Context
+){
+    Log.i(TAG, "22 22. Uris size ${uris.size}")
+    uris.clear()
+    SoundBackend.listEunoiaSounds(sound.audioKeyS3) { result ->
+        result.items.forEach { item ->
+            SoundBackend.retrieveAudio(item.key) { audioUri ->
+                uris.add(audioUri)
+                if(uris.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
+                    globalViewModel_!!.currentSoundPlayingUris = uris
+                    showControls = true
+                    playSounds[i]!!.value = true
+                    playNow(context, i)
+                }
+                Log.i(TAG, "${item.key}. Uris size ${uris.size}")
+            }
         }
     }
 }

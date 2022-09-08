@@ -7,9 +7,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,21 +17,33 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.PresetData
+import com.amplifyframework.datastore.generated.model.SoundApprovalStatus
 import com.amplifyframework.datastore.generated.model.SoundData
+import com.example.eunoia.backend.PresetBackend
+import com.example.eunoia.backend.PresetNameAndVolumesMapBackend
+import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.UserSoundBackend
 import com.example.eunoia.dashboard.sound.*
-import com.example.eunoia.models.PresetNameAndVolumesMapObject
+import com.example.eunoia.models.*
+import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.SwansDown
+import com.example.eunoia.ui.theme.WePeep
+import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
+import java.util.*
 
 var presetName by mutableStateOf("")
 var volumeErrorMessage by mutableStateOf("")
 var nameErrorMessage by mutableStateOf("")
+var fullPlayTime by mutableStateOf(0)
 var sliderVolumes = mutableListOf<MutableState<Int>?>()
+var saving by mutableStateOf(false)
+var go by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -69,6 +79,7 @@ fun CreatePresetUI(
             savePreset,
             message,
             info,
+            done,
             endSpace
         ) = createRefs()
         Column(
@@ -197,8 +208,41 @@ fun CreatePresetUI(
                     textType = "morge",
                     maxWidthFraction = 1F
                 ) {
+                    resetAll()
                     saveThisPreset()
                     navController.navigate(Screen.CreatePreset.screen_route)
+                }
+            }
+        }
+        Column(
+            modifier = Modifier
+                .constrainAs(done) {
+                    top.linkTo(info.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+                .fillMaxWidth(0.25F)
+        ) {
+            if(
+                presetName.isNotEmpty() &&
+                volumesDoNotAlreadyExist() &&
+                nameDoesNotAlreadyExist()
+            ) {
+                CustomizableButton(
+                    text = "done",
+                    height = 35,
+                    fontSize = 15,
+                    textColor = Black,
+                    backgroundColor = WePeep,
+                    corner = 50,
+                    borderStroke = 0.0,
+                    borderColor = WePeep.copy(alpha = 0F),
+                    textType = "morge",
+                    maxWidthFraction = 1F
+                ) {
+                    saving = true
+                    saveThisPreset()
+                    saveAudioFilesToS3()
+                    createSound(navController)
                 }
             }
         }
@@ -209,6 +253,104 @@ fun CreatePresetUI(
                 }
         ){
             Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+    if(saving){
+        AlertDialogBox("Saving...")
+    }else{
+        if(go) {
+            resetAll()
+            navController.navigate(Screen.Create.screen_route)
+            go = false
+        }
+    }
+}
+
+fun resetAll(){
+    soundIcon = -1
+    soundName = ""
+    shortDescription = ""
+    iconSelectionTitle = ""
+    uploadedFiles.clear()
+    fileColors.clear()
+    fileUris.clear()
+    fileMediaPlayers.clear()
+    fileNames.clear()
+    soundPresetNameAndVolumesMap.clear()
+    selectedIndex = 0
+    presetName = ""
+    fullPlayTime = 0
+    sliderVolumes.clear()
+}
+
+fun saveAudioFilesToS3(){
+    for(file in uploadedFiles) {
+        val key = "Routine/Sounds/${globalViewModel_!!.currentUser!!.username}/$soundName/${file!!.value.name}"
+        SoundBackend.storeAudio(file.value.absolutePath, key){}
+    }
+}
+
+fun createSound(navController: NavController){
+    val fileNameList = mutableListOf<String>()
+    for(name in fileNames){
+        fileNameList.add(name!!.value)
+    }
+    var maxPlayTime = 0L
+    for(playTime in audioFileLengthMilliSeconds){
+        if(playTime!!.value > maxPlayTime){
+            maxPlayTime = playTime.value
+        }
+    }
+    val sound = SoundObject.Sound(
+        UUID.randomUUID().toString(),
+        UserObject.User.from(globalViewModel_!!.currentUser!!),
+        soundName,
+        soundName,
+        shortDescription,
+        shortDescription,
+        "Routine/Sounds/${globalViewModel_!!.currentUser!!.username}/$soundName/",
+        soundIcon,
+        0xFFEBBA9A.toInt(),
+        maxPlayTime,
+        false,
+        fileNameList,
+        SoundApprovalStatus.PENDING
+    )
+    SoundBackend.createSound(sound){
+        createUserSound(it)
+        createSoundPreset(it, navController)
+    }
+}
+
+private fun createUserSound(soundData: SoundData){
+    val userSoundModel = UserSoundObject.UserSoundModel(
+        UUID.randomUUID().toString(),
+        SoundObject.Sound.from(soundData),
+        UserObject.signedInUser().value!!
+    )
+    UserSoundBackend.createUserSound(userSoundModel){
+
+    }
+}
+
+private fun createSoundPreset(soundData: SoundData, navController: NavController){
+    val preset = PresetObject.Preset(
+        UUID.randomUUID().toString(),
+        soundData
+    )
+    PresetBackend.createPreset(preset){
+        createPresetNameAndVolumesMapData(it, soundData, navController)
+    }
+}
+
+private fun createPresetNameAndVolumesMapData(presetData: PresetData, soundData: SoundData, navController: NavController) {
+    for(i in soundPresetNameAndVolumesMap.indices){
+        soundPresetNameAndVolumesMap[i]!!.value.preset = presetData
+        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(soundPresetNameAndVolumesMap[i]!!.value){
+            if(i == soundPresetNameAndVolumesMap.size - 1){
+                saving = false
+                go = true
+            }
         }
     }
 }

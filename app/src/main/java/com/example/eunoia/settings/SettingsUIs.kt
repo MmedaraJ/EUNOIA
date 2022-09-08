@@ -14,13 +14,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.example.eunoia.ui.components.*
+import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 
 private const val TAG = "Settings"
 
 @Composable
-fun SettingsBlockOne(){
+fun SettingsBlockOne(navController: NavController){
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)
@@ -212,7 +214,11 @@ fun SettingsBlockOne(){
                         top.linkTo(divider4.bottom, margin = 4.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
-                    }.fillMaxWidth()
+                    }
+                    .fillMaxWidth()
+                    .clickable {
+                        navController.navigate(Screen.EightHourCountdown.screen_route)
+                    }
             ){
                 NormalText(
                     text = "8-hour Countdown",
@@ -270,7 +276,7 @@ fun SettingsBlockOne(){
                     }.fillMaxWidth()
             ){
                 NormalText(
-                    text = "User",
+                    text = "Sound",
                     color = Black,
                     fontSize = 15,
                     xOffset = 26,

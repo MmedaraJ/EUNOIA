@@ -4,7 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
-import com.amplifyframework.datastore.generated.model.UserBedtimeStory
+import com.amplifyframework.datastore.generated.model.UserBedtimeStoryInfo
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
@@ -20,19 +20,19 @@ object UserBedtimeStoryObject {
             return Uri.encode(Gson().toJson(this))
         }
 
-        val data: UserBedtimeStory
-            get() = UserBedtimeStory.builder()
+        val data: UserBedtimeStoryInfo
+            get() = UserBedtimeStoryInfo.builder()
                 .userData(this.user.data)
-                .bedtimeStoryData(this.bedtimeStory.data)
+                .bedtimeStoryInfoData(this.bedtimeStory.data)
                 .id(this.id)
                 .build()
 
         companion object{
-            fun from(UserBedtimeStory: UserBedtimeStory): UserBedtimeStoryModel{
+            fun from(UserBedtimeStory: UserBedtimeStoryInfo): UserBedtimeStoryModel{
                 val result = UserBedtimeStoryModel(
                     UserBedtimeStory.id,
                     UserObject.User.from(UserBedtimeStory.userData),
-                    BedtimeStoryObject.BedtimeStory.from(UserBedtimeStory.bedtimeStoryData),
+                    BedtimeStoryObject.BedtimeStory.from(UserBedtimeStory.bedtimeStoryInfoData),
                 )
                 return result
             }

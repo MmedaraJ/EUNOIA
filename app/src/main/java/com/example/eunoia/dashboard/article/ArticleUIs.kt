@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -36,10 +37,11 @@ fun CompleteTitle(){
             AnImage(
                 R.drawable.pink_line,
                 "pink line",
-                300.dp,
-                15.dp,
+                300.0,
+                15.0,
                 0,
-                0
+                0,
+                LocalContext.current
             ) {}
         }
         Column(
@@ -68,10 +70,11 @@ fun CompleteTitle(){
             AnImage(
                 R.drawable.goodies_heart_eye,
                 "goodies heart eye icon",
-                70.dp,
-                45.dp,
+                70.0,
+                45.0,
                 0,
-                0
+                0,
+                LocalContext.current
             ) {}
         }
         Column(
@@ -85,10 +88,11 @@ fun CompleteTitle(){
             AnImage(
                 R.drawable.goodies_heart_eye,
                 "goodies heart eye icon",
-                70.dp,
-                50.dp,
+                70.0,
+                50.0,
                 0,
-                0
+                0,
+                LocalContext.current
             ) {}
         }
     }

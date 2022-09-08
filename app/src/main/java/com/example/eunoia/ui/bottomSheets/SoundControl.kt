@@ -63,9 +63,9 @@ fun bottomSheetSoundControl(
                     .background(
                         brush = Brush.radialGradient(
                             colors = listOf(
-                                PeriwinkleGray.copy(alpha = 0.4F),
+                                PeriwinkleGray.copy(alpha = 0.3F),
                                 Color(0xFFCBCBE8).copy(alpha = 0.4F),
-                                Mischka.copy(alpha = 0.4F)
+                                Mischka.copy(alpha = 0.6F),
                             ),
                             center = Offset.Unspecified,
                             radius = Float.POSITIVE_INFINITY,

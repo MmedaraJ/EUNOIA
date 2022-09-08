@@ -24,7 +24,7 @@ object SoundObject {
         val audio_key_s3: String,
         val icon: Int,
         val colorHex: Int,
-        val fullPlayTime: Int,
+        val fullPlayTime: Long,
         val visible_to_others: Boolean,
         val audio_names: List<String>,
         val approvalStatus: SoundApprovalStatus
@@ -43,7 +43,7 @@ object SoundObject {
                 .audioKeyS3(this.audio_key_s3)
                 .icon(this.icon)
                 .colorHex(this.colorHex)
-                .fullPlayTime(this.fullPlayTime)
+                .fullPlayTime(this.fullPlayTime.toInt())
                 .visibleToOthers(this.visible_to_others)
                 .audioNames(this.audio_names)
                 .approvalStatus(this.approvalStatus)
@@ -62,7 +62,7 @@ object SoundObject {
                     soundData.audioKeyS3,
                     soundData.icon,
                     soundData.colorHex,
-                    soundData.fullPlayTime,
+                    soundData.fullPlayTime.toLong(),
                     soundData.visibleToOthers,
                     soundData.audioNames,
                     soundData.approvalStatus

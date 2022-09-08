@@ -1,11 +1,17 @@
 package com.example.eunoia.models
 
+import android.net.Uri
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavType
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.amplifyframework.datastore.generated.model.UserData
+import com.google.gson.Gson
+import kotlinx.parcelize.Parcelize
 
 object UserObject {
     private const val TAG = "UserObject"
@@ -26,6 +32,7 @@ object UserObject {
 
     fun signedInUser(): LiveData<User> = _signedInUser
 
+    @Parcelize
     data class User(
         val id: String,
         val username: String,
@@ -41,8 +48,10 @@ object UserObject {
         val phoneNumber: String,
         val authenticated: Boolean,
         val subscription: String,
-    ) {
-        override fun toString(): String = username
+    ): Parcelable {
+        override fun toString(): String {
+            return Uri.encode(Gson().toJson(this))
+        }
         //return an API UserData from this User object
         val data: UserData
             get() = UserData.builder()
@@ -82,6 +91,18 @@ object UserObject {
                 )
                 return result
             }
+        }
+    }
+
+    class UserType : NavType<User>(isNullableAllowed = false) {
+        override fun get(bundle: Bundle, key: String): User? {
+            return bundle.getParcelable(key)
+        }
+        override fun parseValue(value: String): User {
+            return Gson().fromJson(value, User::class.java)
+        }
+        override fun put(bundle: Bundle, key: String, value: User) {
+            bundle.putParcelable(key, value)
         }
     }
 }

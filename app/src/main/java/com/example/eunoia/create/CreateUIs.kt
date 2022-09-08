@@ -52,6 +52,12 @@ fun Elements(navController: NavController){
                         .clickable {
                             if(element == "sound"){
                                 navController.navigate(Screen.NameSound.screen_route)
+                            } else if(element == "prayer"){
+                                navController.navigate(Screen.NameBedtimeStory.screen_route)
+                            }else if(element == "bedtime story"){
+                                navController.navigate(Screen.NameBedtimeStory.screen_route)
+                            }else if(element == "self-love"){
+                                navController.navigate(Screen.BedtimeStoryScreen.screen_route)
                             }
                         }
                 ) {

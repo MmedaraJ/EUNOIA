@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.ui.theme.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 class GlobalViewModel: ViewModel(){
     //sound
@@ -36,7 +37,7 @@ class GlobalViewModel: ViewModel(){
     var isCurrentSelfLovePlaying by mutableStateOf(false)
     var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
 
-    var bottomSheetOpenFor by mutableStateOf("i")
+    var bottomSheetOpenFor by mutableStateOf("")
 
     //user
     var currentUser by mutableStateOf<UserData?>(null)
@@ -94,6 +95,8 @@ class GlobalViewModel: ViewModel(){
         DoveGray,
         Neptune,
     )
+
+    var allowBottomSheetClose by mutableStateOf(true)
 
     fun changeCurrentSoundPlaying(soundData: SoundData?){
         currentSoundPlaying = soundData

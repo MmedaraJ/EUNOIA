@@ -66,8 +66,8 @@ public final class UserData implements Model {
   private final @ModelField(targetType="UserBreathing") @HasMany(associatedWith = "userData", type = UserBreathing.class) List<UserBreathing> breathings = null;
   private final @ModelField(targetType="SelfLoveData") @HasMany(associatedWith = "selfLoveOwner", type = SelfLoveData.class) List<SelfLoveData> selfLovesOwnedByUser = null;
   private final @ModelField(targetType="UserSelfLove") @HasMany(associatedWith = "userData", type = UserSelfLove.class) List<UserSelfLove> selfLoves = null;
-  private final @ModelField(targetType="BedtimeStoryData") @HasMany(associatedWith = "bedtimeStoryOwner", type = BedtimeStoryData.class) List<BedtimeStoryData> bedtimeStoriesOwnedByUser = null;
-  private final @ModelField(targetType="UserBedtimeStory") @HasMany(associatedWith = "userData", type = UserBedtimeStory.class) List<UserBedtimeStory> bedtimeStories = null;
+  private final @ModelField(targetType="BedtimeStoryInfoData") @HasMany(associatedWith = "bedtimeStoryOwner", type = BedtimeStoryInfoData.class) List<BedtimeStoryInfoData> bedtimeStoriesOwnedByUser = null;
+  private final @ModelField(targetType="UserBedtimeStoryInfo") @HasMany(associatedWith = "userData", type = UserBedtimeStoryInfo.class) List<UserBedtimeStoryInfo> bedtimeStories = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -170,11 +170,11 @@ public final class UserData implements Model {
       return selfLoves;
   }
   
-  public List<BedtimeStoryData> getBedtimeStoriesOwnedByUser() {
+  public List<BedtimeStoryInfoData> getBedtimeStoriesOwnedByUser() {
       return bedtimeStoriesOwnedByUser;
   }
   
-  public List<UserBedtimeStory> getBedtimeStories() {
+  public List<UserBedtimeStoryInfo> getBedtimeStories() {
       return bedtimeStories;
   }
   
@@ -281,7 +281,7 @@ public final class UserData implements Model {
       return new Builder();
   }
   
-  /** 
+  /**
    * WARNING: This method should not be used to build an instance of this object for a CREATE mutation.
    * This is a convenience method to return an instance of the object with only its ID populated
    * to be used in the context of a parameter in a delete mutation or referencing a foreign key
@@ -522,7 +522,7 @@ public final class UserData implements Model {
         return this;
     }
     
-    /** 
+    /**
      * @param id id
      * @return Current Builder instance, for fluent method chaining
      */

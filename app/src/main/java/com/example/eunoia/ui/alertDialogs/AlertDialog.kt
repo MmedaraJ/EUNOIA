@@ -9,6 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.eunoia.create.createBedtimeStory.openBedtimeStoryNameTakenDialogBox
+import com.example.eunoia.create.createBedtimeStory.openTooManyIncompleteBedtimeStoryDialogBox
 import com.example.eunoia.dashboard.sound.openUserAlreadyHasSoundDialogBox
 import com.example.eunoia.ui.bottomSheets.openRoutineAlreadyHasSoundDialogBox
 import com.example.eunoia.ui.bottomSheets.openSavedSoundDialogBox
@@ -25,6 +27,8 @@ fun AlertDialogBox(text: String){
                 openSavedSoundDialogBox = false
                 openUserAlreadyHasSoundDialogBox = false
                 openRoutineAlreadyHasSoundDialogBox = false
+                openBedtimeStoryNameTakenDialogBox = false
+                openTooManyIncompleteBedtimeStoryDialogBox = false
             },
             text = {
                 Column{

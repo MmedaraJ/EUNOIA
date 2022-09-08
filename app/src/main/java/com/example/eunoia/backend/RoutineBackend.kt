@@ -4,6 +4,7 @@ import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.RoutineData
+import com.amplifyframework.datastore.generated.model.UserRoutine
 import com.example.eunoia.models.RoutineObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,23 @@ object RoutineBackend {
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
+            )
+        }
+    }
+
+    fun updateRoutine(routine: RoutineData, completed: (routine: RoutineData) -> Unit){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.update(routine),
+                { response ->
+                    if(response.hasData()) {
+                        Log.i(TAG, "Successfully updated routine: ${response.data}")
+                        completed(response.data)
+                    }
+                },
+                {
+                    Log.i(TAG, "Error while updating routine: ", it)
+                }
             )
         }
     }

@@ -46,8 +46,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.example.eunoia.R
+import com.example.eunoia.create.createSoundViewModel
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.gradientBackground
+import com.example.eunoia.dashboard.sound.mediaPlayers
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
@@ -114,10 +116,10 @@ fun SavePreset(){
             offset = 0
         )
         presetName = fileName
-        if(presetName.isEmpty()) {
-            nameErrorMessage = "Name this preset"
+        nameErrorMessage = if(presetName.isEmpty()) {
+            "Name this preset"
         }else{
-            nameErrorMessage = ""
+            ""
         }
         if(!nameDoesNotAlreadyExist()){
             nameErrorMessage = "Name already exists"
@@ -234,6 +236,7 @@ fun SwipeToResetUI(
                         fileMediaPlayers[index]!!.value.stop()
                         fileMediaPlayers[index]!!.value.reset()
                     }else {
+                        clearMainMediaPlayers()
                         fileMediaPlayers[index]!!.value.apply {
                             setAudioAttributes(
                                 AudioAttributes.Builder()
@@ -409,7 +412,7 @@ fun Sliders(){
                 ) {
                     val ripple = rememberRipple(
                         bounded = true,
-                        color = globalViewModel_!!.mixerColors[index]
+                        color = createSoundViewModel!!.mixerColors[index]
                     )
                     var tapped by remember { mutableStateOf(false) }
                     val interactionSource = remember { MutableInteractionSource() }
@@ -424,11 +427,11 @@ fun Sliders(){
                             steps = 10,
                             onValueChangeFinished = { Log.i(TAG, "Value Changed") },
                             colors = SliderDefaults.colors(
-                                thumbColor = globalViewModel_!!.mixerColors[index],
-                                activeTrackColor = globalViewModel_!!.mixerColors[index],
+                                thumbColor = createSoundViewModel!!.mixerColors[index],
+                                activeTrackColor = createSoundViewModel!!.mixerColors[index],
                                 activeTickColor = Color.Transparent,
                                 inactiveTickColor = Color.Transparent,
-                                inactiveTrackColor = globalViewModel_!!.mixerColors[index],
+                                inactiveTrackColor = createSoundViewModel!!.mixerColors[index],
                             ),
                             modifier = Modifier
                                 .size(32.dp, 190.dp)
@@ -496,22 +499,22 @@ fun Controls(applicationContext: Context){
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        globalViewModel_!!.icons.forEachIndexed { index, icon ->
+        createSoundViewModel!!.icons.forEachIndexed { index, icon ->
             Box(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
                     .gradientBackground(
                         listOf(
-                            globalViewModel_!!.backgroundControlColor1[index].value,
-                            globalViewModel_!!.backgroundControlColor2[index].value
+                            createSoundViewModel!!.backgroundControlColor1[index].value,
+                            createSoundViewModel!!.backgroundControlColor2[index].value
                         ),
                         angle = 45f
                     )
                     .border(
                         BorderStroke(
                             0.5.dp,
-                            globalViewModel_!!.borderControlColors[index].value
+                            createSoundViewModel!!.borderControlColors[index].value
                         ),
                         RoundedCornerShape(50.dp)
                     ),
@@ -520,7 +523,7 @@ fun Controls(applicationContext: Context){
                 AnImageWithColor(
                     icon.value,
                     "icon",
-                    globalViewModel_!!.borderControlColors[index].value,
+                    createSoundViewModel!!.borderControlColors[index].value,
                     12.dp,
                     12.dp,
                     0,
@@ -549,7 +552,23 @@ fun createMeditationBellMediaPlayer(context: Context){
     }
 }
 
+fun clearMainMediaPlayers(){
+    if(mediaPlayers.isNotEmpty()) {
+        mediaPlayers.forEach { mediaPlayer ->
+            if(mediaPlayer.isPlaying) {
+                mediaPlayer.stop()
+            }
+            mediaPlayer.reset()
+            mediaPlayer.release()
+        }
+        mediaPlayers.clear()
+    }
+}
+
 fun playSoundsPreset(applicationContext: Context, index: Int){
+    globalViewModel_!!.bottomSheetOpenFor = ""
+    clearMainMediaPlayers()
+    com.example.eunoia.dashboard.sound.resetAll(applicationContext)
     fileMediaPlayers.forEachIndexed { i,  media ->
         try {
             media!!.value.start()
@@ -710,7 +729,6 @@ fun startCountDownTimer(
                     deActivateControlButton(4)
                     deActivateControlButton(5)
                     deActivateControlButton(6)
-                    globalViewModel_!!.isCurrentSoundPlaying = false
                     Toast.makeText(context, "Sound: timer stopped", Toast.LENGTH_SHORT).show()
                     Log.i(TAG, "Timer stopped")
                     timerTime.value = 0
@@ -780,20 +798,20 @@ fun activateControls(
 }
 
 fun activateControlButton(index: Int){
-    globalViewModel_!!.borderControlColors[index].value = Black
-    globalViewModel_!!.backgroundControlColor1[index].value = SoftPeach
-    globalViewModel_!!.backgroundControlColor2[index].value = Solitude
+    createSoundViewModel!!.borderControlColors[index].value = Black
+    createSoundViewModel!!.backgroundControlColor1[index].value = SoftPeach
+    createSoundViewModel!!.backgroundControlColor2[index].value = Solitude
     if(index == 3){
-        globalViewModel_!!.icons[index].value = R.drawable.play_icon
+        createSoundViewModel!!.icons[index].value = R.drawable.play_icon
     }
 }
 
 fun deActivateControlButton(index: Int){
-    globalViewModel_!!.borderControlColors[index].value = Bizarre
-    globalViewModel_!!.backgroundControlColor1[index].value = White
-    globalViewModel_!!.backgroundControlColor2[index].value = White
+    createSoundViewModel!!.borderControlColors[index].value = Bizarre
+    createSoundViewModel!!.backgroundControlColor1[index].value = White
+    createSoundViewModel!!.backgroundControlColor2[index].value = White
     if(index == 3){
-        globalViewModel_!!.icons[index].value = R.drawable.pause_icon
+        createSoundViewModel!!.icons[index].value = R.drawable.pause_icon
     }
 }
 
@@ -986,10 +1004,11 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                             AnImage(
                                 R.drawable.increase_levels_icon,
                                 "noise control manual",
-                                7.dp,
-                                12.dp,
+                                7.0,
+                                12.0,
                                 0,
-                                0
+                                0,
+                                LocalContext.current
                             ) {
                                 showTapColumn = !showTapColumn
                                 lambda()

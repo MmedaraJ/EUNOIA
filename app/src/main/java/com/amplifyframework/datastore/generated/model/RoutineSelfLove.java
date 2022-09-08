@@ -102,7 +102,7 @@ public final class RoutineSelfLove implements Model {
       return new Builder();
   }
   
-  /** 
+  /**
    * WARNING: This method should not be used to build an instance of this object for a CREATE mutation.
    * This is a convenience method to return an instance of the object with only its ID populated
    * to be used in the context of a parameter in a delete mutation or referencing a foreign key
@@ -167,7 +167,7 @@ public final class RoutineSelfLove implements Model {
         return this;
     }
     
-    /** 
+    /**
      * @param id id
      * @return Current Builder instance, for fluent method chaining
      */

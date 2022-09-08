@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -194,10 +195,11 @@ fun SoundScreen(
                 AnImage(
                     comment_icon_value,
                     "comment icon",
-                    16.76.dp,
-                    16.79.dp,
+                    16.76,
+                    16.79,
                     0,
-                    0
+                    0,
+                    LocalContext.current
                 ) {
                     checkIfUserIsQualifiedToComment(soundData, globalViewModel_!!.currentSoundPlayingPreset!!, context)
                 }
@@ -431,7 +433,7 @@ fun makeSoundObject(
         soundData.audioKeyS3,
         soundData.icon,
         soundData.colorHex,
-        soundData.fullPlayTime,
+        soundData.fullPlayTime.toLong(),
         true,
         soundData.audioNames,
         soundData.approvalStatus

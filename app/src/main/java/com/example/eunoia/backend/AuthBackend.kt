@@ -154,6 +154,7 @@ object AuthBackend {
             {
                 Log.i(TAG, "Signed out successfully")
                 setSignedOut(true)
+                setSignedIn(false)
             },
             { Log.e(TAG, "Sign out failed", it) }
         )

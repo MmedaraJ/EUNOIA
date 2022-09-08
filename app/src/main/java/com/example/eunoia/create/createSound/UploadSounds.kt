@@ -40,11 +40,10 @@ var fileColors = mutableListOf<MutableState<Color>?>()
 var fileUris = mutableListOf<MutableState<Uri>?>()
 var fileMediaPlayers = mutableListOf<MutableState<MediaPlayer>?>()
 var fileNames = mutableListOf<MutableState<String>?>()
+var audioFileLengthMilliSeconds = mutableListOf<MutableState<Long>?>()
 var soundPresetNameAndVolumesMap = mutableListOf<MutableState<PresetNameAndVolumesMapObject.PresetNameAndVolumesMap>?>()
 var selectedIndex by mutableStateOf(0)
 var TAG = "Upload Sounds"
-
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -161,6 +160,7 @@ fun UploadSoundsUI(
             fileColors.clear()
             fileUris.clear()
             fileMediaPlayers.clear()
+            audioFileLengthMilliSeconds.clear()
             if(numberOfFiles > 0) {
                 for (i in 0 until numberOfFiles) {
                     fileNames.add(remember{ mutableStateOf("") })
@@ -169,6 +169,7 @@ fun UploadSoundsUI(
                     fileUris.add(remember{ mutableStateOf("".toUri()) })
                     val mediaPlayer = MediaPlayer()
                     fileMediaPlayers.add(remember{ mutableStateOf(mediaPlayer) })
+                    audioFileLengthMilliSeconds.add(remember{ mutableStateOf(0L) })
                     Spacer(modifier = Modifier.height(16.dp))
                     SoundUploader(i)
                 }

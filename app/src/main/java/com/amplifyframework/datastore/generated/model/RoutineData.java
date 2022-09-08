@@ -81,7 +81,7 @@ public final class RoutineData implements Model {
   private final @ModelField(targetType="RoutineSound") @HasMany(associatedWith = "routineData", type = RoutineSound.class) List<RoutineSound> sounds = null;
   private final @ModelField(targetType="RoutineStretch") @HasMany(associatedWith = "routineData", type = RoutineStretch.class) List<RoutineStretch> stretches = null;
   private final @ModelField(targetType="RoutineBreathing") @HasMany(associatedWith = "routineData", type = RoutineBreathing.class) List<RoutineBreathing> breathing = null;
-  private final @ModelField(targetType="RoutineBedtimeStory") @HasMany(associatedWith = "routineData", type = RoutineBedtimeStory.class) List<RoutineBedtimeStory> bedtimeStories = null;
+  private final @ModelField(targetType="RoutineBedtimeStoryInfo") @HasMany(associatedWith = "routineData", type = RoutineBedtimeStoryInfo.class) List<RoutineBedtimeStoryInfo> bedtimeStories = null;
   private final @ModelField(targetType="RoutineSelfLove") @HasMany(associatedWith = "routineData", type = RoutineSelfLove.class) List<RoutineSelfLove> selfLoves = null;
   private final @ModelField(targetType="UserRoutine") @HasMany(associatedWith = "routineData", type = UserRoutine.class) List<UserRoutine> users = null;
   private final @ModelField(targetType="String", isRequired = true) List<String> playingOrder;
@@ -195,7 +195,7 @@ public final class RoutineData implements Model {
       return breathing;
   }
   
-  public List<RoutineBedtimeStory> getBedtimeStories() {
+  public List<RoutineBedtimeStoryInfo> getBedtimeStories() {
       return bedtimeStories;
   }
   
@@ -358,7 +358,7 @@ public final class RoutineData implements Model {
       return new Builder();
   }
   
-  /** 
+  /**
    * WARNING: This method should not be used to build an instance of this object for a CREATE mutation.
    * This is a convenience method to return an instance of the object with only its ID populated
    * to be used in the context of a parameter in a delete mutation or referencing a foreign key
@@ -775,7 +775,7 @@ public final class RoutineData implements Model {
         return this;
     }
     
-    /** 
+    /**
      * @param id id
      * @return Current Builder instance, for fluent method chaining
      */

@@ -59,6 +59,23 @@ fun NormalText(text: String, color: Color, fontSize: Int, xOffset: Int, yOffset:
 }
 
 @Composable
+fun WrappedNormalText(text: String, color: Color, fontSize: Int, xOffset: Int, yOffset: Int){
+    DisableSelection {
+        Text(
+            text = text,
+            color = color,
+            style = MaterialTheme.typography.h3,
+            fontSize = fontSize.sp,
+            maxLines = 3,
+            softWrap = true,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .offset(x = xOffset.dp, y = yOffset.dp)
+        )
+    }
+}
+
+@Composable
 fun NormalTextOverflowControlled(text: String, color: Color, fontSize: Int, xOffset: Int, yOffset: Int){
     DisableSelection {
         Text(

@@ -230,8 +230,8 @@ class UploadFilesActivity : ComponentActivity() {
             "The beautiful sound of the pouring rain. This is the long description.",
             "Routine/Sounds/Eunoia/Pouring_Rain/",
             R.drawable.pouring_rain_icon,
-            180,
             (0xFFEBBA9A).toInt(),
+            180L,
             true,
             listOf("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"),
             SoundApprovalStatus.APPROVED
@@ -283,9 +283,9 @@ class UploadFilesActivity : ComponentActivity() {
                 val audioStream = audioUri?.let { contentResolver.openInputStream(it) }
                 val tempFile = File.createTempFile("audio", ".aac")
                 copyStreamToFile(audioStream!!, tempFile)
-                UploadFilesActivity.soundAudioPath = tempFile.absolutePath
-                if(UploadFilesActivity.soundAudioPath != null){
-                    SoundBackend.storeAudio(UploadFilesActivity.soundAudioPath!!, "Routine/Sounds/Eunoia/Pouring_Rain/${tempFile.name}")
+                soundAudioPath = tempFile.absolutePath
+                if(soundAudioPath != null){
+                    SoundBackend.storeAudio(soundAudioPath!!, "Routine/Sounds/Eunoia/Pouring_Rain/${tempFile.name}"){}
                 }
             }
         }

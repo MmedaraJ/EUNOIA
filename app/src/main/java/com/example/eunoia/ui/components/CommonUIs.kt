@@ -1,6 +1,8 @@
 package com.example.eunoia.ui.components
 
+import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -18,9 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
@@ -34,16 +35,27 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
+import com.example.eunoia.create.createSound.activateControls
+import com.example.eunoia.create.createSoundViewModel
+import com.example.eunoia.dashboard.sound.Controls
+import com.example.eunoia.dashboard.sound.playButtonText
+import com.example.eunoia.models.SoundObject
+import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.formatMilliSecond
 
 val bioRhymeFonts = FontFamily(
     Font(R.font.biorhyme_regular, weight = FontWeight.Normal),
@@ -122,24 +134,29 @@ fun CustomizableButton(
             .height(height = height.dp)
             .fillMaxWidth(maxWidthFraction)
     ) {
-        if(textType == "normal") {
-            NormalText(
+        when(textType) {
+            "normal" -> NormalText(
                 text,
                 textColor,
                 fontSize,
                 0,
                 0
             )
-        }else if(textType == "light"){
-            LightText(
+            "light" -> LightText(
                 text,
                 textColor,
                 fontSize,
                 0,
                 0
             )
-        }else if(textType == "morge"){
-            MorgeNormalText(
+            "morge" -> MorgeNormalText(
+                text,
+                textColor,
+                fontSize,
+                0,
+                0
+            )
+            else -> LightText(
                 text,
                 textColor,
                 fontSize,
@@ -151,12 +168,188 @@ fun CustomizableButton(
 }
 
 @Composable
+fun CustomizableFloatingActionButton(
+    text: String,
+    height: Int,
+    fontSize: Int,
+    textColor: Color,
+    backgroundColor: Color,
+    corner: Int,
+    textType: String,
+    maxWidthFraction: Float,
+    clicked: () -> Unit
+){
+    ExtendedFloatingActionButton(
+        onClick = {
+            clicked()
+        },
+        backgroundColor = backgroundColor,
+        shape = RoundedCornerShape(corner),
+        contentColor = textColor,
+        modifier = Modifier
+            .height(height = height.dp)
+            .fillMaxWidth(maxWidthFraction),
+        text = {
+            when(textType) {
+                "normal" -> NormalText(
+                    text,
+                    textColor,
+                    fontSize,
+                    0,
+                    0
+                )
+                "light" -> LightText(
+                    text,
+                    textColor,
+                    fontSize,
+                    0,
+                    0
+                )
+                "morge" -> MorgeNormalText(
+                    text,
+                    textColor,
+                    fontSize,
+                    0,
+                    0
+                )
+                else -> LightText(
+                    text,
+                    textColor,
+                    fontSize,
+                    0,
+                    0
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun CustomizableLRButton(
+    text: String,
+    height: Int,
+    fontSize: Int,
+    textColor: Color,
+    backgroundColor: Color,
+    corner: Int,
+    borderStroke: Double,
+    borderColor: Color,
+    textType: String,
+    maxWidthFraction: Float,
+    icon: Int,
+    iconWidth: Int,
+    iconHeight: Int,
+    iconColor: Color,
+    clicked: () -> Unit
+){
+    Button(
+        onClick = {
+            clicked()
+        },
+        colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor),
+        shape = RoundedCornerShape(corner),
+        border = BorderStroke(borderStroke.dp, borderColor),
+        modifier = Modifier
+            .height(height = height.dp)
+            .fillMaxWidth(maxWidthFraction)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .padding(horizontal = 0.dp)
+                .fillMaxWidth()
+                .align(Alignment.CenterVertically)
+        ) {
+            when (textType) {
+                "normal" -> NormalText(
+                    text,
+                    textColor,
+                    fontSize,
+                    0,
+                    0
+                )
+                "light" -> LightText(
+                    text,
+                    textColor,
+                    fontSize,
+                    0,
+                    0
+                )
+                "morge" -> MorgeNormalText(
+                    text,
+                    textColor,
+                    fontSize,
+                    0,
+                    0
+                )
+                else -> LightText(
+                    text,
+                    textColor,
+                    fontSize,
+                    0,
+                    0
+                )
+            }
+            AnImageWithColor(
+                icon,
+                "icon",
+                iconColor,
+                iconWidth.dp,
+                iconHeight.dp,
+                0,
+                0
+            ) {
+
+            }
+        }
+    }
+}
+
+@Composable
 fun standardOutlinedTextInput(width: Int, height: Int, placeholder: String, offset: Int): String{
     var text by rememberSaveable{ mutableStateOf("") }
     OutlinedTextField(
         value = text,
         onValueChange = {
             text = it
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            backgroundColor = MaterialTheme.colors.primaryVariant,
+            focusedBorderColor = MaterialTheme.colors.onPrimary,
+            unfocusedBorderColor = MaterialTheme.colors.onPrimary,
+            textColor = MaterialTheme.colors.onPrimary
+        ),
+        singleLine = true,
+        textStyle = MaterialTheme.typography.h3,
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
+        placeholder = {
+            Text(
+                text = placeholder,
+                style = MaterialTheme.typography.h3,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier
+                    .padding(0.dp)
+                    .offset(x = offset.dp)
+            )
+        },
+        modifier = Modifier
+            .size(width.dp, height.dp)
+            .padding(0.dp)
+            .testTag(placeholder)
+    )
+    return text
+}
+
+@Composable
+fun standardOutlinedTextInputMax30(width: Int, height: Int, placeholder: String, offset: Int): String{
+    var text by rememberSaveable{ mutableStateOf("") }
+    val maxLength = 50
+    val context = LocalContext.current
+    OutlinedTextField(
+        value = text,
+        onValueChange = {
+            if (it.length <= maxLength) text = it
+            else Toast.makeText(context, "Name cannot be more than $maxLength characters", Toast.LENGTH_SHORT).show()
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -206,7 +399,7 @@ fun customizedOutlinedTextInput(
             backgroundColor = color,
             focusedBorderColor = focusedBorderColor,
             unfocusedBorderColor = color,
-            textColor = BeautyBush
+            textColor = Black
         ),
         singleLine = true,
         textStyle = TextStyle(
@@ -473,17 +666,21 @@ fun AnImageWithColor(
 fun AnImage(
     id: Int,
     contentDescription: String,
-    width: Dp,
-    height: Dp,
+    width: Double,
+    height: Double,
     xOffset: Int,
     yOffset: Int,
+    context: Context,
     lambda: () -> Unit
 ){
+    val image = remember {
+        ContextCompat.getDrawable(context, id)?.toBitmap()?.asImageBitmap()!!
+    }
     Image(
-        painter = painterResource(id = id),
+        image,
         contentDescription = contentDescription,
         modifier = Modifier
-            .size(width = width, height = height)
+            .size(width.dp, height.dp)
             .offset(xOffset.dp, yOffset.dp)
             .clickable { lambda() }
     )
@@ -646,10 +843,11 @@ fun StarSurroundedTextWithIconRight(text: String, drawable: Int, drawableWidth: 
             AnImage(
                 id = drawable,
                 contentDescription = "article icon",
-                width = drawableWidth.dp,
-                height = drawableHeight.dp,
+                width = drawableWidth,
+                height = drawableHeight,
                 xOffset = 0,
-                yOffset = 0
+                yOffset = 0,
+                LocalContext.current
             ){}
         }
     }
@@ -723,10 +921,11 @@ fun StarSurroundedTextWithIconLeft(text: String, drawable: Int, drawableWidth: D
             AnImage(
                 id = drawable,
                 contentDescription = "article icon",
-                width = drawableWidth.dp,
-                height = drawableHeight.dp,
+                width = drawableWidth,
+                height = drawableHeight,
                 xOffset = 0,
-                yOffset = 0
+                yOffset = 0,
+                LocalContext.current
             ){}
         }
     }
@@ -925,10 +1124,11 @@ fun EmptyRoutine(lambda: () -> Unit){
                 AnImage(
                     R.drawable.hands_point,
                     "hands point",
-                    154.dp,
-                    150.dp,
+                    154.0,
+                    150.0,
                     0,
-                    16
+                    16,
+                    LocalContext.current
                 ){}
             }
         }
@@ -992,9 +1192,9 @@ fun Routine(routine: RoutineData, clicked: () -> Unit){
                     }
             ) {
                 val step = if(routine.numberOfSteps > 1) "steps" else "step"
-                val minute = if(routine.fullPlayTime > 1) "minutes" else "minute"
+                val playTimeString = formatMilliSecond(routine.fullPlayTime.toLong())
                 LightText(
-                    text = "${routine.numberOfSteps} $step ~ ${routine.fullPlayTime} $minute",
+                    text = "${routine.numberOfSteps} $step ~ $playTimeString",
                     color = Grey,
                     fontSize = 7,
                     xOffset = 0,
@@ -1031,10 +1231,11 @@ fun Routine(routine: RoutineData, clicked: () -> Unit){
                 AnImage(
                     routine.icon,
                     "${routine.displayName} icon",
-                    97.dp,
-                    104.dp,
+                    97.0,
+                    104.0,
                     0,
-                    0
+                    0,
+                    LocalContext.current
                 ){}
             }
         }
@@ -1044,29 +1245,17 @@ fun Routine(routine: RoutineData, clicked: () -> Unit){
 @Composable
 fun DisplayUsersSounds(
     sound: SoundData,
+    index: Int,
     before: () -> Unit,
-    startClicked: (startText: String) -> Unit,
-    clicked: () -> Unit
+    startClicked: (index: Int) -> Unit,
+    clicked: (index: Int) -> Unit
 ){
-    val text: String = if(globalViewModel_!!.currentSoundPlaying != null) {
-        if (
-            globalViewModel_!!.currentSoundPlaying!!.id == sound.id &&
-            globalViewModel_!!.isCurrentSoundPlaying
-        ) {
-            "stop"
-        }else{
-            "start"
-        }
-    }else{
-        "start"
-    }
-    var startText by rememberSaveable{ mutableStateOf(text)}
     before()
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)
             .height(height = 163.dp)
-            .clickable { clicked() }
+            .clickable { clicked(index) }
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
         backgroundColor = Color(sound.colorHex),
@@ -1116,9 +1305,9 @@ fun DisplayUsersSounds(
                         top.linkTo(times_used.bottom, margin = 2.dp)
                     }
             ) {
-                val minute = if(sound.fullPlayTime > 1) "minutes" else "minute"
+                val playTimeString = formatMilliSecond(sound.fullPlayTime.toLong())
                 LightText(
-                    text = "${sound.fullPlayTime} $minute",
+                    text = playTimeString,
                     color = Grey,
                     fontSize = 7,
                     xOffset = 0,
@@ -1135,13 +1324,12 @@ fun DisplayUsersSounds(
                         start.linkTo(parent.start, margin = 0.dp)
                     }
                     .clickable {
-                        startClicked(startText)
-                        startText = if(startText == "start") "stop" else "start"
+                        startClicked(index)
                     },
                 contentAlignment = Alignment.Center
             ){
                 MorgeNormalText(
-                    text = startText,
+                    text = playButtonText[index]!!.value,
                     color = Color.White,
                     fontSize = 15,
                     xOffset = 0,
@@ -1159,10 +1347,11 @@ fun DisplayUsersSounds(
                 AnImage(
                     sound.icon,
                     "${sound.displayName} icon",
-                    97.dp,
-                    104.dp,
+                    97.0,
+                    104.0,
                     0,
-                    0
+                    0,
+                    LocalContext.current
                 ){}
             }
         }
@@ -1248,10 +1437,11 @@ fun SurpriseMeRoutine(lambda: () -> Unit){
                 AnImage(
                     R.drawable.miroodles_sticker,
                     "Miroodles Sticker",
-                    97.dp,
-                    104.dp,
+                    97.0,
+                    104.0,
                     0,
-                    0
+                    0,
+                    LocalContext.current
                 ){}
             }
         }
@@ -1337,10 +1527,11 @@ fun SurpriseMeSound(lambda: () -> Unit){
                 AnImage(
                     R.drawable.miroodles_sticker,
                     "Miroodles Sticker",
-                    97.dp,
-                    104.dp,
+                    97.0,
+                    104.0,
                     0,
-                    0
+                    0,
+                    LocalContext.current
                 ){}
             }
         }
@@ -1426,10 +1617,11 @@ fun Article(title: String, summary: String, icon: Int, lambda: () -> Unit){
                 AnImage(
                     icon,
                     "$title icon",
-                    97.dp,
-                    104.dp,
+                    97.0,
+                    104.0,
                     0,
-                    0
+                    0,
+                    LocalContext.current
                 ) {}
             }
         }
@@ -1488,10 +1680,11 @@ fun DropdownMenu(list: List<String>, title: String): String{
                         AnImage(
                             R.drawable.dropdown_icon,
                             "dropdown icon",
-                            14.dp,
-                            8.dp,
+                            14.0,
+                            8.0,
                             0,
-                            0
+                            0,
+                            LocalContext.current
                         ) {expanded = true }
                     }
                 }else{
@@ -1515,10 +1708,11 @@ fun DropdownMenu(list: List<String>, title: String): String{
                         AnImage(
                             R.drawable.dropdown_icon,
                             "dropdown icon",
-                            14.dp,
-                            8.dp,
+                            14.0,
+                            8.0,
                             0,
-                            0
+                            0,
+                            LocalContext.current
                         ) {expanded = true }
                     }
                 }
@@ -1561,6 +1755,379 @@ fun DropdownMenu(list: List<String>, title: String): String{
     return "0"
 }
 
+@Composable
+fun PurpleBackgroundControls(
+    titleString: String,
+    secondaryTitle: String,
+    lambda: () -> Unit
+){
+    Card(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .height(115.dp)
+            .fillMaxWidth()
+            .clickable {
+                /*if(globalViewModel_!!.navController != null){
+                    closeBottomSheet(scope, state)
+                    globalViewModel_!!.navController!!.navigate(
+                    )
+                }*/
+            },
+        shape = MaterialTheme.shapes.small,
+        elevation = 2.dp
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            PeriwinkleGray.copy(alpha = 0.3F),
+                            Color(0xFFCBCBE8).copy(alpha = 0.4F),
+                            Mischka.copy(alpha = 0.6F),
+                        ),
+                        center = Offset.Unspecified,
+                        radius = 300f,
+                        tileMode = TileMode.Clamp
+                    ),
+                ),
+        ) {
+            val (
+                title,
+                mode,
+                controls
+            ) = createRefs()
+            Column(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        top.linkTo(parent.top, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                    }
+            ) {
+                NormalText(
+                    text = titleString,
+                    color = Black,
+                    fontSize = 12,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(mode) {
+                        top.linkTo(title.bottom, margin = 8.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                    }
+            ) {
+                LightText(
+                    text = secondaryTitle,
+                    color = Black,
+                    fontSize = 10,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(controls) {
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 32.dp)
+                        start.linkTo(parent.start, margin = 32.dp)
+                    }
+            ) {
+                LightText(
+                    text = secondaryTitle,
+                    color = Black,
+                    fontSize = 10,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+                /*Controls(
+                    globalViewModel.currentSoundPlaying!!,
+                    globalViewModel.currentSoundPlayingPreset!!,
+                    globalViewModel.currentSoundPlayingContext!!,
+                    false,
+                    scope,
+                    state
+                )*/
+            }
+        }
+    }
+}
+
+@Composable
+fun PurpleBackgroundInfo(
+    titleString: String,
+    info: String,
+    lambda: () -> Unit
+){
+    Card(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .wrapContentHeight()
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.small,
+        elevation = 2.dp
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            PeriwinkleGray.copy(alpha = 0.3F),
+                            Color(0xFFCBCBE8).copy(alpha = 0.4F),
+                            Mischka.copy(alpha = 0.6F),
+                        ),
+                        center = Offset.Unspecified,
+                        radius = 300f,
+                        tileMode = TileMode.Clamp
+                    )
+                )
+                .padding(16.dp, 8.dp, 16.dp, 16.dp)
+        ) {
+            val (
+                title,
+                information,
+            ) = createRefs()
+            Column(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        top.linkTo(parent.top, margin = 0.dp)
+                        start.linkTo(parent.start, margin = 0.dp)
+                    }
+            ) {
+                NormalText(
+                    text = titleString,
+                    color = Black,
+                    fontSize = 12,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(information) {
+                        top.linkTo(title.bottom, margin = 8.dp)
+                        end.linkTo(parent.end, margin = 0.dp)
+                        start.linkTo(parent.start, margin = 0.dp)
+                    }
+            ) {
+                LightText(
+                    text = info,
+                    color = Black,
+                    fontSize = 12,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PurpleBackgroundStart(
+    titleString: String,
+    secondaryTitle: String,
+    lambda: () -> Unit
+){
+    Card(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .wrapContentHeight()
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.small,
+        elevation = 0.dp
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            PeriwinkleGray.copy(alpha = 0.3F),
+                            Color(0xFFCBCBE8).copy(alpha = 0.4F),
+                            Mischka.copy(alpha = 0.6F),
+                        ),
+                        center = Offset.Unspecified,
+                        radius = 300f,
+                        tileMode = TileMode.Clamp
+                    )
+                )
+        ) {
+            val (
+                title,
+                secondary,
+                button
+            ) = createRefs()
+            Column(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        top.linkTo(parent.top, margin = 0.dp)
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        end.linkTo(button.start, margin = 32.dp)
+                    }
+            ) {
+                NormalText(
+                    text = titleString,
+                    color = Black,
+                    fontSize = 12,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(secondary) {
+                        top.linkTo(title.bottom, margin = 0.dp)
+                        end.linkTo(title.end, margin = 0.dp)
+                        start.linkTo(title.start, margin = 0.dp)
+                    }
+            ) {
+                LightText(
+                    text = secondaryTitle,
+                    color = Black,
+                    fontSize = 9,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(77.dp)
+                    .clip(CircleShape)
+                    .background(Color.Black)
+                    .constrainAs(button) {
+                        top.linkTo(parent.top, margin = 16.dp)
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 48.dp)
+                    }
+                    .clickable {
+                        //startClicked(index)
+                    },
+                contentAlignment = Alignment.Center
+            ){
+                MorgeNormalText(
+                    text = "start",
+                    color = Color.White,
+                    fontSize = 20,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun WrappedPurpleBackgroundStart(
+    titleString: String,
+    secondaryTitle: String,
+    lambda: () -> Unit
+){
+    Card(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .wrapContentHeight()
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.small,
+        elevation = 0.dp
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            PeriwinkleGray.copy(alpha = 0.3F),
+                            Color(0xFFCBCBE8).copy(alpha = 0.4F),
+                            Mischka.copy(alpha = 0.6F),
+                        ),
+                        center = Offset.Unspecified,
+                        radius = 300f,
+                        tileMode = TileMode.Clamp
+                    )
+                )
+        ) {
+            val (
+                title,
+                secondary,
+                button
+            ) = createRefs()
+            Column(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        top.linkTo(parent.top, margin = 0.dp)
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        start.linkTo(parent.start, margin = 32.dp)
+                        //end.linkTo(button.start, margin = 32.dp)
+                    }
+            ) {
+                var textSize = titleString.length
+                var i = 0
+                val maxLength = 25
+                while(textSize > 0) {
+                    var limit = i+maxLength+1
+                    if(limit > titleString.length){
+                        limit = titleString.length
+                    }
+                    if(titleString.substring(i, limit).isNotEmpty()) {
+                        NormalText(
+                            text = titleString.substring(i, limit),
+                            color = Black,
+                            fontSize = 12,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+                    }
+                    i += limit
+                    if(i > titleString.length){
+                        i = titleString.length
+                    }
+                    textSize -= maxLength
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(secondary) {
+                        top.linkTo(title.bottom, margin = 0.dp)
+                        start.linkTo(title.start, margin = 0.dp)
+                    }
+            ) {
+                LightText(
+                    text = secondaryTitle,
+                    color = Black,
+                    fontSize = 9,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(77.dp)
+                    .clip(CircleShape)
+                    .background(Color.Black)
+                    .constrainAs(button) {
+                        top.linkTo(parent.top, margin = 16.dp)
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 48.dp)
+                    }
+                    .clickable {
+                        //startClicked(index)
+                    },
+                contentAlignment = Alignment.Center
+            ){
+                MorgeNormalText(
+                    text = "start",
+                    color = Color.White,
+                    fontSize = 20,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+        }
+    }
+}
+
 @Preview(
     showBackground = true,
     name = "Light mode"
@@ -1573,15 +2140,23 @@ fun DropdownMenu(list: List<String>, title: String): String{
 @Composable
 fun Preview() {
     EUNOIATheme {
-        bigOutlinedTextInput(
-            100,
-            "Share how you feel about this sound",
-            MaterialTheme.colors.primaryVariant,
-            MaterialTheme.colors.onPrimary,
-            MaterialTheme.colors.onPrimary,
-            MaterialTheme.colors.onPrimary,
-            Black,
-            13
-        ){}
+        CustomizableLRButton(
+            text = "Page 1",
+            height = 55,
+            fontSize = 16,
+            textColor = Black,
+            backgroundColor = WePeep,
+            corner = 10,
+            borderStroke = 0.0,
+            borderColor = Black.copy(alpha = 0F),
+            textType = "light",
+            maxWidthFraction = 1F,
+            R.drawable.little_right_arrow,
+            8,
+            25,
+            BeautyBush
+        ) {
+
+        }
     }
 }

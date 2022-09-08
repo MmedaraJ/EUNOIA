@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -48,10 +49,11 @@ fun PricingCompleteTitle(){
             AnImage(
                 R.drawable.pink_line,
                 "pink line",
-                400.dp,
-                15.dp,
+                400.0,
+                15.0,
                 0,
-                0
+                0,
+                LocalContext.current
             ) {}
         }
         Column(
@@ -80,10 +82,11 @@ fun PricingCompleteTitle(){
             AnImage(
                 R.drawable.pricing_plans_icon,
                 "pricing plans icon",
-                90.dp,
-                70.dp,
+                90.0,
+                70.0,
                 0,
-                0
+                0,
+                LocalContext.current
             ) {}
         }
     }

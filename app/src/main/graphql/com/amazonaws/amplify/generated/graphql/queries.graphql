@@ -759,7 +759,7 @@ query GetRoutineData($id: ID!) {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -870,8 +870,8 @@ query ListRoutineDatas(
     nextToken
   }
 }
-query GetBedtimeStoryData($id: ID!) {
-  getBedtimeStoryData(id: $id) {
+query GetBedtimeStoryInfoData($id: ID!) {
+  getBedtimeStoryInfoData(id: $id) {
     id
     userDataID
     bedtimeStoryOwner {
@@ -932,12 +932,20 @@ query GetBedtimeStoryData($id: ID!) {
       updatedAt
       owner
     }
-    display_name
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    audioSource
+    approvalStatus
+    creationStatus
     routines {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -947,8 +955,20 @@ query GetBedtimeStoryData($id: ID!) {
     users {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    chapters {
+      items {
+        id
+        display_name
+        chapterNumber
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -960,12 +980,16 @@ query GetBedtimeStoryData($id: ID!) {
     owner
   }
 }
-query ListBedtimeStoryDatas(
-  $filter: ModelBedtimeStoryDataFilterInput
+query ListBedtimeStoryInfoDatas(
+  $filter: ModelBedtimeStoryInfoDataFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listBedtimeStoryDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listBedtimeStoryInfoDatas(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
     items {
       id
       userDataID
@@ -988,11 +1012,22 @@ query ListBedtimeStoryDatas(
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -1572,7 +1607,15 @@ query GetUserData($id: ID!) {
       items {
         id
         userDataID
-        display_name
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
         createdAt
         updatedAt
         owner
@@ -1582,7 +1625,7 @@ query GetUserData($id: ID!) {
     bedtimeStories {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
         createdAt
         updatedAt
@@ -1654,6 +1697,186 @@ query ListUserDatas(
       }
       bedtimeStories {
         nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetBedtimeStoryInfoChapterData($id: ID!) {
+  getBedtimeStoryInfoChapterData(id: $id) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListBedtimeStoryInfoChapterDatas(
+  $filter: ModelBedtimeStoryInfoChapterDataFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listBedtimeStoryInfoChapterDatas(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetChapterPageData($id: ID!) {
+  getChapterPageData(id: $id) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListChapterPageDatas(
+  $filter: ModelChapterPageDataFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listChapterPageDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      display_name
+      pageNumber
+      audioKeysS3
+      audioNames
+      bedtimeStoryInfoChapterDataID
+      bedtimeStoryInfoChapter {
+        id
+        display_name
+        chapterNumber
+        bedtimeStoryInfoDataID
+        createdAt
+        updatedAt
+        owner
       }
       createdAt
       updatedAt
@@ -2374,11 +2597,11 @@ query ListRoutineBreathings(
     nextToken
   }
 }
-query GetRoutineBedtimeStory($id: ID!) {
-  getRoutineBedtimeStory(id: $id) {
+query GetRoutineBedtimeStoryInfo($id: ID!) {
+  getRoutineBedtimeStoryInfo(id: $id) {
     id
     routineDataID
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     routineData {
       id
       userDataID
@@ -2446,7 +2669,7 @@ query GetRoutineBedtimeStory($id: ID!) {
       updatedAt
       owner
     }
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -2468,11 +2691,22 @@ query GetRoutineBedtimeStory($id: ID!) {
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -2484,12 +2718,12 @@ query GetRoutineBedtimeStory($id: ID!) {
     owner
   }
 }
-query ListRoutineBedtimeStories(
-  $filter: ModelRoutineBedtimeStoryFilterInput
+query ListRoutineBedtimeStoryInfos(
+  $filter: ModelRoutineBedtimeStoryInfoFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listRoutineBedtimeStories(
+  listRoutineBedtimeStoryInfos(
     filter: $filter
     limit: $limit
     nextToken: $nextToken
@@ -2497,7 +2731,7 @@ query ListRoutineBedtimeStories(
     items {
       id
       routineDataID
-      bedtimeStoryDataID
+      bedtimeStoryInfoDataID
       routineData {
         id
         userDataID
@@ -2528,10 +2762,18 @@ query ListRoutineBedtimeStories(
         updatedAt
         owner
       }
-      bedtimeStoryData {
+      bedtimeStoryInfoData {
         id
         userDataID
-        display_name
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
         createdAt
         updatedAt
         owner
@@ -2909,12 +3151,12 @@ query ListUserRoutines(
     nextToken
   }
 }
-query GetUserBedtimeStory($id: ID!) {
-  getUserBedtimeStory(id: $id) {
+query GetUserBedtimeStoryInfo($id: ID!) {
+  getUserBedtimeStoryInfo(id: $id) {
     id
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     userDataID
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -2936,11 +3178,22 @@ query GetUserBedtimeStory($id: ID!) {
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -3010,24 +3263,32 @@ query GetUserBedtimeStory($id: ID!) {
     owner
   }
 }
-query ListUserBedtimeStories(
-  $filter: ModelUserBedtimeStoryFilterInput
+query ListUserBedtimeStoryInfos(
+  $filter: ModelUserBedtimeStoryInfoFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listUserBedtimeStories(
+  listUserBedtimeStoryInfos(
     filter: $filter
     limit: $limit
     nextToken: $nextToken
   ) {
     items {
       id
-      bedtimeStoryDataID
+      bedtimeStoryInfoDataID
       userDataID
-      bedtimeStoryData {
+      bedtimeStoryInfoData {
         id
         userDataID
-        display_name
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
         createdAt
         updatedAt
         owner

@@ -1416,7 +1416,7 @@ subscription OnCreateRoutineData($owner: String) {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1572,7 +1572,7 @@ subscription OnUpdateRoutineData($owner: String) {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1728,7 +1728,7 @@ subscription OnDeleteRoutineData($owner: String) {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1763,8 +1763,8 @@ subscription OnDeleteRoutineData($owner: String) {
     owner
   }
 }
-subscription OnCreateBedtimeStoryData($owner: String) {
-  onCreateBedtimeStoryData(owner: $owner) {
+subscription OnCreateBedtimeStoryInfoData($owner: String) {
+  onCreateBedtimeStoryInfoData(owner: $owner) {
     id
     userDataID
     bedtimeStoryOwner {
@@ -1825,12 +1825,20 @@ subscription OnCreateBedtimeStoryData($owner: String) {
       updatedAt
       owner
     }
-    display_name
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    audioSource
+    approvalStatus
+    creationStatus
     routines {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1840,8 +1848,20 @@ subscription OnCreateBedtimeStoryData($owner: String) {
     users {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    chapters {
+      items {
+        id
+        display_name
+        chapterNumber
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1853,8 +1873,8 @@ subscription OnCreateBedtimeStoryData($owner: String) {
     owner
   }
 }
-subscription OnUpdateBedtimeStoryData($owner: String) {
-  onUpdateBedtimeStoryData(owner: $owner) {
+subscription OnUpdateBedtimeStoryInfoData($owner: String) {
+  onUpdateBedtimeStoryInfoData(owner: $owner) {
     id
     userDataID
     bedtimeStoryOwner {
@@ -1915,12 +1935,20 @@ subscription OnUpdateBedtimeStoryData($owner: String) {
       updatedAt
       owner
     }
-    display_name
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    audioSource
+    approvalStatus
+    creationStatus
     routines {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1930,8 +1958,20 @@ subscription OnUpdateBedtimeStoryData($owner: String) {
     users {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    chapters {
+      items {
+        id
+        display_name
+        chapterNumber
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -1943,8 +1983,8 @@ subscription OnUpdateBedtimeStoryData($owner: String) {
     owner
   }
 }
-subscription OnDeleteBedtimeStoryData($owner: String) {
-  onDeleteBedtimeStoryData(owner: $owner) {
+subscription OnDeleteBedtimeStoryInfoData($owner: String) {
+  onDeleteBedtimeStoryInfoData(owner: $owner) {
     id
     userDataID
     bedtimeStoryOwner {
@@ -2005,12 +2045,20 @@ subscription OnDeleteBedtimeStoryData($owner: String) {
       updatedAt
       owner
     }
-    display_name
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    audioSource
+    approvalStatus
+    creationStatus
     routines {
       items {
         id
         routineDataID
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -2020,8 +2068,20 @@ subscription OnDeleteBedtimeStoryData($owner: String) {
     users {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    chapters {
+      items {
+        id
+        display_name
+        chapterNumber
+        bedtimeStoryInfoDataID
         createdAt
         updatedAt
         owner
@@ -3017,7 +3077,15 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         userDataID
-        display_name
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
         createdAt
         updatedAt
         owner
@@ -3027,7 +3095,7 @@ subscription OnCreateUserData($owner: String) {
     bedtimeStories {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
         createdAt
         updatedAt
@@ -3214,7 +3282,15 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         userDataID
-        display_name
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
         createdAt
         updatedAt
         owner
@@ -3224,7 +3300,7 @@ subscription OnUpdateUserData($owner: String) {
     bedtimeStories {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
         createdAt
         updatedAt
@@ -3411,7 +3487,15 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         userDataID
-        display_name
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
         createdAt
         updatedAt
         owner
@@ -3421,13 +3505,343 @@ subscription OnDeleteUserData($owner: String) {
     bedtimeStories {
       items {
         id
-        bedtimeStoryDataID
+        bedtimeStoryInfoDataID
         userDataID
         createdAt
         updatedAt
         owner
       }
       nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
+  onCreateBedtimeStoryInfoChapterData(owner: $owner) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
+  onUpdateBedtimeStoryInfoChapterData(owner: $owner) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
+  onDeleteBedtimeStoryInfoChapterData(owner: $owner) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateChapterPageData($owner: String) {
+  onCreateChapterPageData(owner: $owner) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateChapterPageData($owner: String) {
+  onUpdateChapterPageData(owner: $owner) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteChapterPageData($owner: String) {
+  onDeleteChapterPageData(owner: $owner) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
     }
     createdAt
     updatedAt
@@ -4883,11 +5297,11 @@ subscription OnDeleteRoutineBreathing($owner: String) {
     owner
   }
 }
-subscription OnCreateRoutineBedtimeStory($owner: String) {
-  onCreateRoutineBedtimeStory(owner: $owner) {
+subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
+  onCreateRoutineBedtimeStoryInfo(owner: $owner) {
     id
     routineDataID
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     routineData {
       id
       userDataID
@@ -4955,7 +5369,7 @@ subscription OnCreateRoutineBedtimeStory($owner: String) {
       updatedAt
       owner
     }
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -4977,11 +5391,22 @@ subscription OnCreateRoutineBedtimeStory($owner: String) {
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -4993,11 +5418,11 @@ subscription OnCreateRoutineBedtimeStory($owner: String) {
     owner
   }
 }
-subscription OnUpdateRoutineBedtimeStory($owner: String) {
-  onUpdateRoutineBedtimeStory(owner: $owner) {
+subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
+  onUpdateRoutineBedtimeStoryInfo(owner: $owner) {
     id
     routineDataID
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     routineData {
       id
       userDataID
@@ -5065,7 +5490,7 @@ subscription OnUpdateRoutineBedtimeStory($owner: String) {
       updatedAt
       owner
     }
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -5087,11 +5512,22 @@ subscription OnUpdateRoutineBedtimeStory($owner: String) {
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -5103,11 +5539,11 @@ subscription OnUpdateRoutineBedtimeStory($owner: String) {
     owner
   }
 }
-subscription OnDeleteRoutineBedtimeStory($owner: String) {
-  onDeleteRoutineBedtimeStory(owner: $owner) {
+subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
+  onDeleteRoutineBedtimeStoryInfo(owner: $owner) {
     id
     routineDataID
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     routineData {
       id
       userDataID
@@ -5175,7 +5611,7 @@ subscription OnDeleteRoutineBedtimeStory($owner: String) {
       updatedAt
       owner
     }
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -5197,11 +5633,22 @@ subscription OnDeleteRoutineBedtimeStory($owner: String) {
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -5948,12 +6395,12 @@ subscription OnDeleteUserRoutine($owner: String) {
     owner
   }
 }
-subscription OnCreateUserBedtimeStory($owner: String) {
-  onCreateUserBedtimeStory(owner: $owner) {
+subscription OnCreateUserBedtimeStoryInfo($owner: String) {
+  onCreateUserBedtimeStoryInfo(owner: $owner) {
     id
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     userDataID
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -5975,11 +6422,22 @@ subscription OnCreateUserBedtimeStory($owner: String) {
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -6049,12 +6507,12 @@ subscription OnCreateUserBedtimeStory($owner: String) {
     owner
   }
 }
-subscription OnUpdateUserBedtimeStory($owner: String) {
-  onUpdateUserBedtimeStory(owner: $owner) {
+subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
+  onUpdateUserBedtimeStoryInfo(owner: $owner) {
     id
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     userDataID
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -6076,11 +6534,22 @@ subscription OnUpdateUserBedtimeStory($owner: String) {
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt
@@ -6150,12 +6619,12 @@ subscription OnUpdateUserBedtimeStory($owner: String) {
     owner
   }
 }
-subscription OnDeleteUserBedtimeStory($owner: String) {
-  onDeleteUserBedtimeStory(owner: $owner) {
+subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
+  onDeleteUserBedtimeStoryInfo(owner: $owner) {
     id
-    bedtimeStoryDataID
+    bedtimeStoryInfoDataID
     userDataID
-    bedtimeStoryData {
+    bedtimeStoryInfoData {
       id
       userDataID
       bedtimeStoryOwner {
@@ -6177,11 +6646,22 @@ subscription OnDeleteUserBedtimeStory($owner: String) {
         updatedAt
         owner
       }
-      display_name
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      audioSource
+      approvalStatus
+      creationStatus
       routines {
         nextToken
       }
       users {
+        nextToken
+      }
+      chapters {
         nextToken
       }
       createdAt

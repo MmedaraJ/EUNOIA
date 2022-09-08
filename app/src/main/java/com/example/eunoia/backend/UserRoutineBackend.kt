@@ -75,4 +75,21 @@ object UserRoutineBackend {
             )
         }
     }
+
+    fun updateUserRoutine(userRoutine: UserRoutine, completed: (userRoutine: UserRoutine) -> Unit){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.update(userRoutine),
+                { response ->
+                    if(response.hasData()) {
+                        Log.i(TAG, "Successfully updated user routine: ${response.data}")
+                        completed(response.data)
+                    }
+                },
+                {
+                    Log.i(TAG, "Error while updating user routine: ", it)
+                }
+            )
+        }
+    }
 }
