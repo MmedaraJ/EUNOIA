@@ -233,6 +233,7 @@ class UploadFilesActivity : ComponentActivity() {
             (0xFFEBBA9A).toInt(),
             180L,
             true,
+            listOf("curry"),
             listOf("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"),
             SoundApprovalStatus.APPROVED
         )

@@ -37,11 +37,15 @@ object SoundBackend{
 
     fun querySoundBasedOnDisplayName(
         display_name: String,
-        completed: (sound: List<SoundData?>) -> Unit) {
+        completed: (sound: List<SoundData?>) -> Unit)
+    {
         scope.launch {
             val soundList = mutableListOf<SoundData?>()
             Amplify.API.query(
-                ModelQuery.list(SoundData::class.java, SoundData.DISPLAY_NAME.eq(display_name)),
+                ModelQuery.list(
+                    SoundData::class.java,
+                    SoundData.DISPLAY_NAME.eq(display_name)
+                ),
                 { response ->
                     if(response.hasData()) {
                         for (soundData in response.data) {

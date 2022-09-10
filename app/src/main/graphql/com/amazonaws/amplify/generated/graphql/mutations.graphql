@@ -1,46 +1,4 @@
 # this is an auto generated file. This will be overwritten
-mutation CreateNoteData(
-  $input: CreateNoteDataInput!
-  $condition: ModelNoteDataConditionInput
-) {
-  createNoteData(input: $input, condition: $condition) {
-    id
-    name
-    description
-    image
-    createdAt
-    updatedAt
-    owner
-  }
-}
-mutation UpdateNoteData(
-  $input: UpdateNoteDataInput!
-  $condition: ModelNoteDataConditionInput
-) {
-  updateNoteData(input: $input, condition: $condition) {
-    id
-    name
-    description
-    image
-    createdAt
-    updatedAt
-    owner
-  }
-}
-mutation DeleteNoteData(
-  $input: DeleteNoteDataInput!
-  $condition: ModelNoteDataConditionInput
-) {
-  deleteNoteData(input: $input, condition: $condition) {
-    id
-    name
-    description
-    image
-    createdAt
-    updatedAt
-    owner
-  }
-}
 mutation CreateSoundData(
   $input: CreateSoundDataInput!
   $condition: ModelSoundDataConditionInput
@@ -115,6 +73,7 @@ mutation CreateSoundData(
     colorHEX
     fullPlayTime
     visible_to_others
+    tags
     audio_names
     approvalStatus
     comment {
@@ -132,6 +91,7 @@ mutation CreateSoundData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -178,6 +138,7 @@ mutation CreateSoundData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -292,6 +253,7 @@ mutation UpdateSoundData(
     colorHEX
     fullPlayTime
     visible_to_others
+    tags
     audio_names
     approvalStatus
     comment {
@@ -309,6 +271,7 @@ mutation UpdateSoundData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -355,6 +318,7 @@ mutation UpdateSoundData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -469,6 +433,7 @@ mutation DeleteSoundData(
     colorHEX
     fullPlayTime
     visible_to_others
+    tags
     audio_names
     approvalStatus
     comment {
@@ -486,6 +451,7 @@ mutation DeleteSoundData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -532,6 +498,7 @@ mutation DeleteSoundData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -610,6 +577,7 @@ mutation CreateCommentData(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -741,6 +709,7 @@ mutation UpdateCommentData(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -872,6 +841,7 @@ mutation DeleteCommentData(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -988,6 +958,7 @@ mutation CreatePresetNameAndVolumesMapData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -1030,6 +1001,7 @@ mutation UpdatePresetNameAndVolumesMapData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -1072,6 +1044,7 @@ mutation DeletePresetNameAndVolumesMapData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -1129,6 +1102,7 @@ mutation CreatePresetData(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -1212,6 +1186,7 @@ mutation UpdatePresetData(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -1295,6 +1270,7 @@ mutation DeletePresetData(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -1888,6 +1864,7 @@ mutation CreateBedtimeStoryInfoData(
     icon
     fullPlayTime
     visibleToOthers
+    tags
     audioSource
     approvalStatus
     creationStatus
@@ -2001,6 +1978,7 @@ mutation UpdateBedtimeStoryInfoData(
     icon
     fullPlayTime
     visibleToOthers
+    tags
     audioSource
     approvalStatus
     creationStatus
@@ -2114,6 +2092,7 @@ mutation DeleteBedtimeStoryInfoData(
     icon
     fullPlayTime
     visibleToOthers
+    tags
     audioSource
     approvalStatus
     creationStatus
@@ -3025,6 +3004,7 @@ mutation CreateUserData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -3176,6 +3156,7 @@ mutation CreateUserData(
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3233,6 +3214,7 @@ mutation UpdateUserData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -3384,6 +3366,7 @@ mutation UpdateUserData(
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3441,6 +3424,7 @@ mutation DeleteUserData(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -3592,6 +3576,7 @@ mutation DeleteUserData(
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3654,6 +3639,7 @@ mutation CreateBedtimeStoryInfoChapterData(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -3726,6 +3712,7 @@ mutation UpdateBedtimeStoryInfoChapterData(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -3798,6 +3785,7 @@ mutation DeleteBedtimeStoryInfoChapterData(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -3858,6 +3846,7 @@ mutation CreateChapterPageData(
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3902,6 +3891,7 @@ mutation UpdateChapterPageData(
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3946,6 +3936,7 @@ mutation DeleteChapterPageData(
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -4004,6 +3995,7 @@ mutation CreateUserSound(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4134,6 +4126,7 @@ mutation UpdateUserSound(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4264,6 +4257,7 @@ mutation DeleteUserSound(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4394,6 +4388,7 @@ mutation CreateRoutineSound(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4533,6 +4528,7 @@ mutation UpdateRoutineSound(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4672,6 +4668,7 @@ mutation DeleteRoutineSound(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -5553,6 +5550,7 @@ mutation CreateRoutineBedtimeStoryInfo(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -5677,6 +5675,7 @@ mutation UpdateRoutineBedtimeStoryInfo(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -5801,6 +5800,7 @@ mutation DeleteRoutineBedtimeStoryInfo(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -6611,6 +6611,7 @@ mutation CreateUserBedtimeStoryInfo(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -6726,6 +6727,7 @@ mutation UpdateUserBedtimeStoryInfo(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -6841,6 +6843,7 @@ mutation DeleteUserBedtimeStoryInfo(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus

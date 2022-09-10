@@ -1,33 +1,4 @@
 # this is an auto generated file. This will be overwritten
-query GetNoteData($id: ID!) {
-  getNoteData(id: $id) {
-    id
-    name
-    description
-    image
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListNoteData(
-  $filter: ModelNoteDataFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listNoteData(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      name
-      description
-      image
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
 query GetSoundData($id: ID!) {
   getSoundData(id: $id) {
     id
@@ -99,6 +70,7 @@ query GetSoundData($id: ID!) {
     colorHEX
     fullPlayTime
     visible_to_others
+    tags
     audio_names
     approvalStatus
     comment {
@@ -116,6 +88,7 @@ query GetSoundData($id: ID!) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -162,6 +135,7 @@ query GetSoundData($id: ID!) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -239,6 +213,7 @@ query ListSoundDatas(
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -305,6 +280,7 @@ query GetCommentData($id: ID!) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -419,6 +395,7 @@ query ListCommentDatas(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -473,6 +450,7 @@ query GetPresetNameAndVolumesMapData($id: ID!) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -556,6 +534,7 @@ query GetPresetData($id: ID!) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -622,6 +601,7 @@ query ListPresetDatas(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -938,6 +918,7 @@ query GetBedtimeStoryInfoData($id: ID!) {
     icon
     fullPlayTime
     visibleToOthers
+    tags
     audioSource
     approvalStatus
     creationStatus
@@ -1018,6 +999,7 @@ query ListBedtimeStoryInfoDatas(
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -1462,6 +1444,7 @@ query GetUserData($id: ID!) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -1613,6 +1596,7 @@ query GetUserData($id: ID!) {
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -1739,6 +1723,7 @@ query GetBedtimeStoryInfoChapterData($id: ID!) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -1798,6 +1783,7 @@ query ListBedtimeStoryInfoChapterDatas(
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -1837,6 +1823,7 @@ query GetChapterPageData($id: ID!) {
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -1921,6 +1908,7 @@ query GetUserSound($id: ID!) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -2034,6 +2022,7 @@ query ListUserSounds(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -2102,6 +2091,7 @@ query GetRoutineSound($id: ID!) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -2224,6 +2214,7 @@ query ListRoutineSounds(
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -2697,6 +2688,7 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -2771,6 +2763,7 @@ query ListRoutineBedtimeStoryInfos(
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3184,6 +3177,7 @@ query GetUserBedtimeStoryInfo($id: ID!) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -3286,6 +3280,7 @@ query ListUserBedtimeStoryInfos(
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus

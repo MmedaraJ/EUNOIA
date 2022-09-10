@@ -19,14 +19,15 @@ object SoundObject {
         val soundOwner: @RawValue UserObject.User,
         val original_name: String,
         val display_name: String,
-        val short_description: String,
-        val long_description: String,
+        val short_description: String?,
+        val long_description: String?,
         val audio_key_s3: String,
-        val icon: Int,
-        val colorHex: Int,
+        val icon: Int?,
+        val colorHex: Int?,
         val fullPlayTime: Long,
         val visible_to_others: Boolean,
-        val audio_names: List<String>,
+        val tags: List<String>?,
+        val audio_names: List<String>?,
         val approvalStatus: SoundApprovalStatus
     ): Parcelable {
         override fun toString(): String {
@@ -38,13 +39,14 @@ object SoundObject {
                 .soundOwner(this.soundOwner.data)
                 .originalName(this.original_name)
                 .displayName(this.display_name)
-                .shortDescription(this.short_description)
-                .longDescription(this.long_description)
+                //.shortDescription(this.short_description)
+                //.longDescription(this.long_description)
                 .audioKeyS3(this.audio_key_s3)
-                .icon(this.icon)
-                .colorHex(this.colorHex)
+                //.icon(this.icon)
+                //.colorHex(this.colorHex)
                 .fullPlayTime(this.fullPlayTime.toInt())
                 .visibleToOthers(this.visible_to_others)
+                //.tags(this.tags)
                 .audioNames(this.audio_names)
                 .approvalStatus(this.approvalStatus)
                 .id(this.id)
@@ -64,6 +66,7 @@ object SoundObject {
                     soundData.colorHex,
                     soundData.fullPlayTime.toLong(),
                     soundData.visibleToOthers,
+                    soundData.tags,
                     soundData.audioNames,
                     soundData.approvalStatus
                 )

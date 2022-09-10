@@ -14,6 +14,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -26,11 +27,14 @@ import kotlinx.coroutines.CoroutineScope
 var soundIcon by mutableStateOf(-1)
 var soundName by mutableStateOf("")
 var shortDescription by mutableStateOf("")
+var soundTags by mutableStateOf("")
 var iconSelectionTitle by mutableStateOf("")
 var soundNameErrorMessage by mutableStateOf("")
 var soundDescriptionErrorMessage by mutableStateOf("")
+var soundTagsErrorMessage by mutableStateOf("")
 const val MIN_SOUND_NAME = 5
 const val MIN_SOUND_DESCRIPTION = 10
+const val MIN_SOUND_TAGS = 3
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -41,25 +45,12 @@ fun NameSoundUI(
     state: ModalBottomSheetState
 ){
     val scrollState = rememberScrollState()
-    soundNameErrorMessage = if(soundName.isEmpty()){
-        "Name this sound"
-    } else if(soundName.length < MIN_SOUND_NAME){
-        "Name must be at least $MIN_SOUND_NAME characters"
-    } else{
-        ""
-    }
-    soundDescriptionErrorMessage = if(shortDescription.isEmpty()){
-        "Describe this sound"
-    } else if(shortDescription.length < MIN_SOUND_DESCRIPTION){
-        "Description must be at least $MIN_SOUND_DESCRIPTION characters"
-    } else{
-        ""
-    }
-    iconSelectionTitle = if(soundIcon == -1){
-        "Select icon"
-    }else{
-        "Icon selected"
-    }
+
+    initializeSoundNameError()
+    initializeSoundDescriptionError()
+    initializeSoundTagsError()
+    initializeSoundIconError()
+
     ConstraintLayout(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -72,6 +63,8 @@ fun NameSoundUI(
             name_error,
             soundShortDescriptionColumn,
             description_error,
+            soundTagColumn,
+            tag_error,
             icon_title,
             icons,
             next,
@@ -185,10 +178,45 @@ fun NameSoundUI(
             )
         }
         Column(
+            modifier = Modifier
+                .constrainAs(soundTagColumn) {
+                    top.linkTo(description_error.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ) {
+            soundTags = customizedOutlinedTextInput(
+                width = 0,
+                height = 55,
+                color = SoftPeach,
+                focusedBorderColor = BeautyBush,
+                inputFontSize = 16,
+                placeholder = "Tags",
+                placeholderFontSize = 16,
+                offset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(tag_error) {
+                    top.linkTo(soundTagColumn.bottom, margin = 4.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedLightText(
+                text = soundTagsErrorMessage,
+                color = Black,
+                fontSize = 10,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .constrainAs(icon_title) {
-                    top.linkTo(description_error.bottom, margin = 24.dp)
+                    top.linkTo(tag_error.bottom, margin = 24.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -269,7 +297,9 @@ fun NameSoundUI(
             if(
                 soundName.length >= MIN_SOUND_NAME &&
                 shortDescription.length >= MIN_SOUND_DESCRIPTION &&
-                soundIcon != -1
+                soundTags.length >= MIN_SOUND_TAGS &&
+                soundIcon != -1 &&
+                checkOtherSoundsWithSimilarNames()
             ) {
                 CustomizableButton(
                     text = "next",
@@ -295,6 +325,55 @@ fun NameSoundUI(
         ){
             Spacer(modifier = Modifier.height(40.dp))
         }
+    }
+}
+
+fun checkOtherSoundsWithSimilarNames(): Boolean{
+    var otherSoundsWithSameName by mutableStateOf(-1)
+    SoundBackend.querySoundBasedOnDisplayName(soundName){
+        otherSoundsWithSameName = if(it.isEmpty()) 0 else it.size
+    }
+    Thread.sleep(1_000)
+    val output = otherSoundsWithSameName == 0
+    if(!output) soundNameErrorMessage = "The name, $soundName, is already taken"
+    return output
+}
+
+fun initializeSoundNameError() {
+    soundNameErrorMessage = if(soundName.isEmpty()){
+        "Name this sound"
+    } else if(soundName.length < MIN_SOUND_NAME){
+        "Name must be at least $MIN_SOUND_NAME characters"
+    } else{
+        ""
+    }
+}
+
+fun initializeSoundDescriptionError() {
+    soundDescriptionErrorMessage = if(shortDescription.isEmpty()){
+        "Describe this sound"
+    } else if(shortDescription.length < MIN_SOUND_DESCRIPTION){
+        "Description must be at least $MIN_SOUND_DESCRIPTION characters"
+    } else{
+        ""
+    }
+}
+
+fun initializeSoundTagsError() {
+    soundTagsErrorMessage = if(soundTags.isEmpty()){
+        "Add tags to this sound. Separate tags with a comma"
+    } else if(soundTags.length < MIN_SOUND_TAGS){
+        "Tags must be at least $MIN_SOUND_TAGS characters"
+    } else{
+        ""
+    }
+}
+
+fun initializeSoundIconError() {
+    iconSelectionTitle = if(soundIcon == -1){
+        "Select icon"
+    }else{
+        "Icon selected"
     }
 }
 

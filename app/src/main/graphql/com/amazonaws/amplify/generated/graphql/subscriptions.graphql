@@ -1,37 +1,4 @@
 # this is an auto generated file. This will be overwritten
-subscription OnCreateNoteData($owner: String) {
-  onCreateNoteData(owner: $owner) {
-    id
-    name
-    description
-    image
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnUpdateNoteData($owner: String) {
-  onUpdateNoteData(owner: $owner) {
-    id
-    name
-    description
-    image
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnDeleteNoteData($owner: String) {
-  onDeleteNoteData(owner: $owner) {
-    id
-    name
-    description
-    image
-    createdAt
-    updatedAt
-    owner
-  }
-}
 subscription OnCreateSoundData($owner: String) {
   onCreateSoundData(owner: $owner) {
     id
@@ -103,6 +70,7 @@ subscription OnCreateSoundData($owner: String) {
     colorHEX
     fullPlayTime
     visible_to_others
+    tags
     audio_names
     approvalStatus
     comment {
@@ -120,6 +88,7 @@ subscription OnCreateSoundData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -166,6 +135,7 @@ subscription OnCreateSoundData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -277,6 +247,7 @@ subscription OnUpdateSoundData($owner: String) {
     colorHEX
     fullPlayTime
     visible_to_others
+    tags
     audio_names
     approvalStatus
     comment {
@@ -294,6 +265,7 @@ subscription OnUpdateSoundData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -340,6 +312,7 @@ subscription OnUpdateSoundData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -451,6 +424,7 @@ subscription OnDeleteSoundData($owner: String) {
     colorHEX
     fullPlayTime
     visible_to_others
+    tags
     audio_names
     approvalStatus
     comment {
@@ -468,6 +442,7 @@ subscription OnDeleteSoundData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -514,6 +489,7 @@ subscription OnDeleteSoundData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -589,6 +565,7 @@ subscription OnCreateCommentData($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -717,6 +694,7 @@ subscription OnUpdateCommentData($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -845,6 +823,7 @@ subscription OnDeleteCommentData($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -958,6 +937,7 @@ subscription OnCreatePresetNameAndVolumesMapData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -997,6 +977,7 @@ subscription OnUpdatePresetNameAndVolumesMapData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -1036,6 +1017,7 @@ subscription OnDeletePresetNameAndVolumesMapData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -1090,6 +1072,7 @@ subscription OnCreatePresetData($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -1170,6 +1153,7 @@ subscription OnUpdatePresetData($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -1250,6 +1234,7 @@ subscription OnDeletePresetData($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -1831,6 +1816,7 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
     icon
     fullPlayTime
     visibleToOthers
+    tags
     audioSource
     approvalStatus
     creationStatus
@@ -1941,6 +1927,7 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
     icon
     fullPlayTime
     visibleToOthers
+    tags
     audioSource
     approvalStatus
     creationStatus
@@ -2051,6 +2038,7 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
     icon
     fullPlayTime
     visibleToOthers
+    tags
     audioSource
     approvalStatus
     creationStatus
@@ -2932,6 +2920,7 @@ subscription OnCreateUserData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -3083,6 +3072,7 @@ subscription OnCreateUserData($owner: String) {
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3137,6 +3127,7 @@ subscription OnUpdateUserData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -3288,6 +3279,7 @@ subscription OnUpdateUserData($owner: String) {
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3342,6 +3334,7 @@ subscription OnDeleteUserData($owner: String) {
         colorHEX
         fullPlayTime
         visible_to_others
+        tags
         audio_names
         approvalStatus
         createdAt
@@ -3493,6 +3486,7 @@ subscription OnDeleteUserData($owner: String) {
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3552,6 +3546,7 @@ subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -3621,6 +3616,7 @@ subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -3690,6 +3686,7 @@ subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -3747,6 +3744,7 @@ subscription OnCreateChapterPageData($owner: String) {
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3788,6 +3786,7 @@ subscription OnUpdateChapterPageData($owner: String) {
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3829,6 +3828,7 @@ subscription OnDeleteChapterPageData($owner: String) {
         icon
         fullPlayTime
         visibleToOthers
+        tags
         audioSource
         approvalStatus
         creationStatus
@@ -3884,6 +3884,7 @@ subscription OnCreateUserSound($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4011,6 +4012,7 @@ subscription OnUpdateUserSound($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4138,6 +4140,7 @@ subscription OnDeleteUserSound($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4265,6 +4268,7 @@ subscription OnCreateRoutineSound($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4401,6 +4405,7 @@ subscription OnUpdateRoutineSound($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -4537,6 +4542,7 @@ subscription OnDeleteRoutineSound($owner: String) {
       colorHEX
       fullPlayTime
       visible_to_others
+      tags
       audio_names
       approvalStatus
       comment {
@@ -5397,6 +5403,7 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -5518,6 +5525,7 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -5639,6 +5647,7 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -6428,6 +6437,7 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -6540,6 +6550,7 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus
@@ -6652,6 +6663,7 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
       icon
       fullPlayTime
       visibleToOthers
+      tags
       audioSource
       approvalStatus
       creationStatus

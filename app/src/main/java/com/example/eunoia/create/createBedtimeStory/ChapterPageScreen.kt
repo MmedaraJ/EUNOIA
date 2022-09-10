@@ -27,7 +27,7 @@ import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-private var pageRecordings = mutableListOf<MutableMap<MutableState<String>, MutableState<String>>>()
+var pageRecordings = mutableListOf<MutableMap<MutableState<String>, MutableState<String>>>()
 private var TAG = "Page Screen"
 
 @OptIn(ExperimentalMaterialApi::class)

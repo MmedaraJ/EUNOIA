@@ -146,6 +146,7 @@ fun SoundActivityUI(
                                 globalViewModel_!!.currentUsersSounds!![i]!!.soundData,
                                 i,
                                 {
+                                    //TODO get data from database first so that playing is instantaneous
                                 },
                                 { index ->
                                     for(j in playButtonText.indices){

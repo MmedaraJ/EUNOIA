@@ -30,9 +30,8 @@ import java.util.*
 
 var selectedIndex by mutableStateOf(0)
 var pageNumbersPerChapter = mutableListOf<MutableState<Int>?>()
-private var bedtimeStoryChapters = mutableListOf<MutableState<BedtimeStoryInfoChapterData>?>()
+var bedtimeStoryChapters = mutableListOf<MutableState<BedtimeStoryInfoChapterData>?>()
 private var TAG = "Record Bedtime Story"
-var fromBack = mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -207,6 +206,11 @@ fun navigateToBedtimeStoryChapterScreen(navController: NavController, chapterDat
 fun clearBedtimeStoryChaptersList(){
     bedtimeStoryChapters.clear()
 }
+
+fun resetRecordBedtimeStoryVariables(){
+    selectedIndex = 0
+}
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Preview(

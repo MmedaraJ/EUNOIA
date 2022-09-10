@@ -39,7 +39,7 @@ object UserBedtimeStoryBackend {
         }
     }
 
-    fun createUserRoutineObject(bedtimeStory: BedtimeStoryInfoData, completed: (userBedtimeStory: UserBedtimeStoryInfo) -> Unit){
+    fun createUserBedtimeStoryObject(bedtimeStory: BedtimeStoryInfoData, completed: (userBedtimeStory: UserBedtimeStoryInfo) -> Unit){
         val userBedtimeStoryModel = UserBedtimeStoryObject.UserBedtimeStoryModel(
             UUID.randomUUID().toString(),
             UserObject.User.from(globalViewModel_!!.currentUser!!),

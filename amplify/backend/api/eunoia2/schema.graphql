@@ -1,12 +1,3 @@
-type NoteData
-@model
-@auth (rules: [ { allow: owner } ]) {
-    id: ID!
-    name: String!
-    description: String
-    image: String
-}
-
 enum SoundApprovalStatus{
     PENDING
     APPROVED
@@ -21,14 +12,15 @@ type SoundData
     soundOwner: UserData! @belongsTo(fields: ["userDataID"])
     original_name: String!
     display_name: String!
-    short_description: String!
-    long_description: String!
+    short_description: String
+    long_description: String
     audio_key_s3: String!
-    icon: Int!
-    colorHEX: Int!
+    icon: Int
+    colorHEX: Int
     fullPlayTime: Int!
     visible_to_others: Boolean!
-    audio_names: [String!]!
+    tags: [String!]
+    audio_names: [String!]
     approvalStatus: SoundApprovalStatus
     comment: CommentData @hasOne(fields: ["id"])
     preset: PresetData @hasOne(fields: ["id"])
@@ -130,6 +122,7 @@ type BedtimeStoryInfoData
     icon: Int!
     fullPlayTime: Int!
     visibleToOthers: Boolean!
+    tags: [String!]
     audioSource: BedtimeStoryAudioSource
     approvalStatus: BedtimeStoryApprovalStatus
     creationStatus: BedtimeStoryCreationStatus

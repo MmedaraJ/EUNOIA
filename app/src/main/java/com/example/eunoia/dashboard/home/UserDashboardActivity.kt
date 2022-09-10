@@ -36,9 +36,9 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.backend.UserRoutineBackend
-import com.example.eunoia.create.createBedtimeStory.RecordedAudioData
-import com.example.eunoia.create.createBedtimeStory.addAmplitude
+import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.create.createSound.*
+import com.example.eunoia.create.createSound.selectedIndex
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.sign_in_process.SignInActivity
@@ -115,6 +115,39 @@ class UserDashboardActivity : ComponentActivity(), Timer.OnTimerTickListener {
                     fileColors[selectedIndex]!!.value = Peach
                     Log.i(TAG, "Names 3 ==>> ${uploadedFiles[selectedIndex]!!.value.absolutePath}")
                     Log.i(TAG, "Names 4 ==>> ${uploadedFiles[selectedIndex]!!.value.path}")
+                }
+            }
+        }
+
+    fun selectAudioBedtimeStory(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        intent.type = "audio/aac"
+        selectAudioBedtimeStoryActivityResult.launch(intent)
+    }
+
+    private val selectAudioBedtimeStoryActivityResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if(result.resultCode == Activity.RESULT_OK){
+                val data: Intent? = result.data
+                if(data?.data != null){
+                    val audioUri: Uri? = data.data
+                    fileUriBedtimeStory.value = audioUri!!
+                    Log.i(TAG, "Audio Uri ==>> $audioUri")
+                    val audioStream = audioUri.let {
+                        Log.i(TAG, "$it")
+                        contentResolver.openInputStream(it)
+                    }
+                    val tempFile = File.createTempFile("audio", ".aac")
+                    copyStreamToFile(audioStream!!, tempFile)
+                    val mdt = MediaMetadataRetriever()
+                    mdt.setDataSource(tempFile.absolutePath)
+                    var durationStr = mdt.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                    audioFileLengthMilliSecondsBedtimeStory.value = durationStr!!.toLong()
+                    uploadedFileBedtimeStory.value = tempFile
+                    fileColorBedtimeStory.value = Peach
                 }
             }
         }

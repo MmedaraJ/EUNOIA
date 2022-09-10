@@ -18,6 +18,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.R
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.dashboard.sound.navigateBack
@@ -25,6 +26,7 @@ import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.formatMilliSecond
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 
@@ -32,7 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun BedtimeStoryScreen(
     navController: NavController,
-    context: Context,
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -102,8 +104,9 @@ fun BedtimeStoryScreen(
                         .border(1.dp, Black, CircleShape)
                         .clickable { }
                 ) {
+                    val playTimeString = formatMilliSecond(bedtimeStoryInfoData.fullPlayTime.toLong())
                     LightText(
-                        text = "23:50",
+                        text = playTimeString,
                         color = Black,
                         fontSize = 10,
                         xOffset = 0,
@@ -122,7 +125,7 @@ fun BedtimeStoryScreen(
                 .fillMaxWidth()
         ){
             PurpleBackgroundControls(
-                titleString = "HarryPotter and the Philosopher's Stone",
+                titleString = bedtimeStoryInfoData.displayName,
                 secondaryTitle = "By: J.K Rowling"
             ) {
 
@@ -139,7 +142,7 @@ fun BedtimeStoryScreen(
         ){
             PurpleBackgroundInfo(
                 "Description",
-                "The first of J.K. Rowling's popular children's novels about Harry Potter, a boy who learns on his eleventh birthday that he is the orphaned son of two powerful wizards and possesses unique magical powers of his own. He is summoned from his life as an unwanted child to become a student at Hogwarts, an English boarding school for wizards. There, he meets several friends who become his closest allies and help him discover the truth about his parents' mysterious deaths."
+                bedtimeStoryInfoData.description
             ){}
         }
     }
@@ -157,12 +160,11 @@ fun BedtimeStoryScreen(
 )
 @Composable
 fun Preview() {
-    EUNOIATheme {
+    /*EUNOIATheme {
         BedtimeStoryScreen(
             rememberNavController(),
-            LocalContext.current,
             rememberCoroutineScope(),
             rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
         )
-    }
+    }*/
 }

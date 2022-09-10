@@ -284,23 +284,17 @@ fun resetAll(){
 }
 
 fun saveAudioFilesToS3(){
-    for(file in uploadedFiles) {
-        val key = "Routine/Sounds/${globalViewModel_!!.currentUser!!.username}/$soundName/${file!!.value.name}"
-        SoundBackend.storeAudio(file.value.absolutePath, key){}
+    for(i in uploadedFiles.indices) {
+        val key = "Routine/Sounds/${globalViewModel_!!.currentUser!!.username}/$soundName/${i}_${uploadedFiles[i]!!.value.name}"
+        SoundBackend.storeAudio(uploadedFiles[i]!!.value.absolutePath, key){}
     }
 }
 
 fun createSound(navController: NavController){
-    val fileNameList = mutableListOf<String>()
-    for(name in fileNames){
-        fileNameList.add(name!!.value)
-    }
-    var maxPlayTime = 0L
-    for(playTime in audioFileLengthMilliSeconds){
-        if(playTime!!.value > maxPlayTime){
-            maxPlayTime = playTime.value
-        }
-    }
+    val fileNameList = getFileNameList()
+    val maxPlayTime = getMaxPlayTime()
+    val tags = getSoundTagsList()
+
     val sound = SoundObject.Sound(
         UUID.randomUUID().toString(),
         UserObject.User.from(globalViewModel_!!.currentUser!!),
@@ -313,13 +307,37 @@ fun createSound(navController: NavController){
         0xFFEBBA9A.toInt(),
         maxPlayTime,
         false,
+        tags,
         fileNameList,
         SoundApprovalStatus.PENDING
     )
+
     SoundBackend.createSound(sound){
         createUserSound(it)
         createSoundPreset(it, navController)
     }
+}
+
+fun getFileNameList():List<String> {
+    val fileNameList = mutableListOf<String>()
+    for(name in fileNames){
+        fileNameList.add(name!!.value)
+    }
+    return fileNameList
+}
+
+fun getMaxPlayTime(): Long {
+    var maxPlayTime = 0L
+    for(playTime in audioFileLengthMilliSeconds){
+        if(playTime!!.value > maxPlayTime){
+            maxPlayTime = playTime.value
+        }
+    }
+    return maxPlayTime
+}
+
+fun getSoundTagsList():List<String> {
+    return soundTags.split(",")
 }
 
 private fun createUserSound(soundData: SoundData){

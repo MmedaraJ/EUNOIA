@@ -23,7 +23,7 @@ import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 
-private var userBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?>()
+var userBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?>()
 private var TAG = "Incomplete Bedtime Story"
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -125,4 +125,8 @@ fun IncompleteBedtimeStoriesUI(
             }
         }
     }
+}
+
+fun resetIncompleteBedtimeStoriesVariables(){
+    userBedtimeStories.clear()
 }

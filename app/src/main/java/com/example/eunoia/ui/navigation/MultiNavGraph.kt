@@ -448,19 +448,10 @@ fun CreateTab(
                 state = state
             )
         }
-        composable(
-            "${Screen.UploadBedtimeStory.screen_route}/bedtimeStory={bedtimeStory}",
-            arguments = listOf(
-                navArgument("bedtimeStory") {
-                    type = BedtimeStoryObject.BedtimeStoryType()
-                }
-            )
-        ) { backStackEntry ->
-            val bedtimeStory = backStackEntry.arguments?.getParcelable<BedtimeStoryObject.BedtimeStory>("bedtimeStory")
-            Log.i("UploadBedtimeStory", "You are now on the upload ${bedtimeStory!!.displayName} tab")
+        composable(Screen.UploadBedtimeStory.screen_route) {
+            Log.i("UploadBedtimeStory", "You are now on the UploadBedtimeStory tab")
             UploadBedtimeStoryUI(
                 navController = navController,
-                bedtimeStory.data,
                 globalViewModel = globalViewModel,
                 scope = scope,
                 state = state
@@ -510,11 +501,19 @@ fun CreateTab(
                 state = state
             )
         }
-        composable(Screen.BedtimeStoryScreen.screen_route) {
+        composable(
+            "${Screen.BedtimeStoryScreen.screen_route}/bedtimeStoryData={bedtimeStoryData}",
+            arguments = listOf(
+                navArgument("bedtimeStoryData") {
+                    type = BedtimeStoryObject.BedtimeStoryType()
+                }
+            )
+        ) { backStackEntry ->
+            val bedtimeStoryData = backStackEntry.arguments?.getParcelable<BedtimeStoryObject.BedtimeStory>("bedtimeStoryData")
             Log.i("BedtimeStoryScreen", "You are now on the BedtimeStoryScreen tab")
             BedtimeStoryScreen(
                 navController = navController,
-                LocalContext.current,
+                bedtimeStoryData!!.data,
                 scope = scope,
                 state = state
             )

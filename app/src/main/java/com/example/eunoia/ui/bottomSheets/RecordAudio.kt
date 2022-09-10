@@ -40,6 +40,7 @@ import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.services.MediaPlayerService
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.recordAudioViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.Timer
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -462,21 +463,34 @@ fun saveRecordedAudioToS3(context: Context) {
     var key = ""
     /*when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
         is ChapterPageData -> {
-            key = "Routine/BedtimeStories/${globalViewModel_!!.currentUser!!.username}/bedtimeStoryName/chapter/page/fileName.aac"
-            SoundBackend.storeAudio(recordingFile!!.absolutePath, key){
-                updateChapterPageData(
-                    it,
-                    recognizedSpeech,
-                    recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording as ChapterPageData
-                )
-            }
+            val chapterPageData = recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording as ChapterPageData
+            storeToS3IfChapterPage(chapterPageData)
         }
     }*/
-    key = "Routine/BedtimeStories/${globalViewModel_!!.currentUser!!.username}/bedtimeStoryName/chapter/page/file1.aac"
+    key = "Routine/BedtimeStories/${globalViewModel_!!.currentUser!!.username}/recorded/bedtimeStoryName/chapter/page/file1.aac"
     SoundBackend.storeAudio(recordingFile!!.absolutePath, key){
         Log.i(TAG, "Chapter Page's audio name ==>> $recognizedSpeech")
         Log.i(TAG, "Chapter Page's audio keys ==>> $it")
         clearRecording(context)
+    }
+}
+
+fun storeToS3IfChapterPage(chapterPageData: ChapterPageData){
+    val key = "Routine/" +
+            "BedtimeStories/" +
+            "${globalViewModel_!!.currentUser!!.username}/" +
+            "recorded/" +
+            "${chapterPageData.bedtimeStoryInfoChapter.bedtimeStoryInfo.displayName}/" +
+            "${chapterPageData.bedtimeStoryInfoChapter.displayName}/" +
+            "${chapterPageData.displayName}/" +
+            "recording_${chapterPageData.audioKeysS3.size + 1}.aac"
+
+    SoundBackend.storeAudio(recordingFile!!.absolutePath, key){
+        updateChapterPageData(
+            it,
+            recognizedSpeech,
+            chapterPageData
+        )
     }
 }
 

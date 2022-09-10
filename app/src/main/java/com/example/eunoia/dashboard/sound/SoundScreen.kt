@@ -435,6 +435,7 @@ fun makeSoundObject(
         soundData.colorHex,
         soundData.fullPlayTime.toLong(),
         true,
+        soundData.tags,
         soundData.audioNames,
         soundData.approvalStatus
     )

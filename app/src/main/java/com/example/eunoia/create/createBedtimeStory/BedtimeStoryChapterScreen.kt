@@ -30,7 +30,7 @@ import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-private var chapterPages = mutableListOf<MutableList<MutableState<ChapterPageData>?>>()
+var chapterPages = mutableListOf<MutableList<MutableState<ChapterPageData>?>>()
 private var TAG = "Chapter Pages"
 
 @OptIn(ExperimentalMaterialApi::class)

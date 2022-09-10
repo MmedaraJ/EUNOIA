@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
@@ -89,7 +88,7 @@ fun SoundUploader(
         )
         fileNames[index]!!.value = fileName
         Spacer(modifier = Modifier.height(6.dp))
-        SwipeToResetUI(index, context){
+        SwipeToResetSoundUI(index, context){
             selectedIndex = it
             UserDashboardActivity.getInstanceActivity().selectAudio()
         }
@@ -138,7 +137,7 @@ fun nameDoesNotAlreadyExist(): Boolean{
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SwipeToResetUI(
+fun SwipeToResetSoundUI(
     index: Int,
     context: Context,
     fileUploaded: (index: Int) -> Unit

@@ -20,6 +20,11 @@ import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
+import com.example.eunoia.create.createSound.*
+import com.example.eunoia.create.createSound.initializeSoundDescriptionError
+import com.example.eunoia.create.createSound.initializeSoundIconError
+import com.example.eunoia.create.createSound.initializeSoundNameError
+import com.example.eunoia.create.createSound.initializeSoundTagsError
 import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
@@ -37,11 +42,14 @@ import java.util.*
 var bedtimeStoryIcon by mutableStateOf(-1)
 var bedtimeStoryName by mutableStateOf("")
 var bedtimeStoryDescription by mutableStateOf("")
+var bedtimeStoryTags by mutableStateOf("")
 var bedtimeStoryIconSelectionTitle by mutableStateOf("")
 var bedtimeStoryNameErrorMessage by mutableStateOf("")
 var bedtimeStoryDescriptionErrorMessage by mutableStateOf("")
+var bedtimeStoryTagsErrorMessage by mutableStateOf("")
 const val MIN_BEDTIME_STORY_NAME = 5
 const val MIN_BEDTIME_STORY_DESCRIPTION = 10
+const val MIN_BEDTIME_STORY_TAGS = 3
 var incompleteBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?>()
 var openBedtimeStoryNameTakenDialogBox by mutableStateOf(false)
 var openTooManyIncompleteBedtimeStoryDialogBox by mutableStateOf(false)
@@ -57,6 +65,8 @@ fun NameBedtimeStoryUI(
     clearChapterPagesList()
     clearBedtimeStoryChaptersList()
     clearPageRecordingsList()
+    setupAlertDialogs()
+
     var numberOfIncompleteBedtimeStories by rememberSaveable { mutableStateOf(-1) }
     BedtimeStoryBackend.queryIncompleteBedtimeStoryBasedOnUser(globalViewModel_!!.currentUser!!) {
         for (i in incompleteBedtimeStories.size until it.size) {
@@ -65,31 +75,12 @@ fun NameBedtimeStoryUI(
         numberOfIncompleteBedtimeStories = incompleteBedtimeStories.size
     }
     val scrollState = rememberScrollState()
-    if(openBedtimeStoryNameTakenDialogBox){
-        AlertDialogBox(text = "The name '$bedtimeStoryName' already exists")
-    }
-    if(openTooManyIncompleteBedtimeStoryDialogBox){
-        AlertDialogBox(text = "You have three bedtime stories in progress already")
-    }
-    bedtimeStoryNameErrorMessage = if(bedtimeStoryName.isEmpty()){
-        "Name this bedtime story"
-    } else if(bedtimeStoryName.length < MIN_BEDTIME_STORY_NAME){
-        "Name must be at least $MIN_BEDTIME_STORY_NAME characters"
-    } else{
-        ""
-    }
-    bedtimeStoryDescriptionErrorMessage = if(bedtimeStoryDescription.isEmpty()){
-        "Describe this bedtime story"
-    } else if(bedtimeStoryDescription.length < MIN_BEDTIME_STORY_DESCRIPTION){
-        "Description must be at least $MIN_BEDTIME_STORY_DESCRIPTION characters"
-    } else{
-        ""
-    }
-    bedtimeStoryIconSelectionTitle = if(bedtimeStoryIcon == -1){
-        "Select icon"
-    }else{
-        "Icon selected"
-    }
+
+    initializeBedtimeStoryNameError()
+    initializeBedtimeStoryDescriptionError()
+    initializeBedtimeStoryTagsError()
+    initializeBedtimeStoryIconError()
+
     ConstraintLayout(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -102,6 +93,8 @@ fun NameBedtimeStoryUI(
             name_error,
             soundShortDescriptionColumn,
             description_error,
+            bedtimeStoryTagColumn,
+            tag_error,
             icon_title,
             icons,
             inProgress,
@@ -217,10 +210,45 @@ fun NameBedtimeStoryUI(
             )
         }
         Column(
+            modifier = Modifier
+                .constrainAs(bedtimeStoryTagColumn) {
+                    top.linkTo(description_error.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ) {
+            bedtimeStoryTags = customizedOutlinedTextInput(
+                width = 0,
+                height = 55,
+                color = SoftPeach,
+                focusedBorderColor = BeautyBush,
+                inputFontSize = 16,
+                placeholder = "Tags",
+                placeholderFontSize = 16,
+                offset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(tag_error) {
+                    top.linkTo(bedtimeStoryTagColumn.bottom, margin = 4.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedLightText(
+                text = bedtimeStoryTagsErrorMessage,
+                color = Black,
+                fontSize = 10,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .constrainAs(icon_title) {
-                    top.linkTo(description_error.bottom, margin = 24.dp)
+                    top.linkTo(tag_error.bottom, margin = 24.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -302,6 +330,7 @@ fun NameBedtimeStoryUI(
             if(
                 bedtimeStoryName.length >= MIN_BEDTIME_STORY_NAME &&
                 bedtimeStoryDescription.length >= MIN_BEDTIME_STORY_DESCRIPTION &&
+                bedtimeStoryTags.length >= MIN_BEDTIME_STORY_TAGS &&
                 bedtimeStoryIcon != -1
             ) {
                 CustomizableButton(
@@ -316,10 +345,11 @@ fun NameBedtimeStoryUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    navigateToRecordBedtimeStory(
-                        navController,
-                        bedtimeStoryData
-                    )
+                    runOnUiThread {
+                        navigateToUploadBedtimeStory(
+                            navController
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Or()
@@ -336,64 +366,7 @@ fun NameBedtimeStoryUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    var otherBedtimeStoriesWithSameName by mutableStateOf(-1)
-                    BedtimeStoryBackend.queryBedtimeStoryBasedOnDisplayName(bedtimeStoryName){
-                        otherBedtimeStoriesWithSameName = if(it.isEmpty()) 0 else it.size
-                    }
-                    Thread.sleep(1_000)
-                    if(numberOfIncompleteBedtimeStories != -1){
-                        if(numberOfIncompleteBedtimeStories < 3){
-                            Log.i("Name bedtime", "Number of incomplete stories 1: $numberOfIncompleteBedtimeStories")
-                            Log.i("Name bedtime", "Number of otherBedtimeStoriesWithSameName 1: $otherBedtimeStoriesWithSameName")
-                            if (otherBedtimeStoriesWithSameName < 1) {
-                                Log.i("Name bedtime", "Current user: ${globalViewModel_!!.currentUser!!}")
-                                val bedtimeStory = BedtimeStoryObject.BedtimeStory(
-                                    UUID.randomUUID().toString(),
-                                    UserObject.User.from(globalViewModel_!!.currentUser!!),
-                                    bedtimeStoryName,
-                                    bedtimeStoryDescription,
-                                    "",
-                                    bedtimeStoryIcon,
-                                    0,
-                                    false,
-                                    BedtimeStoryAudioSource.RECORDED,
-                                    BedtimeStoryApprovalStatus.PENDING,
-                                    BedtimeStoryCreationStatus.INCOMPLETE
-                                )
-                                BedtimeStoryBackend.createBedtimeStory(bedtimeStory) { bedtimeStoryData ->
-                                    if (globalViewModel_!!.currentUser != null) {
-                                        var userAlreadyHasBedtimeStory = false
-                                        for (userBedtimeStory in globalViewModel_!!.currentUser!!.bedtimeStories) {
-                                            if (
-                                                userBedtimeStory.bedtimeStoryInfoData.id == bedtimeStoryData.id &&
-                                                userBedtimeStory.userData.id == globalViewModel_!!.currentUser!!.id
-                                            ) {
-                                                userAlreadyHasBedtimeStory = true
-                                            }
-                                        }
-                                        if (!userAlreadyHasBedtimeStory) {
-                                            UserBedtimeStoryBackend.createUserRoutineObject(
-                                                bedtimeStoryData
-                                            ) {
-                                                runOnUiThread {
-                                                    navigateToRecordBedtimeStory(
-                                                        navController,
-                                                        bedtimeStoryData
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }else{
-                                if(otherBedtimeStoriesWithSameName > 0){
-                                    openBedtimeStoryNameTakenDialogBox = true
-                                }
-                            }
-                        }else{
-                            openTooManyIncompleteBedtimeStoryDialogBox = true
-                        }
-                    }
+                    createBedtimeStory(numberOfIncompleteBedtimeStories, navController)
                 }
             }
         }
@@ -427,12 +400,139 @@ fun NameBedtimeStoryUI(
     }
 }
 
+@Composable
+fun setupAlertDialogs(){
+    if(openBedtimeStoryNameTakenDialogBox){
+        AlertDialogBox(text = "The name '$bedtimeStoryName' already exists")
+    }
+    if(openTooManyIncompleteBedtimeStoryDialogBox){
+        AlertDialogBox(text = "You have three bedtime stories in progress already")
+    }
+}
+
+fun initializeBedtimeStoryNameError() {
+    bedtimeStoryNameErrorMessage = if(bedtimeStoryName.isEmpty()){
+        "Name this bedtime story"
+    } else if(bedtimeStoryName.length < MIN_BEDTIME_STORY_NAME){
+        "Name must be at least $MIN_BEDTIME_STORY_NAME characters"
+    } else{
+        ""
+    }
+}
+
+fun initializeBedtimeStoryDescriptionError() {
+    bedtimeStoryDescriptionErrorMessage = if(bedtimeStoryDescription.isEmpty()){
+        "Describe this bedtime story"
+    } else if(bedtimeStoryDescription.length < MIN_BEDTIME_STORY_DESCRIPTION){
+        "Description must be at least $MIN_BEDTIME_STORY_DESCRIPTION characters"
+    } else{
+        ""
+    }
+}
+
+fun initializeBedtimeStoryTagsError() {
+    bedtimeStoryTagsErrorMessage = if(bedtimeStoryTags.isEmpty()){
+        "Add tags to this bedtime story. Separate tags with a comma"
+    } else if(bedtimeStoryTags.length < MIN_BEDTIME_STORY_TAGS){
+        "Tags must be at least $MIN_BEDTIME_STORY_TAGS characters"
+    } else{
+        ""
+    }
+}
+
+fun initializeBedtimeStoryIconError() {
+    bedtimeStoryIconSelectionTitle = if(bedtimeStoryIcon == -1){
+        "Select icon"
+    }else{
+        "Icon selected"
+    }
+}
+
+fun createBedtimeStory(
+    numberOfIncompleteBedtimeStories: Int,
+    navController: NavController
+){
+    var otherBedtimeStoriesWithSameName by mutableStateOf(-1)
+    BedtimeStoryBackend.queryBedtimeStoryBasedOnDisplayName(bedtimeStoryName){
+        otherBedtimeStoriesWithSameName = if(it.isEmpty()) 0 else it.size
+    }
+    Thread.sleep(1_000)
+    val tags = getBedtimeStoryTagsList()
+    if(numberOfIncompleteBedtimeStories != -1){
+        if(numberOfIncompleteBedtimeStories < 3){
+            if (otherBedtimeStoriesWithSameName == 0) {
+                val bedtimeStory = BedtimeStoryObject.BedtimeStory(
+                    UUID.randomUUID().toString(),
+                    UserObject.User.from(globalViewModel_!!.currentUser!!),
+                    bedtimeStoryName,
+                    bedtimeStoryDescription,
+                    "",
+                    bedtimeStoryIcon,
+                    0,
+                    false,
+                    tags,
+                    BedtimeStoryAudioSource.RECORDED,
+                    BedtimeStoryApprovalStatus.PENDING,
+                    BedtimeStoryCreationStatus.INCOMPLETE
+                )
+                BedtimeStoryBackend.createBedtimeStory(bedtimeStory) { bedtimeStoryData ->
+                    if (globalViewModel_!!.currentUser != null) {
+                        var userAlreadyHasBedtimeStory = false
+                        for (userBedtimeStory in globalViewModel_!!.currentUser!!.bedtimeStories) {
+                            if (
+                                userBedtimeStory.bedtimeStoryInfoData.id == bedtimeStoryData.id &&
+                                userBedtimeStory.userData.id == globalViewModel_!!.currentUser!!.id
+                            ) {
+                                userAlreadyHasBedtimeStory = true
+                            }
+                        }
+                        if (!userAlreadyHasBedtimeStory) {
+                            UserBedtimeStoryBackend.createUserBedtimeStoryObject(
+                                bedtimeStoryData
+                            ) {
+                                runOnUiThread {
+                                    navigateToRecordBedtimeStory(
+                                        navController,
+                                        bedtimeStoryData
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }else{
+                if(otherBedtimeStoriesWithSameName > 0){
+                    openBedtimeStoryNameTakenDialogBox = true
+                }
+            }
+        }else{
+            openTooManyIncompleteBedtimeStoryDialogBox = true
+        }
+    }
+}
+
+fun getBedtimeStoryTagsList():List<String> {
+    return bedtimeStoryTags.split(",")
+}
+
+fun resetNameBedtimeStoryVariables(){
+    bedtimeStoryIcon = -1
+    bedtimeStoryName = ""
+    bedtimeStoryDescription = ""
+    bedtimeStoryTags = ""
+    bedtimeStoryIconSelectionTitle = ""
+    bedtimeStoryNameErrorMessage = ""
+    bedtimeStoryDescriptionErrorMessage = ""
+    bedtimeStoryTagsErrorMessage = ""
+    incompleteBedtimeStories.clear()
+}
+
 fun navigateToRecordBedtimeStory(navController: NavController, bedtimeStoryData: BedtimeStoryInfoData){
     navController.navigate("${Screen.RecordBedtimeStory.screen_route}/bedtimeStory=${BedtimeStoryObject.BedtimeStory.from(bedtimeStoryData)}")
 }
 
-fun navigateToUploadBedtimeStory(navController: NavController, bedtimeStoryData: BedtimeStoryInfoData){
-    navController.navigate("${Screen.UploadBedtimeStory.screen_route}/bedtimeStory=${BedtimeStoryObject.BedtimeStory.from(bedtimeStoryData)}")
+fun navigateToUploadBedtimeStory(navController: NavController){
+    navController.navigate(Screen.UploadBedtimeStory.screen_route)
 }
 
 @OptIn(ExperimentalMaterialApi::class)

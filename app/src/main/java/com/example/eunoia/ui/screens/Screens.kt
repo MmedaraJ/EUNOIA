@@ -9,29 +9,52 @@ import com.example.eunoia.R
 }*/
 
 sealed class Screen(var title: String, var icon: Int, var screen_route: String) {
+    /**
+     * bottom nav bar
+     */
     object Search: Screen("Search", R.drawable.search,"search")
     object Feedback: Screen("Feedback", R.drawable.feedback_icon,"feedback")
     object Account: Screen("Account", R.drawable.feedback_icon,"account")
+    object Dashboard : Screen("Dashboard", R.drawable.cloud,"dashboard")
+    object Create: Screen("Create", R.drawable.create_button,"create")
 
-    object Dashboard : Screen("Dashboard", R.drawable.cloud,"dashboard") {
-        val routeWithArg: String = "$screen_route?arg={arg}"
-        fun withArg(arg: String): String = routeWithArg.replace("{arg}", arg)
-    }
-
+    /**
+     * Sound
+     */
     object Sound: Screen("User", -1, "sound")
     object SoundScreen: Screen("Sound Screen", -1, "sound_screen")
+
+    /**
+     * Bedtime story
+     */
     object BedtimeStoryScreen: Screen("Bedtime Story Screen", -1,"bedtime_story_screen")
+
+    /**
+     * Settings
+     */
     object Settings: Screen("Settings", -1, "settings")
+    object EightHourCountdown: Screen("Eight Hour Countdown", -1,"eight_hour_countdown")
+
+    /**
+     * Article
+     */
     object Article: Screen("Article", -1, "article")
+
+    /**
+     * Pricing
+     */
     object Pricing: Screen("Pricing", -1, "pricing")
 
-    //create element
-    //sound
-    object Create: Screen("Create", R.drawable.create_button,"create")
+    /**
+     * Create Sound
+     */
     object NameSound: Screen("Name Sound", -1,"name_sound")
     object UploadSounds: Screen("Upload Sounds", -1,"upload_sounds")
     object CreatePreset: Screen("Create Preset", -1,"create_preset")
-    //bedtime story
+
+    /**
+     * Create bedtime story
+     */
     object NameBedtimeStory: Screen("Name Bedtime Story", -1,"name_bedtime_story")
     object RecordBedtimeStory: Screen("Record Bedtime Story", -1,"record_bedtime_story")
     object UploadBedtimeStory: Screen("Upload Bedtime Story", -1,"upload_bedtime_story")
@@ -39,12 +62,16 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
     object IncompleteBedtimeStories: Screen("Incomplete Bedtime Story", -1,"incomplete_bedtime_story")
     object ChapterPageScreen: Screen("Chapter Page Screen", -1,"chapter_page_screen")
 
-    //routine
+    /**
+     * Create prayer
+     */
+    object NamePrayer: Screen("Name Prayer", -1,"name_prayer")
+
+    /**
+     * Routine
+     */
     object RoutineScreen: Screen("Routine Screen", -1, "routine_screen")
 
-    //Settings
-    object EightHourCountdown: Screen("Eight Hour Countdown", -1,"eight_hour_countdown")
-    //
     fun saveState(): Bundle {
         return bundleOf(KEY_SCREEN to screen_route)
     }
@@ -53,28 +80,64 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
         fun restoreState(bundle: Bundle): Screen {
             val title = bundle.getString(KEY_SCREEN, Dashboard.screen_route)
             return when (title) {
+                /**
+                 * bottom nav bar
+                 */
                 Dashboard.screen_route -> Dashboard
                 Create.screen_route -> Create
+                Feedback.screen_route -> Feedback
+                Account.screen_route -> Account
+                Search.screen_route -> Search
+
+                /**
+                 * Create Sound
+                 */
                 NameSound.screen_route -> NameSound
+                CreatePreset.screen_route -> CreatePreset
+                UploadSounds.screen_route -> UploadSounds
+
+                /**
+                 * Create Sound
+                 */
                 NameBedtimeStory.screen_route -> NameBedtimeStory
                 RecordBedtimeStory.screen_route -> RecordBedtimeStory
                 UploadBedtimeStory.screen_route -> UploadBedtimeStory
                 BedtimeStoryChapterScreen.screen_route -> BedtimeStoryChapterScreen
                 IncompleteBedtimeStories.screen_route -> IncompleteBedtimeStories
                 ChapterPageScreen.screen_route -> ChapterPageScreen
-                UploadSounds.screen_route -> UploadSounds
-                CreatePreset.screen_route -> CreatePreset
-                Search.screen_route -> Search
-                Feedback.screen_route -> Feedback
-                Account.screen_route -> Account
+
+                /**
+                 * Sound
+                 */
                 Sound.screen_route -> Sound
                 SoundScreen.screen_route -> SoundScreen
-                RoutineScreen.screen_route -> RoutineScreen
+
+                /**
+                 * Bedtime story
+                 */
                 BedtimeStoryScreen.screen_route -> BedtimeStoryScreen
+
+                /**
+                 * Routine
+                 */
+                RoutineScreen.screen_route -> RoutineScreen
+
+                /**
+                 * Settings
+                 */
                 Settings.screen_route -> Settings
                 EightHourCountdown.screen_route -> EightHourCountdown
+
+                /**
+                 * Article
+                 */
                 Article.screen_route -> Article
+
+                /**
+                 * Pricing
+                 */
                 Pricing.screen_route -> Pricing
+
                 else -> Dashboard
             }
         }
