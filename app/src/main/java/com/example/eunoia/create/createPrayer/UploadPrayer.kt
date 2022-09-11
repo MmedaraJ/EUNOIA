@@ -60,7 +60,7 @@ fun UploadPrayerUI(
     val scrollState = rememberScrollState()
 
     if(openSavedElementDialogBox){
-        AlertDialogBox(text = "Prayer Saved. We will send you an email when it is approved")
+        AlertDialogBox(text = "Prayer Saved")
     }
     if(openPrayerNameTakenDialogBox){
         AlertDialogBox(text = "The name '$prayerName' already exists")
@@ -176,8 +176,8 @@ fun createPrayerFromUpload(
                 prayerIcon,
                 uploadedAudioFileLengthMilliSecondsPrayer.value,
                 false,
-                "",
-                "",
+                prayerReligion,
+                prayerCountry,
                 tags,
                 PrayerAudioSource.UPLOADED,
                 PrayerApprovalStatus.PENDING,

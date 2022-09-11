@@ -1629,7 +1629,7 @@ fun Article(title: String, summary: String, icon: Int, lambda: () -> Unit){
 }
 
 @Composable
-fun DropdownMenu(list: List<String>, title: String): String{
+fun dropdownMenuSoftPeach(list: List<String>, title: String): String{
     var expanded by remember { mutableStateOf(false)}
     var selectedIndex by remember { mutableStateOf(-1) }
 
@@ -1670,9 +1670,9 @@ fun DropdownMenu(list: List<String>, title: String): String{
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ){
-                        NormalText(
+                        LightText(
                             text = list[selectedIndex],
-                            color = BeautyBush,
+                            color = Black,
                             fontSize = 15,
                             xOffset = 0,
                             yOffset = 0
@@ -1738,9 +1738,9 @@ fun DropdownMenu(list: List<String>, title: String): String{
                         expanded = false
                     }
                 ) {
-                    NormalText(
+                    LightText(
                         text = s,
-                        color = BeautyBush,
+                        color = Black,
                         fontSize = 15,
                         xOffset = 0,
                         yOffset = 0

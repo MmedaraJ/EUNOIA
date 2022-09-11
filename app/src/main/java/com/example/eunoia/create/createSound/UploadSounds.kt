@@ -1,11 +1,8 @@
 package com.example.eunoia.create.createSound
 
-import android.content.Context
 import android.content.res.Configuration
-import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -144,7 +140,7 @@ fun UploadSoundsUI(
                 "9",
                 "10"
             )
-            numberOfFiles = DropdownMenu(numbers, "Number of files").toInt()
+            numberOfFiles = dropdownMenuSoftPeach(numbers, "Number of files").toInt()
         }
         Column(
             modifier = Modifier

@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
-import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -28,10 +27,14 @@ import kotlinx.coroutines.CoroutineScope
 var prayerIcon by mutableStateOf(-1)
 var prayerName by mutableStateOf("")
 var prayerDescription by mutableStateOf("")
+var prayerReligion by mutableStateOf("")
+var prayerCountry by mutableStateOf("")
 var prayerTags by mutableStateOf("")
 var prayerIconSelectionTitle by mutableStateOf("")
 var prayerNameErrorMessage by mutableStateOf("")
 var prayerDescriptionErrorMessage by mutableStateOf("")
+var prayerReligionErrorMessage by mutableStateOf("")
+var prayerCountryErrorMessage by mutableStateOf("")
 var prayerTagsErrorMessage by mutableStateOf("")
 const val MIN_PRAYER_NAME = 5
 const val MIN_PRAYER_DESCRIPTION = 10
@@ -51,6 +54,8 @@ fun NamePrayerUI(
     SetupAlertDialogs()
     initializePrayerNameError()
     initializePrayerDescriptionError()
+    initializePrayerReligionError()
+    initializePrayerCountryError()
     initializePrayerTagsError()
     initializePrayerIconError()
 
@@ -68,6 +73,10 @@ fun NamePrayerUI(
             description_error,
             tagColumn,
             tagError,
+            religionColumn,
+            religionError,
+            countryColumn,
+            countryError,
             iconTitle,
             icons,
             next,
@@ -183,8 +192,272 @@ fun NamePrayerUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(tagColumn) {
+                .constrainAs(religionColumn) {
                     top.linkTo(description_error.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ) {
+            val religions = listOf(
+                "Baha'i",
+                "Buddhism",
+                "Christianity",
+                "Confucianism",
+                "Hinduism",
+                "Islam",
+                "Jainism",
+                "Judaism",
+                "Shinto",
+                "Sikhism",
+                "Taoism",
+                "Zoroastrianism"
+            )
+            prayerReligion = dropdownMenuSoftPeach(religions, "Religion")
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(religionError) {
+                    top.linkTo(religionColumn.bottom, margin = 4.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedLightText(
+                text = prayerReligionErrorMessage,
+                color = Black,
+                fontSize = 10,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            modifier = Modifier
+                .constrainAs(countryColumn) {
+                    top.linkTo(religionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ) {
+            val countries = listOf(
+                "Afghanistan",
+                "Albania",
+                "Algeria",
+                "Andorra",
+                "Angola",
+                "Antigua and Barbuda",
+                "Argentina",
+                "Armenia",
+                "Australia",
+                "Austria",
+                "Azerbaijan",
+                "The Bahamas",
+                "Bahrain",
+                "Bangladesh",
+                "Barbados",
+                "Belarus",
+                "Belgium",
+                "Belize",
+                "Benin",
+                "Bhutan",
+                "Bolivia",
+                "Bosnia and Herzegovina",
+                "Botswana",
+                "Brazil",
+                "Brunei",
+                "Bulgaria",
+                "Burkina Faso",
+                "Burundi",
+                "Cabo Verde",
+                "Cambodia",
+                "Cameroon",
+                "Canada",
+                "Central African Republic",
+                "Chad",
+                "Chile",
+                "China",
+                "Colombia",
+                "Comoros",
+                "Congo, Democratic Republic of the",
+                "Congo, Republic of the",
+                "Costa Rica",
+                "Côte d’Ivoire",
+                "Croatia",
+                "Cuba",
+                "Cyprus",
+                "Czech Republic",
+                "Denmark",
+                "Djibouti",
+                "Dominica",
+                "Dominican Republic",
+                "East Timor (Timor-Leste)",
+                "Ecuador",
+                "Egypt",
+                "El Salvador",
+                "Equatorial Guinea",
+                "Eritrea",
+                "Estonia",
+                "Eswatini",
+                "Ethiopia",
+                "Fiji",
+                "Finland",
+                "France",
+                "Gabon",
+                "The Gambia",
+                "Georgia",
+                "Germany",
+                "Ghana",
+                "Greece",
+                "Grenada",
+                "Guatemala",
+                "Guinea",
+                "Guinea-Bissau",
+                "Guyana",
+                "Haiti",
+                "Honduras",
+                "Hungary",
+                "Iceland",
+                "India",
+                "Indonesia",
+                "Iran",
+                "Iraq",
+                "Ireland",
+                "Israel",
+                "Italy",
+                "Jamaica",
+                "Japan",
+                "Jordan",
+                "Kazakhstan",
+                "Kenya",
+                "Kiribati",
+                "Korea, North",
+                "Korea, South",
+                "Kosovo",
+                "Kuwait",
+                "Kyrgyzstan",
+                "Laos",
+                "Latvia",
+                "Lebanon",
+                "Lesotho",
+                "Liberia",
+                "Libya",
+                "Liechtenstein",
+                "Lithuania",
+                "Luxembourg",
+                "Madagascar",
+                "Malawi",
+                "Malaysia",
+                "Maldives",
+                "Mali",
+                "Malta",
+                "Marshall Islands",
+                "Mauritania",
+                "Mauritius",
+                "Mexico",
+                "Micronesia, Federated States of",
+                "Moldova",
+                "Monaco",
+                "Mongolia",
+                "Montenegro",
+                "Morocco",
+                "Mozambique",
+                "Myanmar (Burma)",
+                "Namibia",
+                "Nauru",
+                "Nepal",
+                "Netherlands",
+                "New Zealand",
+                "Nicaragua",
+                "Niger",
+                "Nigeria",
+                "North Macedonia",
+                "Norway",
+                "Oman",
+                "Pakistan",
+                "Palau",
+                "Panama",
+                "Papua New Guinea",
+                "Paraguay",
+                "Peru",
+                "Philippines",
+                "Poland",
+                "Portugal",
+                "Qatar",
+                "Romania",
+                "Russia",
+                "Rwanda",
+                "Saint Kitts and Nevis",
+                "Saint Lucia",
+                "Saint Vincent and the Grenadines",
+                "Samoa",
+                "San Marino",
+                "Sao Tome and Principe",
+                "Saudi Arabia",
+                "Senegal",
+                "Serbia",
+                "Seychelles",
+                "Sierra Leone",
+                "Singapore",
+                "Slovakia",
+                "Slovenia",
+                "Solomon Islands",
+                "Somalia",
+                "South Africa",
+                "Spain",
+                "Sri Lanka",
+                "Sudan",
+                "Sudan, South",
+                "Suriname",
+                "Sweden",
+                "Switzerland",
+                "Syria",
+                "Taiwan",
+                "Tajikistan",
+                "Tanzania",
+                "Thailand",
+                "Togo",
+                "Tonga",
+                "Trinidad and Tobago",
+                "Tunisia",
+                "Turkey",
+                "Turkmenistan",
+                "Tuvalu",
+                "Uganda",
+                "Ukraine",
+                "United Arab Emirates",
+                "United Kingdom",
+                "United States",
+                "Uruguay",
+                "Uzbekistan",
+                "Vanuatu",
+                "Vatican City",
+                "Venezuela",
+                "Vietnam",
+                "Yemen",
+                "Zambia",
+                "Zimbabwe"
+            )
+            prayerCountry = dropdownMenuSoftPeach(countries, "Country")
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(countryError) {
+                    top.linkTo(countryColumn.bottom, margin = 4.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedLightText(
+                text = prayerCountryErrorMessage,
+                color = Black,
+                fontSize = 10,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            modifier = Modifier
+                .constrainAs(tagColumn) {
+                    top.linkTo(countryError.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -379,6 +652,22 @@ private fun initializePrayerDescriptionError() {
         "Describe this prayer"
     } else if(prayerDescription.length < MIN_PRAYER_DESCRIPTION){
         "Description must be at least $MIN_PRAYER_DESCRIPTION characters"
+    } else{
+        ""
+    }
+}
+
+private fun initializePrayerReligionError() {
+    prayerReligionErrorMessage = if(prayerReligion == "0"){
+        "What religion is this prayer suited for?"
+    } else{
+        ""
+    }
+}
+
+private fun initializePrayerCountryError() {
+    prayerCountryErrorMessage = if(prayerCountry == "0"){
+        "What country is this prayer suited for?"
     } else{
         ""
     }

@@ -13,7 +13,7 @@ object BedtimeStoryObject{
     @Parcelize
     data class BedtimeStory(
         val id: String,
-        val bedtimeStoryOwner: @RawValue UserObject.User,
+        val bedtimeStoryOwner: @RawValue UserObject.User?,
         val displayName: String,
         val description: String,
         val audioKeyS3: String,
@@ -31,7 +31,7 @@ object BedtimeStoryObject{
 
         val data: BedtimeStoryInfoData
             get() = BedtimeStoryInfoData.builder()
-                .bedtimeStoryOwner(this.bedtimeStoryOwner.data)
+                .bedtimeStoryOwner(this.bedtimeStoryOwner!!.data)
                 .displayName(this.displayName)
                 .description(this.description)
                 .audioKeyS3(this.audioKeyS3)

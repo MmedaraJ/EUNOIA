@@ -70,7 +70,6 @@ class MediaPlayerService: Service(), MediaPlayer.OnPreparedListener, MediaPlayer
     }
 
     override fun onCompletion(mediaPlayer: MediaPlayer?) {
-        Log.i(TAG, "On completion: Yeah wahtever")
         mediaPlayer!!.seekTo(0)
         timer.stopTicking()
         recordingTimeDisplay.value = timer.setDuration(0)
