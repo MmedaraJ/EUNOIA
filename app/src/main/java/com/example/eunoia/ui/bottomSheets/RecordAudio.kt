@@ -37,6 +37,7 @@ import com.example.eunoia.create.createBedtimeStory.AudioWaves
 import com.example.eunoia.create.createBedtimeStory.clearAmplitudes
 import com.example.eunoia.create.createBedtimeStory.getLastAmplitude
 import com.example.eunoia.create.createPrayer.*
+import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.services.MediaPlayerService
 import com.example.eunoia.ui.components.*
@@ -127,7 +128,22 @@ fun RecordAudio(
                         yOffset = 0
                     ){
                         if(!isRecording.value) {
-                            closeRecordAudioAccordingly("prayer", context, scope, state)
+                            when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
+                                is ChapterPageData -> {
+                                    //closeRecordAudioAccordingly("special", context, scope, state)
+                                }
+                                is String ->{
+                                    when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
+                                        "prayer" ->{
+                                            closeRecordAudioAccordingly("special", context, scope, state)
+                                        }
+                                        "selfLove" ->{
+                                            closeRecordAudioAccordingly("special", context, scope, state)
+                                        }
+                                    }
+                                }
+                            }
+                            //closeRecordAudioAccordingly("special", context, scope, state)
                         }
                     }
                 }
@@ -384,8 +400,8 @@ fun closeRecordAudioAccordingly(
     state: ModalBottomSheetState
 ){
     when(action){
-        "prayer" -> {
-            closeRecordAudioForPrayer(
+        "special" -> {
+            closeRecordAudioForSomeElements(
                 context,
                 scope,
                 state
@@ -402,7 +418,7 @@ fun closeRecordAudioAccordingly(
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-fun closeRecordAudioForPrayer(
+fun closeRecordAudioForSomeElements(
     context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState
@@ -506,7 +522,16 @@ fun saveRecordedAudio(context: Context) {
                     recordedFileUriPrayer.value = recordingFile!!.absolutePath.toUri()
                     recordedAudioFileLengthMilliSecondsPrayer.value = recordingFile!!.length()
                     recordedFileColorPrayer.value = Peach
-                    clearRecordingForPrayer()
+                    clearRecordingForSomeElements()
+                }
+
+                "selfLove" ->{
+                    recordedSelfLoveAbsolutePath.value = recordingFile!!.absolutePath
+                    recordedFileSelfLove.value = recordingFile!!
+                    recordedFileUriSelfLove.value = recordingFile!!.absolutePath.toUri()
+                    recordedAudioFileLengthMilliSecondsSelfLove.value = recordingFile!!.length()
+                    recordedFileColorSelfLove.value = Peach
+                    clearRecordingForSomeElements()
                 }
             }
         }
@@ -546,7 +571,7 @@ fun updateChapterPageData(s3Key: String, chapterPageData: ChapterPageData) {
     }
 }
 
-fun clearRecordingForPrayer() {
+fun clearRecordingForSomeElements() {
     if(recordingFile!!.length() > 0) {
         stopRecorder()
     }

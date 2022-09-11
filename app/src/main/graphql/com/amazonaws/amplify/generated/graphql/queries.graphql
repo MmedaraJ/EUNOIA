@@ -1065,6 +1065,189 @@ query ListBedtimeStoryInfoDatas(
     nextToken
   }
 }
+query GetBedtimeStoryInfoChapterData($id: ID!) {
+  getBedtimeStoryInfoChapterData(id: $id) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      tags
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListBedtimeStoryInfoChapterDatas(
+  $filter: ModelBedtimeStoryInfoChapterDataFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listBedtimeStoryInfoChapterDatas(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        tags
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetChapterPageData($id: ID!) {
+  getChapterPageData(id: $id) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        tags
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListChapterPageDatas(
+  $filter: ModelChapterPageDataFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listChapterPageDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      display_name
+      pageNumber
+      audioKeysS3
+      audioNames
+      bedtimeStoryInfoChapterDataID
+      bedtimeStoryInfoChapter {
+        id
+        display_name
+        chapterNumber
+        bedtimeStoryInfoDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
 query GetPrayerData($id: ID!) {
   getPrayerData(id: $id) {
     id
@@ -1292,6 +1475,15 @@ query GetSelfLoveData($id: ID!) {
       owner
     }
     display_name
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    lyrics
+    tags
+    audioSource
+    approvalStatus
     routines {
       items {
         id
@@ -1348,6 +1540,15 @@ query ListSelfLoveDatas(
         owner
       }
       display_name
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
       routines {
         nextToken
       }
@@ -1827,6 +2028,15 @@ query GetUserData($id: ID!) {
         id
         userDataID
         display_name
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        lyrics
+        tags
+        audioSource
+        approvalStatus
         createdAt
         updatedAt
         owner
@@ -1945,189 +2155,6 @@ query ListUserDatas(
       }
       bedtimeStories {
         nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-query GetBedtimeStoryInfoChapterData($id: ID!) {
-  getBedtimeStoryInfoChapterData(id: $id) {
-    id
-    display_name
-    chapterNumber
-    bedtimeStoryInfoDataID
-    bedtimeStoryInfo {
-      id
-      userDataID
-      bedtimeStoryOwner {
-        id
-        username
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      displayName
-      description
-      audioKeyS3
-      icon
-      fullPlayTime
-      visibleToOthers
-      tags
-      audioSource
-      approvalStatus
-      creationStatus
-      routines {
-        nextToken
-      }
-      users {
-        nextToken
-      }
-      chapters {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    pages {
-      items {
-        id
-        display_name
-        pageNumber
-        audioKeysS3
-        audioNames
-        bedtimeStoryInfoChapterDataID
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListBedtimeStoryInfoChapterDatas(
-  $filter: ModelBedtimeStoryInfoChapterDataFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listBedtimeStoryInfoChapterDatas(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      display_name
-      chapterNumber
-      bedtimeStoryInfoDataID
-      bedtimeStoryInfo {
-        id
-        userDataID
-        displayName
-        description
-        audioKeyS3
-        icon
-        fullPlayTime
-        visibleToOthers
-        tags
-        audioSource
-        approvalStatus
-        creationStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      pages {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-query GetChapterPageData($id: ID!) {
-  getChapterPageData(id: $id) {
-    id
-    display_name
-    pageNumber
-    audioKeysS3
-    audioNames
-    bedtimeStoryInfoChapterDataID
-    bedtimeStoryInfoChapter {
-      id
-      display_name
-      chapterNumber
-      bedtimeStoryInfoDataID
-      bedtimeStoryInfo {
-        id
-        userDataID
-        displayName
-        description
-        audioKeyS3
-        icon
-        fullPlayTime
-        visibleToOthers
-        tags
-        audioSource
-        approvalStatus
-        creationStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      pages {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListChapterPageDatas(
-  $filter: ModelChapterPageDataFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listChapterPageDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      display_name
-      pageNumber
-      audioKeysS3
-      audioNames
-      bedtimeStoryInfoChapterDataID
-      bedtimeStoryInfoChapter {
-        id
-        display_name
-        chapterNumber
-        bedtimeStoryInfoDataID
-        createdAt
-        updatedAt
-        owner
       }
       createdAt
       updatedAt
@@ -3390,6 +3417,15 @@ query GetRoutineSelfLove($id: ID!) {
         owner
       }
       display_name
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
       routines {
         nextToken
       }
@@ -3453,6 +3489,15 @@ query ListRoutineSelfLoves(
         id
         userDataID
         display_name
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        lyrics
+        tags
+        audioSource
+        approvalStatus
         createdAt
         updatedAt
         owner
@@ -4057,6 +4102,15 @@ query GetUserSelfLove($id: ID!) {
         owner
       }
       display_name
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
       routines {
         nextToken
       }
@@ -4150,6 +4204,15 @@ query ListUserSelfLoves(
         id
         userDataID
         display_name
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        lyrics
+        tags
+        audioSource
+        approvalStatus
         createdAt
         updatedAt
         owner

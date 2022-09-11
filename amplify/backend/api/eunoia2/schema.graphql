@@ -136,6 +136,29 @@ type BedtimeStoryInfoData
     chapters: [BedtimeStoryInfoChapterData!] @hasMany(indexName: "BedtimeStoryInfoChapters", fields: ["id"])
 }
 
+type BedtimeStoryInfoChapterData
+@model (queries: { get: "getBedtimeStoryInfoChapterData", list: "listBedtimeStoryInfoChapterDatas" })
+@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
+    id: ID!
+    display_name: String!
+    chapterNumber: Int!
+    bedtimeStoryInfoDataID: ID! @index(name: "BedtimeStoryInfoChapters", sortKeyFields: ["chapterNumber"])
+    bedtimeStoryInfo: BedtimeStoryInfoData! @belongsTo(fields: ["bedtimeStoryInfoDataID"])
+    pages: [ChapterPageData!] @hasMany(indexName: "ChapterPages", fields: ["id"])
+}
+
+type ChapterPageData
+@model (queries: { get: "getChapterPageData", list: "listChapterPageDatas" })
+@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
+    id: ID!
+    display_name: String!
+    pageNumber: Int!
+    audioKeysS3: [String!]!
+    audioNames: [String!]!
+    bedtimeStoryInfoChapterDataID: ID! @index(name: "ChapterPages", sortKeyFields: ["pageNumber"])
+    bedtimeStoryInfoChapter: BedtimeStoryInfoChapterData! @belongsTo(fields: ["bedtimeStoryInfoChapterDataID"])
+}
+
 enum PrayerAudioSource{
     UPLOADED
     RECORDED
@@ -168,6 +191,17 @@ type PrayerData
     users: [UserData!] @manyToMany(relationName: "UserPrayer")
 }
 
+enum SelfLoveAudioSource{
+    UPLOADED
+    RECORDED
+}
+
+enum SelfLoveApprovalStatus{
+    PENDING
+    APPROVED
+    DISAPPROVED
+}
+
 type SelfLoveData
 @model (queries: { get: "getSelfLoveData", list: "listSelfLoveDatas" })
 @auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
@@ -175,6 +209,15 @@ type SelfLoveData
     userDataID: ID! @index(name: "SelfLovesOwnedByUser", sortKeyFields: ["display_name"])
     selfLoveOwner: UserData! @belongsTo(fields: ["userDataID"])
     display_name: String!
+    description: String!
+    audioKeyS3: String!
+    icon: Int
+    fullPlayTime: Int!
+    visibleToOthers: Boolean!
+    lyrics: [String!]
+    tags: [String!]
+    audioSource: SelfLoveAudioSource
+    approvalStatus: SelfLoveApprovalStatus
     routines: [RoutineData!] @manyToMany(relationName: "RoutineSelfLove")
     users: [UserData!] @manyToMany(relationName: "UserSelfLove")
 }
@@ -233,27 +276,4 @@ type UserData
     selfLoves: [SelfLoveData!] @manyToMany(relationName: "UserSelfLove")
     bedtimeStoriesOwnedByUser: [BedtimeStoryInfoData!] @hasMany(indexName: "BedtimeStoriesOwnedByUser", fields: ["id"])
     bedtimeStories: [BedtimeStoryInfoData!] @manyToMany(relationName: "UserBedtimeStoryInfo")
-}
-
-type BedtimeStoryInfoChapterData
-@model (queries: { get: "getBedtimeStoryInfoChapterData", list: "listBedtimeStoryInfoChapterDatas" })
-@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
-    id: ID!
-    display_name: String!
-    chapterNumber: Int!
-    bedtimeStoryInfoDataID: ID! @index(name: "BedtimeStoryInfoChapters", sortKeyFields: ["chapterNumber"])
-    bedtimeStoryInfo: BedtimeStoryInfoData! @belongsTo(fields: ["bedtimeStoryInfoDataID"])
-    pages: [ChapterPageData!] @hasMany(indexName: "ChapterPages", fields: ["id"])
-}
-
-type ChapterPageData
-@model (queries: { get: "getChapterPageData", list: "listChapterPageDatas" })
-@auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
-    id: ID!
-    display_name: String!
-    pageNumber: Int!
-    audioKeysS3: [String!]!
-    audioNames: [String!]!
-    bedtimeStoryInfoChapterDataID: ID! @index(name: "ChapterPages", sortKeyFields: ["pageNumber"])
-    bedtimeStoryInfoChapter: BedtimeStoryInfoChapterData! @belongsTo(fields: ["bedtimeStoryInfoChapterDataID"])
 }

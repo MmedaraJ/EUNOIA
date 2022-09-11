@@ -38,6 +38,7 @@ import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.backend.UserRoutineBackend
 import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.create.createPrayer.*
+import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.create.createSound.*
 import com.example.eunoia.create.createSound.selectedIndex
 import com.example.eunoia.models.RoutineObject
@@ -179,6 +180,37 @@ class UserDashboardActivity : ComponentActivity(), Timer.OnTimerTickListener {
                     uploadedAudioFileLengthMilliSecondsPrayer.value = durationStr!!.toLong()
                     uploadedFilePrayer.value = tempFile
                     uploadedFileColorPrayer.value = Peach
+                }
+            }
+        }
+
+    fun selectAudioSelfLove(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "audio/aac"
+        selectAudioSelfLoveActivityResult.launch(intent)
+    }
+
+    private val selectAudioSelfLoveActivityResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if(result.resultCode == Activity.RESULT_OK){
+                val data: Intent? = result.data
+                if(data?.data != null){
+                    val audioUri: Uri? = data.data
+                    uploadedFileUriSelfLove.value = audioUri!!
+                    Log.i(TAG, "Audio Uri ==>> $audioUri")
+                    val audioStream = audioUri.let {
+                        contentResolver.openInputStream(it)
+                    }
+                    val tempFile = File.createTempFile("audio", ".aac")
+                    copyStreamToFile(audioStream!!, tempFile)
+                    val mdt = MediaMetadataRetriever()
+                    mdt.setDataSource(tempFile.absolutePath)
+                    val durationStr = mdt.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                    uploadedAudioFileLengthMilliSecondsSelfLove.value = durationStr!!.toLong()
+                    uploadedFileSelfLove.value = tempFile
+                    uploadedFileColorSelfLove.value = Peach
                 }
             }
         }

@@ -13,13 +13,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.*
 import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -27,10 +27,12 @@ import kotlinx.coroutines.CoroutineScope
 var selfLoveIcon by mutableStateOf(-1)
 var selfLoveName by mutableStateOf("")
 var selfLoveDescription by mutableStateOf("")
+var selfLoveLyrics by mutableStateOf("")
 var selfLoveTags by mutableStateOf("")
 var selfLoveIconSelectionTitle by mutableStateOf("")
 var selfLoveNameErrorMessage by mutableStateOf("")
 var selfLoveDescriptionErrorMessage by mutableStateOf("")
+var selfLoveLyricsErrorMessage by mutableStateOf("")
 var selfLoveTagsErrorMessage by mutableStateOf("")
 const val MIN_SELF_LOVE_NAME = 5
 const val MIN_SELF_LOVE_DESCRIPTION = 10
@@ -50,6 +52,7 @@ fun NameSelfLoveUI(
     SetupAlertDialogs()
     initializeSelfLoveNameError()
     initializeSelfLoveDescriptionError()
+    initializeSelfLoveLyricsError()
     initializeSelfLoveTagsError()
     initializeSelfLoveIconError()
 
@@ -64,7 +67,9 @@ fun NameSelfLoveUI(
             nameColumn,
             name_error,
             descriptionColumn,
-            description_error,
+            descriptionError,
+            lyricsColumn,
+            lyricsError,
             tagColumn,
             tagError,
             iconTitle,
@@ -167,7 +172,7 @@ fun NameSelfLoveUI(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(description_error) {
+                .constrainAs(descriptionError) {
                     top.linkTo(descriptionColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
@@ -182,8 +187,44 @@ fun NameSelfLoveUI(
         }
         Column(
             modifier = Modifier
+                .constrainAs(lyricsColumn) {
+                    top.linkTo(descriptionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ) {
+            selfLoveLyrics = customizableBigOutlinedTextInput(
+                height = 150,
+                placeholder = "Lyrics",
+                backgroundColor = SoftPeach,
+                focusedBorderColor = BeautyBush,
+                unfocusedBorderColor = SoftPeach,
+                textColor = Black,
+                placeholderColor = BeautyBush,
+                placeholderTextSize = 16,
+                inputFontSize = 16,
+            ){}
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(lyricsError) {
+                    top.linkTo(lyricsColumn.bottom, margin = 4.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedLightText(
+                text = selfLoveLyricsErrorMessage,
+                color = Black,
+                fontSize = 10,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            modifier = Modifier
                 .constrainAs(tagColumn) {
-                    top.linkTo(description_error.bottom, margin = 16.dp)
+                    top.linkTo(lyricsError.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -337,8 +378,11 @@ fun NameSelfLoveUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    //Don't create self love yet. Create it after recording audio
-                    //navigate to record self love
+                    runOnUiThread {
+                        navigateToRecordSelfLove(
+                            navController
+                        )
+                    }
                 }
             }
         }
@@ -380,6 +424,10 @@ private fun initializeSelfLoveDescriptionError() {
     }
 }
 
+private fun initializeSelfLoveLyricsError() {
+    selfLoveLyricsErrorMessage = "Separate lyrics with a new line"
+}
+
 private fun initializeSelfLoveTagsError() {
     selfLoveTagsErrorMessage = if(selfLoveTags.isEmpty()){
         "Add tags to this self love. Separate tags with a comma"
@@ -398,6 +446,23 @@ private fun initializeSelfLoveIconError() {
     }
 }
 
+fun resetNameSelfLoveVariables(){
+    selfLoveIcon = -1
+    selfLoveName = ""
+    selfLoveDescription = ""
+    selfLoveLyrics = ""
+    selfLoveTags = ""
+    selfLoveIconSelectionTitle = ""
+    selfLoveNameErrorMessage = ""
+    selfLoveDescriptionErrorMessage = ""
+    selfLoveLyricsErrorMessage = ""
+    selfLoveTagsErrorMessage = ""
+}
+
 fun navigateToUploadSelfLove(navController: NavController){
-    //navController.navigate(Screen.UploadBedtimeStory.screen_route)
+    navController.navigate(Screen.UploadSelfLove.screen_route)
+}
+
+fun navigateToRecordSelfLove(navController: NavController){
+    navController.navigate(Screen.RecordSelfLove.screen_route)
 }

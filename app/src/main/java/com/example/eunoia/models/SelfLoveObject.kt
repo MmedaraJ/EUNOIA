@@ -4,7 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
-import com.amplifyframework.datastore.generated.model.SelfLoveData
+import com.amplifyframework.datastore.generated.model.*
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
@@ -15,6 +15,15 @@ object SelfLoveObject {
         val id: String,
         val selfLoveOwner: @RawValue UserObject.User,
         val displayName: String,
+        val description: String,
+        val audioKeyS3: String,
+        val icon: Int?,
+        val fullPlayTime: Long,
+        val visibleToOthers: Boolean,
+        val lyrics: List<String>?,
+        val tags: List<String>?,
+        val audioSource: SelfLoveAudioSource,
+        val approvalStatus: SelfLoveApprovalStatus,
     ): Parcelable{
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -24,6 +33,14 @@ object SelfLoveObject {
             get() = SelfLoveData.builder()
                 .selfLoveOwner(this.selfLoveOwner.data)
                 .displayName(this.displayName)
+                .description(this.description)
+                .audioKeyS3(this.audioKeyS3)
+                .fullPlayTime(this.fullPlayTime.toInt())
+                .visibleToOthers(this.visibleToOthers)
+                .lyrics(this.lyrics)
+                .tags(this.tags)
+                .audioSource(this.audioSource)
+                .approvalStatus(this.approvalStatus)
                 .id(this.id)
                 .build()
 
@@ -32,7 +49,16 @@ object SelfLoveObject {
                 val result = SelfLove(
                     selfLoveData.id,
                     UserObject.User.from(selfLoveData.selfLoveOwner),
-                    selfLoveData.displayName
+                    selfLoveData.displayName,
+                    selfLoveData.description,
+                    selfLoveData.audioKeyS3,
+                    selfLoveData.icon,
+                    selfLoveData.fullPlayTime.toLong(),
+                    selfLoveData.visibleToOthers,
+                    selfLoveData.lyrics,
+                    selfLoveData.tags,
+                    selfLoveData.audioSource,
+                    selfLoveData.approvalStatus,
                 )
                 return result
             }

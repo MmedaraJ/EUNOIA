@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.R
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.ui.bottomSheets.openSavedElementDialogBox
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
@@ -37,6 +38,7 @@ fun CreateUI(
     state: ModalBottomSheetState
 ){
     createSoundViewModel =  viewModel()
+    openSavedElementDialogBox = false
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier

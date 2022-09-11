@@ -2198,6 +2198,342 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
     owner
   }
 }
+subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
+  onCreateBedtimeStoryInfoChapterData(owner: $owner) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      tags
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
+  onUpdateBedtimeStoryInfoChapterData(owner: $owner) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      tags
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
+  onDeleteBedtimeStoryInfoChapterData(owner: $owner) {
+    id
+    display_name
+    chapterNumber
+    bedtimeStoryInfoDataID
+    bedtimeStoryInfo {
+      id
+      userDataID
+      bedtimeStoryOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      tags
+      audioSource
+      approvalStatus
+      creationStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    pages {
+      items {
+        id
+        display_name
+        pageNumber
+        audioKeysS3
+        audioNames
+        bedtimeStoryInfoChapterDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateChapterPageData($owner: String) {
+  onCreateChapterPageData(owner: $owner) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        tags
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateChapterPageData($owner: String) {
+  onUpdateChapterPageData(owner: $owner) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        tags
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteChapterPageData($owner: String) {
+  onDeleteChapterPageData(owner: $owner) {
+    id
+    display_name
+    pageNumber
+    audioKeysS3
+    audioNames
+    bedtimeStoryInfoChapterDataID
+    bedtimeStoryInfoChapter {
+      id
+      display_name
+      chapterNumber
+      bedtimeStoryInfoDataID
+      bedtimeStoryInfo {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        tags
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      pages {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
 subscription OnCreatePrayerData($owner: String) {
   onCreatePrayerData(owner: $owner) {
     id
@@ -2585,6 +2921,15 @@ subscription OnCreateSelfLoveData($owner: String) {
       owner
     }
     display_name
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    lyrics
+    tags
+    audioSource
+    approvalStatus
     routines {
       items {
         id
@@ -2681,6 +3026,15 @@ subscription OnUpdateSelfLoveData($owner: String) {
       owner
     }
     display_name
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    lyrics
+    tags
+    audioSource
+    approvalStatus
     routines {
       items {
         id
@@ -2777,6 +3131,15 @@ subscription OnDeleteSelfLoveData($owner: String) {
       owner
     }
     display_name
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    lyrics
+    tags
+    audioSource
+    approvalStatus
     routines {
       items {
         id
@@ -3570,6 +3933,15 @@ subscription OnCreateUserData($owner: String) {
         id
         userDataID
         display_name
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        lyrics
+        tags
+        audioSource
+        approvalStatus
         createdAt
         updatedAt
         owner
@@ -3813,6 +4185,15 @@ subscription OnUpdateUserData($owner: String) {
         id
         userDataID
         display_name
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        lyrics
+        tags
+        audioSource
+        approvalStatus
         createdAt
         updatedAt
         owner
@@ -4056,6 +4437,15 @@ subscription OnDeleteUserData($owner: String) {
         id
         userDataID
         display_name
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        lyrics
+        tags
+        audioSource
+        approvalStatus
         createdAt
         updatedAt
         owner
@@ -4103,342 +4493,6 @@ subscription OnDeleteUserData($owner: String) {
         owner
       }
       nextToken
-    }
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
-  onCreateBedtimeStoryInfoChapterData(owner: $owner) {
-    id
-    display_name
-    chapterNumber
-    bedtimeStoryInfoDataID
-    bedtimeStoryInfo {
-      id
-      userDataID
-      bedtimeStoryOwner {
-        id
-        username
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      displayName
-      description
-      audioKeyS3
-      icon
-      fullPlayTime
-      visibleToOthers
-      tags
-      audioSource
-      approvalStatus
-      creationStatus
-      routines {
-        nextToken
-      }
-      users {
-        nextToken
-      }
-      chapters {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    pages {
-      items {
-        id
-        display_name
-        pageNumber
-        audioKeysS3
-        audioNames
-        bedtimeStoryInfoChapterDataID
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
-  onUpdateBedtimeStoryInfoChapterData(owner: $owner) {
-    id
-    display_name
-    chapterNumber
-    bedtimeStoryInfoDataID
-    bedtimeStoryInfo {
-      id
-      userDataID
-      bedtimeStoryOwner {
-        id
-        username
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      displayName
-      description
-      audioKeyS3
-      icon
-      fullPlayTime
-      visibleToOthers
-      tags
-      audioSource
-      approvalStatus
-      creationStatus
-      routines {
-        nextToken
-      }
-      users {
-        nextToken
-      }
-      chapters {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    pages {
-      items {
-        id
-        display_name
-        pageNumber
-        audioKeysS3
-        audioNames
-        bedtimeStoryInfoChapterDataID
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
-  onDeleteBedtimeStoryInfoChapterData(owner: $owner) {
-    id
-    display_name
-    chapterNumber
-    bedtimeStoryInfoDataID
-    bedtimeStoryInfo {
-      id
-      userDataID
-      bedtimeStoryOwner {
-        id
-        username
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      displayName
-      description
-      audioKeyS3
-      icon
-      fullPlayTime
-      visibleToOthers
-      tags
-      audioSource
-      approvalStatus
-      creationStatus
-      routines {
-        nextToken
-      }
-      users {
-        nextToken
-      }
-      chapters {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    pages {
-      items {
-        id
-        display_name
-        pageNumber
-        audioKeysS3
-        audioNames
-        bedtimeStoryInfoChapterDataID
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnCreateChapterPageData($owner: String) {
-  onCreateChapterPageData(owner: $owner) {
-    id
-    display_name
-    pageNumber
-    audioKeysS3
-    audioNames
-    bedtimeStoryInfoChapterDataID
-    bedtimeStoryInfoChapter {
-      id
-      display_name
-      chapterNumber
-      bedtimeStoryInfoDataID
-      bedtimeStoryInfo {
-        id
-        userDataID
-        displayName
-        description
-        audioKeyS3
-        icon
-        fullPlayTime
-        visibleToOthers
-        tags
-        audioSource
-        approvalStatus
-        creationStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      pages {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnUpdateChapterPageData($owner: String) {
-  onUpdateChapterPageData(owner: $owner) {
-    id
-    display_name
-    pageNumber
-    audioKeysS3
-    audioNames
-    bedtimeStoryInfoChapterDataID
-    bedtimeStoryInfoChapter {
-      id
-      display_name
-      chapterNumber
-      bedtimeStoryInfoDataID
-      bedtimeStoryInfo {
-        id
-        userDataID
-        displayName
-        description
-        audioKeyS3
-        icon
-        fullPlayTime
-        visibleToOthers
-        tags
-        audioSource
-        approvalStatus
-        creationStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      pages {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnDeleteChapterPageData($owner: String) {
-  onDeleteChapterPageData(owner: $owner) {
-    id
-    display_name
-    pageNumber
-    audioKeysS3
-    audioNames
-    bedtimeStoryInfoChapterDataID
-    bedtimeStoryInfoChapter {
-      id
-      display_name
-      chapterNumber
-      bedtimeStoryInfoDataID
-      bedtimeStoryInfo {
-        id
-        userDataID
-        displayName
-        description
-        audioKeyS3
-        icon
-        fullPlayTime
-        visibleToOthers
-        tags
-        audioSource
-        approvalStatus
-        creationStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      pages {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
     }
     createdAt
     updatedAt
@@ -6851,6 +6905,15 @@ subscription OnCreateRoutineSelfLove($owner: String) {
         owner
       }
       display_name
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
       routines {
         nextToken
       }
@@ -6968,6 +7031,15 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
         owner
       }
       display_name
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
       routines {
         nextToken
       }
@@ -7085,6 +7157,15 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
         owner
       }
       display_name
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
       routines {
         nextToken
       }
@@ -8280,6 +8361,15 @@ subscription OnCreateUserSelfLove($owner: String) {
         owner
       }
       display_name
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
       routines {
         nextToken
       }
@@ -8387,6 +8477,15 @@ subscription OnUpdateUserSelfLove($owner: String) {
         owner
       }
       display_name
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
       routines {
         nextToken
       }
@@ -8494,6 +8593,15 @@ subscription OnDeleteUserSelfLove($owner: String) {
         owner
       }
       display_name
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
       routines {
         nextToken
       }

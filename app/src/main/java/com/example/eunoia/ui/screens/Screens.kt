@@ -73,6 +73,8 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
      * Create self love
      */
     object NameSelfLove: Screen("Name Self Love", -1,"name_self_love")
+    object UploadSelfLove: Screen("Upload Self Love", -1,"upload_self_love")
+    object RecordSelfLove: Screen("Record Self Love", -1,"record_self_love")
 
     /**
      * Routine
@@ -124,6 +126,8 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                  * Create Self Love
                  */
                 NameSelfLove.screen_route -> NameSelfLove
+                UploadSelfLove.screen_route -> UploadSelfLove
+                RecordSelfLove.screen_route -> RecordSelfLove
 
                 /**
                  * Sound

@@ -564,6 +564,24 @@ fun CreateTab(
                 state = state
             )
         }
+        composable(Screen.UploadSelfLove.screen_route) {
+            Log.i("UploadSelfLove", "You are now on the UploadSelfLove tab")
+            UploadSelfLoveUI(
+                navController = navController,
+                globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
+            )
+        }
+        composable(Screen.RecordSelfLove.screen_route) {
+            Log.i("RecordSelfLove", "You are now on the RecordSelfLove tab")
+            RecordSelfLoveUI(
+                navController = navController,
+                globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
+            )
+        }
     }
 }
 
