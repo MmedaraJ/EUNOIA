@@ -63,35 +63,40 @@ type RoutineData
     id: ID!
     userDataID: ID! @index(name: "RoutinesOwnedByUser", sortKeyFields: ["display_name"])
     routineOwner: UserData! @belongsTo(fields: ["userDataID"])
-    original_name: String!
-    display_name: String!
-    numberOfSteps: Int!
-    numberOfTimesUsed: Int!
-    fullPlayTime: Int!
-    icon: Int!
-    visible_to_others: Boolean!
-    colorHEX: Int!
-    playSoundDuringStretch: Boolean!
-    playSoundDuringBreathing: Boolean!
-    playSoundDuringSelfLove: Boolean!
-    playSoundDuringBedtimeStory: Boolean!
-    playSoundDuringSleep: Boolean!
-    eachSoundPlayTime: Int!
-    bedtimeStoryPlayTime: Int!
-    selfLovePlayTime: Int!
-    stretchTime: Int!
-    breathingTime: Int!
-    currentBedtimeStoryPlayingIndex: Int!
-    currentBedtimeStoryContinuePlayingTime: Int!
-    currentSelfLovePlayingIndex: Int!
-    currentSelfLoveContinuePlayingTime: Int!
+    original_name: String
+    display_name: String
+    numberOfSteps: Int
+    numberOfTimesUsed: Int
+    fullPlayTime: Int
+    icon: Int
+    visible_to_others: Boolean
+    colorHEX: Int
+    playSoundDuringStretch: Boolean
+    playSoundDuringPrayer: Boolean
+    playSoundDuringBreathing: Boolean
+    playSoundDuringSelfLove: Boolean
+    playSoundDuringBedtimeStory: Boolean
+    playSoundDuringSleep: Boolean
+    eachSoundPlayTime: Int
+    prayerPlayTime: Int
+    bedtimeStoryPlayTime: Int
+    selfLovePlayTime: Int
+    stretchTime: Int
+    breathingTime: Int
+    currentBedtimeStoryPlayingIndex: Int
+    currentBedtimeStoryContinuePlayingTime: Int
+    currentSelfLovePlayingIndex: Int
+    currentSelfLoveContinuePlayingTime: Int
+    currentPrayerPlayingIndex: Int
+    currentPrayerContinuePlayingTime: Int
     sounds: [SoundData!] @manyToMany(relationName: "RoutineSound")
+    prayers: [PrayerData!] @manyToMany(relationName: "RoutinePrayer")
     stretches: [StretchData!] @manyToMany(relationName: "RoutineStretch")
     breathing: [BreathingData!] @manyToMany(relationName: "RoutineBreathing")
     bedtimeStories: [BedtimeStoryInfoData!] @manyToMany(relationName: "RoutineBedtimeStoryInfo")
     selfLoves: [SelfLoveData!] @manyToMany(relationName: "RoutineSelfLove")
     users: [UserData!] @manyToMany(relationName: "UserRoutine")
-    playingOrder: [String!]!
+    playingOrder: [String!]
 }
 
 enum BedtimeStoryAudioSource{
@@ -129,6 +134,38 @@ type BedtimeStoryInfoData
     routines: [RoutineData!] @manyToMany(relationName: "RoutineBedtimeStoryInfo")
     users: [UserData!] @manyToMany(relationName: "UserBedtimeStoryInfo")
     chapters: [BedtimeStoryInfoChapterData!] @hasMany(indexName: "BedtimeStoryInfoChapters", fields: ["id"])
+}
+
+enum PrayerAudioSource{
+    UPLOADED
+    RECORDED
+}
+
+enum PrayerApprovalStatus{
+    PENDING
+    APPROVED
+    DISAPPROVED
+}
+
+type PrayerData
+@model (queries: { get: "getPrayerData", list: "listPrayerDatas" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userDataID: ID! @index(name: "PrayersOwnedByUser", sortKeyFields: ["displayName"])
+    prayerOwner: UserData! @belongsTo(fields: ["userDataID"])
+    displayName: String!
+    description: String!
+    audioKeyS3: String!
+    icon: Int
+    fullPlayTime: Int!
+    visibleToOthers: Boolean!
+    religion: String
+    country: String
+    tags: [String!]
+    audioSource: PrayerAudioSource
+    approvalStatus: PrayerApprovalStatus
+    routines: [RoutineData!] @manyToMany(relationName: "RoutinePrayer")
+    users: [UserData!] @manyToMany(relationName: "UserPrayer")
 }
 
 type SelfLoveData
@@ -188,6 +225,8 @@ type UserData
     routines: [RoutineData!] @manyToMany(relationName: "UserRoutine")
     stretchesOwnedByUser: [StretchData!] @hasMany(indexName: "StretchesOwnedByUser", fields: ["id"])
     stretches: [StretchData!] @manyToMany(relationName: "UserStretch")
+    prayersOwnedByUser: [PrayerData!] @hasMany(indexName: "PrayersOwnedByUser", fields: ["id"])
+    prayers: [PrayerData!] @manyToMany(relationName: "UserPrayer")
     breathingsOwnedByUser: [BreathingData!] @hasMany(indexName: "BreathingsOwnedByUser", fields: ["id"])
     breathings: [BreathingData!] @manyToMany(relationName: "UserBreathing")
     selfLovesOwnedByUser: [SelfLoveData!] @hasMany(indexName: "SelfLovesOwnedByUser", fields: ["id"])

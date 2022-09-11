@@ -9,7 +9,6 @@ import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.*
-import android.speech.SpeechRecognizer
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.amplifyframework.datastore.generated.model.ChapterPageData
 import com.example.eunoia.R
@@ -36,6 +36,7 @@ import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.create.createBedtimeStory.AudioWaves
 import com.example.eunoia.create.createBedtimeStory.clearAmplitudes
 import com.example.eunoia.create.createBedtimeStory.getLastAmplitude
+import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.services.MediaPlayerService
 import com.example.eunoia.ui.components.*
@@ -47,8 +48,6 @@ import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import java.io.IOException
-import java.time.LocalDateTime
-import kotlin.concurrent.fixedRateTimer
 
 private var TAG = "Record Audio"
 private var isRecording = mutableStateOf(false)
@@ -59,16 +58,11 @@ private var vibrator: Vibrator = UserDashboardActivity.getInstanceActivity().get
 var recordingTimeDisplay = mutableStateOf("00:00.00")
 var showRecordIcon = mutableStateOf(true)
 var showPause = mutableStateOf(false)
-var allowPlayback = mutableStateOf(false)
 var currentMaxAmplitude = mutableStateOf(0)
 var recordingFile: File? = null
 var audioMediaPlayerIsPlaying = mutableStateOf(false)
 var audioMediaPlayerInitialized = mutableStateOf(false)
 var noOfPlaybackClicks = mutableStateOf(0)
-//lateinit var speechRecognizer: SpeechRecognizer
-//private lateinit var speechRecognizerIntent: Intent
-var recognizedSpeech = "New Recording"
-var isRecognizingSpeech = mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -133,7 +127,7 @@ fun RecordAudio(
                         yOffset = 0
                     ){
                         if(!isRecording.value) {
-                            closeRecordAudio(context, scope, state)
+                            closeRecordAudioAccordingly("prayer", context, scope, state)
                         }
                     }
                 }
@@ -175,7 +169,6 @@ fun RecordAudioControls(){
     recordingFile = File(context.externalCacheDir!!.absolutePath + "/${globalViewModel_!!.currentUser!!.username}_audio.aac")
     Log.i(TAG, "Recording file length is: ${recordingFile!!.length()}")
     Log.i(TAG, "Recording file absolute is: ${recordingFile!!.absolutePath}")
-    //initializeAudioRecordedMediaPlayer(context)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -246,7 +239,7 @@ fun RecordAudioControls(){
                         0
                     ) {
                         if(!isRecording.value && !audioMediaPlayerIsPlaying.value) {
-                            saveRecordedAudioToS3(context)
+                            saveRecordedAudio(context)
                         }
                     }
                 }
@@ -267,9 +260,6 @@ fun RecordAudioControls(){
                                 .background(BeautyBush)
                                 .clickable {
                                     currentMaxAmplitude.value = 0
-                                    recognizedSpeech = ""
-                                    //speechRecognizer.startListening(speechRecognizerIntent)
-                                    isRecognizingSpeech.value = true
                                     setUpMediaRecorder(context)
                                     vibrator.vibrate(
                                         VibrationEffect.createOneShot(
@@ -277,7 +267,6 @@ fun RecordAudioControls(){
                                             VibrationEffect.DEFAULT_AMPLITUDE
                                         )
                                     )
-                                    UserDashboardActivity.getInstanceActivity().startSpeechRecognizer()
                                 },
                             contentAlignment = Alignment.Center
                         ) {
@@ -388,6 +377,52 @@ fun RecordAudioControls(){
 }
 
 @OptIn(ExperimentalMaterialApi::class)
+fun closeRecordAudioAccordingly(
+    action: String,
+    context: Context,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+){
+    when(action){
+        "prayer" -> {
+            closeRecordAudioForPrayer(
+                context,
+                scope,
+                state
+            )
+        }
+        else -> {
+            closeRecordAudio(
+                context,
+                scope,
+                state
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+fun closeRecordAudioForPrayer(
+    context: Context,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+) {
+    if(isRecording.value) {
+        stopRecorder()
+    }
+    timer.stop()
+    showRecordIcon.value = true
+    showPause.value = false
+    recordingTimeDisplay.value = "00:00.00"
+    clearAmplitudes()
+    noOfPlaybackClicks.value = 0
+    if(audioMediaPlayerInitialized.value) {
+        stopAudioRecordedMediaPlayer()
+    }
+    closeBottomSheet(scope, state)
+}
+
+@OptIn(ExperimentalMaterialApi::class)
 fun closeRecordAudio(
     context: Context,
     scope: CoroutineScope,
@@ -403,12 +438,6 @@ fun closeRecordAudio(
     recordingTimeDisplay.value = "00:00.00"
     clearAmplitudes()
     noOfPlaybackClicks.value = 0
-    recognizedSpeech = ""
-    if(isRecognizingSpeech.value){
-        //speechRecognizer.stopListening()
-        isRecognizingSpeech.value = false
-    }
-    //speechRecognizer.cancel()
     if(audioMediaPlayerInitialized.value) {
         stopAudioRecordedMediaPlayer()
     }
@@ -424,8 +453,10 @@ fun resetRecordingFile(context: Context) {
 }
 
 fun deleteRecordingFile(context: Context): Boolean {
-    return recordingFile!!.delete()
-
+    if(recordingFile != null) {
+        return recordingFile!!.delete()
+    }
+    return false
 }
 
 fun setUpMediaRecorder(context: Context) {
@@ -459,20 +490,33 @@ fun setUpMediaRecorder(context: Context) {
     }
 }
 
-fun saveRecordedAudioToS3(context: Context) {
+fun saveRecordedAudio(context: Context) {
     var key = ""
-    /*when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
+    when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
         is ChapterPageData -> {
             val chapterPageData = recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording as ChapterPageData
             storeToS3IfChapterPage(chapterPageData)
         }
-    }*/
-    key = "Routine/BedtimeStories/${globalViewModel_!!.currentUser!!.username}/recorded/bedtimeStoryName/chapter/page/file1.aac"
+
+        is String ->{
+            when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
+                "prayer" ->{
+                    recordedPrayerAbsolutePath.value = recordingFile!!.absolutePath
+                    recordedFilePrayer.value = recordingFile!!
+                    recordedFileUriPrayer.value = recordingFile!!.absolutePath.toUri()
+                    recordedAudioFileLengthMilliSecondsPrayer.value = recordingFile!!.length()
+                    recordedFileColorPrayer.value = Peach
+                    clearRecordingForPrayer()
+                }
+            }
+        }
+    }
+
+    /*key = "Routine/BedtimeStories/${globalViewModel_!!.currentUser!!.username}/recorded/bedtimeStoryName/chapter/page/file1.aac"
     SoundBackend.storeAudio(recordingFile!!.absolutePath, key){
-        Log.i(TAG, "Chapter Page's audio name ==>> $recognizedSpeech")
         Log.i(TAG, "Chapter Page's audio keys ==>> $it")
         clearRecording(context)
-    }
+    }*/
 }
 
 fun storeToS3IfChapterPage(chapterPageData: ChapterPageData){
@@ -485,22 +529,34 @@ fun storeToS3IfChapterPage(chapterPageData: ChapterPageData){
             "${chapterPageData.displayName}/" +
             "recording_${chapterPageData.audioKeysS3.size + 1}.aac"
 
-    SoundBackend.storeAudio(recordingFile!!.absolutePath, key){
+    SoundBackend.storeAudio(recordingFile!!.absolutePath, key){ s3key ->
         updateChapterPageData(
-            it,
-            recognizedSpeech,
+            s3key,
             chapterPageData
         )
     }
 }
 
-fun updateChapterPageData(s3Key: String, recognizedSpeech: String, chapterPageData: ChapterPageData) {
+fun updateChapterPageData(s3Key: String, chapterPageData: ChapterPageData) {
     chapterPageData.audioKeysS3.add(s3Key)
-    chapterPageData.audioNames.add(recognizedSpeech)
+    chapterPageData.audioNames.add("${chapterPageData.audioNames.size + 1}")
     ChapterPageBackend.updateChapterPage(chapterPageData){
         Log.i(TAG, "${chapterPageData.displayName}'s audio names ==>> ${it.audioNames}")
         Log.i(TAG, "${chapterPageData.displayName}'s audio keys ==>> ${it.audioKeysS3}")
     }
+}
+
+fun clearRecordingForPrayer() {
+    if(recordingFile!!.length() > 0) {
+        stopRecorder()
+    }
+    timer.stop()
+    showRecordIcon.value = true
+    showPause.value = false
+    recordingTimeDisplay.value = "00:00.00"
+    noOfPlaybackClicks.value = 0
+    stopAudioRecordedMediaPlayer()
+    clearAmplitudes()
 }
 
 fun clearRecording(context: Context){
@@ -513,7 +569,6 @@ fun clearRecording(context: Context){
     recordingTimeDisplay.value = "00:00.00"
     noOfPlaybackClicks.value = 0
     stopAudioRecordedMediaPlayer()
-    recordingFile!!.delete()
     clearAmplitudes()
     resetRecordingFile(context)
 }

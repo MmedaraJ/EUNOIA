@@ -32,8 +32,9 @@ import androidx.navigation.NavType
 import com.example.eunoia.create.createSound.NameSoundUI
 import com.example.eunoia.create.CreateUI
 import com.example.eunoia.create.createBedtimeStory.*
-import com.example.eunoia.create.createSound.CreatePresetUI
-import com.example.eunoia.create.createSound.UploadSoundsUI
+import com.example.eunoia.create.createPrayer.*
+import com.example.eunoia.create.createSelfLove.*
+import com.example.eunoia.create.createSound.*
 import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryScreen
 import com.example.eunoia.dashboard.routine.RoutineScreen
 import com.example.eunoia.models.*
@@ -521,6 +522,42 @@ fun CreateTab(
         composable(Screen.IncompleteBedtimeStories.screen_route) {
             Log.i("IncompleteBedtimeStories", "You are now on the IncompleteBedtimeStories tab")
             IncompleteBedtimeStoriesUI(
+                navController = navController,
+                globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
+            )
+        }
+        composable(Screen.NamePrayer.screen_route) {
+            Log.i("NamePrayer", "You are now on the NamePrayer tab")
+            NamePrayerUI(
+                navController = navController,
+                globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
+            )
+        }
+        composable(Screen.UploadPrayer.screen_route) {
+            Log.i("UploadPrayer", "You are now on the UploadPrayer tab")
+            UploadPrayerUI(
+                navController = navController,
+                globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
+            )
+        }
+        composable(Screen.RecordPrayer.screen_route) {
+            Log.i("RecordPrayer", "You are now on the RecordPrayer tab")
+            RecordPrayerUI(
+                navController = navController,
+                globalViewModel = globalViewModel,
+                scope = scope,
+                state = state
+            )
+        }
+        composable(Screen.NameSelfLove.screen_route) {
+            Log.i("NameSelfLove", "You are now on the NameSelfLove tab")
+            NameSelfLoveUI(
                 navController = navController,
                 globalViewModel = globalViewModel,
                 scope = scope,

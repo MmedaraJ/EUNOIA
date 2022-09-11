@@ -28,11 +28,11 @@ object UserBreathingObject {
                 .build()
 
         companion object{
-            fun from(UserBreathing: UserBreathing): UserBreathingModel{
+            fun from(userBreathing: UserBreathing): UserBreathingModel{
                 val result = UserBreathingModel(
-                    UserBreathing.id,
-                    UserObject.User.from(UserBreathing.userData),
-                    BreathingObject.Breathing.from(UserBreathing.breathingData),
+                    userBreathing.id,
+                    UserObject.User.from(userBreathing.userData),
+                    BreathingObject.Breathing.from(userBreathing.breathingData),
                 )
                 return result
             }

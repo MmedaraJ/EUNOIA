@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.amplifyframework.datastore.generated.model.RoutineSound
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.amplifyframework.datastore.generated.model.UserRoutine
@@ -38,7 +37,7 @@ import com.example.eunoia.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-var openSavedSoundDialogBox by mutableStateOf(false)
+var openSavedElementDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasSoundDialogBox by mutableStateOf(false)
 private const val TAG = "AddToSoundListAndRoutineBottomSheet"
 var userRoutinesSize = 0
@@ -49,7 +48,7 @@ fun AddToSoundListAndRoutineBottomSheet(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    if(openSavedSoundDialogBox){
+    if(openSavedElementDialogBox){
         AlertDialogBox("Saved!")
     }
     if(openUserAlreadyHasSoundDialogBox){
@@ -99,7 +98,7 @@ fun AddToSoundListAndRoutineBottomSheet(
                                 if (!userAlreadyHasSound) {
                                     UserSoundBackend.createUserSoundObject(globalViewModel_!!.currentSoundToBeAdded!!) {
                                         closeBottomSheet(scope, state)
-                                        openSavedSoundDialogBox = true
+                                        openSavedElementDialogBox = true
                                     }
                                 } else {
                                     closeBottomSheet(scope, state)
@@ -218,7 +217,7 @@ fun SelectRoutine(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    if(openSavedSoundDialogBox){
+    if(openSavedElementDialogBox){
         AlertDialogBox("Saved!")
     }
     if(openUserAlreadyHasSoundDialogBox){
@@ -340,7 +339,7 @@ fun SelectRoutine(
                                                 userRoutine.routineData
                                             ) {
                                                 closeBottomSheet(scope, state)
-                                                openSavedSoundDialogBox = true
+                                                openSavedElementDialogBox = true
                                             }
                                         } else {
                                             closeBottomSheet(scope, state)
@@ -393,7 +392,7 @@ fun InputRoutineName(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ): String {
-    if(openSavedSoundDialogBox){
+    if(openSavedElementDialogBox){
         AlertDialogBox("Saved!")
     }
     if(openUserAlreadyHasSoundDialogBox){
@@ -465,7 +464,7 @@ fun SelectRoutineColor(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    if(openSavedSoundDialogBox){
+    if(openSavedElementDialogBox){
         AlertDialogBox("Saved!")
     }
     if(openUserAlreadyHasSoundDialogBox){
@@ -579,7 +578,7 @@ fun SelectRoutineIcon(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    if(openSavedSoundDialogBox){
+    if(openSavedElementDialogBox){
         AlertDialogBox("Saved!")
     }
     if(openUserAlreadyHasSoundDialogBox){
@@ -648,11 +647,15 @@ fun SelectRoutineIcon(
                                 true,
                                 true,
                                 true,
+                                true,
                                 globalViewModel_!!.currentSoundPlaying!!.fullPlayTime,
                                 0,
                                 0,
                                 0,
                                 0,
+                                0,
+                                -1,
+                                -1,
                                 -1,
                                 -1,
                                 -1,
@@ -688,7 +691,7 @@ fun SelectRoutineIcon(
                                         }
                                     }
                                     closeBottomSheet(scope, state)
-                                    openSavedSoundDialogBox = true
+                                    openSavedElementDialogBox = true
                                 }
                             }
                         }

@@ -1,7 +1,6 @@
 package com.example.eunoia.create.createBedtimeStory
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -20,17 +19,11 @@ import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
-import com.example.eunoia.create.createSound.*
-import com.example.eunoia.create.createSound.initializeSoundDescriptionError
-import com.example.eunoia.create.createSound.initializeSoundIconError
-import com.example.eunoia.create.createSound.initializeSoundNameError
-import com.example.eunoia.create.createSound.initializeSoundTagsError
 import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.openRoutineAlreadyHasSoundDialogBox
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
@@ -65,7 +58,7 @@ fun NameBedtimeStoryUI(
     clearChapterPagesList()
     clearBedtimeStoryChaptersList()
     clearPageRecordingsList()
-    setupAlertDialogs()
+    SetupAlertDialogs()
 
     var numberOfIncompleteBedtimeStories by rememberSaveable { mutableStateOf(-1) }
     BedtimeStoryBackend.queryIncompleteBedtimeStoryBasedOnUser(globalViewModel_!!.currentUser!!) {
@@ -89,13 +82,13 @@ fun NameBedtimeStoryUI(
         val (
             header,
             title,
-            soundNameColumn,
+            nameColumn,
             name_error,
-            soundShortDescriptionColumn,
-            description_error,
-            bedtimeStoryTagColumn,
-            tag_error,
-            icon_title,
+            descriptionColumn,
+            descriptionError,
+            tagColumn,
+            tagError,
+            iconTitle,
             icons,
             inProgress,
             next,
@@ -140,7 +133,7 @@ fun NameBedtimeStoryUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(soundNameColumn) {
+                .constrainAs(nameColumn) {
                     top.linkTo(title.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
@@ -161,7 +154,7 @@ fun NameBedtimeStoryUI(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .constrainAs(name_error) {
-                    top.linkTo(soundNameColumn.bottom, margin = 4.dp)
+                    top.linkTo(nameColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
@@ -175,7 +168,7 @@ fun NameBedtimeStoryUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(soundShortDescriptionColumn) {
+                .constrainAs(descriptionColumn) {
                     top.linkTo(name_error.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
@@ -183,7 +176,7 @@ fun NameBedtimeStoryUI(
         ) {
             bedtimeStoryDescription = customizableBigOutlinedTextInput(
                 height = 100,
-                placeholder = "Short Description",
+                placeholder = "Description",
                 backgroundColor = SoftPeach,
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
@@ -196,8 +189,8 @@ fun NameBedtimeStoryUI(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(description_error) {
-                    top.linkTo(soundShortDescriptionColumn.bottom, margin = 4.dp)
+                .constrainAs(descriptionError) {
+                    top.linkTo(descriptionColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
@@ -211,8 +204,8 @@ fun NameBedtimeStoryUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(bedtimeStoryTagColumn) {
-                    top.linkTo(description_error.bottom, margin = 16.dp)
+                .constrainAs(tagColumn) {
+                    top.linkTo(descriptionError.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -231,8 +224,8 @@ fun NameBedtimeStoryUI(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(tag_error) {
-                    top.linkTo(bedtimeStoryTagColumn.bottom, margin = 4.dp)
+                .constrainAs(tagError) {
+                    top.linkTo(tagColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
@@ -247,8 +240,8 @@ fun NameBedtimeStoryUI(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(icon_title) {
-                    top.linkTo(tag_error.bottom, margin = 24.dp)
+                .constrainAs(iconTitle) {
+                    top.linkTo(tagError.bottom, margin = 24.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -267,7 +260,7 @@ fun NameBedtimeStoryUI(
             alignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .constrainAs(icons) {
-                    top.linkTo(icon_title.bottom, margin = 16.dp)
+                    top.linkTo(iconTitle.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -308,7 +301,7 @@ fun NameBedtimeStoryUI(
                         ) {
                             Image(
                                 painter = painterResource(id = icon.value),
-                                contentDescription = "color",
+                                contentDescription = "bedtime story icon",
                                 modifier = Modifier
                                     .size(width = 25.64.dp, height = 25.64.dp)
                                     .padding(20.dp)
@@ -401,7 +394,7 @@ fun NameBedtimeStoryUI(
 }
 
 @Composable
-fun setupAlertDialogs(){
+private fun SetupAlertDialogs(){
     if(openBedtimeStoryNameTakenDialogBox){
         AlertDialogBox(text = "The name '$bedtimeStoryName' already exists")
     }
@@ -410,7 +403,7 @@ fun setupAlertDialogs(){
     }
 }
 
-fun initializeBedtimeStoryNameError() {
+private fun initializeBedtimeStoryNameError() {
     bedtimeStoryNameErrorMessage = if(bedtimeStoryName.isEmpty()){
         "Name this bedtime story"
     } else if(bedtimeStoryName.length < MIN_BEDTIME_STORY_NAME){
@@ -420,7 +413,7 @@ fun initializeBedtimeStoryNameError() {
     }
 }
 
-fun initializeBedtimeStoryDescriptionError() {
+private fun initializeBedtimeStoryDescriptionError() {
     bedtimeStoryDescriptionErrorMessage = if(bedtimeStoryDescription.isEmpty()){
         "Describe this bedtime story"
     } else if(bedtimeStoryDescription.length < MIN_BEDTIME_STORY_DESCRIPTION){
@@ -430,7 +423,7 @@ fun initializeBedtimeStoryDescriptionError() {
     }
 }
 
-fun initializeBedtimeStoryTagsError() {
+private fun initializeBedtimeStoryTagsError() {
     bedtimeStoryTagsErrorMessage = if(bedtimeStoryTags.isEmpty()){
         "Add tags to this bedtime story. Separate tags with a comma"
     } else if(bedtimeStoryTags.length < MIN_BEDTIME_STORY_TAGS){
@@ -440,7 +433,7 @@ fun initializeBedtimeStoryTagsError() {
     }
 }
 
-fun initializeBedtimeStoryIconError() {
+private fun initializeBedtimeStoryIconError() {
     bedtimeStoryIconSelectionTitle = if(bedtimeStoryIcon == -1){
         "Select icon"
     }else{
@@ -448,7 +441,7 @@ fun initializeBedtimeStoryIconError() {
     }
 }
 
-fun createBedtimeStory(
+private fun createBedtimeStory(
     numberOfIncompleteBedtimeStories: Int,
     navController: NavController
 ){

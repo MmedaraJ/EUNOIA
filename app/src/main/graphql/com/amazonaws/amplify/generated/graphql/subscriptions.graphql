@@ -39,6 +39,12 @@ subscription OnCreateSoundData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -216,6 +222,12 @@ subscription OnUpdateSoundData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -391,6 +403,12 @@ subscription OnDeleteSoundData($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -631,6 +649,12 @@ subscription OnCreateCommentData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -760,6 +784,12 @@ subscription OnUpdateCommentData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -887,6 +917,12 @@ subscription OnDeleteCommentData($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -1320,6 +1356,12 @@ subscription OnCreateRoutineData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -1351,11 +1393,13 @@ subscription OnCreateRoutineData($owner: String) {
     visible_to_others
     colorHEX
     playSoundDuringStretch
+    playSoundDuringPrayer
     playSoundDuringBreathing
     playSoundDuringSelfLove
     playSoundDuringBedtimeStory
     playSoundDuringSleep
     eachSoundPlayTime
+    prayerPlayTime
     bedtimeStoryPlayTime
     selfLovePlayTime
     stretchTime
@@ -1364,11 +1408,24 @@ subscription OnCreateRoutineData($owner: String) {
     currentBedtimeStoryContinuePlayingTime
     currentSelfLovePlayingIndex
     currentSelfLoveContinuePlayingTime
+    currentPrayerPlayingIndex
+    currentPrayerContinuePlayingTime
     sounds {
       items {
         id
         soundDataID
         routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayers {
+      items {
+        id
+        routineDataID
+        prayerDataID
         createdAt
         updatedAt
         owner
@@ -1476,6 +1533,12 @@ subscription OnUpdateRoutineData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -1507,11 +1570,13 @@ subscription OnUpdateRoutineData($owner: String) {
     visible_to_others
     colorHEX
     playSoundDuringStretch
+    playSoundDuringPrayer
     playSoundDuringBreathing
     playSoundDuringSelfLove
     playSoundDuringBedtimeStory
     playSoundDuringSleep
     eachSoundPlayTime
+    prayerPlayTime
     bedtimeStoryPlayTime
     selfLovePlayTime
     stretchTime
@@ -1520,11 +1585,24 @@ subscription OnUpdateRoutineData($owner: String) {
     currentBedtimeStoryContinuePlayingTime
     currentSelfLovePlayingIndex
     currentSelfLoveContinuePlayingTime
+    currentPrayerPlayingIndex
+    currentPrayerContinuePlayingTime
     sounds {
       items {
         id
         soundDataID
         routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayers {
+      items {
+        id
+        routineDataID
+        prayerDataID
         createdAt
         updatedAt
         owner
@@ -1632,6 +1710,12 @@ subscription OnDeleteRoutineData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -1663,11 +1747,13 @@ subscription OnDeleteRoutineData($owner: String) {
     visible_to_others
     colorHEX
     playSoundDuringStretch
+    playSoundDuringPrayer
     playSoundDuringBreathing
     playSoundDuringSelfLove
     playSoundDuringBedtimeStory
     playSoundDuringSleep
     eachSoundPlayTime
+    prayerPlayTime
     bedtimeStoryPlayTime
     selfLovePlayTime
     stretchTime
@@ -1676,11 +1762,24 @@ subscription OnDeleteRoutineData($owner: String) {
     currentBedtimeStoryContinuePlayingTime
     currentSelfLovePlayingIndex
     currentSelfLoveContinuePlayingTime
+    currentPrayerPlayingIndex
+    currentPrayerContinuePlayingTime
     sounds {
       items {
         id
         soundDataID
         routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayers {
+      items {
+        id
+        routineDataID
+        prayerDataID
         createdAt
         updatedAt
         owner
@@ -1786,6 +1885,12 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -1899,6 +2004,12 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -2010,6 +2121,12 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -2081,6 +2198,324 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
     owner
   }
 }
+subscription OnCreatePrayerData($owner: String) {
+  onCreatePrayerData(owner: $owner) {
+    id
+    userDataID
+    prayerOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    religion
+    country
+    tags
+    audioSource
+    approvalStatus
+    routines {
+      items {
+        id
+        routineDataID
+        prayerDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        prayerDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdatePrayerData($owner: String) {
+  onUpdatePrayerData(owner: $owner) {
+    id
+    userDataID
+    prayerOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    religion
+    country
+    tags
+    audioSource
+    approvalStatus
+    routines {
+      items {
+        id
+        routineDataID
+        prayerDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        prayerDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeletePrayerData($owner: String) {
+  onDeletePrayerData(owner: $owner) {
+    id
+    userDataID
+    prayerOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    religion
+    country
+    tags
+    audioSource
+    approvalStatus
+    routines {
+      items {
+        id
+        routineDataID
+        prayerDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        prayerDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
 subscription OnCreateSelfLoveData($owner: String) {
   onCreateSelfLoveData(owner: $owner) {
     id
@@ -2119,6 +2554,12 @@ subscription OnCreateSelfLoveData($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -2211,6 +2652,12 @@ subscription OnUpdateSelfLoveData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -2299,6 +2746,12 @@ subscription OnDeleteSelfLoveData($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -2391,6 +2844,12 @@ subscription OnCreateStretchData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -2479,6 +2938,12 @@ subscription OnUpdateStretchData($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -2571,6 +3036,12 @@ subscription OnDeleteStretchData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -2659,6 +3130,12 @@ subscription OnCreateBreathingData($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -2751,6 +3228,12 @@ subscription OnUpdateBreathingData($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -2839,6 +3322,12 @@ subscription OnDeleteBreathingData($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -2965,11 +3454,13 @@ subscription OnCreateUserData($owner: String) {
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -2978,6 +3469,8 @@ subscription OnCreateUserData($owner: String) {
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
         createdAt
         updatedAt
@@ -3011,6 +3504,38 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayersOwnedByUser {
+      items {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        religion
+        country
+        tags
+        audioSource
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayers {
+      items {
+        id
+        prayerDataID
         userDataID
         createdAt
         updatedAt
@@ -3172,11 +3697,13 @@ subscription OnUpdateUserData($owner: String) {
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -3185,6 +3712,8 @@ subscription OnUpdateUserData($owner: String) {
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
         createdAt
         updatedAt
@@ -3218,6 +3747,38 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayersOwnedByUser {
+      items {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        religion
+        country
+        tags
+        audioSource
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayers {
+      items {
+        id
+        prayerDataID
         userDataID
         createdAt
         updatedAt
@@ -3379,11 +3940,13 @@ subscription OnDeleteUserData($owner: String) {
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -3392,6 +3955,8 @@ subscription OnDeleteUserData($owner: String) {
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
         createdAt
         updatedAt
@@ -3425,6 +3990,38 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayersOwnedByUser {
+      items {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        religion
+        country
+        tags
+        audioSource
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayers {
+      items {
+        id
+        prayerDataID
         userDataID
         createdAt
         updatedAt
@@ -3949,6 +4546,12 @@ subscription OnCreateUserSound($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -4075,6 +4678,12 @@ subscription OnUpdateUserSound($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -4205,6 +4814,12 @@ subscription OnDeleteUserSound($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -4328,11 +4943,13 @@ subscription OnCreateRoutineSound($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -4341,7 +4958,12 @@ subscription OnCreateRoutineSound($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -4465,11 +5087,13 @@ subscription OnUpdateRoutineSound($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -4478,7 +5102,12 @@ subscription OnUpdateRoutineSound($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -4602,11 +5231,13 @@ subscription OnDeleteRoutineSound($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -4615,7 +5246,12 @@ subscription OnDeleteRoutineSound($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -4634,6 +5270,387 @@ subscription OnDeleteRoutineSound($owner: String) {
         nextToken
       }
       playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateRoutinePrayer($owner: String) {
+  onCreateRoutinePrayer(owner: $owner) {
+    id
+    routineDataID
+    prayerDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    prayerData {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateRoutinePrayer($owner: String) {
+  onUpdateRoutinePrayer(owner: $owner) {
+    id
+    routineDataID
+    prayerDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    prayerData {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteRoutinePrayer($owner: String) {
+  onDeleteRoutinePrayer(owner: $owner) {
+    id
+    routineDataID
+    prayerDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    prayerData {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -4679,11 +5696,13 @@ subscription OnCreateRoutineStretch($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -4692,7 +5711,12 @@ subscription OnCreateRoutineStretch($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -4789,11 +5813,13 @@ subscription OnUpdateRoutineStretch($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -4802,7 +5828,12 @@ subscription OnUpdateRoutineStretch($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -4899,11 +5930,13 @@ subscription OnDeleteRoutineStretch($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -4912,7 +5945,12 @@ subscription OnDeleteRoutineStretch($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -5009,11 +6047,13 @@ subscription OnCreateRoutineBreathing($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -5022,7 +6062,12 @@ subscription OnCreateRoutineBreathing($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -5119,11 +6164,13 @@ subscription OnUpdateRoutineBreathing($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -5132,7 +6179,12 @@ subscription OnUpdateRoutineBreathing($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -5229,11 +6281,13 @@ subscription OnDeleteRoutineBreathing($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -5242,7 +6296,12 @@ subscription OnDeleteRoutineBreathing($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -5339,11 +6398,13 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -5352,7 +6413,12 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -5461,11 +6527,13 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -5474,7 +6542,12 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -5583,11 +6656,13 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -5596,7 +6671,12 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -5705,11 +6785,13 @@ subscription OnCreateRoutineSelfLove($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -5718,7 +6800,12 @@ subscription OnCreateRoutineSelfLove($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -5815,11 +6902,13 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -5828,7 +6917,12 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -5925,11 +7019,13 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -5938,7 +7034,12 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -6035,11 +7136,13 @@ subscription OnCreateUserRoutine($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -6048,7 +7151,12 @@ subscription OnCreateUserRoutine($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -6105,6 +7213,12 @@ subscription OnCreateUserRoutine($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -6170,11 +7284,13 @@ subscription OnUpdateUserRoutine($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -6183,7 +7299,12 @@ subscription OnUpdateUserRoutine($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -6240,6 +7361,12 @@ subscription OnUpdateUserRoutine($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -6305,11 +7432,13 @@ subscription OnDeleteUserRoutine($owner: String) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -6318,7 +7447,12 @@ subscription OnDeleteUserRoutine($owner: String) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -6375,6 +7509,12 @@ subscription OnDeleteUserRoutine($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -6490,6 +7630,12 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -6601,6 +7747,12 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -6716,6 +7868,363 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserPrayer($owner: String) {
+  onCreateUserPrayer(owner: $owner) {
+    id
+    prayerDataID
+    userDataID
+    prayerData {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserPrayer($owner: String) {
+  onUpdateUserPrayer(owner: $owner) {
+    id
+    prayerDataID
+    userDataID
+    prayerData {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserPrayer($owner: String) {
+  onDeleteUserPrayer(owner: $owner) {
+    id
+    prayerDataID
+    userDataID
+    prayerData {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -6815,6 +8324,12 @@ subscription OnCreateUserSelfLove($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -6918,6 +8433,12 @@ subscription OnUpdateUserSelfLove($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -7017,6 +8538,12 @@ subscription OnDeleteUserSelfLove($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -7120,6 +8647,12 @@ subscription OnCreateUserStretch($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -7219,6 +8752,12 @@ subscription OnUpdateUserStretch($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -7322,6 +8861,12 @@ subscription OnDeleteUserStretch($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -7421,6 +8966,12 @@ subscription OnCreateUserBreathing($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -7524,6 +9075,12 @@ subscription OnUpdateUserBreathing($owner: String) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -7623,6 +9180,12 @@ subscription OnDeleteUserBreathing($owner: String) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {

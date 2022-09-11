@@ -37,6 +37,7 @@ import com.example.eunoia.backend.AuthBackend
 import com.example.eunoia.backend.UserBackend
 import com.example.eunoia.backend.UserRoutineBackend
 import com.example.eunoia.create.createBedtimeStory.*
+import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSound.*
 import com.example.eunoia.create.createSound.selectedIndex
 import com.example.eunoia.models.RoutineObject
@@ -121,9 +122,8 @@ class UserDashboardActivity : ComponentActivity(), Timer.OnTimerTickListener {
 
     fun selectAudioBedtimeStory(){
         val intent = Intent(Intent.ACTION_GET_CONTENT)
-        //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
         intent.type = "audio/aac"
-        selectAudioBedtimeStoryActivityResult.launch(intent)
+        selectAudioPrayerActivityResult.launch(intent)
     }
 
     private val selectAudioBedtimeStoryActivityResult =
@@ -148,6 +148,37 @@ class UserDashboardActivity : ComponentActivity(), Timer.OnTimerTickListener {
                     audioFileLengthMilliSecondsBedtimeStory.value = durationStr!!.toLong()
                     uploadedFileBedtimeStory.value = tempFile
                     fileColorBedtimeStory.value = Peach
+                }
+            }
+        }
+
+    fun selectAudioPrayer(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "audio/aac"
+        selectAudioPrayerActivityResult.launch(intent)
+    }
+
+    private val selectAudioPrayerActivityResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if(result.resultCode == Activity.RESULT_OK){
+                val data: Intent? = result.data
+                if(data?.data != null){
+                    val audioUri: Uri? = data.data
+                    uploadedFileUriPrayer.value = audioUri!!
+                    Log.i(TAG, "Audio Uri ==>> $audioUri")
+                    val audioStream = audioUri.let {
+                        contentResolver.openInputStream(it)
+                    }
+                    val tempFile = File.createTempFile("audio", ".aac")
+                    copyStreamToFile(audioStream!!, tempFile)
+                    val mdt = MediaMetadataRetriever()
+                    mdt.setDataSource(tempFile.absolutePath)
+                    val durationStr = mdt.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                    uploadedAudioFileLengthMilliSecondsPrayer.value = durationStr!!.toLong()
+                    uploadedFilePrayer.value = tempFile
+                    uploadedFileColorPrayer.value = Peach
                 }
             }
         }
@@ -208,104 +239,19 @@ class UserDashboardActivity : ComponentActivity(), Timer.OnTimerTickListener {
         }
     }
 
-    fun startSpeechRecognizer() {
-        /*speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
-        Log.i(TAG, "Speech recognizer $speechRecognizer")
-        speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-        Log.i(TAG, "Speech recognizer intent $speechRecognizerIntent")
-
-        speechRecognizer.setRecognitionListener(object : RecognitionListener {
-            override fun onReadyForSpeech(bundle: Bundle) {
-                Log.i(TAG, "Speech recognizer is active00")
-            }
-            override fun onBeginningOfSpeech() {
-                isRecognizingSpeech.value = true
-                Log.i(TAG, "Speech recognizer is active")
-            }
-            override fun onRmsChanged(v: Float) {}
-            override fun onBufferReceived(bytes: ByteArray) {}
-            override fun onEndOfSpeech() {
-                isRecognizingSpeech.value = false
-                Log.i(TAG, "Speech recognizer is inactive")
-            }
-            override fun onError(i: Int) {}
-            override fun onResults(bundle: Bundle) {
-                val data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                recognizedSpeech = data!![0]
-                Log.i(TAG, "Speech recognizer result $recognizedSpeech")
-            }
-            override fun onPartialResults(bundle: Bundle) {}
-            override fun onEvent(i: Int, bundle: Bundle) {}
-        })*/
-        // on below line we are calling speech recognizer intent.
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        // on below line we are passing language model
-        // and model free form in our intent
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-        // on below line we are passing our
-        // language as a default language.
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE,
-            Locale.getDefault()
-        )
-        // on below line we are specifying a prompt
-        // message as speak to text on below line.
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to text")
-        // on below line we are specifying a try catch block.
-        // in this block we are calling a start activity
-        // for result method and passing our result code.
-        try {
-            speechRecognitionActivityResult.launch(intent)
-        } catch (e: Exception) {
-            // on below line we are displaying error message in toast
-            Toast
-                .makeText(
-                    this, " " + e.message,
-                    Toast.LENGTH_SHORT
-                )
-                .show()
-        }
-    }
-
-    private val speechRecognitionActivityResult =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if(result.resultCode == Activity.RESULT_OK && result.data != null){
-                val data: Intent? = result.data
-                // in that case we are extracting the
-                // data from our array list
-                val res: ArrayList<String> =
-                    data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
-                recognizedSpeech = Objects.requireNonNull(res)[0]
-                Log.i(TAG, "Recognized speech ==>> $recognizedSpeech")
-            }
-        }
-
     override fun onTimerTick(durationString: String, durationMilliSeconds: Long) {
         recordingTimeDisplay.value = durationString
         addAmplitude(
             RecordedAudioData(
                 recorder!!.maxAmplitude.toFloat(),
                 durationMilliSeconds,
-                recordingFile!!.length().toInt(),
-                //audioRecordedMediaPlayer!!.currentPosition
+                recordingFile!!.length().toInt()
             )
         )
     }
 
     override fun justTick(durationString: String, durationMilliSeconds: Long) {
         recordingTimeDisplay.value = durationString
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //speechRecognizer.destroy()
     }
 }
 

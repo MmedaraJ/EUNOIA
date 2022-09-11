@@ -66,6 +66,13 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
      * Create prayer
      */
     object NamePrayer: Screen("Name Prayer", -1,"name_prayer")
+    object UploadPrayer: Screen("Upload Prayer", -1,"upload_prayer")
+    object RecordPrayer: Screen("Record Prayer", -1,"record_prayer")
+
+    /**
+     * Create self love
+     */
+    object NameSelfLove: Screen("Name Self Love", -1,"name_self_love")
 
     /**
      * Routine
@@ -97,7 +104,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                 UploadSounds.screen_route -> UploadSounds
 
                 /**
-                 * Create Sound
+                 * Create Bedtime Story
                  */
                 NameBedtimeStory.screen_route -> NameBedtimeStory
                 RecordBedtimeStory.screen_route -> RecordBedtimeStory
@@ -105,6 +112,18 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                 BedtimeStoryChapterScreen.screen_route -> BedtimeStoryChapterScreen
                 IncompleteBedtimeStories.screen_route -> IncompleteBedtimeStories
                 ChapterPageScreen.screen_route -> ChapterPageScreen
+
+                /**
+                 * Create Prayer
+                 */
+                NamePrayer.screen_route -> NamePrayer
+                UploadPrayer.screen_route -> UploadPrayer
+                RecordPrayer.screen_route -> RecordPrayer
+
+                /**
+                 * Create Self Love
+                 */
+                NameSelfLove.screen_route -> NameSelfLove
 
                 /**
                  * Sound

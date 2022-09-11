@@ -62,6 +62,8 @@ public final class UserData implements Model {
   private final @ModelField(targetType="UserRoutine") @HasMany(associatedWith = "userData", type = UserRoutine.class) List<UserRoutine> routines = null;
   private final @ModelField(targetType="StretchData") @HasMany(associatedWith = "stretchOwner", type = StretchData.class) List<StretchData> stretchesOwnedByUser = null;
   private final @ModelField(targetType="UserStretch") @HasMany(associatedWith = "userData", type = UserStretch.class) List<UserStretch> stretches = null;
+  private final @ModelField(targetType="PrayerData") @HasMany(associatedWith = "prayerOwner", type = PrayerData.class) List<PrayerData> prayersOwnedByUser = null;
+  private final @ModelField(targetType="UserPrayer") @HasMany(associatedWith = "userData", type = UserPrayer.class) List<UserPrayer> prayers = null;
   private final @ModelField(targetType="BreathingData") @HasMany(associatedWith = "breathingOwner", type = BreathingData.class) List<BreathingData> breathingsOwnedByUser = null;
   private final @ModelField(targetType="UserBreathing") @HasMany(associatedWith = "userData", type = UserBreathing.class) List<UserBreathing> breathings = null;
   private final @ModelField(targetType="SelfLoveData") @HasMany(associatedWith = "selfLoveOwner", type = SelfLoveData.class) List<SelfLoveData> selfLovesOwnedByUser = null;
@@ -152,6 +154,14 @@ public final class UserData implements Model {
   
   public List<UserStretch> getStretches() {
       return stretches;
+  }
+  
+  public List<PrayerData> getPrayersOwnedByUser() {
+      return prayersOwnedByUser;
+  }
+  
+  public List<UserPrayer> getPrayers() {
+      return prayers;
   }
   
   public List<BreathingData> getBreathingsOwnedByUser() {

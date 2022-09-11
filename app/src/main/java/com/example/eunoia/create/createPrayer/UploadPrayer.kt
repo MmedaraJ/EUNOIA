@@ -1,5 +1,6 @@
-package com.example.eunoia.create.createBedtimeStory
+package com.example.eunoia.create.createPrayer
 
+import android.content.Context
 import android.media.MediaPlayer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,13 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.*
-import com.example.eunoia.backend.BedtimeStoryBackend
-import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserBedtimeStoryBackend
+import com.example.eunoia.backend.*
+import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.BedtimeStoryObject
+import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -41,15 +42,15 @@ import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import java.util.*
 
-var uploadedFileBedtimeStory = mutableStateOf(File("Choose a file"))
-var fileColorBedtimeStory = mutableStateOf(WePeep)
-var fileMediaPlayerBedtimeStory = mutableStateOf(MediaPlayer())
-var fileUriBedtimeStory = mutableStateOf("".toUri())
-var audioFileLengthMilliSecondsBedtimeStory = mutableStateOf(0L)
+var uploadedFilePrayer = mutableStateOf(File("Choose a file"))
+var uploadedFileColorPrayer = mutableStateOf(WePeep)
+var uploadedFileMediaPlayerPrayer = mutableStateOf(MediaPlayer())
+var uploadedFileUriPrayer = mutableStateOf("".toUri())
+var uploadedAudioFileLengthMilliSecondsPrayer = mutableStateOf(0L)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UploadBedtimeStoryUI(
+fun UploadPrayerUI(
     navController: NavController,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
@@ -59,10 +60,10 @@ fun UploadBedtimeStoryUI(
     val scrollState = rememberScrollState()
 
     if(openSavedElementDialogBox){
-        AlertDialogBox(text = "Bedtime Story Saved. We will send you an email when it is approved")
+        AlertDialogBox(text = "Prayer Saved. We will send you an email when it is approved")
     }
-    if(openBedtimeStoryNameTakenDialogBox){
-        AlertDialogBox(text = "The name '$bedtimeStoryName' already exists")
+    if(openPrayerNameTakenDialogBox){
+        AlertDialogBox(text = "The name '$prayerName' already exists")
     }
 
     ConstraintLayout(
@@ -104,7 +105,7 @@ fun UploadBedtimeStoryUI(
                 }
         ) {
             NormalText(
-                text = "Upload Bedtime Story",
+                text = "Upload Prayer",
                 color = Black,
                 fontSize = 16,
                 xOffset = 0,
@@ -119,8 +120,10 @@ fun UploadBedtimeStoryUI(
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            SwipeToResetBedtimeStoryUI(context){
-                UserDashboardActivity.getInstanceActivity().selectAudioBedtimeStory()
+            SwipeToResetUploadedPrayerUI(
+                context
+            ) {
+                UserDashboardActivity.getInstanceActivity().selectAudioPrayer()
             }
         }
         Column(
@@ -131,7 +134,7 @@ fun UploadBedtimeStoryUI(
                 }
                 .fillMaxWidth(0.25F)
         ) {
-            if(uploadedFileBedtimeStory.value.name != "Choose a file") {
+            if(uploadedFilePrayer.value.name != "Choose a file") {
                 CustomizableButton(
                     text = "create",
                     height = 35,
@@ -144,83 +147,90 @@ fun UploadBedtimeStoryUI(
                     textType = "morge",
                     maxWidthFraction = 1F
                 ) {
-                    createBedtimeStoryFromUpload(navController)
+                    createPrayerFromUpload(navController, context)
                 }
             }
         }
     }
 }
 
-fun createBedtimeStoryFromUpload(
-    navController: NavController
+fun createPrayerFromUpload(
+    navController: NavController,
+    context: Context
 ){
-    var otherBedtimeStoriesWithSameName by mutableStateOf(-1)
-    BedtimeStoryBackend.queryBedtimeStoryBasedOnDisplayName(bedtimeStoryName){
-        otherBedtimeStoriesWithSameName = if(it.isEmpty()) 0 else it.size
+    var otherPrayersWithSameName by mutableStateOf(-1)
+    PrayerBackend.queryPrayerBasedOnDisplayName(prayerName){
+        otherPrayersWithSameName = if(it.isEmpty()) 0 else it.size
     }
     Thread.sleep(1_000)
-    val tags = getBedtimeStoryTagsList()
-    if (otherBedtimeStoriesWithSameName < 1) {
-        val key = "Routine/BedtimeStories/${globalViewModel_!!.currentUser!!.username}/uploaded/$bedtimeStoryName/${bedtimeStoryName}_audio.aac"
-        SoundBackend.storeAudio(uploadedFileBedtimeStory.value.absolutePath, key){
-            val bedtimeStory = BedtimeStoryObject.BedtimeStory(
+    val tags = getPrayerTagsList()
+    if (otherPrayersWithSameName < 1) {
+        val key = "Routine/Prayer/${globalViewModel_!!.currentUser!!.username}/uploaded/$prayerName/${prayerName}_audio.aac"
+        SoundBackend.storeAudio(uploadedFilePrayer.value.absolutePath, key){
+            val prayer = PrayerObject.Prayer(
                 UUID.randomUUID().toString(),
                 UserObject.User.from(globalViewModel_!!.currentUser!!),
-                bedtimeStoryName,
-                bedtimeStoryDescription,
+                prayerName,
+                prayerDescription,
                 key,
-                bedtimeStoryIcon,
-                audioFileLengthMilliSecondsBedtimeStory.value,
+                prayerIcon,
+                uploadedAudioFileLengthMilliSecondsPrayer.value,
                 false,
+                "",
+                "",
                 tags,
-                BedtimeStoryAudioSource.UPLOADED,
-                BedtimeStoryApprovalStatus.PENDING,
-                BedtimeStoryCreationStatus.COMPLETED
+                PrayerAudioSource.UPLOADED,
+                PrayerApprovalStatus.PENDING,
             )
-            BedtimeStoryBackend.createBedtimeStory(bedtimeStory) { bedtimeStoryData ->
-                if (globalViewModel_!!.currentUser != null) {
-                    var userAlreadyHasBedtimeStory = false
-                    for (userBedtimeStory in globalViewModel_!!.currentUser!!.bedtimeStories) {
-                        if (
-                            userBedtimeStory.bedtimeStoryInfoData.id == bedtimeStoryData.id &&
-                            userBedtimeStory.userData.id == globalViewModel_!!.currentUser!!.id
-                        ) {
-                            userAlreadyHasBedtimeStory = true
-                        }
-                    }
-                    if (!userAlreadyHasBedtimeStory) {
-                        UserBedtimeStoryBackend.createUserBedtimeStoryObject(
-                            bedtimeStoryData
-                        ) {
-                            resetAllBedtimeStoryCreationObjects()
-                            openSavedElementDialogBox = true
-                            Thread.sleep(1_000)
-                            runOnUiThread {
-                               /* navController.backQueue.removeIf { it.destination.route == Screen.NameBedtimeStory.screen_route }
-                                navController.backQueue.removeIf { it.destination.route == Screen.UploadBedtimeStory.screen_route }*/
-                                //TODO navigate to users list of pending bedtime stories
-                                navigateToBedtimeStoryScreen(navController, bedtimeStoryData)
-                            }
-                        }
+            createPrayer(prayer, context, navController)
+        }
+    }else{
+        openPrayerNameTakenDialogBox = true
+    }
+}
+
+fun createPrayer(
+    prayer: PrayerObject.Prayer,
+    context: Context,
+    navController: NavController
+){
+    PrayerBackend.createPrayer(prayer) { prayerData ->
+        if (globalViewModel_!!.currentUser != null) {
+            var userAlreadyHasPrayer = false
+            for (userPrayer in globalViewModel_!!.currentUser!!.prayers) {
+                if (
+                    userPrayer.prayerData.id == prayerData.id &&
+                    userPrayer.userData.id == globalViewModel_!!.currentUser!!.id
+                ) {
+                    userAlreadyHasPrayer = true
+                }
+            }
+            if (!userAlreadyHasPrayer) {
+                UserPrayerBackend.createUserPrayerObject(
+                    prayerData
+                ) {
+                    resetAllPrayerCreationObjects(context)
+                    openSavedElementDialogBox = true
+                    Thread.sleep(1_000)
+                    ThreadUtils.runOnUiThread {
+                        /* navController.backQueue.removeIf { it.destination.route == Screen.NameBedtimeStory.screen_route }
+                         navController.backQueue.removeIf { it.destination.route == Screen.UploadBedtimeStory.screen_route }*/
+                        //TODO navigate to users list of pending prayers
+                        navController.navigate(Screen.Create.screen_route)
                     }
                 }
             }
         }
-    }else{
-        openBedtimeStoryNameTakenDialogBox = true
     }
 }
 
-fun resetAllBedtimeStoryCreationObjects(){
-    resetNameBedtimeStoryVariables()
-    resetIncompleteBedtimeStoriesVariables()
-    clearChapterPagesList()
-    clearPageRecordingsList()
-    resetRecordBedtimeStoryVariables()
-    clearBedtimeStoryChaptersList()
-    resetBedtimeStoryUploadUI()
+fun getPrayerTagsList():List<String> {
+    return prayerTags.split(",")
 }
 
-fun navigateToBedtimeStoryScreen(navController: NavController, bedtimeStoryInfoData: BedtimeStoryInfoData){
-    navController.navigate("${Screen.BedtimeStoryScreen.screen_route}/bedtimeStoryData=${BedtimeStoryObject.BedtimeStory.from(bedtimeStoryInfoData)}")
+fun resetAllPrayerCreationObjects(context: Context){
+    resetNamePrayerVariables()
+    //resetRecordPrayerVariables()
+    resetPrayerUploadUI()
+    resetPrayerRecordUI(context)
 }

@@ -13,9 +13,12 @@ import com.example.eunoia.create.createBedtimeStory.openBedtimeStoryNameTakenDia
 import com.example.eunoia.create.createBedtimeStory.openTooManyIncompleteBedtimeStoryDialogBox
 import com.example.eunoia.dashboard.sound.openUserAlreadyHasSoundDialogBox
 import com.example.eunoia.ui.bottomSheets.openRoutineAlreadyHasSoundDialogBox
-import com.example.eunoia.ui.bottomSheets.openSavedSoundDialogBox
+import com.example.eunoia.ui.bottomSheets.openSavedElementDialogBox
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.theme.*
+
+private var alertMessage = ""
+private var openDialogBox = mutableStateOf(false)
 
 @Composable
 fun AlertDialogBox(text: String){
@@ -24,7 +27,8 @@ fun AlertDialogBox(text: String){
         AlertDialog(
             onDismissRequest = {
                 openDialog.value = false
-                openSavedSoundDialogBox = false
+                openDialogBox.value = false
+                openSavedElementDialogBox = false
                 openUserAlreadyHasSoundDialogBox = false
                 openRoutineAlreadyHasSoundDialogBox = false
                 openBedtimeStoryNameTakenDialogBox = false

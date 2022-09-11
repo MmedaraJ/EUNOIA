@@ -1,4 +1,4 @@
-package com.example.eunoia.create.createPrayer
+package com.example.eunoia.create.createSelfLove
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -13,34 +13,33 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
-import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 
-var prayerIcon by mutableStateOf(-1)
-var prayerName by mutableStateOf("")
-var prayerDescription by mutableStateOf("")
-var prayerTags by mutableStateOf("")
-var prayerIconSelectionTitle by mutableStateOf("")
-var prayerNameErrorMessage by mutableStateOf("")
-var prayerDescriptionErrorMessage by mutableStateOf("")
-var prayerTagsErrorMessage by mutableStateOf("")
-const val MIN_PRAYER_NAME = 5
-const val MIN_PRAYER_DESCRIPTION = 10
-const val MIN_PRAYER_TAGS = 3
-var openPrayerNameTakenDialogBox by mutableStateOf(false)
+var selfLoveIcon by mutableStateOf(-1)
+var selfLoveName by mutableStateOf("")
+var selfLoveDescription by mutableStateOf("")
+var selfLoveTags by mutableStateOf("")
+var selfLoveIconSelectionTitle by mutableStateOf("")
+var selfLoveNameErrorMessage by mutableStateOf("")
+var selfLoveDescriptionErrorMessage by mutableStateOf("")
+var selfLoveTagsErrorMessage by mutableStateOf("")
+const val MIN_SELF_LOVE_NAME = 5
+const val MIN_SELF_LOVE_DESCRIPTION = 10
+const val MIN_SELF_LOVE_TAGS = 3
+var openSelfLoveNameTakenDialogBox by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun NamePrayerUI(
+fun NameSelfLoveUI(
     navController: NavController,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
@@ -49,10 +48,10 @@ fun NamePrayerUI(
     val scrollState = rememberScrollState()
 
     SetupAlertDialogs()
-    initializePrayerNameError()
-    initializePrayerDescriptionError()
-    initializePrayerTagsError()
-    initializePrayerIconError()
+    initializeSelfLoveNameError()
+    initializeSelfLoveDescriptionError()
+    initializeSelfLoveTagsError()
+    initializeSelfLoveIconError()
 
     ConstraintLayout(
         modifier = Modifier
@@ -103,7 +102,7 @@ fun NamePrayerUI(
                 }
         ) {
             NormalText(
-                text = "Add a prayer",
+                text = "Add a self love",
                 color = Black,
                 fontSize = 16,
                 xOffset = 0,
@@ -118,7 +117,7 @@ fun NamePrayerUI(
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            prayerName = customizedOutlinedTextInput(
+            selfLoveName = customizedOutlinedTextInput(
                 width = 0,
                 height = 55,
                 color = SoftPeach,
@@ -138,7 +137,7 @@ fun NamePrayerUI(
                 }
         ){
             AlignedLightText(
-                text = prayerNameErrorMessage,
+                text = selfLoveNameErrorMessage,
                 color = Black,
                 fontSize = 10,
                 xOffset = 0,
@@ -153,7 +152,7 @@ fun NamePrayerUI(
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            prayerDescription = customizableBigOutlinedTextInput(
+            selfLoveDescription = customizableBigOutlinedTextInput(
                 height = 100,
                 placeholder = "Description",
                 backgroundColor = SoftPeach,
@@ -174,7 +173,7 @@ fun NamePrayerUI(
                 }
         ){
             AlignedLightText(
-                text = prayerDescriptionErrorMessage,
+                text = selfLoveDescriptionErrorMessage,
                 color = Black,
                 fontSize = 10,
                 xOffset = 0,
@@ -189,7 +188,7 @@ fun NamePrayerUI(
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            prayerTags = customizedOutlinedTextInput(
+            selfLoveTags = customizedOutlinedTextInput(
                 width = 0,
                 height = 55,
                 color = SoftPeach,
@@ -209,7 +208,7 @@ fun NamePrayerUI(
                 }
         ){
             AlignedLightText(
-                text = prayerTagsErrorMessage,
+                text = selfLoveTagsErrorMessage,
                 color = Black,
                 fontSize = 10,
                 xOffset = 0,
@@ -226,7 +225,7 @@ fun NamePrayerUI(
                 }
         ){
             NormalText(
-                text = prayerIconSelectionTitle,
+                text = selfLoveIconSelectionTitle,
                 color = Black,
                 fontSize = 16,
                 xOffset = 0,
@@ -256,7 +255,7 @@ fun NamePrayerUI(
                             border.value = false
                         }
                         borders[index].value = !borders[index].value
-                        prayerIcon = icon.value
+                        selfLoveIcon = icon.value
                     }
 
                 if (borders[index].value) {
@@ -280,7 +279,7 @@ fun NamePrayerUI(
                         ) {
                             Image(
                                 painter = painterResource(id = icon.value),
-                                contentDescription = "prayer icon",
+                                contentDescription = "self love icon",
                                 modifier = Modifier
                                     .size(width = 25.64.dp, height = 25.64.dp)
                                     .padding(20.dp)
@@ -300,10 +299,10 @@ fun NamePrayerUI(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if(
-                prayerName.length >= MIN_PRAYER_NAME &&
-                prayerDescription.length >= MIN_PRAYER_DESCRIPTION &&
-                prayerTags.length >= MIN_PRAYER_TAGS &&
-                prayerIcon != -1
+                selfLoveName.length >= MIN_SELF_LOVE_NAME &&
+                selfLoveDescription.length >= MIN_SELF_LOVE_DESCRIPTION &&
+                selfLoveTags.length >= MIN_SELF_LOVE_TAGS &&
+                selfLoveIcon != -1
             ) {
                 CustomizableButton(
                     text = "Choose a file",
@@ -318,7 +317,7 @@ fun NamePrayerUI(
                     maxWidthFraction = 1F
                 ) {
                     runOnUiThread {
-                        navigateToUploadPrayer(
+                        navigateToUploadSelfLove(
                             navController
                         )
                     }
@@ -338,11 +337,8 @@ fun NamePrayerUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    runOnUiThread {
-                        navigateToRecordPrayer(
-                            navController
-                        )
-                    }
+                    //Don't create self love yet. Create it after recording audio
+                    //navigate to record self love
                 }
             }
         }
@@ -359,64 +355,49 @@ fun NamePrayerUI(
 
 @Composable
 private fun SetupAlertDialogs(){
-    if(openPrayerNameTakenDialogBox){
-        AlertDialogBox(text = "The name '$prayerName' already exists")
+    if(openSelfLoveNameTakenDialogBox){
+        AlertDialogBox(text = "The name '$selfLoveName' already exists")
     }
 }
 
-private fun initializePrayerNameError() {
-    prayerNameErrorMessage = if(prayerName.isEmpty()){
-        "Name this prayer"
-    } else if(prayerName.length < MIN_PRAYER_NAME){
-        "Name must be at least $MIN_PRAYER_NAME characters"
+private fun initializeSelfLoveNameError() {
+    selfLoveNameErrorMessage = if(selfLoveName.isEmpty()){
+        "Name this self love"
+    } else if(selfLoveName.length < MIN_SELF_LOVE_NAME){
+        "Name must be at least $MIN_SELF_LOVE_NAME characters"
     } else{
         ""
     }
 }
 
-private fun initializePrayerDescriptionError() {
-    prayerDescriptionErrorMessage = if(prayerDescription.isEmpty()){
-        "Describe this prayer"
-    } else if(prayerDescription.length < MIN_PRAYER_DESCRIPTION){
-        "Description must be at least $MIN_PRAYER_DESCRIPTION characters"
+private fun initializeSelfLoveDescriptionError() {
+    selfLoveDescriptionErrorMessage = if(selfLoveDescription.isEmpty()){
+        "Describe this self love"
+    } else if(selfLoveDescription.length < MIN_SELF_LOVE_DESCRIPTION){
+        "Description must be at least $MIN_SELF_LOVE_DESCRIPTION characters"
     } else{
         ""
     }
 }
 
-private fun initializePrayerTagsError() {
-    prayerTagsErrorMessage = if(prayerTags.isEmpty()){
-        "Add tags to this prayer. Separate tags with a comma"
-    } else if(prayerTags.length < MIN_PRAYER_TAGS){
-        "Tags must be at least $MIN_PRAYER_TAGS characters"
+private fun initializeSelfLoveTagsError() {
+    selfLoveTagsErrorMessage = if(selfLoveTags.isEmpty()){
+        "Add tags to this self love. Separate tags with a comma"
+    } else if(selfLoveTags.length < MIN_SELF_LOVE_TAGS){
+        "Tags must be at least $MIN_SELF_LOVE_TAGS characters"
     } else{
         ""
     }
 }
 
-private fun initializePrayerIconError() {
-    prayerIconSelectionTitle = if(prayerIcon == -1){
+private fun initializeSelfLoveIconError() {
+    selfLoveIconSelectionTitle = if(selfLoveIcon == -1){
         "Select icon"
     }else{
         "Icon selected"
     }
 }
 
-fun resetNamePrayerVariables(){
-    prayerIcon = -1
-    prayerName = ""
-    prayerDescription = ""
-    prayerTags = ""
-    prayerIconSelectionTitle = ""
-    prayerNameErrorMessage = ""
-    prayerDescriptionErrorMessage = ""
-    prayerTagsErrorMessage = ""
-}
-
-fun navigateToUploadPrayer(navController: NavController){
-    navController.navigate(Screen.UploadPrayer.screen_route)
-}
-
-fun navigateToRecordPrayer(navController: NavController){
-    navController.navigate(Screen.RecordPrayer.screen_route)
+fun navigateToUploadSelfLove(navController: NavController){
+    //navController.navigate(Screen.UploadBedtimeStory.screen_route)
 }

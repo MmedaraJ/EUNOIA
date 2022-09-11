@@ -39,6 +39,12 @@ query GetSoundData($id: ID!) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -344,6 +350,12 @@ query GetCommentData($id: ID!) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -658,6 +670,12 @@ query GetRoutineData($id: ID!) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -689,11 +707,13 @@ query GetRoutineData($id: ID!) {
     visible_to_others
     colorHEX
     playSoundDuringStretch
+    playSoundDuringPrayer
     playSoundDuringBreathing
     playSoundDuringSelfLove
     playSoundDuringBedtimeStory
     playSoundDuringSleep
     eachSoundPlayTime
+    prayerPlayTime
     bedtimeStoryPlayTime
     selfLovePlayTime
     stretchTime
@@ -702,11 +722,24 @@ query GetRoutineData($id: ID!) {
     currentBedtimeStoryContinuePlayingTime
     currentSelfLovePlayingIndex
     currentSelfLoveContinuePlayingTime
+    currentPrayerPlayingIndex
+    currentPrayerContinuePlayingTime
     sounds {
       items {
         id
         soundDataID
         routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayers {
+      items {
+        id
+        routineDataID
+        prayerDataID
         createdAt
         updatedAt
         owner
@@ -811,11 +844,13 @@ query ListRoutineDatas(
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -824,7 +859,12 @@ query ListRoutineDatas(
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -888,6 +928,12 @@ query GetBedtimeStoryInfoData($id: ID!) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -1019,6 +1065,164 @@ query ListBedtimeStoryInfoDatas(
     nextToken
   }
 }
+query GetPrayerData($id: ID!) {
+  getPrayerData(id: $id) {
+    id
+    userDataID
+    prayerOwner {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    displayName
+    description
+    audioKeyS3
+    icon
+    fullPlayTime
+    visibleToOthers
+    religion
+    country
+    tags
+    audioSource
+    approvalStatus
+    routines {
+      items {
+        id
+        routineDataID
+        prayerDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        prayerDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListPrayerDatas(
+  $filter: ModelPrayerDataFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listPrayerDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
 query GetSelfLoveData($id: ID!) {
   getSelfLoveData(id: $id) {
     id
@@ -1057,6 +1261,12 @@ query GetSelfLoveData($id: ID!) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -1191,6 +1401,12 @@ query GetStretchData($id: ID!) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -1321,6 +1537,12 @@ query GetBreathingData($id: ID!) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -1489,11 +1711,13 @@ query GetUserData($id: ID!) {
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -1502,6 +1726,8 @@ query GetUserData($id: ID!) {
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
         createdAt
         updatedAt
@@ -1535,6 +1761,38 @@ query GetUserData($id: ID!) {
       items {
         id
         stretchDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayersOwnedByUser {
+      items {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        religion
+        country
+        tags
+        audioSource
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    prayers {
+      items {
+        id
+        prayerDataID
         userDataID
         createdAt
         updatedAt
@@ -1662,6 +1920,12 @@ query ListUserDatas(
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -1973,6 +2237,12 @@ query GetUserSound($id: ID!) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -2151,11 +2421,13 @@ query GetRoutineSound($id: ID!) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -2164,7 +2436,12 @@ query GetRoutineSound($id: ID!) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -2233,11 +2510,13 @@ query ListRoutineSounds(
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -2246,7 +2525,205 @@ query ListRoutineSounds(
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetRoutinePrayer($id: ID!) {
+  getRoutinePrayer(id: $id) {
+    id
+    routineDataID
+    prayerDataID
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visible_to_others
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    prayerData {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListRoutinePrayers(
+  $filter: ModelRoutinePrayerFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listRoutinePrayers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      routineDataID
+      prayerDataID
+      routineData {
+        id
+        userDataID
+        original_name
+        display_name
+        numberOfSteps
+        numberOfTimesUsed
+        fullPlayTime
+        icon
+        visible_to_others
+        colorHEX
+        playSoundDuringStretch
+        playSoundDuringPrayer
+        playSoundDuringBreathing
+        playSoundDuringSelfLove
+        playSoundDuringBedtimeStory
+        playSoundDuringSleep
+        eachSoundPlayTime
+        prayerPlayTime
+        bedtimeStoryPlayTime
+        selfLovePlayTime
+        stretchTime
+        breathingTime
+        currentBedtimeStoryPlayingIndex
+        currentBedtimeStoryContinuePlayingTime
+        currentSelfLovePlayingIndex
+        currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
+        playingOrder
+        createdAt
+        updatedAt
+        owner
+      }
+      prayerData {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        religion
+        country
+        tags
+        audioSource
+        approvalStatus
         createdAt
         updatedAt
         owner
@@ -2294,11 +2771,13 @@ query GetRoutineStretch($id: ID!) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -2307,7 +2786,12 @@ query GetRoutineStretch($id: ID!) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -2390,11 +2874,13 @@ query ListRoutineStretches(
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -2403,6 +2889,8 @@ query ListRoutineStretches(
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
         createdAt
         updatedAt
@@ -2459,11 +2947,13 @@ query GetRoutineBreathing($id: ID!) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -2472,7 +2962,12 @@ query GetRoutineBreathing($id: ID!) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -2555,11 +3050,13 @@ query ListRoutineBreathings(
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -2568,6 +3065,8 @@ query ListRoutineBreathings(
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
         createdAt
         updatedAt
@@ -2624,11 +3123,13 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -2637,7 +3138,12 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -2736,11 +3242,13 @@ query ListRoutineBedtimeStoryInfos(
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -2749,6 +3257,8 @@ query ListRoutineBedtimeStoryInfos(
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
         createdAt
         updatedAt
@@ -2814,11 +3324,13 @@ query GetRoutineSelfLove($id: ID!) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -2827,7 +3339,12 @@ query GetRoutineSelfLove($id: ID!) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -2910,11 +3427,13 @@ query ListRoutineSelfLoves(
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -2923,6 +3442,8 @@ query ListRoutineSelfLoves(
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
         createdAt
         updatedAt
@@ -2979,11 +3500,13 @@ query GetUserRoutine($id: ID!) {
       visible_to_others
       colorHEX
       playSoundDuringStretch
+      playSoundDuringPrayer
       playSoundDuringBreathing
       playSoundDuringSelfLove
       playSoundDuringBedtimeStory
       playSoundDuringSleep
       eachSoundPlayTime
+      prayerPlayTime
       bedtimeStoryPlayTime
       selfLovePlayTime
       stretchTime
@@ -2992,7 +3515,12 @@ query GetUserRoutine($id: ID!) {
       currentBedtimeStoryContinuePlayingTime
       currentSelfLovePlayingIndex
       currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       stretches {
@@ -3051,6 +3579,12 @@ query GetUserRoutine($id: ID!) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -3100,11 +3634,13 @@ query ListUserRoutines(
         visible_to_others
         colorHEX
         playSoundDuringStretch
+        playSoundDuringPrayer
         playSoundDuringBreathing
         playSoundDuringSelfLove
         playSoundDuringBedtimeStory
         playSoundDuringSleep
         eachSoundPlayTime
+        prayerPlayTime
         bedtimeStoryPlayTime
         selfLovePlayTime
         stretchTime
@@ -3113,6 +3649,8 @@ query ListUserRoutines(
         currentBedtimeStoryContinuePlayingTime
         currentSelfLovePlayingIndex
         currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
         playingOrder
         createdAt
         updatedAt
@@ -3230,6 +3768,12 @@ query GetUserBedtimeStoryInfo($id: ID!) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -3284,6 +3828,177 @@ query ListUserBedtimeStoryInfos(
         audioSource
         approvalStatus
         creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      userData {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserPrayer($id: ID!) {
+  getUserPrayer(id: $id) {
+    id
+    prayerDataID
+    userDataID
+    prayerData {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      description
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      comments {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserPrayers(
+  $filter: ModelUserPrayerFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserPrayers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      prayerDataID
+      userDataID
+      prayerData {
+        id
+        userDataID
+        displayName
+        description
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        religion
+        country
+        tags
+        audioSource
+        approvalStatus
         createdAt
         updatedAt
         owner
@@ -3386,6 +4101,12 @@ query GetUserSelfLove($id: ID!) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {
@@ -3533,6 +4254,12 @@ query GetUserStretch($id: ID!) {
       stretches {
         nextToken
       }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
       breathingsOwnedByUser {
         nextToken
       }
@@ -3676,6 +4403,12 @@ query GetUserBreathing($id: ID!) {
         nextToken
       }
       stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
         nextToken
       }
       breathingsOwnedByUser {

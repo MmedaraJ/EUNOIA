@@ -2128,6 +2128,69 @@ fun WrappedPurpleBackgroundStart(
     }
 }
 
+@Composable
+fun Or(){
+    ConstraintLayout {
+        val (
+            line_1,
+            text,
+            line_2
+        ) = createRefs()
+        Column(
+            modifier = Modifier
+                .constrainAs(line_1){
+                    top.linkTo(text.top, margin = 0.dp)
+                    end.linkTo(text.start, margin = 3.dp)
+                    bottom.linkTo(text.bottom, margin = 0.dp)
+                }
+        ) {
+            Canvas(modifier = Modifier){
+                val canvasWidth = size.width
+                drawLine(
+                    start = Offset(x = canvasWidth, y = 0f),
+                    end = Offset(x = canvasWidth - 140f, y = 0f),
+                    color = Black,
+                    strokeWidth = 1F
+                )
+            }
+        }
+        Column(
+            modifier = Modifier
+                .constrainAs(text){
+                    top.linkTo(parent.top, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    bottom.linkTo(parent.bottom, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ) {
+            NormalText(
+                text = "or",
+                color = Black,
+                fontSize = 12,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            modifier = Modifier
+                .constrainAs(line_2){
+                    top.linkTo(text.top, margin = 0.dp)
+                    start.linkTo(text.end, margin = 3.dp)
+                    bottom.linkTo(text.bottom, margin = 0.dp)
+                }
+        ) {
+            Canvas(modifier = Modifier){
+                drawLine(
+                    start = Offset(x = 0f, y = 0f),
+                    end = Offset(x = 140f, y = 0f),
+                    color = Black,
+                    strokeWidth = 1F
+                )
+            }
+        }
+    }
+}
+
 @Preview(
     showBackground = true,
     name = "Light mode"

@@ -40,11 +40,13 @@ public final class RoutineData implements Model {
   public static final QueryField VISIBLE_TO_OTHERS = field("RoutineData", "visible_to_others");
   public static final QueryField COLOR_HEX = field("RoutineData", "colorHEX");
   public static final QueryField PLAY_SOUND_DURING_STRETCH = field("RoutineData", "playSoundDuringStretch");
+  public static final QueryField PLAY_SOUND_DURING_PRAYER = field("RoutineData", "playSoundDuringPrayer");
   public static final QueryField PLAY_SOUND_DURING_BREATHING = field("RoutineData", "playSoundDuringBreathing");
   public static final QueryField PLAY_SOUND_DURING_SELF_LOVE = field("RoutineData", "playSoundDuringSelfLove");
   public static final QueryField PLAY_SOUND_DURING_BEDTIME_STORY = field("RoutineData", "playSoundDuringBedtimeStory");
   public static final QueryField PLAY_SOUND_DURING_SLEEP = field("RoutineData", "playSoundDuringSleep");
   public static final QueryField EACH_SOUND_PLAY_TIME = field("RoutineData", "eachSoundPlayTime");
+  public static final QueryField PRAYER_PLAY_TIME = field("RoutineData", "prayerPlayTime");
   public static final QueryField BEDTIME_STORY_PLAY_TIME = field("RoutineData", "bedtimeStoryPlayTime");
   public static final QueryField SELF_LOVE_PLAY_TIME = field("RoutineData", "selfLovePlayTime");
   public static final QueryField STRETCH_TIME = field("RoutineData", "stretchTime");
@@ -53,38 +55,45 @@ public final class RoutineData implements Model {
   public static final QueryField CURRENT_BEDTIME_STORY_CONTINUE_PLAYING_TIME = field("RoutineData", "currentBedtimeStoryContinuePlayingTime");
   public static final QueryField CURRENT_SELF_LOVE_PLAYING_INDEX = field("RoutineData", "currentSelfLovePlayingIndex");
   public static final QueryField CURRENT_SELF_LOVE_CONTINUE_PLAYING_TIME = field("RoutineData", "currentSelfLoveContinuePlayingTime");
+  public static final QueryField CURRENT_PRAYER_PLAYING_INDEX = field("RoutineData", "currentPrayerPlayingIndex");
+  public static final QueryField CURRENT_PRAYER_CONTINUE_PLAYING_TIME = field("RoutineData", "currentPrayerContinuePlayingTime");
   public static final QueryField PLAYING_ORDER = field("RoutineData", "playingOrder");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData routineOwner;
-  private final @ModelField(targetType="String", isRequired = true) String original_name;
-  private final @ModelField(targetType="String", isRequired = true) String display_name;
-  private final @ModelField(targetType="Int", isRequired = true) Integer numberOfSteps;
-  private final @ModelField(targetType="Int", isRequired = true) Integer numberOfTimesUsed;
-  private final @ModelField(targetType="Int", isRequired = true) Integer fullPlayTime;
-  private final @ModelField(targetType="Int", isRequired = true) Integer icon;
-  private final @ModelField(targetType="Boolean", isRequired = true) Boolean visible_to_others;
-  private final @ModelField(targetType="Int", isRequired = true) Integer colorHEX;
-  private final @ModelField(targetType="Boolean", isRequired = true) Boolean playSoundDuringStretch;
-  private final @ModelField(targetType="Boolean", isRequired = true) Boolean playSoundDuringBreathing;
-  private final @ModelField(targetType="Boolean", isRequired = true) Boolean playSoundDuringSelfLove;
-  private final @ModelField(targetType="Boolean", isRequired = true) Boolean playSoundDuringBedtimeStory;
-  private final @ModelField(targetType="Boolean", isRequired = true) Boolean playSoundDuringSleep;
-  private final @ModelField(targetType="Int", isRequired = true) Integer eachSoundPlayTime;
-  private final @ModelField(targetType="Int", isRequired = true) Integer bedtimeStoryPlayTime;
-  private final @ModelField(targetType="Int", isRequired = true) Integer selfLovePlayTime;
-  private final @ModelField(targetType="Int", isRequired = true) Integer stretchTime;
-  private final @ModelField(targetType="Int", isRequired = true) Integer breathingTime;
-  private final @ModelField(targetType="Int", isRequired = true) Integer currentBedtimeStoryPlayingIndex;
-  private final @ModelField(targetType="Int", isRequired = true) Integer currentBedtimeStoryContinuePlayingTime;
-  private final @ModelField(targetType="Int", isRequired = true) Integer currentSelfLovePlayingIndex;
-  private final @ModelField(targetType="Int", isRequired = true) Integer currentSelfLoveContinuePlayingTime;
+  private final @ModelField(targetType="String") String original_name;
+  private final @ModelField(targetType="String") String display_name;
+  private final @ModelField(targetType="Int") Integer numberOfSteps;
+  private final @ModelField(targetType="Int") Integer numberOfTimesUsed;
+  private final @ModelField(targetType="Int") Integer fullPlayTime;
+  private final @ModelField(targetType="Int") Integer icon;
+  private final @ModelField(targetType="Boolean") Boolean visible_to_others;
+  private final @ModelField(targetType="Int") Integer colorHEX;
+  private final @ModelField(targetType="Boolean") Boolean playSoundDuringStretch;
+  private final @ModelField(targetType="Boolean") Boolean playSoundDuringPrayer;
+  private final @ModelField(targetType="Boolean") Boolean playSoundDuringBreathing;
+  private final @ModelField(targetType="Boolean") Boolean playSoundDuringSelfLove;
+  private final @ModelField(targetType="Boolean") Boolean playSoundDuringBedtimeStory;
+  private final @ModelField(targetType="Boolean") Boolean playSoundDuringSleep;
+  private final @ModelField(targetType="Int") Integer eachSoundPlayTime;
+  private final @ModelField(targetType="Int") Integer prayerPlayTime;
+  private final @ModelField(targetType="Int") Integer bedtimeStoryPlayTime;
+  private final @ModelField(targetType="Int") Integer selfLovePlayTime;
+  private final @ModelField(targetType="Int") Integer stretchTime;
+  private final @ModelField(targetType="Int") Integer breathingTime;
+  private final @ModelField(targetType="Int") Integer currentBedtimeStoryPlayingIndex;
+  private final @ModelField(targetType="Int") Integer currentBedtimeStoryContinuePlayingTime;
+  private final @ModelField(targetType="Int") Integer currentSelfLovePlayingIndex;
+  private final @ModelField(targetType="Int") Integer currentSelfLoveContinuePlayingTime;
+  private final @ModelField(targetType="Int") Integer currentPrayerPlayingIndex;
+  private final @ModelField(targetType="Int") Integer currentPrayerContinuePlayingTime;
   private final @ModelField(targetType="RoutineSound") @HasMany(associatedWith = "routineData", type = RoutineSound.class) List<RoutineSound> sounds = null;
+  private final @ModelField(targetType="RoutinePrayer") @HasMany(associatedWith = "routineData", type = RoutinePrayer.class) List<RoutinePrayer> prayers = null;
   private final @ModelField(targetType="RoutineStretch") @HasMany(associatedWith = "routineData", type = RoutineStretch.class) List<RoutineStretch> stretches = null;
   private final @ModelField(targetType="RoutineBreathing") @HasMany(associatedWith = "routineData", type = RoutineBreathing.class) List<RoutineBreathing> breathing = null;
   private final @ModelField(targetType="RoutineBedtimeStoryInfo") @HasMany(associatedWith = "routineData", type = RoutineBedtimeStoryInfo.class) List<RoutineBedtimeStoryInfo> bedtimeStories = null;
   private final @ModelField(targetType="RoutineSelfLove") @HasMany(associatedWith = "routineData", type = RoutineSelfLove.class) List<RoutineSelfLove> selfLoves = null;
   private final @ModelField(targetType="UserRoutine") @HasMany(associatedWith = "routineData", type = UserRoutine.class) List<UserRoutine> users = null;
-  private final @ModelField(targetType="String", isRequired = true) List<String> playingOrder;
+  private final @ModelField(targetType="String") List<String> playingOrder;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -131,6 +140,10 @@ public final class RoutineData implements Model {
       return playSoundDuringStretch;
   }
   
+  public Boolean getPlaySoundDuringPrayer() {
+      return playSoundDuringPrayer;
+  }
+  
   public Boolean getPlaySoundDuringBreathing() {
       return playSoundDuringBreathing;
   }
@@ -149,6 +162,10 @@ public final class RoutineData implements Model {
   
   public Integer getEachSoundPlayTime() {
       return eachSoundPlayTime;
+  }
+  
+  public Integer getPrayerPlayTime() {
+      return prayerPlayTime;
   }
   
   public Integer getBedtimeStoryPlayTime() {
@@ -183,8 +200,20 @@ public final class RoutineData implements Model {
       return currentSelfLoveContinuePlayingTime;
   }
   
+  public Integer getCurrentPrayerPlayingIndex() {
+      return currentPrayerPlayingIndex;
+  }
+  
+  public Integer getCurrentPrayerContinuePlayingTime() {
+      return currentPrayerContinuePlayingTime;
+  }
+  
   public List<RoutineSound> getSounds() {
       return sounds;
+  }
+  
+  public List<RoutinePrayer> getPrayers() {
+      return prayers;
   }
   
   public List<RoutineStretch> getStretches() {
@@ -219,7 +248,7 @@ public final class RoutineData implements Model {
       return updatedAt;
   }
   
-  private RoutineData(String id, UserData routineOwner, String original_name, String display_name, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visible_to_others, Integer colorHEX, Boolean playSoundDuringStretch, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, List<String> playingOrder) {
+  private RoutineData(String id, UserData routineOwner, String original_name, String display_name, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visible_to_others, Integer colorHEX, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<String> playingOrder) {
     this.id = id;
     this.routineOwner = routineOwner;
     this.original_name = original_name;
@@ -231,11 +260,13 @@ public final class RoutineData implements Model {
     this.visible_to_others = visible_to_others;
     this.colorHEX = colorHEX;
     this.playSoundDuringStretch = playSoundDuringStretch;
+    this.playSoundDuringPrayer = playSoundDuringPrayer;
     this.playSoundDuringBreathing = playSoundDuringBreathing;
     this.playSoundDuringSelfLove = playSoundDuringSelfLove;
     this.playSoundDuringBedtimeStory = playSoundDuringBedtimeStory;
     this.playSoundDuringSleep = playSoundDuringSleep;
     this.eachSoundPlayTime = eachSoundPlayTime;
+    this.prayerPlayTime = prayerPlayTime;
     this.bedtimeStoryPlayTime = bedtimeStoryPlayTime;
     this.selfLovePlayTime = selfLovePlayTime;
     this.stretchTime = stretchTime;
@@ -244,6 +275,8 @@ public final class RoutineData implements Model {
     this.currentBedtimeStoryContinuePlayingTime = currentBedtimeStoryContinuePlayingTime;
     this.currentSelfLovePlayingIndex = currentSelfLovePlayingIndex;
     this.currentSelfLoveContinuePlayingTime = currentSelfLoveContinuePlayingTime;
+    this.currentPrayerPlayingIndex = currentPrayerPlayingIndex;
+    this.currentPrayerContinuePlayingTime = currentPrayerContinuePlayingTime;
     this.playingOrder = playingOrder;
   }
   
@@ -266,11 +299,13 @@ public final class RoutineData implements Model {
               ObjectsCompat.equals(getVisibleToOthers(), routineData.getVisibleToOthers()) &&
               ObjectsCompat.equals(getColorHex(), routineData.getColorHex()) &&
               ObjectsCompat.equals(getPlaySoundDuringStretch(), routineData.getPlaySoundDuringStretch()) &&
+              ObjectsCompat.equals(getPlaySoundDuringPrayer(), routineData.getPlaySoundDuringPrayer()) &&
               ObjectsCompat.equals(getPlaySoundDuringBreathing(), routineData.getPlaySoundDuringBreathing()) &&
               ObjectsCompat.equals(getPlaySoundDuringSelfLove(), routineData.getPlaySoundDuringSelfLove()) &&
               ObjectsCompat.equals(getPlaySoundDuringBedtimeStory(), routineData.getPlaySoundDuringBedtimeStory()) &&
               ObjectsCompat.equals(getPlaySoundDuringSleep(), routineData.getPlaySoundDuringSleep()) &&
               ObjectsCompat.equals(getEachSoundPlayTime(), routineData.getEachSoundPlayTime()) &&
+              ObjectsCompat.equals(getPrayerPlayTime(), routineData.getPrayerPlayTime()) &&
               ObjectsCompat.equals(getBedtimeStoryPlayTime(), routineData.getBedtimeStoryPlayTime()) &&
               ObjectsCompat.equals(getSelfLovePlayTime(), routineData.getSelfLovePlayTime()) &&
               ObjectsCompat.equals(getStretchTime(), routineData.getStretchTime()) &&
@@ -279,6 +314,8 @@ public final class RoutineData implements Model {
               ObjectsCompat.equals(getCurrentBedtimeStoryContinuePlayingTime(), routineData.getCurrentBedtimeStoryContinuePlayingTime()) &&
               ObjectsCompat.equals(getCurrentSelfLovePlayingIndex(), routineData.getCurrentSelfLovePlayingIndex()) &&
               ObjectsCompat.equals(getCurrentSelfLoveContinuePlayingTime(), routineData.getCurrentSelfLoveContinuePlayingTime()) &&
+              ObjectsCompat.equals(getCurrentPrayerPlayingIndex(), routineData.getCurrentPrayerPlayingIndex()) &&
+              ObjectsCompat.equals(getCurrentPrayerContinuePlayingTime(), routineData.getCurrentPrayerContinuePlayingTime()) &&
               ObjectsCompat.equals(getPlayingOrder(), routineData.getPlayingOrder()) &&
               ObjectsCompat.equals(getCreatedAt(), routineData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), routineData.getUpdatedAt());
@@ -299,11 +336,13 @@ public final class RoutineData implements Model {
       .append(getVisibleToOthers())
       .append(getColorHex())
       .append(getPlaySoundDuringStretch())
+      .append(getPlaySoundDuringPrayer())
       .append(getPlaySoundDuringBreathing())
       .append(getPlaySoundDuringSelfLove())
       .append(getPlaySoundDuringBedtimeStory())
       .append(getPlaySoundDuringSleep())
       .append(getEachSoundPlayTime())
+      .append(getPrayerPlayTime())
       .append(getBedtimeStoryPlayTime())
       .append(getSelfLovePlayTime())
       .append(getStretchTime())
@@ -312,6 +351,8 @@ public final class RoutineData implements Model {
       .append(getCurrentBedtimeStoryContinuePlayingTime())
       .append(getCurrentSelfLovePlayingIndex())
       .append(getCurrentSelfLoveContinuePlayingTime())
+      .append(getCurrentPrayerPlayingIndex())
+      .append(getCurrentPrayerContinuePlayingTime())
       .append(getPlayingOrder())
       .append(getCreatedAt())
       .append(getUpdatedAt())
@@ -334,11 +375,13 @@ public final class RoutineData implements Model {
       .append("visible_to_others=" + String.valueOf(getVisibleToOthers()) + ", ")
       .append("colorHEX=" + String.valueOf(getColorHex()) + ", ")
       .append("playSoundDuringStretch=" + String.valueOf(getPlaySoundDuringStretch()) + ", ")
+      .append("playSoundDuringPrayer=" + String.valueOf(getPlaySoundDuringPrayer()) + ", ")
       .append("playSoundDuringBreathing=" + String.valueOf(getPlaySoundDuringBreathing()) + ", ")
       .append("playSoundDuringSelfLove=" + String.valueOf(getPlaySoundDuringSelfLove()) + ", ")
       .append("playSoundDuringBedtimeStory=" + String.valueOf(getPlaySoundDuringBedtimeStory()) + ", ")
       .append("playSoundDuringSleep=" + String.valueOf(getPlaySoundDuringSleep()) + ", ")
       .append("eachSoundPlayTime=" + String.valueOf(getEachSoundPlayTime()) + ", ")
+      .append("prayerPlayTime=" + String.valueOf(getPrayerPlayTime()) + ", ")
       .append("bedtimeStoryPlayTime=" + String.valueOf(getBedtimeStoryPlayTime()) + ", ")
       .append("selfLovePlayTime=" + String.valueOf(getSelfLovePlayTime()) + ", ")
       .append("stretchTime=" + String.valueOf(getStretchTime()) + ", ")
@@ -347,6 +390,8 @@ public final class RoutineData implements Model {
       .append("currentBedtimeStoryContinuePlayingTime=" + String.valueOf(getCurrentBedtimeStoryContinuePlayingTime()) + ", ")
       .append("currentSelfLovePlayingIndex=" + String.valueOf(getCurrentSelfLovePlayingIndex()) + ", ")
       .append("currentSelfLoveContinuePlayingTime=" + String.valueOf(getCurrentSelfLoveContinuePlayingTime()) + ", ")
+      .append("currentPrayerPlayingIndex=" + String.valueOf(getCurrentPrayerPlayingIndex()) + ", ")
+      .append("currentPrayerContinuePlayingTime=" + String.valueOf(getCurrentPrayerContinuePlayingTime()) + ", ")
       .append("playingOrder=" + String.valueOf(getPlayingOrder()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
@@ -392,6 +437,10 @@ public final class RoutineData implements Model {
       null,
       null,
       null,
+      null,
+      null,
+      null,
+      null,
       null
     );
   }
@@ -408,11 +457,13 @@ public final class RoutineData implements Model {
       visible_to_others,
       colorHEX,
       playSoundDuringStretch,
+      playSoundDuringPrayer,
       playSoundDuringBreathing,
       playSoundDuringSelfLove,
       playSoundDuringBedtimeStory,
       playSoundDuringSleep,
       eachSoundPlayTime,
+      prayerPlayTime,
       bedtimeStoryPlayTime,
       selfLovePlayTime,
       stretchTime,
@@ -421,135 +472,49 @@ public final class RoutineData implements Model {
       currentBedtimeStoryContinuePlayingTime,
       currentSelfLovePlayingIndex,
       currentSelfLoveContinuePlayingTime,
+      currentPrayerPlayingIndex,
+      currentPrayerContinuePlayingTime,
       playingOrder);
   }
   public interface RoutineOwnerStep {
-    OriginalNameStep routineOwner(UserData routineOwner);
-  }
-  
-
-  public interface OriginalNameStep {
-    DisplayNameStep originalName(String originalName);
-  }
-  
-
-  public interface DisplayNameStep {
-    NumberOfStepsStep displayName(String displayName);
-  }
-  
-
-  public interface NumberOfStepsStep {
-    NumberOfTimesUsedStep numberOfSteps(Integer numberOfSteps);
-  }
-  
-
-  public interface NumberOfTimesUsedStep {
-    FullPlayTimeStep numberOfTimesUsed(Integer numberOfTimesUsed);
-  }
-  
-
-  public interface FullPlayTimeStep {
-    IconStep fullPlayTime(Integer fullPlayTime);
-  }
-  
-
-  public interface IconStep {
-    VisibleToOthersStep icon(Integer icon);
-  }
-  
-
-  public interface VisibleToOthersStep {
-    ColorHexStep visibleToOthers(Boolean visibleToOthers);
-  }
-  
-
-  public interface ColorHexStep {
-    PlaySoundDuringStretchStep colorHex(Integer colorHex);
-  }
-  
-
-  public interface PlaySoundDuringStretchStep {
-    PlaySoundDuringBreathingStep playSoundDuringStretch(Boolean playSoundDuringStretch);
-  }
-  
-
-  public interface PlaySoundDuringBreathingStep {
-    PlaySoundDuringSelfLoveStep playSoundDuringBreathing(Boolean playSoundDuringBreathing);
-  }
-  
-
-  public interface PlaySoundDuringSelfLoveStep {
-    PlaySoundDuringBedtimeStoryStep playSoundDuringSelfLove(Boolean playSoundDuringSelfLove);
-  }
-  
-
-  public interface PlaySoundDuringBedtimeStoryStep {
-    PlaySoundDuringSleepStep playSoundDuringBedtimeStory(Boolean playSoundDuringBedtimeStory);
-  }
-  
-
-  public interface PlaySoundDuringSleepStep {
-    EachSoundPlayTimeStep playSoundDuringSleep(Boolean playSoundDuringSleep);
-  }
-  
-
-  public interface EachSoundPlayTimeStep {
-    BedtimeStoryPlayTimeStep eachSoundPlayTime(Integer eachSoundPlayTime);
-  }
-  
-
-  public interface BedtimeStoryPlayTimeStep {
-    SelfLovePlayTimeStep bedtimeStoryPlayTime(Integer bedtimeStoryPlayTime);
-  }
-  
-
-  public interface SelfLovePlayTimeStep {
-    StretchTimeStep selfLovePlayTime(Integer selfLovePlayTime);
-  }
-  
-
-  public interface StretchTimeStep {
-    BreathingTimeStep stretchTime(Integer stretchTime);
-  }
-  
-
-  public interface BreathingTimeStep {
-    CurrentBedtimeStoryPlayingIndexStep breathingTime(Integer breathingTime);
-  }
-  
-
-  public interface CurrentBedtimeStoryPlayingIndexStep {
-    CurrentBedtimeStoryContinuePlayingTimeStep currentBedtimeStoryPlayingIndex(Integer currentBedtimeStoryPlayingIndex);
-  }
-  
-
-  public interface CurrentBedtimeStoryContinuePlayingTimeStep {
-    CurrentSelfLovePlayingIndexStep currentBedtimeStoryContinuePlayingTime(Integer currentBedtimeStoryContinuePlayingTime);
-  }
-  
-
-  public interface CurrentSelfLovePlayingIndexStep {
-    CurrentSelfLoveContinuePlayingTimeStep currentSelfLovePlayingIndex(Integer currentSelfLovePlayingIndex);
-  }
-  
-
-  public interface CurrentSelfLoveContinuePlayingTimeStep {
-    PlayingOrderStep currentSelfLoveContinuePlayingTime(Integer currentSelfLoveContinuePlayingTime);
-  }
-  
-
-  public interface PlayingOrderStep {
-    BuildStep playingOrder(List<String> playingOrder);
+    BuildStep routineOwner(UserData routineOwner);
   }
   
 
   public interface BuildStep {
     RoutineData build();
     BuildStep id(String id);
+    BuildStep originalName(String originalName);
+    BuildStep displayName(String displayName);
+    BuildStep numberOfSteps(Integer numberOfSteps);
+    BuildStep numberOfTimesUsed(Integer numberOfTimesUsed);
+    BuildStep fullPlayTime(Integer fullPlayTime);
+    BuildStep icon(Integer icon);
+    BuildStep visibleToOthers(Boolean visibleToOthers);
+    BuildStep colorHex(Integer colorHex);
+    BuildStep playSoundDuringStretch(Boolean playSoundDuringStretch);
+    BuildStep playSoundDuringPrayer(Boolean playSoundDuringPrayer);
+    BuildStep playSoundDuringBreathing(Boolean playSoundDuringBreathing);
+    BuildStep playSoundDuringSelfLove(Boolean playSoundDuringSelfLove);
+    BuildStep playSoundDuringBedtimeStory(Boolean playSoundDuringBedtimeStory);
+    BuildStep playSoundDuringSleep(Boolean playSoundDuringSleep);
+    BuildStep eachSoundPlayTime(Integer eachSoundPlayTime);
+    BuildStep prayerPlayTime(Integer prayerPlayTime);
+    BuildStep bedtimeStoryPlayTime(Integer bedtimeStoryPlayTime);
+    BuildStep selfLovePlayTime(Integer selfLovePlayTime);
+    BuildStep stretchTime(Integer stretchTime);
+    BuildStep breathingTime(Integer breathingTime);
+    BuildStep currentBedtimeStoryPlayingIndex(Integer currentBedtimeStoryPlayingIndex);
+    BuildStep currentBedtimeStoryContinuePlayingTime(Integer currentBedtimeStoryContinuePlayingTime);
+    BuildStep currentSelfLovePlayingIndex(Integer currentSelfLovePlayingIndex);
+    BuildStep currentSelfLoveContinuePlayingTime(Integer currentSelfLoveContinuePlayingTime);
+    BuildStep currentPrayerPlayingIndex(Integer currentPrayerPlayingIndex);
+    BuildStep currentPrayerContinuePlayingTime(Integer currentPrayerContinuePlayingTime);
+    BuildStep playingOrder(List<String> playingOrder);
   }
   
 
-  public static class Builder implements RoutineOwnerStep, OriginalNameStep, DisplayNameStep, NumberOfStepsStep, NumberOfTimesUsedStep, FullPlayTimeStep, IconStep, VisibleToOthersStep, ColorHexStep, PlaySoundDuringStretchStep, PlaySoundDuringBreathingStep, PlaySoundDuringSelfLoveStep, PlaySoundDuringBedtimeStoryStep, PlaySoundDuringSleepStep, EachSoundPlayTimeStep, BedtimeStoryPlayTimeStep, SelfLovePlayTimeStep, StretchTimeStep, BreathingTimeStep, CurrentBedtimeStoryPlayingIndexStep, CurrentBedtimeStoryContinuePlayingTimeStep, CurrentSelfLovePlayingIndexStep, CurrentSelfLoveContinuePlayingTimeStep, PlayingOrderStep, BuildStep {
+  public static class Builder implements RoutineOwnerStep, BuildStep {
     private String id;
     private UserData routineOwner;
     private String original_name;
@@ -561,11 +526,13 @@ public final class RoutineData implements Model {
     private Boolean visible_to_others;
     private Integer colorHEX;
     private Boolean playSoundDuringStretch;
+    private Boolean playSoundDuringPrayer;
     private Boolean playSoundDuringBreathing;
     private Boolean playSoundDuringSelfLove;
     private Boolean playSoundDuringBedtimeStory;
     private Boolean playSoundDuringSleep;
     private Integer eachSoundPlayTime;
+    private Integer prayerPlayTime;
     private Integer bedtimeStoryPlayTime;
     private Integer selfLovePlayTime;
     private Integer stretchTime;
@@ -574,6 +541,8 @@ public final class RoutineData implements Model {
     private Integer currentBedtimeStoryContinuePlayingTime;
     private Integer currentSelfLovePlayingIndex;
     private Integer currentSelfLoveContinuePlayingTime;
+    private Integer currentPrayerPlayingIndex;
+    private Integer currentPrayerContinuePlayingTime;
     private List<String> playingOrder;
     @Override
      public RoutineData build() {
@@ -591,11 +560,13 @@ public final class RoutineData implements Model {
           visible_to_others,
           colorHEX,
           playSoundDuringStretch,
+          playSoundDuringPrayer,
           playSoundDuringBreathing,
           playSoundDuringSelfLove,
           playSoundDuringBedtimeStory,
           playSoundDuringSleep,
           eachSoundPlayTime,
+          prayerPlayTime,
           bedtimeStoryPlayTime,
           selfLovePlayTime,
           stretchTime,
@@ -604,173 +575,176 @@ public final class RoutineData implements Model {
           currentBedtimeStoryContinuePlayingTime,
           currentSelfLovePlayingIndex,
           currentSelfLoveContinuePlayingTime,
+          currentPrayerPlayingIndex,
+          currentPrayerContinuePlayingTime,
           playingOrder);
     }
     
     @Override
-     public OriginalNameStep routineOwner(UserData routineOwner) {
+     public BuildStep routineOwner(UserData routineOwner) {
         Objects.requireNonNull(routineOwner);
         this.routineOwner = routineOwner;
         return this;
     }
     
     @Override
-     public DisplayNameStep originalName(String originalName) {
-        Objects.requireNonNull(originalName);
+     public BuildStep originalName(String originalName) {
         this.original_name = originalName;
         return this;
     }
     
     @Override
-     public NumberOfStepsStep displayName(String displayName) {
-        Objects.requireNonNull(displayName);
+     public BuildStep displayName(String displayName) {
         this.display_name = displayName;
         return this;
     }
     
     @Override
-     public NumberOfTimesUsedStep numberOfSteps(Integer numberOfSteps) {
-        Objects.requireNonNull(numberOfSteps);
+     public BuildStep numberOfSteps(Integer numberOfSteps) {
         this.numberOfSteps = numberOfSteps;
         return this;
     }
     
     @Override
-     public FullPlayTimeStep numberOfTimesUsed(Integer numberOfTimesUsed) {
-        Objects.requireNonNull(numberOfTimesUsed);
+     public BuildStep numberOfTimesUsed(Integer numberOfTimesUsed) {
         this.numberOfTimesUsed = numberOfTimesUsed;
         return this;
     }
     
     @Override
-     public IconStep fullPlayTime(Integer fullPlayTime) {
-        Objects.requireNonNull(fullPlayTime);
+     public BuildStep fullPlayTime(Integer fullPlayTime) {
         this.fullPlayTime = fullPlayTime;
         return this;
     }
     
     @Override
-     public VisibleToOthersStep icon(Integer icon) {
-        Objects.requireNonNull(icon);
+     public BuildStep icon(Integer icon) {
         this.icon = icon;
         return this;
     }
     
     @Override
-     public ColorHexStep visibleToOthers(Boolean visibleToOthers) {
-        Objects.requireNonNull(visibleToOthers);
+     public BuildStep visibleToOthers(Boolean visibleToOthers) {
         this.visible_to_others = visibleToOthers;
         return this;
     }
     
     @Override
-     public PlaySoundDuringStretchStep colorHex(Integer colorHex) {
-        Objects.requireNonNull(colorHex);
+     public BuildStep colorHex(Integer colorHex) {
         this.colorHEX = colorHex;
         return this;
     }
     
     @Override
-     public PlaySoundDuringBreathingStep playSoundDuringStretch(Boolean playSoundDuringStretch) {
-        Objects.requireNonNull(playSoundDuringStretch);
+     public BuildStep playSoundDuringStretch(Boolean playSoundDuringStretch) {
         this.playSoundDuringStretch = playSoundDuringStretch;
         return this;
     }
     
     @Override
-     public PlaySoundDuringSelfLoveStep playSoundDuringBreathing(Boolean playSoundDuringBreathing) {
-        Objects.requireNonNull(playSoundDuringBreathing);
+     public BuildStep playSoundDuringPrayer(Boolean playSoundDuringPrayer) {
+        this.playSoundDuringPrayer = playSoundDuringPrayer;
+        return this;
+    }
+    
+    @Override
+     public BuildStep playSoundDuringBreathing(Boolean playSoundDuringBreathing) {
         this.playSoundDuringBreathing = playSoundDuringBreathing;
         return this;
     }
     
     @Override
-     public PlaySoundDuringBedtimeStoryStep playSoundDuringSelfLove(Boolean playSoundDuringSelfLove) {
-        Objects.requireNonNull(playSoundDuringSelfLove);
+     public BuildStep playSoundDuringSelfLove(Boolean playSoundDuringSelfLove) {
         this.playSoundDuringSelfLove = playSoundDuringSelfLove;
         return this;
     }
     
     @Override
-     public PlaySoundDuringSleepStep playSoundDuringBedtimeStory(Boolean playSoundDuringBedtimeStory) {
-        Objects.requireNonNull(playSoundDuringBedtimeStory);
+     public BuildStep playSoundDuringBedtimeStory(Boolean playSoundDuringBedtimeStory) {
         this.playSoundDuringBedtimeStory = playSoundDuringBedtimeStory;
         return this;
     }
     
     @Override
-     public EachSoundPlayTimeStep playSoundDuringSleep(Boolean playSoundDuringSleep) {
-        Objects.requireNonNull(playSoundDuringSleep);
+     public BuildStep playSoundDuringSleep(Boolean playSoundDuringSleep) {
         this.playSoundDuringSleep = playSoundDuringSleep;
         return this;
     }
     
     @Override
-     public BedtimeStoryPlayTimeStep eachSoundPlayTime(Integer eachSoundPlayTime) {
-        Objects.requireNonNull(eachSoundPlayTime);
+     public BuildStep eachSoundPlayTime(Integer eachSoundPlayTime) {
         this.eachSoundPlayTime = eachSoundPlayTime;
         return this;
     }
     
     @Override
-     public SelfLovePlayTimeStep bedtimeStoryPlayTime(Integer bedtimeStoryPlayTime) {
-        Objects.requireNonNull(bedtimeStoryPlayTime);
+     public BuildStep prayerPlayTime(Integer prayerPlayTime) {
+        this.prayerPlayTime = prayerPlayTime;
+        return this;
+    }
+    
+    @Override
+     public BuildStep bedtimeStoryPlayTime(Integer bedtimeStoryPlayTime) {
         this.bedtimeStoryPlayTime = bedtimeStoryPlayTime;
         return this;
     }
     
     @Override
-     public StretchTimeStep selfLovePlayTime(Integer selfLovePlayTime) {
-        Objects.requireNonNull(selfLovePlayTime);
+     public BuildStep selfLovePlayTime(Integer selfLovePlayTime) {
         this.selfLovePlayTime = selfLovePlayTime;
         return this;
     }
     
     @Override
-     public BreathingTimeStep stretchTime(Integer stretchTime) {
-        Objects.requireNonNull(stretchTime);
+     public BuildStep stretchTime(Integer stretchTime) {
         this.stretchTime = stretchTime;
         return this;
     }
     
     @Override
-     public CurrentBedtimeStoryPlayingIndexStep breathingTime(Integer breathingTime) {
-        Objects.requireNonNull(breathingTime);
+     public BuildStep breathingTime(Integer breathingTime) {
         this.breathingTime = breathingTime;
         return this;
     }
     
     @Override
-     public CurrentBedtimeStoryContinuePlayingTimeStep currentBedtimeStoryPlayingIndex(Integer currentBedtimeStoryPlayingIndex) {
-        Objects.requireNonNull(currentBedtimeStoryPlayingIndex);
+     public BuildStep currentBedtimeStoryPlayingIndex(Integer currentBedtimeStoryPlayingIndex) {
         this.currentBedtimeStoryPlayingIndex = currentBedtimeStoryPlayingIndex;
         return this;
     }
     
     @Override
-     public CurrentSelfLovePlayingIndexStep currentBedtimeStoryContinuePlayingTime(Integer currentBedtimeStoryContinuePlayingTime) {
-        Objects.requireNonNull(currentBedtimeStoryContinuePlayingTime);
+     public BuildStep currentBedtimeStoryContinuePlayingTime(Integer currentBedtimeStoryContinuePlayingTime) {
         this.currentBedtimeStoryContinuePlayingTime = currentBedtimeStoryContinuePlayingTime;
         return this;
     }
     
     @Override
-     public CurrentSelfLoveContinuePlayingTimeStep currentSelfLovePlayingIndex(Integer currentSelfLovePlayingIndex) {
-        Objects.requireNonNull(currentSelfLovePlayingIndex);
+     public BuildStep currentSelfLovePlayingIndex(Integer currentSelfLovePlayingIndex) {
         this.currentSelfLovePlayingIndex = currentSelfLovePlayingIndex;
         return this;
     }
     
     @Override
-     public PlayingOrderStep currentSelfLoveContinuePlayingTime(Integer currentSelfLoveContinuePlayingTime) {
-        Objects.requireNonNull(currentSelfLoveContinuePlayingTime);
+     public BuildStep currentSelfLoveContinuePlayingTime(Integer currentSelfLoveContinuePlayingTime) {
         this.currentSelfLoveContinuePlayingTime = currentSelfLoveContinuePlayingTime;
         return this;
     }
     
     @Override
+     public BuildStep currentPrayerPlayingIndex(Integer currentPrayerPlayingIndex) {
+        this.currentPrayerPlayingIndex = currentPrayerPlayingIndex;
+        return this;
+    }
+    
+    @Override
+     public BuildStep currentPrayerContinuePlayingTime(Integer currentPrayerContinuePlayingTime) {
+        this.currentPrayerContinuePlayingTime = currentPrayerContinuePlayingTime;
+        return this;
+    }
+    
+    @Override
      public BuildStep playingOrder(List<String> playingOrder) {
-        Objects.requireNonNull(playingOrder);
         this.playingOrder = playingOrder;
         return this;
     }
@@ -787,7 +761,7 @@ public final class RoutineData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData routineOwner, String originalName, String displayName, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visibleToOthers, Integer colorHex, Boolean playSoundDuringStretch, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, List<String> playingOrder) {
+    private CopyOfBuilder(String id, UserData routineOwner, String originalName, String displayName, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visibleToOthers, Integer colorHex, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<String> playingOrder) {
       super.id(id);
       super.routineOwner(routineOwner)
         .originalName(originalName)
@@ -799,11 +773,13 @@ public final class RoutineData implements Model {
         .visibleToOthers(visibleToOthers)
         .colorHex(colorHex)
         .playSoundDuringStretch(playSoundDuringStretch)
+        .playSoundDuringPrayer(playSoundDuringPrayer)
         .playSoundDuringBreathing(playSoundDuringBreathing)
         .playSoundDuringSelfLove(playSoundDuringSelfLove)
         .playSoundDuringBedtimeStory(playSoundDuringBedtimeStory)
         .playSoundDuringSleep(playSoundDuringSleep)
         .eachSoundPlayTime(eachSoundPlayTime)
+        .prayerPlayTime(prayerPlayTime)
         .bedtimeStoryPlayTime(bedtimeStoryPlayTime)
         .selfLovePlayTime(selfLovePlayTime)
         .stretchTime(stretchTime)
@@ -812,6 +788,8 @@ public final class RoutineData implements Model {
         .currentBedtimeStoryContinuePlayingTime(currentBedtimeStoryContinuePlayingTime)
         .currentSelfLovePlayingIndex(currentSelfLovePlayingIndex)
         .currentSelfLoveContinuePlayingTime(currentSelfLoveContinuePlayingTime)
+        .currentPrayerPlayingIndex(currentPrayerPlayingIndex)
+        .currentPrayerContinuePlayingTime(currentPrayerContinuePlayingTime)
         .playingOrder(playingOrder);
     }
     
@@ -866,6 +844,11 @@ public final class RoutineData implements Model {
     }
     
     @Override
+     public CopyOfBuilder playSoundDuringPrayer(Boolean playSoundDuringPrayer) {
+      return (CopyOfBuilder) super.playSoundDuringPrayer(playSoundDuringPrayer);
+    }
+    
+    @Override
      public CopyOfBuilder playSoundDuringBreathing(Boolean playSoundDuringBreathing) {
       return (CopyOfBuilder) super.playSoundDuringBreathing(playSoundDuringBreathing);
     }
@@ -888,6 +871,11 @@ public final class RoutineData implements Model {
     @Override
      public CopyOfBuilder eachSoundPlayTime(Integer eachSoundPlayTime) {
       return (CopyOfBuilder) super.eachSoundPlayTime(eachSoundPlayTime);
+    }
+    
+    @Override
+     public CopyOfBuilder prayerPlayTime(Integer prayerPlayTime) {
+      return (CopyOfBuilder) super.prayerPlayTime(prayerPlayTime);
     }
     
     @Override
@@ -928,6 +916,16 @@ public final class RoutineData implements Model {
     @Override
      public CopyOfBuilder currentSelfLoveContinuePlayingTime(Integer currentSelfLoveContinuePlayingTime) {
       return (CopyOfBuilder) super.currentSelfLoveContinuePlayingTime(currentSelfLoveContinuePlayingTime);
+    }
+    
+    @Override
+     public CopyOfBuilder currentPrayerPlayingIndex(Integer currentPrayerPlayingIndex) {
+      return (CopyOfBuilder) super.currentPrayerPlayingIndex(currentPrayerPlayingIndex);
+    }
+    
+    @Override
+     public CopyOfBuilder currentPrayerContinuePlayingTime(Integer currentPrayerContinuePlayingTime) {
+      return (CopyOfBuilder) super.currentPrayerContinuePlayingTime(currentPrayerContinuePlayingTime);
     }
     
     @Override
