@@ -58,11 +58,7 @@ fun SoundScreen(
         getSoundPresets(soundData) { presetData ->
             soundPreset = presetData
             globalViewModel_!!.currentSoundPlayingPreset = soundPreset
-            for(preset in globalViewModel_!!.currentSoundPlayingPreset?.presets!!){
-                if(preset.key == "current_volumes"){
-                    globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = preset
-                }
-            }
+            globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = globalViewModel_!!.currentSoundPlayingPreset?.presets!![0]
         }
         ConstraintLayout{
             val (progressBar) = createRefs()

@@ -605,8 +605,15 @@ fun loopSounds(
     index: Int
 ){
     isLooping.value = !isLooping.value
-    fileMediaPlayers.forEach { media ->
-        media!!.value.isLooping = isLooping.value
+    fileMediaPlayers.forEach { mediaPlayer ->
+        mediaPlayer!!.value.isLooping = isLooping.value
+        if(
+            mediaPlayer.value.currentPosition == mediaPlayer.value.duration ||
+            mediaPlayer.value.currentPosition == 0
+        ){
+            mediaPlayer.value.seekTo(0)
+            mediaPlayer.value.start()
+        }
     }
     if(isLooping.value){
         activateControlButton(index)

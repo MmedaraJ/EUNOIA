@@ -35,6 +35,7 @@ import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.create.createSound.*
+import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryActivityUI
 import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryScreen
 import com.example.eunoia.dashboard.routine.RoutineScreen
 import com.example.eunoia.models.*
@@ -280,6 +281,17 @@ fun DashboardTab(
             )
         }
         composable(
+            Screen.BedtimeStory.screen_route
+        ) {
+            Log.i("BedtimeStory", "You are now on the BedtimeStory tab")
+            BedtimeStoryActivityUI(
+                navController,
+                LocalContext.current,
+                scope,
+                state
+            )
+        }
+        composable(
             "${Screen.SoundScreen.screen_route}/sound={sound}",
             arguments = listOf(navArgument("sound") {type = SoundObject.SoundType()})
         ) { backStackEntry ->
@@ -291,6 +303,23 @@ fun DashboardTab(
                 LocalContext.current,
                 scope,
                 state
+            )
+        }
+        composable(
+            "${Screen.BedtimeStoryScreen.screen_route}/bedtimeStoryData={bedtimeStoryData}",
+            arguments = listOf(
+                navArgument("bedtimeStoryData") {
+                    type = BedtimeStoryObject.BedtimeStoryType()
+                }
+            )
+        ) { backStackEntry ->
+            val bedtimeStoryData = backStackEntry.arguments?.getParcelable<BedtimeStoryObject.BedtimeStory>("bedtimeStoryData")
+            Log.i("BedtimeStoryScreen", "You are now on the BedtimeStoryScreen tab")
+            BedtimeStoryScreen(
+                navController = navController,
+                bedtimeStoryData!!.data,
+                scope = scope,
+                state = state
             )
         }
         composable(Screen.Settings.screen_route) {

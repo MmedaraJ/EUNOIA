@@ -23,6 +23,11 @@ class GlobalViewModel: ViewModel(){
     //adding sound
     var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)
 
+    //bedtime story
+    var currentUsersBedtimeStories by mutableStateOf<MutableList<BedtimeStoryInfoData?>?>(null)
+    var currentBedtimeStoryPlaying by mutableStateOf<BedtimeStoryInfoData?>(null)
+    var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
+
     //routine
     var currentRoutinePlaying by mutableStateOf("")
     var routineNameToBeAdded by mutableStateOf("")
@@ -31,11 +36,9 @@ class GlobalViewModel: ViewModel(){
     var currentUsersRoutines by mutableStateOf<MutableList<UserRoutine?>?>(null)
 
     var currentSelfLovePlaying by mutableStateOf("")
-    var currentBedtimeStoryPlaying by mutableStateOf("")
     var isCurrentSoundPlaying by mutableStateOf(false)
     var isCurrentRoutinePlaying by mutableStateOf(false)
     var isCurrentSelfLovePlaying by mutableStateOf(false)
-    var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
 
     var bottomSheetOpenFor by mutableStateOf("")
 
@@ -112,9 +115,5 @@ class GlobalViewModel: ViewModel(){
 
     fun changeCurrentSelfLovePlaying(text: String){
         currentSelfLovePlaying = text
-    }
-
-    fun changeCurrentBedtimeStoryPlaying(text: String){
-        currentBedtimeStoryPlaying = text
     }
 }

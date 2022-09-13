@@ -2,7 +2,6 @@ package com.example.eunoia.ui.components
 
 import android.content.Context
 import android.content.res.Configuration
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -35,7 +34,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -43,17 +41,12 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
-import com.example.eunoia.create.createSound.activateControls
-import com.example.eunoia.create.createSoundViewModel
-import com.example.eunoia.dashboard.sound.Controls
-import com.example.eunoia.dashboard.sound.playButtonText
-import com.example.eunoia.models.SoundObject
-import com.example.eunoia.ui.bottomSheets.closeBottomSheet
-import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.screens.Screen
+import com.example.eunoia.dashboard.bedtimeStory.bedtimeStoryActivityPlayButtonTexts
+import com.example.eunoia.dashboard.sound.soundActivityPlayButtonTexts
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.formatMilliSecond
 
@@ -1329,7 +1322,7 @@ fun DisplayUsersSounds(
                 contentAlignment = Alignment.Center
             ){
                 MorgeNormalText(
-                    text = playButtonText[index]!!.value,
+                    text = soundActivityPlayButtonTexts[index]!!.value,
                     color = Color.White,
                     fontSize = 15,
                     xOffset = 0,
@@ -1347,6 +1340,124 @@ fun DisplayUsersSounds(
                 AnImage(
                     sound.icon,
                     "${sound.displayName} icon",
+                    97.0,
+                    104.0,
+                    0,
+                    0,
+                    LocalContext.current
+                ){}
+            }
+        }
+    }
+}
+
+@Composable
+fun DisplayUsersBedtimeStories(
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    index: Int,
+    before: (index: Int) -> Unit,
+    startClicked: (index: Int) -> Unit,
+    clicked: (index: Int) -> Unit
+){
+    before(index)
+    Card(
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .height(height = 163.dp)
+            .clickable { clicked(index) }
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.small,
+        backgroundColor = GoldSand,
+        elevation = 8.dp
+    ){
+        ConstraintLayout(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            val (
+                title,
+                times_used,
+                steps,
+                shuffle,
+                image
+            ) = createRefs()
+            Column(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        top.linkTo(parent.top, margin = 0.dp)
+                    }
+            ) {
+                NormalText(
+                    text = "[${bedtimeStoryInfoData.displayName}]",
+                    color = Black,
+                    fontSize = 14,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(times_used) {
+                        top.linkTo(title.bottom, margin = 2.dp)
+                    }
+            ) {
+                ExtraLightText(
+                    text = bedtimeStoryInfoData.description,
+                    color = Black,
+                    fontSize = 10,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(steps) {
+                        top.linkTo(times_used.bottom, margin = 2.dp)
+                    }
+            ) {
+                val playTimeString = formatMilliSecond(bedtimeStoryInfoData.fullPlayTime.toLong())
+                LightText(
+                    text = playTimeString,
+                    color = Grey,
+                    fontSize = 7,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(46.dp)
+                    .clip(CircleShape)
+                    .background(Color.Black)
+                    .constrainAs(shuffle) {
+                        bottom.linkTo(parent.bottom, margin = 0.dp)
+                        start.linkTo(parent.start, margin = 0.dp)
+                    }
+                    .clickable {
+                        startClicked(index)
+                    },
+                contentAlignment = Alignment.Center
+            ){
+                MorgeNormalText(
+                    text = bedtimeStoryActivityPlayButtonTexts[index]!!.value,
+                    color = Color.White,
+                    fontSize = 15,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(image) {
+                        bottom.linkTo(parent.bottom, margin = 0.dp)
+                        end.linkTo(parent.end, margin = 0.dp)
+                        top.linkTo(times_used.bottom, 2.dp)
+                    }
+            ) {
+                val icon = if(bedtimeStoryInfoData.icon == null) R.drawable.danger_of_sleeping_pills_icon
+                else bedtimeStoryInfoData.icon
+                AnImage(
+                    icon,
+                    "${bedtimeStoryInfoData.displayName} icon",
                     97.0,
                     104.0,
                     0,

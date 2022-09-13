@@ -298,8 +298,8 @@ fun NameSoundUI(
                 soundName.length >= MIN_SOUND_NAME &&
                 shortDescription.length >= MIN_SOUND_DESCRIPTION &&
                 soundTags.length >= MIN_SOUND_TAGS &&
-                soundIcon != -1 &&
-                checkOtherSoundsWithSimilarNames()
+                soundIcon != -1 //&&
+                //checkOtherSoundsWithSimilarNames()
             ) {
                 CustomizableButton(
                     text = "next",
@@ -333,7 +333,7 @@ fun checkOtherSoundsWithSimilarNames(): Boolean{
     SoundBackend.querySoundBasedOnDisplayName(soundName){
         otherSoundsWithSameName = if(it.isEmpty()) 0 else it.size
     }
-    Thread.sleep(1_000)
+    Thread.sleep(2_000)
     val output = otherSoundsWithSameName == 0
     if(!output) soundNameErrorMessage = "The name, $soundName, is already taken"
     return output

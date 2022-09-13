@@ -12,15 +12,15 @@ type SoundData
     soundOwner: UserData! @belongsTo(fields: ["userDataID"])
     original_name: String!
     display_name: String!
-    short_description: String
-    long_description: String
+    short_description: String!
+    long_description: String!
     audio_key_s3: String!
-    icon: Int
-    colorHEX: Int
+    icon: Int!
+    colorHEX: Int!
     fullPlayTime: Int!
     visible_to_others: Boolean!
-    tags: [String!]
-    audio_names: [String!]
+    tags: [String!]!
+    audio_names: [String!]!
     approvalStatus: SoundApprovalStatus
     comment: CommentData @hasOne(fields: ["id"])
     preset: PresetData @hasOne(fields: ["id"])
@@ -179,7 +179,7 @@ type PrayerData
     displayName: String!
     description: String!
     audioKeyS3: String!
-    icon: Int
+    icon: Int!
     fullPlayTime: Int!
     visibleToOthers: Boolean!
     religion: String
@@ -211,7 +211,7 @@ type SelfLoveData
     display_name: String!
     description: String!
     audioKeyS3: String!
-    icon: Int
+    icon: Int!
     fullPlayTime: Int!
     visibleToOthers: Boolean!
     lyrics: [String!]

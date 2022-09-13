@@ -46,7 +46,7 @@ public final class SelfLoveData implements Model {
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="String", isRequired = true) String description;
   private final @ModelField(targetType="String", isRequired = true) String audioKeyS3;
-  private final @ModelField(targetType="Int") Integer icon;
+  private final @ModelField(targetType="Int", isRequired = true) Integer icon;
   private final @ModelField(targetType="Int", isRequired = true) Integer fullPlayTime;
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean visibleToOthers;
   private final @ModelField(targetType="String") List<String> lyrics;
@@ -263,7 +263,12 @@ public final class SelfLoveData implements Model {
   
 
   public interface AudioKeyS3Step {
-    FullPlayTimeStep audioKeyS3(String audioKeyS3);
+    IconStep audioKeyS3(String audioKeyS3);
+  }
+  
+
+  public interface IconStep {
+    FullPlayTimeStep icon(Integer icon);
   }
   
 
@@ -280,7 +285,6 @@ public final class SelfLoveData implements Model {
   public interface BuildStep {
     SelfLoveData build();
     BuildStep id(String id);
-    BuildStep icon(Integer icon);
     BuildStep lyrics(List<String> lyrics);
     BuildStep tags(List<String> tags);
     BuildStep audioSource(SelfLoveAudioSource audioSource);
@@ -288,15 +292,15 @@ public final class SelfLoveData implements Model {
   }
   
 
-  public static class Builder implements SelfLoveOwnerStep, DisplayNameStep, DescriptionStep, AudioKeyS3Step, FullPlayTimeStep, VisibleToOthersStep, BuildStep {
+  public static class Builder implements SelfLoveOwnerStep, DisplayNameStep, DescriptionStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, BuildStep {
     private String id;
     private UserData selfLoveOwner;
     private String display_name;
     private String description;
     private String audioKeyS3;
+    private Integer icon;
     private Integer fullPlayTime;
     private Boolean visibleToOthers;
-    private Integer icon;
     private List<String> lyrics;
     private List<String> tags;
     private SelfLoveAudioSource audioSource;
@@ -342,9 +346,16 @@ public final class SelfLoveData implements Model {
     }
     
     @Override
-     public FullPlayTimeStep audioKeyS3(String audioKeyS3) {
+     public IconStep audioKeyS3(String audioKeyS3) {
         Objects.requireNonNull(audioKeyS3);
         this.audioKeyS3 = audioKeyS3;
+        return this;
+    }
+    
+    @Override
+     public FullPlayTimeStep icon(Integer icon) {
+        Objects.requireNonNull(icon);
+        this.icon = icon;
         return this;
     }
     
@@ -359,12 +370,6 @@ public final class SelfLoveData implements Model {
      public BuildStep visibleToOthers(Boolean visibleToOthers) {
         Objects.requireNonNull(visibleToOthers);
         this.visibleToOthers = visibleToOthers;
-        return this;
-    }
-    
-    @Override
-     public BuildStep icon(Integer icon) {
-        this.icon = icon;
         return this;
     }
     
@@ -410,9 +415,9 @@ public final class SelfLoveData implements Model {
         .displayName(displayName)
         .description(description)
         .audioKeyS3(audioKeyS3)
+        .icon(icon)
         .fullPlayTime(fullPlayTime)
         .visibleToOthers(visibleToOthers)
-        .icon(icon)
         .lyrics(lyrics)
         .tags(tags)
         .audioSource(audioSource)
@@ -440,6 +445,11 @@ public final class SelfLoveData implements Model {
     }
     
     @Override
+     public CopyOfBuilder icon(Integer icon) {
+      return (CopyOfBuilder) super.icon(icon);
+    }
+    
+    @Override
      public CopyOfBuilder fullPlayTime(Integer fullPlayTime) {
       return (CopyOfBuilder) super.fullPlayTime(fullPlayTime);
     }
@@ -447,11 +457,6 @@ public final class SelfLoveData implements Model {
     @Override
      public CopyOfBuilder visibleToOthers(Boolean visibleToOthers) {
       return (CopyOfBuilder) super.visibleToOthers(visibleToOthers);
-    }
-    
-    @Override
-     public CopyOfBuilder icon(Integer icon) {
-      return (CopyOfBuilder) super.icon(icon);
     }
     
     @Override

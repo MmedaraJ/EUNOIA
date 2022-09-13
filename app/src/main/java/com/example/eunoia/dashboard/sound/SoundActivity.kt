@@ -31,7 +31,13 @@ import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.*
 
 private val TAG = "Sound Activity"
-var playButtonText = mutableListOf<MutableState<String>?>()
+/**
+ * The text displayed on the play button
+ */
+var soundActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
+/**
+ *
+ */
 var playSounds = mutableListOf<MutableState<Boolean>?>()
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -42,6 +48,7 @@ fun SoundActivityUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState,
 ) {
+    clearSoundActivityPlayButtonTexts()
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
     globalViewModel_!!.currentUser?.let {
@@ -121,7 +128,7 @@ fun SoundActivityUI(
                 }
                 .padding(bottom = 12.dp)
         ){
-            playButtonText.clear()
+            soundActivityPlayButtonTexts.clear()
             if(globalViewModel_!!.currentUsersSounds != null){
                 if(globalViewModel_!!.currentUsersSounds!!.size > 0)
                 {
@@ -131,17 +138,20 @@ fun SoundActivityUI(
                                 globalViewModel_!!.currentSoundPlaying!!.id ==
                                 globalViewModel_!!.currentUsersSounds!![i]!!.soundData.id
                             ) {
-                                playButtonText.add(remember { mutableStateOf("stop") })
+                                soundActivityPlayButtonTexts.add(remember { mutableStateOf("stop") })
                             }
                             else{
-                                playButtonText.add(remember{mutableStateOf("start")})
+                                soundActivityPlayButtonTexts.add(remember{mutableStateOf("start")})
                             }
                         }
                         else{
-                            playButtonText.add(remember{mutableStateOf("start")})
+                            soundActivityPlayButtonTexts.add(remember{mutableStateOf("start")})
                         }
                         playSounds.add(remember{mutableStateOf(false)})
-                        if(globalViewModel_!!.currentUsersSounds!![i]!!.soundData.approvalStatus == SoundApprovalStatus.APPROVED){
+                        if(
+                            globalViewModel_!!.currentUsersSounds!![i]!!.soundData.approvalStatus == SoundApprovalStatus.APPROVED ||
+                            globalViewModel_!!.currentUsersSounds!![i]!!.soundData.approvalStatus == SoundApprovalStatus.PENDING
+                        ){
                             DisplayUsersSounds(
                                 globalViewModel_!!.currentUsersSounds!![i]!!.soundData,
                                 i,
@@ -149,15 +159,15 @@ fun SoundActivityUI(
                                     //TODO get data from database first so that playing is instantaneous
                                 },
                                 { index ->
-                                    for(j in playButtonText.indices){
+                                    for(j in soundActivityPlayButtonTexts.indices){
                                         if(j != index){
-                                            if(playButtonText[j]!!.value != "start") {
-                                                playButtonText[j]!!.value = "start"
+                                            if(soundActivityPlayButtonTexts[j]!!.value != "start") {
+                                                soundActivityPlayButtonTexts[j]!!.value = "start"
                                             }
                                         }
                                     }
-                                    if(playButtonText[index]!!.value == "start"){
-                                        playButtonText[index]!!.value = "wait"
+                                    if(soundActivityPlayButtonTexts[index]!!.value == "start"){
+                                        soundActivityPlayButtonTexts[index]!!.value = "wait"
                                         for(bool in playSounds){
                                             bool!!.value = false
                                         }
@@ -174,9 +184,9 @@ fun SoundActivityUI(
                                                 }
                                             }
                                         }
-                                    }else if(playButtonText[index]!!.value == "stop" || playButtonText[index]!!.value == "wait"){
+                                    }else if(soundActivityPlayButtonTexts[index]!!.value == "stop" || soundActivityPlayButtonTexts[index]!!.value == "wait"){
                                         pauseSounds(context, 3)
-                                        playButtonText[index]!!.value = "start"
+                                        soundActivityPlayButtonTexts[index]!!.value = "start"
                                     }
                                 },
                                 { index ->
@@ -245,26 +255,27 @@ fun prepareToPlay(i: Int, context: Context){
     Log.i(TAG, "Uris ==>> $uris")
 }
 
-fun playNow(context: Context, i: Int){
+fun playNow(soundData: SoundData, context: Context, i: Int){
     playSounds(
+        soundData,
         globalViewModel_!!.currentSoundPlayingUris!!,
         context,
         3
     )
     globalViewModel_!!.currentSoundPlaying = globalViewModel_!!.currentUsersSounds!![i]!!.soundData
     globalViewModel_!!.currentSoundPlayingContext = context
-    playButtonText[i]!!.value = "stop"
+    soundActivityPlayButtonTexts[i]!!.value = "stop"
 }
 
 fun retrieveUris(
     uris: MutableList<Uri>,
-    sound: SoundData,
+    soundData: SoundData,
     i: Int,
     context: Context
 ){
     Log.i(TAG, "22 22. Uris size ${uris.size}")
     uris.clear()
-    SoundBackend.listEunoiaSounds(sound.audioKeyS3) { result ->
+    SoundBackend.listEunoiaSounds(soundData.audioKeyS3) { result ->
         result.items.forEach { item ->
             SoundBackend.retrieveAudio(item.key) { audioUri ->
                 uris.add(audioUri)
@@ -272,7 +283,7 @@ fun retrieveUris(
                     globalViewModel_!!.currentSoundPlayingUris = uris
                     showControls = true
                     playSounds[i]!!.value = true
-                    playNow(context, i)
+                    playNow(soundData, context, i)
                 }
                 Log.i(TAG, "${item.key}. Uris size ${uris.size}")
             }
@@ -380,12 +391,15 @@ private fun ArticlesList(){
 }
 
 fun navigateToSoundScreen(navController: NavController, soundData: SoundData){
-    globalViewModel_!!.currentSoundPlaying = soundData
     navController.navigate("${Screen.SoundScreen.screen_route}/sound=${SoundObject.Sound.from(soundData)}")
 }
 
 private fun something(){
 
+}
+
+fun clearSoundActivityPlayButtonTexts(){
+    soundActivityPlayButtonTexts.clear()
 }
 
 @Preview(showBackground = true)

@@ -54,6 +54,7 @@ fun CreatePresetUI(
     state: ModalBottomSheetState
 ){
     presetName = ""
+    go = false
     val scrollState = rememberScrollState()
     var showTapText by rememberSaveable{ mutableStateOf(true) }
     var manualTopMargin by rememberSaveable{ mutableStateOf(-260) }
@@ -208,7 +209,6 @@ fun CreatePresetUI(
                     textType = "morge",
                     maxWidthFraction = 1F
                 ) {
-                    resetAll()
                     saveThisPreset()
                     navController.navigate(Screen.CreatePreset.screen_route)
                 }
@@ -261,7 +261,6 @@ fun CreatePresetUI(
         if(go) {
             resetAll()
             navController.navigate(Screen.Create.screen_route)
-            go = false
         }
     }
 }

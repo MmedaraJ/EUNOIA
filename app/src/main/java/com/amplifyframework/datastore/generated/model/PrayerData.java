@@ -47,7 +47,7 @@ public final class PrayerData implements Model {
   private final @ModelField(targetType="String", isRequired = true) String displayName;
   private final @ModelField(targetType="String", isRequired = true) String description;
   private final @ModelField(targetType="String", isRequired = true) String audioKeyS3;
-  private final @ModelField(targetType="Int") Integer icon;
+  private final @ModelField(targetType="Int", isRequired = true) Integer icon;
   private final @ModelField(targetType="Int", isRequired = true) Integer fullPlayTime;
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean visibleToOthers;
   private final @ModelField(targetType="String") String religion;
@@ -275,7 +275,12 @@ public final class PrayerData implements Model {
   
 
   public interface AudioKeyS3Step {
-    FullPlayTimeStep audioKeyS3(String audioKeyS3);
+    IconStep audioKeyS3(String audioKeyS3);
+  }
+  
+
+  public interface IconStep {
+    FullPlayTimeStep icon(Integer icon);
   }
   
 
@@ -292,7 +297,6 @@ public final class PrayerData implements Model {
   public interface BuildStep {
     PrayerData build();
     BuildStep id(String id);
-    BuildStep icon(Integer icon);
     BuildStep religion(String religion);
     BuildStep country(String country);
     BuildStep tags(List<String> tags);
@@ -301,15 +305,15 @@ public final class PrayerData implements Model {
   }
   
 
-  public static class Builder implements PrayerOwnerStep, DisplayNameStep, DescriptionStep, AudioKeyS3Step, FullPlayTimeStep, VisibleToOthersStep, BuildStep {
+  public static class Builder implements PrayerOwnerStep, DisplayNameStep, DescriptionStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, BuildStep {
     private String id;
     private UserData prayerOwner;
     private String displayName;
     private String description;
     private String audioKeyS3;
+    private Integer icon;
     private Integer fullPlayTime;
     private Boolean visibleToOthers;
-    private Integer icon;
     private String religion;
     private String country;
     private List<String> tags;
@@ -357,9 +361,16 @@ public final class PrayerData implements Model {
     }
     
     @Override
-     public FullPlayTimeStep audioKeyS3(String audioKeyS3) {
+     public IconStep audioKeyS3(String audioKeyS3) {
         Objects.requireNonNull(audioKeyS3);
         this.audioKeyS3 = audioKeyS3;
+        return this;
+    }
+    
+    @Override
+     public FullPlayTimeStep icon(Integer icon) {
+        Objects.requireNonNull(icon);
+        this.icon = icon;
         return this;
     }
     
@@ -374,12 +385,6 @@ public final class PrayerData implements Model {
      public BuildStep visibleToOthers(Boolean visibleToOthers) {
         Objects.requireNonNull(visibleToOthers);
         this.visibleToOthers = visibleToOthers;
-        return this;
-    }
-    
-    @Override
-     public BuildStep icon(Integer icon) {
-        this.icon = icon;
         return this;
     }
     
@@ -431,9 +436,9 @@ public final class PrayerData implements Model {
         .displayName(displayName)
         .description(description)
         .audioKeyS3(audioKeyS3)
+        .icon(icon)
         .fullPlayTime(fullPlayTime)
         .visibleToOthers(visibleToOthers)
-        .icon(icon)
         .religion(religion)
         .country(country)
         .tags(tags)
@@ -462,6 +467,11 @@ public final class PrayerData implements Model {
     }
     
     @Override
+     public CopyOfBuilder icon(Integer icon) {
+      return (CopyOfBuilder) super.icon(icon);
+    }
+    
+    @Override
      public CopyOfBuilder fullPlayTime(Integer fullPlayTime) {
       return (CopyOfBuilder) super.fullPlayTime(fullPlayTime);
     }
@@ -469,11 +479,6 @@ public final class PrayerData implements Model {
     @Override
      public CopyOfBuilder visibleToOthers(Boolean visibleToOthers) {
       return (CopyOfBuilder) super.visibleToOthers(visibleToOthers);
-    }
-    
-    @Override
-     public CopyOfBuilder icon(Integer icon) {
-      return (CopyOfBuilder) super.icon(icon);
     }
     
     @Override

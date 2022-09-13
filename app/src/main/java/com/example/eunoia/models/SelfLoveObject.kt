@@ -35,6 +35,7 @@ object SelfLoveObject {
                 .displayName(this.displayName)
                 .description(this.description)
                 .audioKeyS3(this.audioKeyS3)
+                .icon(this.icon)
                 .fullPlayTime(this.fullPlayTime.toInt())
                 .visibleToOthers(this.visibleToOthers)
                 .lyrics(this.lyrics)

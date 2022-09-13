@@ -190,7 +190,6 @@ object SoundBackend{
     fun retrieveAudio(key: String, completed : (audioUri: Uri) -> Unit) {
         val options = StorageDownloadFileOptions.builder()
             .accessLevel(StorageAccessLevel.PROTECTED)
-            .targetIdentityId("us-east-1:7dc83e15-97ea-4397-b424-ef090df376f3")
             .build()
         val file = File.createTempFile("audio", ".aac")
 

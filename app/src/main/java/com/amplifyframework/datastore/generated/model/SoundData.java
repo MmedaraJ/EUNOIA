@@ -48,15 +48,15 @@ public final class SoundData implements Model {
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData soundOwner;
   private final @ModelField(targetType="String", isRequired = true) String original_name;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
-  private final @ModelField(targetType="String") String short_description;
-  private final @ModelField(targetType="String") String long_description;
+  private final @ModelField(targetType="String", isRequired = true) String short_description;
+  private final @ModelField(targetType="String", isRequired = true) String long_description;
   private final @ModelField(targetType="String", isRequired = true) String audio_key_s3;
-  private final @ModelField(targetType="Int") Integer icon;
-  private final @ModelField(targetType="Int") Integer colorHEX;
+  private final @ModelField(targetType="Int", isRequired = true) Integer icon;
+  private final @ModelField(targetType="Int", isRequired = true) Integer colorHEX;
   private final @ModelField(targetType="Int", isRequired = true) Integer fullPlayTime;
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean visible_to_others;
-  private final @ModelField(targetType="String") List<String> tags;
-  private final @ModelField(targetType="String") List<String> audio_names;
+  private final @ModelField(targetType="String", isRequired = true) List<String> tags;
+  private final @ModelField(targetType="String", isRequired = true) List<String> audio_names;
   private final @ModelField(targetType="SoundApprovalStatus") SoundApprovalStatus approvalStatus;
   private final @ModelField(targetType="CommentData") @HasOne(associatedWith = "sound", type = CommentData.class) CommentData comment = null;
   private final @ModelField(targetType="PresetData") @HasOne(associatedWith = "sound", type = PresetData.class) PresetData preset = null;
@@ -293,12 +293,32 @@ public final class SoundData implements Model {
   
 
   public interface DisplayNameStep {
-    AudioKeyS3Step displayName(String displayName);
+    ShortDescriptionStep displayName(String displayName);
+  }
+  
+
+  public interface ShortDescriptionStep {
+    LongDescriptionStep shortDescription(String shortDescription);
+  }
+  
+
+  public interface LongDescriptionStep {
+    AudioKeyS3Step longDescription(String longDescription);
   }
   
 
   public interface AudioKeyS3Step {
-    FullPlayTimeStep audioKeyS3(String audioKeyS3);
+    IconStep audioKeyS3(String audioKeyS3);
+  }
+  
+
+  public interface IconStep {
+    ColorHexStep icon(Integer icon);
+  }
+  
+
+  public interface ColorHexStep {
+    FullPlayTimeStep colorHex(Integer colorHex);
   }
   
 
@@ -308,35 +328,39 @@ public final class SoundData implements Model {
   
 
   public interface VisibleToOthersStep {
-    BuildStep visibleToOthers(Boolean visibleToOthers);
+    TagsStep visibleToOthers(Boolean visibleToOthers);
+  }
+  
+
+  public interface TagsStep {
+    AudioNamesStep tags(List<String> tags);
+  }
+  
+
+  public interface AudioNamesStep {
+    BuildStep audioNames(List<String> audioNames);
   }
   
 
   public interface BuildStep {
     SoundData build();
     BuildStep id(String id);
-    BuildStep shortDescription(String shortDescription);
-    BuildStep longDescription(String longDescription);
-    BuildStep icon(Integer icon);
-    BuildStep colorHex(Integer colorHex);
-    BuildStep tags(List<String> tags);
-    BuildStep audioNames(List<String> audioNames);
     BuildStep approvalStatus(SoundApprovalStatus approvalStatus);
   }
   
 
-  public static class Builder implements SoundOwnerStep, OriginalNameStep, DisplayNameStep, AudioKeyS3Step, FullPlayTimeStep, VisibleToOthersStep, BuildStep {
+  public static class Builder implements SoundOwnerStep, OriginalNameStep, DisplayNameStep, ShortDescriptionStep, LongDescriptionStep, AudioKeyS3Step, IconStep, ColorHexStep, FullPlayTimeStep, VisibleToOthersStep, TagsStep, AudioNamesStep, BuildStep {
     private String id;
     private UserData soundOwner;
     private String original_name;
     private String display_name;
-    private String audio_key_s3;
-    private Integer fullPlayTime;
-    private Boolean visible_to_others;
     private String short_description;
     private String long_description;
+    private String audio_key_s3;
     private Integer icon;
     private Integer colorHEX;
+    private Integer fullPlayTime;
+    private Boolean visible_to_others;
     private List<String> tags;
     private List<String> audio_names;
     private SoundApprovalStatus approvalStatus;
@@ -376,16 +400,44 @@ public final class SoundData implements Model {
     }
     
     @Override
-     public AudioKeyS3Step displayName(String displayName) {
+     public ShortDescriptionStep displayName(String displayName) {
         Objects.requireNonNull(displayName);
         this.display_name = displayName;
         return this;
     }
     
     @Override
-     public FullPlayTimeStep audioKeyS3(String audioKeyS3) {
+     public LongDescriptionStep shortDescription(String shortDescription) {
+        Objects.requireNonNull(shortDescription);
+        this.short_description = shortDescription;
+        return this;
+    }
+    
+    @Override
+     public AudioKeyS3Step longDescription(String longDescription) {
+        Objects.requireNonNull(longDescription);
+        this.long_description = longDescription;
+        return this;
+    }
+    
+    @Override
+     public IconStep audioKeyS3(String audioKeyS3) {
         Objects.requireNonNull(audioKeyS3);
         this.audio_key_s3 = audioKeyS3;
+        return this;
+    }
+    
+    @Override
+     public ColorHexStep icon(Integer icon) {
+        Objects.requireNonNull(icon);
+        this.icon = icon;
+        return this;
+    }
+    
+    @Override
+     public FullPlayTimeStep colorHex(Integer colorHex) {
+        Objects.requireNonNull(colorHex);
+        this.colorHEX = colorHex;
         return this;
     }
     
@@ -397,44 +449,22 @@ public final class SoundData implements Model {
     }
     
     @Override
-     public BuildStep visibleToOthers(Boolean visibleToOthers) {
+     public TagsStep visibleToOthers(Boolean visibleToOthers) {
         Objects.requireNonNull(visibleToOthers);
         this.visible_to_others = visibleToOthers;
         return this;
     }
     
     @Override
-     public BuildStep shortDescription(String shortDescription) {
-        this.short_description = shortDescription;
-        return this;
-    }
-    
-    @Override
-     public BuildStep longDescription(String longDescription) {
-        this.long_description = longDescription;
-        return this;
-    }
-    
-    @Override
-     public BuildStep icon(Integer icon) {
-        this.icon = icon;
-        return this;
-    }
-    
-    @Override
-     public BuildStep colorHex(Integer colorHex) {
-        this.colorHEX = colorHex;
-        return this;
-    }
-    
-    @Override
-     public BuildStep tags(List<String> tags) {
+     public AudioNamesStep tags(List<String> tags) {
+        Objects.requireNonNull(tags);
         this.tags = tags;
         return this;
     }
     
     @Override
      public BuildStep audioNames(List<String> audioNames) {
+        Objects.requireNonNull(audioNames);
         this.audio_names = audioNames;
         return this;
     }
@@ -462,13 +492,13 @@ public final class SoundData implements Model {
       super.soundOwner(soundOwner)
         .originalName(originalName)
         .displayName(displayName)
-        .audioKeyS3(audioKeyS3)
-        .fullPlayTime(fullPlayTime)
-        .visibleToOthers(visibleToOthers)
         .shortDescription(shortDescription)
         .longDescription(longDescription)
+        .audioKeyS3(audioKeyS3)
         .icon(icon)
         .colorHex(colorHex)
+        .fullPlayTime(fullPlayTime)
+        .visibleToOthers(visibleToOthers)
         .tags(tags)
         .audioNames(audioNames)
         .approvalStatus(approvalStatus);
@@ -490,21 +520,6 @@ public final class SoundData implements Model {
     }
     
     @Override
-     public CopyOfBuilder audioKeyS3(String audioKeyS3) {
-      return (CopyOfBuilder) super.audioKeyS3(audioKeyS3);
-    }
-    
-    @Override
-     public CopyOfBuilder fullPlayTime(Integer fullPlayTime) {
-      return (CopyOfBuilder) super.fullPlayTime(fullPlayTime);
-    }
-    
-    @Override
-     public CopyOfBuilder visibleToOthers(Boolean visibleToOthers) {
-      return (CopyOfBuilder) super.visibleToOthers(visibleToOthers);
-    }
-    
-    @Override
      public CopyOfBuilder shortDescription(String shortDescription) {
       return (CopyOfBuilder) super.shortDescription(shortDescription);
     }
@@ -515,6 +530,11 @@ public final class SoundData implements Model {
     }
     
     @Override
+     public CopyOfBuilder audioKeyS3(String audioKeyS3) {
+      return (CopyOfBuilder) super.audioKeyS3(audioKeyS3);
+    }
+    
+    @Override
      public CopyOfBuilder icon(Integer icon) {
       return (CopyOfBuilder) super.icon(icon);
     }
@@ -522,6 +542,16 @@ public final class SoundData implements Model {
     @Override
      public CopyOfBuilder colorHex(Integer colorHex) {
       return (CopyOfBuilder) super.colorHex(colorHex);
+    }
+    
+    @Override
+     public CopyOfBuilder fullPlayTime(Integer fullPlayTime) {
+      return (CopyOfBuilder) super.fullPlayTime(fullPlayTime);
+    }
+    
+    @Override
+     public CopyOfBuilder visibleToOthers(Boolean visibleToOthers) {
+      return (CopyOfBuilder) super.visibleToOthers(visibleToOthers);
     }
     
     @Override

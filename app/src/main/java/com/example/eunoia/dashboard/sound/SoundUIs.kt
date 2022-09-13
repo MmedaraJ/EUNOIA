@@ -434,6 +434,7 @@ fun retrieveAudioUris(
 }
 
 fun playSounds(
+    soundData: SoundData,
     allSounds: MutableList<Uri>,
     applicationContext: Context,
     index: Int
@@ -468,6 +469,7 @@ fun playSounds(
     isPlaying.value = true
     deActivateControlButton(index)
     deActivateControlButton(1)
+    globalViewModel_!!.currentSoundPlaying = soundData
     globalViewModel_!!.isCurrentSoundPlaying = true
     runOnUiThread{
         Toast.makeText(applicationContext, "Sound: playing", Toast.LENGTH_SHORT).show()
@@ -497,6 +499,13 @@ fun loopSounds(
         isLooping.value = !isLooping.value
         mediaPlayers.forEach { mediaPlayer ->
             mediaPlayer.isLooping = isLooping.value
+            if(
+                mediaPlayer.currentPosition == mediaPlayer.duration ||
+                mediaPlayer.currentPosition == 0
+            ){
+                mediaPlayer.seekTo(0)
+                mediaPlayer.start()
+            }
         }
         if(isLooping.value){
             activateControlButton(index)
@@ -672,7 +681,8 @@ fun startCountDownTimer(
 fun changeTimerTime(
     allSoundsURIs: MutableList<Uri>,
     applicationContext: Context,
-    index: Int
+    index: Int,
+    soundData: SoundData
 ){
     timerTime.value += 60000L
     Log.i(TAG, "Timer time set to ${timerTime.value}")
@@ -681,6 +691,7 @@ fun changeTimerTime(
         activateControlButton(index)
         if(!isPlaying.value) {
             playSounds(
+                soundData,
                 allSoundsURIs,
                 applicationContext,
                 3
@@ -709,7 +720,8 @@ fun activateControls(
         2 -> changeTimerTime(
                 allSoundsURIs,
                 applicationContext,
-                index
+                index,
+                sound
             )
         3 -> {
             if(isPlaying.value){
@@ -719,6 +731,7 @@ fun activateControls(
                 )
             } else {
                 playSounds(
+                    sound,
                     allSoundsURIs,
                     applicationContext,
                     index

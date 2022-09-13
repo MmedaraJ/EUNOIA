@@ -27,6 +27,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
     /**
      * Bedtime story
      */
+    object BedtimeStory: Screen("Bedtime Story", -1, "bedtime_story")
     object BedtimeStoryScreen: Screen("Bedtime Story Screen", -1,"bedtime_story_screen")
 
     /**
@@ -138,6 +139,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                 /**
                  * Bedtime story
                  */
+                BedtimeStory.screen_route -> BedtimeStory
                 BedtimeStoryScreen.screen_route -> BedtimeStoryScreen
 
                 /**

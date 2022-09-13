@@ -435,7 +435,7 @@ private fun OptionsList(context: Context, navController: NavHostController){
         OptionItem(displayName = "sleep", icon = R.drawable.sleep_icon, 71, 71, false, 0, 0, {}){ AuthBackend.signOut() }
         OptionItem(displayName = "music", icon = R.drawable.music_icon, 71, 71, false, 0, 0, {}){}
         OptionItem(displayName = "meditate", icon = R.drawable.meditate_icon, 71, 71, false, 0, 0, {}){something()}
-        OptionItem(displayName = "sound", icon = R.drawable.sound_icon, 71, 71, false, 0, 0, {}){toSoundActivity(context, navController)}
+        OptionItem(displayName = "sound", icon = R.drawable.sound_icon, 71, 71, false, 0, 0, {}){toSoundActivity(navController)}
     }
 
     Row(
@@ -445,8 +445,8 @@ private fun OptionsList(context: Context, navController: NavHostController){
     ){
         OptionItem(displayName = "self-love", icon = R.drawable.self_love_icon, 71, 71, false, 0, 0, {}){something()}
         OptionItem(displayName = "stretch", icon = R.drawable.stretch_icon, 71, 71, false, 0, 0, {}){something()}
-        OptionItem(displayName = "slumber\n  party", icon = R.drawable.slumber_party_icon, 71, 71, false, 0, 0, {}){something()}
-        OptionItem(displayName = "bedtime\n  story", icon = R.drawable.bedtime_story_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "slumber\nparty", icon = R.drawable.slumber_party_icon, 71, 71, false, 0, 0, {}){something()}
+        OptionItem(displayName = "bedtime\nstory", icon = R.drawable.bedtime_story_icon, 71, 71, false, 0, 0, {}){toBedtimeStoryActivity(navController)}
     }
 }
 
@@ -516,7 +516,7 @@ fun OptionItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
         ){
-            NormalText(
+            AlignedNormalText(
                 text = displayName,
                 color = MaterialTheme.colors.primary,
                 fontSize = 9,
@@ -568,8 +568,12 @@ private fun ArticlesList(navController: NavController){
     }
 }
 
-private fun toSoundActivity(context: Context, navController: NavHostController){
+private fun toSoundActivity(navController: NavHostController){
     navController.navigate(Screen.Sound.screen_route)
+}
+
+private fun toBedtimeStoryActivity(navController: NavHostController){
+    navController.navigate(Screen.BedtimeStory.screen_route)
 }
 
 private fun something(){

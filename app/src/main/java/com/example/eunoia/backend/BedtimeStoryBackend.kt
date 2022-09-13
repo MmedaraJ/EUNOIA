@@ -90,4 +90,34 @@ object BedtimeStoryBackend {
             )
         }
     }
+
+    fun queryCompleteApprovedBedtimeStoryBasedOnUser(
+        user: UserData,
+        completed: (bedtimeStory: List<BedtimeStoryInfoData?>) -> Unit
+    ) {
+        scope.launch {
+            val bedtimeStoryList = mutableListOf<BedtimeStoryInfoData?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    BedtimeStoryInfoData::class.java,
+                    BedtimeStoryInfoData.BEDTIME_STORY_OWNER.eq(user.id)
+                        .and(BedtimeStoryInfoData.CREATION_STATUS.eq(BedtimeStoryCreationStatus.COMPLETED))
+                        //.and(BedtimeStoryInfoData.APPROVAL_STATUS.eq(BedtimeStoryApprovalStatus.APPROVED))
+                            //for now, allow pending
+                        .and(BedtimeStoryInfoData.APPROVAL_STATUS.eq(BedtimeStoryApprovalStatus.PENDING)),
+                ),
+                { response ->
+                    Log.i(TAG, "Response: $response")
+                    if(response.hasData()) {
+                        for (bedtimeStoryData in response.data) {
+                            Log.i(TAG, bedtimeStoryData.toString())
+                            bedtimeStoryList.add(bedtimeStoryData)
+                        }
+                    }
+                    completed(bedtimeStoryList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
 }
