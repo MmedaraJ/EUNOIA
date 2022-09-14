@@ -4,9 +4,11 @@ import android.app.Service
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.net.toUri
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.ui.bottomSheets.*
@@ -15,14 +17,22 @@ import java.io.IOException
 private const val ACTION_PLAY: String = "PLAY"
 private const val TAG: String = "MediaPlayerService"
 
-class MediaPlayerService: Service(), MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
-    private var mMediaPlayer: MediaPlayer? = null
+class MediaPlayerService:
+    Service(),
+    MediaPlayer.OnPreparedListener,
+    MediaPlayer.OnErrorListener,
+    MediaPlayer.OnCompletionListener
+{
+    private var mediaPlayer: MediaPlayer? = null
+    private var mediaPlayerInitialized = false
+    private var mediaPlayerIsPlaying = false
+    private var audioUri: Uri? = null
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val action: String = intent.action!!
         when(action) {
             ACTION_PLAY -> {
-                audioRecordedMediaPlayer = MediaPlayer().apply {
+                mediaPlayer = MediaPlayer().apply {
                     setAudioAttributes(
                         AudioAttributes
                             .Builder()
@@ -31,8 +41,7 @@ class MediaPlayerService: Service(), MediaPlayer.OnPreparedListener, MediaPlayer
                             .build()
                     )
                     try {
-                        setDataSource(UserDashboardActivity.getInstanceActivity(), recordingFile!!.absolutePath.toUri())
-                        Log.i(TAG, "Recoding file stuff: ${recordingFile!!.toUri()}")
+                        setDataSource(UserDashboardActivity.getInstanceActivity(), audioUri!!)
                         setVolume(
                             (10).toFloat() / 10,
                             (10).toFloat() / 10
@@ -53,11 +62,37 @@ class MediaPlayerService: Service(), MediaPlayer.OnPreparedListener, MediaPlayer
         return START_STICKY
     }
 
+    fun pauseMediaPlayer(){
+        mediaPlayer!!.pause()
+        mediaPlayerIsPlaying = false
+    }
+
+    fun startMediaPlayer(){
+        mediaPlayer!!.start()
+        mediaPlayerIsPlaying = true
+    }
+
+    fun isMediaPlayerInitialized(): Boolean{
+        return mediaPlayerInitialized
+    }
+
+    fun isMediaPlayerPlaying(): Boolean{
+        return mediaPlayerIsPlaying
+    }
+
+    fun setAudioUri(uri: Uri){
+        audioUri = uri
+    }
+
+    fun getMediaPlayer(): MediaPlayer?{
+        return mediaPlayer
+    }
+
     override fun onPrepared(mediaPlayer: MediaPlayer?) {
-        audioMediaPlayerInitialized.value = true
-        mediaPlayer!!.seekTo(0)
-        recordingTimeDisplay.value = timer.setDuration(0)
-        startAudioRecordedMediaPlayer()
+        mediaPlayer!!.start()
+        mediaPlayerIsPlaying = true
+        //mediaPlayer.seekTo(0)
+        mediaPlayerInitialized = true
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -70,9 +105,20 @@ class MediaPlayerService: Service(), MediaPlayer.OnPreparedListener, MediaPlayer
     }
 
     override fun onCompletion(mediaPlayer: MediaPlayer?) {
-        mediaPlayer!!.seekTo(0)
-        timer.stopTicking()
-        recordingTimeDisplay.value = timer.setDuration(0)
-        audioMediaPlayerIsPlaying.value = false
+        //mediaPlayer!!.seekTo(0)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(mediaPlayerInitialized) {
+            if (mediaPlayer!!.isPlaying) {
+                mediaPlayer!!.stop()
+            }
+            mediaPlayer!!.reset()
+            mediaPlayer!!.release()
+            mediaPlayerIsPlaying = false
+            mediaPlayerInitialized = false
+            audioUri = null
+        }
     }
 }

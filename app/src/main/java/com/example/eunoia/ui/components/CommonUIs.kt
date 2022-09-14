@@ -1355,11 +1355,9 @@ fun DisplayUsersSounds(
 fun DisplayUsersBedtimeStories(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
     index: Int,
-    before: (index: Int) -> Unit,
     startClicked: (index: Int) -> Unit,
     clicked: (index: Int) -> Unit
 ){
-    before(index)
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)

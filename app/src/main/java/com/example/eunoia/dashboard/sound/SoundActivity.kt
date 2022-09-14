@@ -31,14 +31,11 @@ import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.*
 
 private val TAG = "Sound Activity"
-/**
- * The text displayed on the play button
- */
 var soundActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
-/**
- *
- */
 var playSounds = mutableListOf<MutableState<Boolean>?>()
+const val START_SOUND = "start"
+const val PAUSE_SOUND = "pause"
+const val WAIT_FOR_SOUND = "wait"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -300,7 +297,7 @@ private fun OptionsList(navController: NavController, context: Context){
             .fillMaxWidth()
     ){
         OptionItem(
-            displayName = "pouring\n   rain",
+            displayName = "pouring\nrain",
             icon = R.drawable.pouring_rain_icon,
             71,
             71,

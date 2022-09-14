@@ -94,9 +94,7 @@ fun RecordPrayerUI(
         ) {
             BackArrowHeader(
                 {
-                    if(recordingFile != null){
-                        deleteRecordingFile(context)
-                    }
+                    resetRecordingFileAndMediaPlayer(context)
                     navController.popBackStack()
                 },
                 {
@@ -166,6 +164,17 @@ fun RecordPrayerUI(
             }
         }
     }
+}
+
+fun resetRecordingFileAndMediaPlayer(context: Context) {
+    if(recordingFile != null){
+        deleteRecordingFile(context)
+    }
+    if(recordedFileMediaPlayerPrayer.value.isPlaying){
+        recordedFileMediaPlayerPrayer.value.stop()
+    }
+    recordedFileMediaPlayerPrayer.value.reset()
+    recordedFileMediaPlayerPrayer.value.release()
 }
 
 fun createPrayerFromRecord(

@@ -39,6 +39,7 @@ import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryActivityUI
 import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryScreen
 import com.example.eunoia.dashboard.routine.RoutineScreen
 import com.example.eunoia.models.*
+import com.example.eunoia.services.MediaPlayerService
 import com.example.eunoia.settings.eightHourCountdown.EightHourCountdownUI
 import com.example.eunoia.ui.bottomSheets.*
 import com.example.eunoia.ui.theme.*
@@ -58,16 +59,19 @@ fun MultiBottomNavApp(globalViewModel: GlobalViewModel = viewModel()) {
         confirmStateChange = { globalViewModel_!!.allowBottomSheetClose }
     )
     val scope = rememberCoroutineScope()
+    val mediaPlayerService = MediaPlayerService()
     EunoiaApp(
         globalViewModel,
         scope,
-        modalBottomSheetState
+        modalBottomSheetState,
+        mediaPlayerService
     ) {screen ->
         MultiNavTabContent(
             screen = screen,
             globalViewModel,
             scope,
-            modalBottomSheetState
+            modalBottomSheetState,
+            mediaPlayerService
         )
     }
 }
@@ -78,6 +82,7 @@ fun EunoiaApp(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService,
     bodyContent: @Composable (Screen) -> Unit
 ){
     var currentTab by rememberSaveable(
@@ -123,7 +128,7 @@ fun EunoiaApp(
                             }
                             "recordAudio" -> {
                                 globalViewModel_!!.allowBottomSheetClose = false
-                                RecordAudio(globalViewModel, scope, state)
+                                RecordAudio(globalViewModel, scope, state, mediaPlayerService)
                             }
                             "" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
@@ -203,6 +208,7 @@ fun MultiNavTabContent(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService,
 ) {
     val dashboardNavState = rememberSaveable(
         saver = navStateSaver()
@@ -220,12 +226,12 @@ fun MultiNavTabContent(
         saver = navStateSaver()
     ) { mutableStateOf(Bundle()) }
     when (screen) {
-        Screen.Dashboard -> DashboardTab(dashboardNavState, globalViewModel, scope, state)
-        Screen.Create -> CreateTab(createNavState, globalViewModel, scope, state)
-        Screen.Search -> SearchTab(searchNavState, globalViewModel, scope, state)
-        Screen.Feedback -> FeedbackTab(feedbackNavState, globalViewModel, scope, state)
-        Screen.Account -> AccountTab(accountNavState, globalViewModel, scope, state)
-        else -> DashboardTab(dashboardNavState, globalViewModel, scope, state)
+        Screen.Dashboard -> DashboardTab(dashboardNavState, globalViewModel, scope, state, mediaPlayerService)
+        Screen.Create -> CreateTab(createNavState, globalViewModel, scope, state, mediaPlayerService)
+        Screen.Search -> SearchTab(searchNavState, globalViewModel, scope, state, mediaPlayerService)
+        Screen.Feedback -> FeedbackTab(feedbackNavState, globalViewModel, scope, state, mediaPlayerService)
+        Screen.Account -> AccountTab(accountNavState, globalViewModel, scope, state, mediaPlayerService)
+        else -> DashboardTab(dashboardNavState, globalViewModel, scope, state, mediaPlayerService)
     }
 }
 
@@ -236,11 +242,13 @@ fun DashboardTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService,
 ) {
     val navController = rememberNavController()
 
     DisposableEffect(Unit) {
         val callback = NavController.OnDestinationChangedListener { navController, _, _ ->
+            navController.saveState()
             navState.value = navController.saveState() ?: Bundle()
         }
         navController.addOnDestinationChangedListener(callback)
@@ -288,7 +296,8 @@ fun DashboardTab(
                 navController,
                 LocalContext.current,
                 scope,
-                state
+                state,
+                mediaPlayerService
             )
         }
         composable(
@@ -374,6 +383,7 @@ fun CreateTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService,
 ) {
     val navController = rememberNavController()
 
@@ -621,6 +631,7 @@ fun SearchTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService,
 ) {
     val navController = rememberNavController()
 
@@ -671,6 +682,7 @@ fun FeedbackTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService,
 ) {
     val navController = rememberNavController()
 
@@ -731,6 +743,7 @@ fun AccountTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService,
 ) {
     val navController = rememberNavController()
 

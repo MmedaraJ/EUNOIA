@@ -21,6 +21,8 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.SelfLoveBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.create.createPrayer.recordedFileMediaPlayerPrayer
+import com.example.eunoia.create.createPrayer.resetRecordingFileAndMediaPlayer
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
@@ -88,6 +90,8 @@ fun RecordSelfLoveUI(
                     if(recordingFile != null){
                         deleteRecordingFile(context)
                     }
+
+                    resetRecordingFileAndMediaSelfLove(context)
                     navController.popBackStack()
                 },
                 {
@@ -157,6 +161,17 @@ fun RecordSelfLoveUI(
             }
         }
     }
+}
+
+fun resetRecordingFileAndMediaSelfLove(context: Context) {
+    if(recordingFile != null){
+        deleteRecordingFile(context)
+    }
+    if(recordedFileMediaPlayerSelfLove.value.isPlaying){
+        recordedFileMediaPlayerSelfLove.value.stop()
+    }
+    recordedFileMediaPlayerSelfLove.value.reset()
+    recordedFileMediaPlayerSelfLove.value.release()
 }
 
 fun createSelfLoveFromRecord(

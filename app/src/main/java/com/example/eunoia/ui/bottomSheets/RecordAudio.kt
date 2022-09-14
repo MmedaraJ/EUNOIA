@@ -54,15 +54,12 @@ private var TAG = "Record Audio"
 private var isRecording = mutableStateOf(false)
 var timer = Timer(UserDashboardActivity.getInstanceActivity())
 var recorder: MediaRecorder? = null
-var audioRecordedMediaPlayer: MediaPlayer? = null
 private var vibrator: Vibrator = UserDashboardActivity.getInstanceActivity().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 var recordingTimeDisplay = mutableStateOf("00:00.00")
 var showRecordIcon = mutableStateOf(true)
 var showPause = mutableStateOf(false)
 var currentMaxAmplitude = mutableStateOf(0)
 var recordingFile: File? = null
-var audioMediaPlayerIsPlaying = mutableStateOf(false)
-var audioMediaPlayerInitialized = mutableStateOf(false)
 var noOfPlaybackClicks = mutableStateOf(0)
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -70,7 +67,8 @@ var noOfPlaybackClicks = mutableStateOf(0)
 fun RecordAudio(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService,
 ){
     val context = LocalContext.current
     Card(
@@ -135,10 +133,22 @@ fun RecordAudio(
                                 is String ->{
                                     when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
                                         "prayer" ->{
-                                            closeRecordAudioAccordingly("special", context, scope, state)
+                                            closeRecordAudioAccordingly(
+                                                "special",
+                                                context,
+                                                scope,
+                                                state,
+                                                mediaPlayerService
+                                            )
                                         }
                                         "selfLove" ->{
-                                            closeRecordAudioAccordingly("special", context, scope, state)
+                                            closeRecordAudioAccordingly(
+                                                "special",
+                                                context,
+                                                scope,
+                                                state,
+                                                mediaPlayerService
+                                            )
                                         }
                                     }
                                 }
@@ -172,7 +182,7 @@ fun RecordAudio(
                             start.linkTo(parent.start, margin = 16.dp)
                         }
                 ) {
-                    RecordAudioControls()
+                    RecordAudioControls(mediaPlayerService)
                 }
             }
         }
@@ -180,7 +190,7 @@ fun RecordAudio(
 }
 
 @Composable
-fun RecordAudioControls(){
+fun RecordAudioControls(mediaPlayerService: MediaPlayerService){
     val context = LocalContext.current
     recordingFile = File(context.externalCacheDir!!.absolutePath + "/${globalViewModel_!!.currentUser!!.username}_audio.aac")
     Log.i(TAG, "Recording file length is: ${recordingFile!!.length()}")
@@ -215,13 +225,13 @@ fun RecordAudioControls(){
                     ) {
                         if(!isRecording.value) {
                             if(recordingFile!!.length() > 0) {
-                                if(!audioMediaPlayerInitialized.value){
-                                    initializeAudioRecordedMediaPlayer(context)
+                                if(!mediaPlayerService.isMediaPlayerInitialized()){
+                                    initializeAudioRecordedMediaPlayer(mediaPlayerService)
                                 }else {
-                                    if (!audioMediaPlayerIsPlaying.value) {
-                                        startAudioRecordedMediaPlayer()
+                                    if (!mediaPlayerService.isMediaPlayerPlaying()) {
+                                        startAudioRecordedMediaPlayer(mediaPlayerService)
                                     } else {
-                                        pauseAudioRecordedMediaPlayer()
+                                        pauseAudioRecordedMediaPlayer(mediaPlayerService)
                                     }
                                 }
                             }
@@ -254,8 +264,8 @@ fun RecordAudioControls(){
                         0,
                         0
                     ) {
-                        if(!isRecording.value && !audioMediaPlayerIsPlaying.value) {
-                            saveRecordedAudio(context)
+                        if(!isRecording.value && !mediaPlayerService.isMediaPlayerPlaying()) {
+                            saveRecordedAudio(mediaPlayerService)
                         }
                     }
                 }
@@ -336,9 +346,9 @@ fun RecordAudioControls(){
                                     .clip(RoundedCornerShape(14.91.dp))
                                     .background(SwansDown)
                                     .clickable {
-                                        if(!audioMediaPlayerIsPlaying.value) {
+                                        if(!mediaPlayerService.isMediaPlayerPlaying()) {
                                             showPause.value = !showPause.value
-                                            resumeRecorder(recordingFile!!)
+                                            resumeRecorder(mediaPlayerService)
                                         }
                                     },
                                 contentAlignment = Alignment.Center
@@ -346,9 +356,9 @@ fun RecordAudioControls(){
                                 Column(
                                     modifier = Modifier
                                         .clickable {
-                                            if(!audioMediaPlayerIsPlaying.value) {
+                                            if(!mediaPlayerService.isMediaPlayerPlaying()) {
                                                 showPause.value = !showPause.value
-                                                resumeRecorder(recordingFile!!)
+                                                resumeRecorder(mediaPlayerService)
                                             }
                                         }
                                 ) {
@@ -383,7 +393,7 @@ fun RecordAudioControls(){
                         0
                     ) {
                         if(!isRecording.value) {
-                            clearRecording(context)
+                            clearRecording(context, mediaPlayerService)
                         }
                     }
                 }
@@ -397,21 +407,24 @@ fun closeRecordAudioAccordingly(
     action: String,
     context: Context,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService
 ){
     when(action){
         "special" -> {
             closeRecordAudioForSomeElements(
                 context,
                 scope,
-                state
+                state,
+                mediaPlayerService
             )
         }
         else -> {
             closeRecordAudio(
                 context,
                 scope,
-                state
+                state,
+                mediaPlayerService
             )
         }
     }
@@ -421,7 +434,8 @@ fun closeRecordAudioAccordingly(
 fun closeRecordAudioForSomeElements(
     context: Context,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService
 ) {
     if(isRecording.value) {
         stopRecorder()
@@ -432,8 +446,8 @@ fun closeRecordAudioForSomeElements(
     recordingTimeDisplay.value = "00:00.00"
     clearAmplitudes()
     noOfPlaybackClicks.value = 0
-    if(audioMediaPlayerInitialized.value) {
-        stopAudioRecordedMediaPlayer()
+    if(mediaPlayerService.isMediaPlayerInitialized()) {
+        stopAudioRecordedMediaPlayer(mediaPlayerService)
     }
     closeBottomSheet(scope, state)
 }
@@ -442,7 +456,8 @@ fun closeRecordAudioForSomeElements(
 fun closeRecordAudio(
     context: Context,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    mediaPlayerService: MediaPlayerService
 ) {
     if(isRecording.value) {
         stopRecorder()
@@ -454,8 +469,8 @@ fun closeRecordAudio(
     recordingTimeDisplay.value = "00:00.00"
     clearAmplitudes()
     noOfPlaybackClicks.value = 0
-    if(audioMediaPlayerInitialized.value) {
-        stopAudioRecordedMediaPlayer()
+    if(mediaPlayerService.isMediaPlayerInitialized()) {
+        stopAudioRecordedMediaPlayer(mediaPlayerService)
     }
     closeBottomSheet(scope, state)
 }
@@ -506,7 +521,7 @@ fun setUpMediaRecorder(context: Context) {
     }
 }
 
-fun saveRecordedAudio(context: Context) {
+fun saveRecordedAudio(mediaPlayerService: MediaPlayerService) {
     var key = ""
     when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
         is ChapterPageData -> {
@@ -522,7 +537,7 @@ fun saveRecordedAudio(context: Context) {
                     recordedFileUriPrayer.value = recordingFile!!.absolutePath.toUri()
                     recordedAudioFileLengthMilliSecondsPrayer.value = recordingFile!!.length()
                     recordedFileColorPrayer.value = Peach
-                    clearRecordingForSomeElements()
+                    clearRecordingForSomeElements(mediaPlayerService)
                 }
 
                 "selfLove" ->{
@@ -531,7 +546,7 @@ fun saveRecordedAudio(context: Context) {
                     recordedFileUriSelfLove.value = recordingFile!!.absolutePath.toUri()
                     recordedAudioFileLengthMilliSecondsSelfLove.value = recordingFile!!.length()
                     recordedFileColorSelfLove.value = Peach
-                    clearRecordingForSomeElements()
+                    clearRecordingForSomeElements(mediaPlayerService)
                 }
             }
         }
@@ -571,7 +586,7 @@ fun updateChapterPageData(s3Key: String, chapterPageData: ChapterPageData) {
     }
 }
 
-fun clearRecordingForSomeElements() {
+fun clearRecordingForSomeElements(mediaPlayerService: MediaPlayerService) {
     if(recordingFile!!.length() > 0) {
         stopRecorder()
     }
@@ -580,11 +595,11 @@ fun clearRecordingForSomeElements() {
     showPause.value = false
     recordingTimeDisplay.value = "00:00.00"
     noOfPlaybackClicks.value = 0
-    stopAudioRecordedMediaPlayer()
+    stopAudioRecordedMediaPlayer(mediaPlayerService)
     clearAmplitudes()
 }
 
-fun clearRecording(context: Context){
+fun clearRecording(context: Context, mediaPlayerService: MediaPlayerService){
     if(recordingFile!!.length() > 0) {
         stopRecorder()
     }
@@ -593,16 +608,18 @@ fun clearRecording(context: Context){
     showPause.value = false
     recordingTimeDisplay.value = "00:00.00"
     noOfPlaybackClicks.value = 0
-    stopAudioRecordedMediaPlayer()
+    stopAudioRecordedMediaPlayer(mediaPlayerService)
     clearAmplitudes()
     resetRecordingFile(context)
 }
 
-fun initializeAudioRecordedMediaPlayer(context: Context){
-    val service = MediaPlayerService()
+fun initializeAudioRecordedMediaPlayer(mediaPlayerService: MediaPlayerService){
+    mediaPlayerService.setAudioUri(recordingFile!!.absolutePath.toUri())
     val intent = Intent()
     intent.action = "PLAY"
-    service.onStartCommand(intent, 0, 0)
+    mediaPlayerService.onStartCommand(intent, 0, 0)
+    recordingTimeDisplay.value = timer.setDuration(0)
+    timer.startTicking()
 }
 
 fun startRecorder(recordingFile: File){
@@ -617,12 +634,12 @@ fun pauseRecorder(){
     timer.pause()
 }
 
-fun resumeRecorder(recordingFile: File){
+fun resumeRecorder(mediaPlayerService: MediaPlayerService){
     recorder!!.resume()
     isRecording.value = true
     recordingTimeDisplay.value = timer.setDuration(getLastAmplitude().milliSeconds)
     timer.start()
-    stopAudioRecordedMediaPlayer()
+    stopAudioRecordedMediaPlayer(mediaPlayerService)
 }
 
 fun stopRecorder(){
@@ -634,31 +651,25 @@ fun stopRecorder(){
     isRecording.value = false
 }
 
-fun startAudioRecordedMediaPlayer(){
-    if(audioMediaPlayerInitialized.value && audioRecordedMediaPlayer!!.currentPosition == audioRecordedMediaPlayer!!.duration){
+fun startAudioRecordedMediaPlayer(mediaPlayerService: MediaPlayerService){
+    if(
+        mediaPlayerService.isMediaPlayerInitialized() &&
+        mediaPlayerService.getMediaPlayer()!!.currentPosition == mediaPlayerService.getMediaPlayer()!!.duration
+    ){
         recordingTimeDisplay.value = timer.setDuration(0)
     }
-    audioRecordedMediaPlayer!!.start()
+    mediaPlayerService.startMediaPlayer()
     timer.startTicking()
-    audioMediaPlayerIsPlaying.value = true
 }
 
-fun pauseAudioRecordedMediaPlayer(){
+fun pauseAudioRecordedMediaPlayer(mediaPlayerService: MediaPlayerService){
+    mediaPlayerService.pauseMediaPlayer()
     timer.stopTicking()
-    audioRecordedMediaPlayer!!.pause()
-    audioMediaPlayerIsPlaying.value = false
 }
 
-fun stopAudioRecordedMediaPlayer(){
-    if(audioMediaPlayerInitialized.value) {
-        if (audioMediaPlayerIsPlaying.value) {
-            audioRecordedMediaPlayer!!.stop()
-        }
-        audioRecordedMediaPlayer!!.reset()
-        audioRecordedMediaPlayer!!.release()
-        audioMediaPlayerIsPlaying.value = false
-        audioMediaPlayerInitialized.value = false
-    }
+fun stopAudioRecordedMediaPlayer(mediaPlayerService: MediaPlayerService){
+    mediaPlayerService.onDestroy()
+    //mediaPlayerService.stopService(Intent(UserDashboardActivity.getInstanceActivity(), MediaPlayerService::class.java))
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -681,7 +692,8 @@ fun RecordAudioPreview() {
             rememberModalBottomSheetState(
                 initialValue = ModalBottomSheetValue.Hidden,
                 confirmStateChange = {false}
-            )
+            ),
+            MediaPlayerService()
         )
     }
 }

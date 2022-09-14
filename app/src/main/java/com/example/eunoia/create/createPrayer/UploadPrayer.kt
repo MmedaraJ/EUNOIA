@@ -212,6 +212,7 @@ fun createPrayer(
                     resetAllPrayerCreationObjects(context)
                     openSavedElementDialogBox = true
                     Thread.sleep(1_000)
+                    //resetRecordingFileAndMediaPlayer(context)
                     ThreadUtils.runOnUiThread {
                         /* navController.backQueue.removeIf { it.destination.route == Screen.NameBedtimeStory.screen_route }
                          navController.backQueue.removeIf { it.destination.route == Screen.UploadBedtimeStory.screen_route }*/
