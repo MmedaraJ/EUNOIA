@@ -6,6 +6,7 @@ subscription OnCreateSoundData($owner: String) {
     soundOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -105,6 +106,7 @@ subscription OnCreateSoundData($owner: String) {
       commentOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -189,6 +191,7 @@ subscription OnUpdateSoundData($owner: String) {
     soundOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -288,6 +291,7 @@ subscription OnUpdateSoundData($owner: String) {
       commentOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -372,6 +376,7 @@ subscription OnDeleteSoundData($owner: String) {
     soundOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -471,6 +476,7 @@ subscription OnDeleteSoundData($owner: String) {
       commentOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -558,6 +564,7 @@ subscription OnCreateCommentData($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -616,6 +623,7 @@ subscription OnCreateCommentData($owner: String) {
     commentOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -693,6 +701,7 @@ subscription OnUpdateCommentData($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -751,6 +760,7 @@ subscription OnUpdateCommentData($owner: String) {
     commentOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -828,6 +838,7 @@ subscription OnDeleteCommentData($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -886,6 +897,7 @@ subscription OnDeleteCommentData($owner: String) {
     commentOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1083,6 +1095,7 @@ subscription OnCreatePresetData($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1164,6 +1177,7 @@ subscription OnUpdatePresetData($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1245,6 +1259,7 @@ subscription OnDeletePresetData($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1323,6 +1338,7 @@ subscription OnCreateRoutineData($owner: String) {
     routineOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1500,6 +1516,7 @@ subscription OnUpdateRoutineData($owner: String) {
     routineOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1677,6 +1694,7 @@ subscription OnDeleteRoutineData($owner: String) {
     routineOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1854,6 +1872,7 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
     bedtimeStoryOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1971,6 +1990,7 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
     bedtimeStoryOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2088,6 +2108,7 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
     bedtimeStoryOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2210,6 +2231,7 @@ subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2280,6 +2302,7 @@ subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2350,6 +2373,7 @@ subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2541,6 +2565,7 @@ subscription OnCreatePrayerData($owner: String) {
     prayerOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2647,6 +2672,7 @@ subscription OnUpdatePrayerData($owner: String) {
     prayerOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2753,6 +2779,7 @@ subscription OnDeletePrayerData($owner: String) {
     prayerOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2859,6 +2886,7 @@ subscription OnCreateSelfLoveData($owner: String) {
     selfLoveOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2964,6 +2992,7 @@ subscription OnUpdateSelfLoveData($owner: String) {
     selfLoveOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3069,6 +3098,7 @@ subscription OnDeleteSelfLoveData($owner: String) {
     selfLoveOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3174,6 +3204,7 @@ subscription OnCreateStretchData($owner: String) {
     stretchOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3270,6 +3301,7 @@ subscription OnUpdateStretchData($owner: String) {
     stretchOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3366,6 +3398,7 @@ subscription OnDeleteStretchData($owner: String) {
     stretchOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3462,6 +3495,7 @@ subscription OnCreateBreathingData($owner: String) {
     breathingOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3558,6 +3592,7 @@ subscription OnUpdateBreathingData($owner: String) {
     breathingOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3654,6 +3689,7 @@ subscription OnDeleteBreathingData($owner: String) {
     breathingOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3747,6 +3783,7 @@ subscription OnCreateUserData($owner: String) {
   onCreateUserData(owner: $owner) {
     id
     username
+    amplifyAuthUserId
     givenName
     familyName
     middleName
@@ -3999,6 +4036,7 @@ subscription OnUpdateUserData($owner: String) {
   onUpdateUserData(owner: $owner) {
     id
     username
+    amplifyAuthUserId
     givenName
     familyName
     middleName
@@ -4251,6 +4289,7 @@ subscription OnDeleteUserData($owner: String) {
   onDeleteUserData(owner: $owner) {
     id
     username
+    amplifyAuthUserId
     givenName
     familyName
     middleName
@@ -4510,6 +4549,7 @@ subscription OnCreateUserSound($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4567,6 +4607,7 @@ subscription OnCreateUserSound($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -4644,6 +4685,7 @@ subscription OnUpdateUserSound($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4701,6 +4743,7 @@ subscription OnUpdateUserSound($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -4778,6 +4821,7 @@ subscription OnDeleteUserSound($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4835,6 +4879,7 @@ subscription OnDeleteUserSound($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -4912,6 +4957,7 @@ subscription OnCreateRoutineSound($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4972,6 +5018,7 @@ subscription OnCreateRoutineSound($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5056,6 +5103,7 @@ subscription OnUpdateRoutineSound($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5116,6 +5164,7 @@ subscription OnUpdateRoutineSound($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5200,6 +5249,7 @@ subscription OnDeleteRoutineSound($owner: String) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5260,6 +5310,7 @@ subscription OnDeleteRoutineSound($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5344,6 +5395,7 @@ subscription OnCreateRoutinePrayer($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5418,6 +5470,7 @@ subscription OnCreateRoutinePrayer($owner: String) {
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5471,6 +5524,7 @@ subscription OnUpdateRoutinePrayer($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5545,6 +5599,7 @@ subscription OnUpdateRoutinePrayer($owner: String) {
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5598,6 +5653,7 @@ subscription OnDeleteRoutinePrayer($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5672,6 +5728,7 @@ subscription OnDeleteRoutinePrayer($owner: String) {
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5725,6 +5782,7 @@ subscription OnCreateRoutineStretch($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5799,6 +5857,7 @@ subscription OnCreateRoutineStretch($owner: String) {
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5842,6 +5901,7 @@ subscription OnUpdateRoutineStretch($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5916,6 +5976,7 @@ subscription OnUpdateRoutineStretch($owner: String) {
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5959,6 +6020,7 @@ subscription OnDeleteRoutineStretch($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6033,6 +6095,7 @@ subscription OnDeleteRoutineStretch($owner: String) {
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6076,6 +6139,7 @@ subscription OnCreateRoutineBreathing($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6150,6 +6214,7 @@ subscription OnCreateRoutineBreathing($owner: String) {
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6193,6 +6258,7 @@ subscription OnUpdateRoutineBreathing($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6267,6 +6333,7 @@ subscription OnUpdateRoutineBreathing($owner: String) {
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6310,6 +6377,7 @@ subscription OnDeleteRoutineBreathing($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6384,6 +6452,7 @@ subscription OnDeleteRoutineBreathing($owner: String) {
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6427,6 +6496,7 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6501,6 +6571,7 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6556,6 +6627,7 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6630,6 +6702,7 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6685,6 +6758,7 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6759,6 +6833,7 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6814,6 +6889,7 @@ subscription OnCreateRoutineSelfLove($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6888,6 +6964,7 @@ subscription OnCreateRoutineSelfLove($owner: String) {
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6940,6 +7017,7 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7014,6 +7092,7 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7066,6 +7145,7 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7140,6 +7220,7 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7192,6 +7273,7 @@ subscription OnCreateUserRoutine($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7263,6 +7345,7 @@ subscription OnCreateUserRoutine($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7340,6 +7423,7 @@ subscription OnUpdateUserRoutine($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7411,6 +7495,7 @@ subscription OnUpdateUserRoutine($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7488,6 +7573,7 @@ subscription OnDeleteUserRoutine($owner: String) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7559,6 +7645,7 @@ subscription OnDeleteUserRoutine($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7636,6 +7723,7 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7678,6 +7766,7 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7755,6 +7844,7 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7797,6 +7887,7 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7874,6 +7965,7 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7916,6 +8008,7 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7993,6 +8086,7 @@ subscription OnCreateUserPrayer($owner: String) {
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8033,6 +8127,7 @@ subscription OnCreateUserPrayer($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8110,6 +8205,7 @@ subscription OnUpdateUserPrayer($owner: String) {
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8150,6 +8246,7 @@ subscription OnUpdateUserPrayer($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8227,6 +8324,7 @@ subscription OnDeleteUserPrayer($owner: String) {
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8267,6 +8365,7 @@ subscription OnDeleteUserPrayer($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8344,6 +8443,7 @@ subscription OnCreateUserSelfLove($owner: String) {
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8383,6 +8483,7 @@ subscription OnCreateUserSelfLove($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8460,6 +8561,7 @@ subscription OnUpdateUserSelfLove($owner: String) {
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8499,6 +8601,7 @@ subscription OnUpdateUserSelfLove($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8576,6 +8679,7 @@ subscription OnDeleteUserSelfLove($owner: String) {
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8615,6 +8719,7 @@ subscription OnDeleteUserSelfLove($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8692,6 +8797,7 @@ subscription OnCreateUserStretch($owner: String) {
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8722,6 +8828,7 @@ subscription OnCreateUserStretch($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8799,6 +8906,7 @@ subscription OnUpdateUserStretch($owner: String) {
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8829,6 +8937,7 @@ subscription OnUpdateUserStretch($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8906,6 +9015,7 @@ subscription OnDeleteUserStretch($owner: String) {
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8936,6 +9046,7 @@ subscription OnDeleteUserStretch($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -9013,6 +9124,7 @@ subscription OnCreateUserBreathing($owner: String) {
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -9043,6 +9155,7 @@ subscription OnCreateUserBreathing($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -9120,6 +9233,7 @@ subscription OnUpdateUserBreathing($owner: String) {
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -9150,6 +9264,7 @@ subscription OnUpdateUserBreathing($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -9227,6 +9342,7 @@ subscription OnDeleteUserBreathing($owner: String) {
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -9257,6 +9373,7 @@ subscription OnDeleteUserBreathing($owner: String) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName

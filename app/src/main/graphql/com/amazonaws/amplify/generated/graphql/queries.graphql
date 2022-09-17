@@ -6,6 +6,7 @@ query GetSoundData($id: ID!) {
     soundOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -105,6 +106,7 @@ query GetSoundData($id: ID!) {
       commentOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -194,6 +196,7 @@ query ListSoundDatas(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -261,6 +264,7 @@ query GetCommentData($id: ID!) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -319,6 +323,7 @@ query GetCommentData($id: ID!) {
     commentOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -418,6 +423,7 @@ query ListCommentDatas(
       commentOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -521,6 +527,7 @@ query GetPresetData($id: ID!) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -637,6 +644,7 @@ query GetRoutineData($id: ID!) {
     routineOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -819,6 +827,7 @@ query ListRoutineDatas(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -897,6 +906,7 @@ query GetBedtimeStoryInfoData($id: ID!) {
     bedtimeStoryOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1023,6 +1033,7 @@ query ListBedtimeStoryInfoDatas(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1077,6 +1088,7 @@ query GetBedtimeStoryInfoChapterData($id: ID!) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1255,6 +1267,7 @@ query GetPrayerData($id: ID!) {
     prayerOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1366,6 +1379,7 @@ query ListPrayerDatas(
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1413,6 +1427,7 @@ query GetSelfLoveData($id: ID!) {
     selfLoveOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1523,6 +1538,7 @@ query ListSelfLoveDatas(
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1569,6 +1585,7 @@ query GetStretchData($id: ID!) {
     stretchOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1670,6 +1687,7 @@ query ListStretchDatas(
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1707,6 +1725,7 @@ query GetBreathingData($id: ID!) {
     breathingOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1808,6 +1827,7 @@ query ListBreathingDatas(
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1842,6 +1862,7 @@ query GetUserData($id: ID!) {
   getUserData(id: $id) {
     id
     username
+    amplifyAuthUserId
     givenName
     familyName
     middleName
@@ -2099,6 +2120,7 @@ query ListUserDatas(
     items {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2174,6 +2196,7 @@ query GetUserSound($id: ID!) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2231,6 +2254,7 @@ query GetUserSound($id: ID!) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2329,6 +2353,7 @@ query ListUserSounds(
       userData {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2363,6 +2388,7 @@ query GetRoutineSound($id: ID!) {
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2423,6 +2449,7 @@ query GetRoutineSound($id: ID!) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2577,6 +2604,7 @@ query GetRoutinePrayer($id: ID!) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2651,6 +2679,7 @@ query GetRoutinePrayer($id: ID!) {
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2773,6 +2802,7 @@ query GetRoutineStretch($id: ID!) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2847,6 +2877,7 @@ query GetRoutineStretch($id: ID!) {
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2949,6 +2980,7 @@ query GetRoutineBreathing($id: ID!) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3023,6 +3055,7 @@ query GetRoutineBreathing($id: ID!) {
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3125,6 +3158,7 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3199,6 +3233,7 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3326,6 +3361,7 @@ query GetRoutineSelfLove($id: ID!) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3400,6 +3436,7 @@ query GetRoutineSelfLove($id: ID!) {
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3520,6 +3557,7 @@ query GetUserRoutine($id: ID!) {
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3591,6 +3629,7 @@ query GetUserRoutine($id: ID!) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3704,6 +3743,7 @@ query ListUserRoutines(
       userData {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3738,6 +3778,7 @@ query GetUserBedtimeStoryInfo($id: ID!) {
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3780,6 +3821,7 @@ query GetUserBedtimeStoryInfo($id: ID!) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3880,6 +3922,7 @@ query ListUserBedtimeStoryInfos(
       userData {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3914,6 +3957,7 @@ query GetUserPrayer($id: ID!) {
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -3954,6 +3998,7 @@ query GetUserPrayer($id: ID!) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -4051,6 +4096,7 @@ query ListUserPrayers(
       userData {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4085,6 +4131,7 @@ query GetUserSelfLove($id: ID!) {
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4124,6 +4171,7 @@ query GetUserSelfLove($id: ID!) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -4220,6 +4268,7 @@ query ListUserSelfLoves(
       userData {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4254,6 +4303,7 @@ query GetUserStretch($id: ID!) {
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4284,6 +4334,7 @@ query GetUserStretch($id: ID!) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -4371,6 +4422,7 @@ query ListUserStretches(
       userData {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4405,6 +4457,7 @@ query GetUserBreathing($id: ID!) {
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4435,6 +4488,7 @@ query GetUserBreathing($id: ID!) {
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -4522,6 +4576,7 @@ query ListUserBreathings(
       userData {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName

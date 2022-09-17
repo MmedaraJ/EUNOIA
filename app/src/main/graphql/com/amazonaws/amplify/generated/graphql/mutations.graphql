@@ -9,6 +9,7 @@ mutation CreateSoundData(
     soundOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -108,6 +109,7 @@ mutation CreateSoundData(
       commentOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -195,6 +197,7 @@ mutation UpdateSoundData(
     soundOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -294,6 +297,7 @@ mutation UpdateSoundData(
       commentOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -381,6 +385,7 @@ mutation DeleteSoundData(
     soundOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -480,6 +485,7 @@ mutation DeleteSoundData(
       commentOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -570,6 +576,7 @@ mutation CreateCommentData(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -628,6 +635,7 @@ mutation CreateCommentData(
     commentOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -708,6 +716,7 @@ mutation UpdateCommentData(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -766,6 +775,7 @@ mutation UpdateCommentData(
     commentOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -846,6 +856,7 @@ mutation DeleteCommentData(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -904,6 +915,7 @@ mutation DeleteCommentData(
     commentOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1113,6 +1125,7 @@ mutation CreatePresetData(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1197,6 +1210,7 @@ mutation UpdatePresetData(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1281,6 +1295,7 @@ mutation DeletePresetData(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -1362,6 +1377,7 @@ mutation CreateRoutineData(
     routineOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1542,6 +1558,7 @@ mutation UpdateRoutineData(
     routineOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1722,6 +1739,7 @@ mutation DeleteRoutineData(
     routineOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -1902,6 +1920,7 @@ mutation CreateBedtimeStoryInfoData(
     bedtimeStoryOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2022,6 +2041,7 @@ mutation UpdateBedtimeStoryInfoData(
     bedtimeStoryOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2142,6 +2162,7 @@ mutation DeleteBedtimeStoryInfoData(
     bedtimeStoryOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2267,6 +2288,7 @@ mutation CreateBedtimeStoryInfoChapterData(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2340,6 +2362,7 @@ mutation UpdateBedtimeStoryInfoChapterData(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2413,6 +2436,7 @@ mutation DeleteBedtimeStoryInfoChapterData(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -2616,6 +2640,7 @@ mutation CreatePrayerData(
     prayerOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2725,6 +2750,7 @@ mutation UpdatePrayerData(
     prayerOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2834,6 +2860,7 @@ mutation DeletePrayerData(
     prayerOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -2943,6 +2970,7 @@ mutation CreateSelfLoveData(
     selfLoveOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3051,6 +3079,7 @@ mutation UpdateSelfLoveData(
     selfLoveOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3159,6 +3188,7 @@ mutation DeleteSelfLoveData(
     selfLoveOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3267,6 +3297,7 @@ mutation CreateStretchData(
     stretchOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3366,6 +3397,7 @@ mutation UpdateStretchData(
     stretchOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3465,6 +3497,7 @@ mutation DeleteStretchData(
     stretchOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3564,6 +3597,7 @@ mutation CreateBreathingData(
     breathingOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3663,6 +3697,7 @@ mutation UpdateBreathingData(
     breathingOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3762,6 +3797,7 @@ mutation DeleteBreathingData(
     breathingOwner {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -3858,6 +3894,7 @@ mutation CreateUserData(
   createUserData(input: $input, condition: $condition) {
     id
     username
+    amplifyAuthUserId
     givenName
     familyName
     middleName
@@ -4113,6 +4150,7 @@ mutation UpdateUserData(
   updateUserData(input: $input, condition: $condition) {
     id
     username
+    amplifyAuthUserId
     givenName
     familyName
     middleName
@@ -4368,6 +4406,7 @@ mutation DeleteUserData(
   deleteUserData(input: $input, condition: $condition) {
     id
     username
+    amplifyAuthUserId
     givenName
     familyName
     middleName
@@ -4630,6 +4669,7 @@ mutation CreateUserSound(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4687,6 +4727,7 @@ mutation CreateUserSound(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -4767,6 +4808,7 @@ mutation UpdateUserSound(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4824,6 +4866,7 @@ mutation UpdateUserSound(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -4904,6 +4947,7 @@ mutation DeleteUserSound(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -4961,6 +5005,7 @@ mutation DeleteUserSound(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -5041,6 +5086,7 @@ mutation CreateRoutineSound(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5101,6 +5147,7 @@ mutation CreateRoutineSound(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5188,6 +5235,7 @@ mutation UpdateRoutineSound(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5248,6 +5296,7 @@ mutation UpdateRoutineSound(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5335,6 +5384,7 @@ mutation DeleteRoutineSound(
       soundOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5395,6 +5445,7 @@ mutation DeleteRoutineSound(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5482,6 +5533,7 @@ mutation CreateRoutinePrayer(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5556,6 +5608,7 @@ mutation CreateRoutinePrayer(
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5612,6 +5665,7 @@ mutation UpdateRoutinePrayer(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5686,6 +5740,7 @@ mutation UpdateRoutinePrayer(
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5742,6 +5797,7 @@ mutation DeleteRoutinePrayer(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5816,6 +5872,7 @@ mutation DeleteRoutinePrayer(
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5872,6 +5929,7 @@ mutation CreateRoutineStretch(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5946,6 +6004,7 @@ mutation CreateRoutineStretch(
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -5992,6 +6051,7 @@ mutation UpdateRoutineStretch(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6066,6 +6126,7 @@ mutation UpdateRoutineStretch(
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6112,6 +6173,7 @@ mutation DeleteRoutineStretch(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6186,6 +6248,7 @@ mutation DeleteRoutineStretch(
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6232,6 +6295,7 @@ mutation CreateRoutineBreathing(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6306,6 +6370,7 @@ mutation CreateRoutineBreathing(
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6352,6 +6417,7 @@ mutation UpdateRoutineBreathing(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6426,6 +6492,7 @@ mutation UpdateRoutineBreathing(
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6472,6 +6539,7 @@ mutation DeleteRoutineBreathing(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6546,6 +6614,7 @@ mutation DeleteRoutineBreathing(
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6592,6 +6661,7 @@ mutation CreateRoutineBedtimeStoryInfo(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6666,6 +6736,7 @@ mutation CreateRoutineBedtimeStoryInfo(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6724,6 +6795,7 @@ mutation UpdateRoutineBedtimeStoryInfo(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6798,6 +6870,7 @@ mutation UpdateRoutineBedtimeStoryInfo(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6856,6 +6929,7 @@ mutation DeleteRoutineBedtimeStoryInfo(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6930,6 +7004,7 @@ mutation DeleteRoutineBedtimeStoryInfo(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -6988,6 +7063,7 @@ mutation CreateRoutineSelfLove(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7062,6 +7138,7 @@ mutation CreateRoutineSelfLove(
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7117,6 +7194,7 @@ mutation UpdateRoutineSelfLove(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7191,6 +7269,7 @@ mutation UpdateRoutineSelfLove(
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7246,6 +7325,7 @@ mutation DeleteRoutineSelfLove(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7320,6 +7400,7 @@ mutation DeleteRoutineSelfLove(
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7375,6 +7456,7 @@ mutation CreateUserRoutine(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7446,6 +7528,7 @@ mutation CreateUserRoutine(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7526,6 +7609,7 @@ mutation UpdateUserRoutine(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7597,6 +7681,7 @@ mutation UpdateUserRoutine(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7677,6 +7762,7 @@ mutation DeleteUserRoutine(
       routineOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7748,6 +7834,7 @@ mutation DeleteUserRoutine(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7828,6 +7915,7 @@ mutation CreateUserBedtimeStoryInfo(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7870,6 +7958,7 @@ mutation CreateUserBedtimeStoryInfo(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -7950,6 +8039,7 @@ mutation UpdateUserBedtimeStoryInfo(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -7992,6 +8082,7 @@ mutation UpdateUserBedtimeStoryInfo(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8072,6 +8163,7 @@ mutation DeleteUserBedtimeStoryInfo(
       bedtimeStoryOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8114,6 +8206,7 @@ mutation DeleteUserBedtimeStoryInfo(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8194,6 +8287,7 @@ mutation CreateUserPrayer(
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8234,6 +8328,7 @@ mutation CreateUserPrayer(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8314,6 +8409,7 @@ mutation UpdateUserPrayer(
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8354,6 +8450,7 @@ mutation UpdateUserPrayer(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8434,6 +8531,7 @@ mutation DeleteUserPrayer(
       prayerOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8474,6 +8572,7 @@ mutation DeleteUserPrayer(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8554,6 +8653,7 @@ mutation CreateUserSelfLove(
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8593,6 +8693,7 @@ mutation CreateUserSelfLove(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8673,6 +8774,7 @@ mutation UpdateUserSelfLove(
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8712,6 +8814,7 @@ mutation UpdateUserSelfLove(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8792,6 +8895,7 @@ mutation DeleteUserSelfLove(
       selfLoveOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8831,6 +8935,7 @@ mutation DeleteUserSelfLove(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -8911,6 +9016,7 @@ mutation CreateUserStretch(
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -8941,6 +9047,7 @@ mutation CreateUserStretch(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -9021,6 +9128,7 @@ mutation UpdateUserStretch(
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -9051,6 +9159,7 @@ mutation UpdateUserStretch(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -9131,6 +9240,7 @@ mutation DeleteUserStretch(
       stretchOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -9161,6 +9271,7 @@ mutation DeleteUserStretch(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -9241,6 +9352,7 @@ mutation CreateUserBreathing(
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -9271,6 +9383,7 @@ mutation CreateUserBreathing(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -9351,6 +9464,7 @@ mutation UpdateUserBreathing(
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -9381,6 +9495,7 @@ mutation UpdateUserBreathing(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName
@@ -9461,6 +9576,7 @@ mutation DeleteUserBreathing(
       breathingOwner {
         id
         username
+        amplifyAuthUserId
         givenName
         familyName
         middleName
@@ -9491,6 +9607,7 @@ mutation DeleteUserBreathing(
     userData {
       id
       username
+      amplifyAuthUserId
       givenName
       familyName
       middleName

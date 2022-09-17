@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
-import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -518,10 +517,10 @@ fun NamePrayerUI(
                 }
         ) {
             val borders = mutableListOf<MutableState<Boolean>>()
-            for(icon in globalViewModel_!!.icons){
+            for(icon in globalViewModel_!!.soundScreenIcons){
                 borders.add(remember { mutableStateOf(false) })
             }
-            globalViewModel_!!.icons.forEachIndexed{ index, icon ->
+            globalViewModel_!!.soundScreenIcons.forEachIndexed{ index, icon ->
                 var cardModifier = Modifier
                     .padding(bottom = 15.dp)
                     .clickable {

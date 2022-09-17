@@ -1,6 +1,7 @@
 package com.example.eunoia.dashboard.sound
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -9,33 +10,40 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSoundBackend
+import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryActivityPlayButtonTexts
 import com.example.eunoia.dashboard.home.*
 import com.example.eunoia.models.SoundObject
+import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
-import com.example.eunoia.ui.theme.EUNOIATheme
+import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.*
 
-private val TAG = "Sound Activity"
+private const val TAG = "Sound Activity"
 var soundActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
-var playSounds = mutableListOf<MutableState<Boolean>?>()
-const val START_SOUND = "start"
-const val PAUSE_SOUND = "pause"
-const val WAIT_FOR_SOUND = "wait"
+var soundActivityUris = mutableListOf<MutableList<Uri?>>()
+var soundActivityUriVolumes = mutableListOf<MutableList<Int?>>()
+var soundActivityPresets = mutableListOf<MutableState<PresetData?>?>()
+private const val START_SOUND = "start"
+private const val PAUSE_SOUND = "pause"
+private const val WAIT_FOR_SOUND = "wait"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -44,13 +52,25 @@ fun SoundActivityUI(
     context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ) {
-    clearSoundActivityPlayButtonTexts()
+    resetSoundActivityPlayButtonTexts()
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
+    var retrievedSounds by rememberSaveable{ mutableStateOf(false) }
     globalViewModel_!!.currentUser?.let {
         UserSoundBackend.queryUserSoundBasedOnUser(it) { userSound ->
+            if(soundActivityUris.size < userSound.size) {
+                for(i in userSound.indices){
+                    soundActivityPlayButtonTexts.add(mutableStateOf(START_SOUND))
+                    soundActivityUriVolumes.add(mutableListOf())
+                    soundActivityUris.add(mutableListOf())
+                    soundActivityPresets.add(mutableStateOf(null))
+                }
+            }
             globalViewModel_!!.currentUsersSounds = userSound.toMutableList()
+            retrievedSounds = true
         }
     }
     ConstraintLayout(
@@ -62,9 +82,9 @@ fun SoundActivityUI(
             header,
             introTitle,
             options,
-            favorite_sounds_title,
+            favoriteSoundsTitle,
             emptySoundList,
-            articles_title,
+            articlesTitle,
             articles,
             endSpace
         ) = createRefs()
@@ -77,7 +97,9 @@ fun SoundActivityUI(
                 .fillMaxWidth()
         ){
             BackArrowHeader(
-                {navController.popBackStack()},
+                {
+                    navController.popBackStack()
+                },
                 {
                     globalViewModel_!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
@@ -110,7 +132,7 @@ fun SoundActivityUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(favorite_sounds_title) {
+                .constrainAs(favoriteSoundsTitle) {
                     top.linkTo(options.bottom, margin = 0.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
@@ -121,78 +143,34 @@ fun SoundActivityUI(
         Column(
             modifier = Modifier
                 .constrainAs(emptySoundList) {
-                    top.linkTo(favorite_sounds_title.bottom, margin = 18.dp)
+                    top.linkTo(favoriteSoundsTitle.bottom, margin = 18.dp)
                 }
                 .padding(bottom = 12.dp)
         ){
-            soundActivityPlayButtonTexts.clear()
-            if(globalViewModel_!!.currentUsersSounds != null){
-                if(globalViewModel_!!.currentUsersSounds!!.size > 0)
-                {
+            if(
+                retrievedSounds &&
+                globalViewModel_!!.currentUsersSounds != null
+            ) {
+                if(globalViewModel_!!.currentUsersSounds!!.size > 0){
                     for(i in globalViewModel_!!.currentUsersSounds!!.indices){
-                        if(globalViewModel_!!.currentSoundPlaying != null){
-                            if(
-                                globalViewModel_!!.currentSoundPlaying!!.id ==
-                                globalViewModel_!!.currentUsersSounds!![i]!!.soundData.id
-                            ) {
-                                soundActivityPlayButtonTexts.add(remember { mutableStateOf("stop") })
+                        setSoundActivityPlayButtonTextsCorrectly(i)
+                        DisplayUsersSounds(
+                            globalViewModel_!!.currentUsersSounds!![i]!!.soundData,
+                            i,
+                            { index ->
+                                resetSoundMediaPlayerServiceIfNecessary(soundMediaPlayerService, index)
+                                resetPlayButtonTextsIfNecessary(index)
+                                playOrPauseMediaPlayerAccordingly(
+                                    soundMediaPlayerService,
+                                    generalMediaPlayerService,
+                                    index,
+                                    context
+                                )
+                            },
+                            { index ->
+                                navigateToSoundScreen(navController, globalViewModel_!!.currentUsersSounds!![index]!!.soundData)
                             }
-                            else{
-                                soundActivityPlayButtonTexts.add(remember{mutableStateOf("start")})
-                            }
-                        }
-                        else{
-                            soundActivityPlayButtonTexts.add(remember{mutableStateOf("start")})
-                        }
-                        playSounds.add(remember{mutableStateOf(false)})
-                        if(
-                            globalViewModel_!!.currentUsersSounds!![i]!!.soundData.approvalStatus == SoundApprovalStatus.APPROVED ||
-                            globalViewModel_!!.currentUsersSounds!![i]!!.soundData.approvalStatus == SoundApprovalStatus.PENDING
-                        ){
-                            DisplayUsersSounds(
-                                globalViewModel_!!.currentUsersSounds!![i]!!.soundData,
-                                i,
-                                {
-                                    //TODO get data from database first so that playing is instantaneous
-                                },
-                                { index ->
-                                    for(j in soundActivityPlayButtonTexts.indices){
-                                        if(j != index){
-                                            if(soundActivityPlayButtonTexts[j]!!.value != "start") {
-                                                soundActivityPlayButtonTexts[j]!!.value = "start"
-                                            }
-                                        }
-                                    }
-                                    if(soundActivityPlayButtonTexts[index]!!.value == "start"){
-                                        soundActivityPlayButtonTexts[index]!!.value = "wait"
-                                        for(bool in playSounds){
-                                            bool!!.value = false
-                                        }
-                                        resetAll(context)
-                                        createMeditationBellMediaPlayer(context)
-                                        globalViewModel_!!.currentSoundPlayingPreset = null
-                                        getSoundPresets(globalViewModel_!!.currentUsersSounds!![index]!!.soundData) { presetData ->
-                                            globalViewModel_!!.currentSoundPlayingPreset = presetData
-                                            for(preset in presetData.presets){
-                                                if(preset.key == "current_volumes"){
-                                                    globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = preset
-                                                    prepareToPlay(index, context)
-                                                    break
-                                                }
-                                            }
-                                        }
-                                    }else if(soundActivityPlayButtonTexts[index]!!.value == "stop" || soundActivityPlayButtonTexts[index]!!.value == "wait"){
-                                        pauseSounds(context, 3)
-                                        soundActivityPlayButtonTexts[index]!!.value = "start"
-                                    }
-                                },
-                                { index ->
-                                    globalViewModel_!!.currentSoundPlayingPreset = null
-                                    resetAll(context)
-                                    navigateToSoundScreen(navController, globalViewModel_!!.currentUsersSounds!![index]!!.soundData)
-                                }
-                            )
-                        }
+                        )
                     }
                 }else{
                     SurpriseMeSound{}
@@ -203,7 +181,7 @@ fun SoundActivityUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(articles_title) {
+                .constrainAs(articlesTitle) {
                     top.linkTo(emptySoundList.bottom, margin = 0.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
@@ -214,7 +192,7 @@ fun SoundActivityUI(
         Column(
             modifier = Modifier
                 .constrainAs(articles) {
-                    top.linkTo(articles_title.bottom, margin = 18.dp)
+                    top.linkTo(articlesTitle.bottom, margin = 18.dp)
                 }
                 .padding(bottom = 24.dp)
         ){
@@ -231,61 +209,208 @@ fun SoundActivityUI(
     }
 }
 
-fun prepareToPlay(i: Int, context: Context){
-    var volumes = listOf<Int>()
-    //var uris = mutableListOf<MutableState<Uri>?>()
-    val uris = mutableStateOf(mutableListOf<Uri>())
-    for (preset in globalViewModel_!!.currentSoundPlayingPreset!!.presets) {
-        if (preset.key == "current_volumes") {
-            volumes = preset.volumes
+private fun setSoundActivityPlayButtonTextsCorrectly(i: Int) {
+    if (globalViewModel_!!.currentSoundPlaying != null) {
+        if (
+            globalViewModel_!!.currentSoundPlaying!!.id ==
+            globalViewModel_!!.currentUsersSounds!![i]!!.soundData.id
+        ) {
+            if(globalViewModel_!!.isCurrentSoundPlaying){
+                soundActivityPlayButtonTexts[i]!!.value = PAUSE_SOUND
+            }else{
+                soundActivityPlayButtonTexts[i]!!.value = START_SOUND
+            }
+        } else {
+            soundActivityPlayButtonTexts[i]!!.value = START_SOUND
+        }
+    } else {
+        soundActivityPlayButtonTexts[i]!!.value = START_SOUND
+    }
+}
+
+private fun resetPlayButtonTextsIfNecessary(index: Int) {
+    for(j in soundActivityPlayButtonTexts.indices){
+        if(j != index){
+            if(soundActivityPlayButtonTexts[j]!!.value != START_SOUND) {
+                soundActivityPlayButtonTexts[j]!!.value = START_SOUND
+            }
         }
     }
-    Log.i(TAG, "Volumes ==>> $volumes")
+}
+
+fun resetSoundActivityPlayButtonTexts() {
+    for(j in soundActivityPlayButtonTexts.indices){
+        soundActivityPlayButtonTexts[j]!!.value = START_SOUND
+    }
+}
+
+private fun resetSoundMediaPlayerServiceIfNecessary(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    index: Int
+) {
+    if(globalViewModel_!!.currentSoundPlaying != null) {
+        if (globalViewModel_!!.currentUsersSounds!![index]!!.soundData.id != globalViewModel_!!.currentSoundPlaying!!.id) {
+            soundMediaPlayerService.onDestroy()
+        }
+    }
+}
+
+private fun playOrPauseMediaPlayerAccordingly(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    index: Int,
+    context: Context
+) {
+    if(soundActivityPlayButtonTexts[index]!!.value == START_SOUND){
+        soundActivityPlayButtonTexts[index]!!.value = WAIT_FOR_SOUND
+        if(soundActivityUris[index].size < 1) {
+            getNecessaryPresets(index) {
+                retrieveSoundAudio(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    index,
+                    context
+                )
+            }
+        }else{
+            startSound(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
+        }
+    }else if(
+        soundActivityPlayButtonTexts[index]!!.value == PAUSE_SOUND ||
+        soundActivityPlayButtonTexts[index]!!.value == WAIT_FOR_SOUND
+    ){
+        pauseSound(soundMediaPlayerService, index)
+    }
+}
+
+private fun retrieveSoundAudio(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    index: Int,
+    context: Context
+) {
+    SoundBackend.listS3Sounds(
+        globalViewModel_!!.currentUsersSounds!![index]!!.soundData.audioKeyS3,
+        globalViewModel_!!.currentUsersSounds!![index]!!.soundData.soundOwner.amplifyAuthUserId
+    ){ s3List ->
+        s3List.items.forEachIndexed { i, item ->
+            SoundBackend.retrieveAudio(
+                item.key,
+                globalViewModel_!!.currentUsersSounds!![index]!!.soundData.soundOwner.amplifyAuthUserId
+            ) { uri ->
+                soundActivityUris[index].add(uri)
+                if(i == s3List.items.size - 1){
+                    startSound(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        index,
+                        context
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun startSound(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    index: Int,
+    context: Context
+) {
+    if(soundActivityUris[index].isNotEmpty()){
+        if(soundMediaPlayerService.areMediaPlayersInitialized()){
+            soundMediaPlayerService.startMediaPlayers()
+        }else{
+            initializeMediaPlayers(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
+        }
+        setGlobalPropertiesAfterPlayingSound(index, context)
+    }
+}
+
+private fun getNecessaryPresets(index: Int, completed: () -> Unit){
+    getSoundPresets(globalViewModel_!!.currentUsersSounds!![index]!!.soundData) { presetData ->
+        soundActivityPresets[index]!!.value = presetData
+        for(j in presetData.presets.indices){
+            if(j == 0){
+                soundActivityUriVolumes[index] = presetData.presets[j].volumes
+                globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = presetData.presets[j]
+                Log.i(TAG, "preset name map size -0000 ${globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!.volumes.size}")
+            }
+        }
+        completed()
+    }
+}
+
+private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
+    globalViewModel_!!.currentSoundPlaying = globalViewModel_!!.currentUsersSounds!![index]!!.soundData
+    globalViewModel_!!.currentSoundPlayingPreset = soundActivityPresets[index]!!.value
     globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-    for (volume in volumes) {
+    for (volume in globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!.volumes) {
         globalViewModel_!!.currentSoundPlayingSliderPositions.add(
             mutableStateOf(volume.toFloat())
         )
     }
-    Log.i(TAG, "sliders vsf ==->> ${globalViewModel_!!.currentSoundPlayingSliderPositions}")
-    retrieveUris(uris.value, globalViewModel_!!.currentUsersSounds!![i]!!.soundData, i, context)
-    Log.i(TAG, "Uris ==>> $uris")
-}
-
-fun playNow(soundData: SoundData, context: Context, i: Int){
-    playSounds(
-        soundData,
-        globalViewModel_!!.currentSoundPlayingUris!!,
-        context,
-        3
-    )
-    globalViewModel_!!.currentSoundPlaying = globalViewModel_!!.currentUsersSounds!![i]!!.soundData
+    globalViewModel_!!.currentSoundPlayingUris = soundActivityUris[index]
     globalViewModel_!!.currentSoundPlayingContext = context
-    soundActivityPlayButtonTexts[i]!!.value = "stop"
+    soundActivityPlayButtonTexts[index]!!.value = PAUSE_SOUND
+    globalViewModel_!!.isCurrentSoundPlaying = true
+    setGlobalSoundScreenControlsUIForPlay()
 }
 
-fun retrieveUris(
-    uris: MutableList<Uri>,
-    soundData: SoundData,
-    i: Int,
+private fun setGlobalSoundScreenControlsUIForPlay() {
+    globalViewModel_!!.soundScreenIcons[3].value = R.drawable.pause_icon
+    globalViewModel_!!.soundScreenBorderControlColors[3].value = Bizarre
+    globalViewModel_!!.soundScreenBackgroundControlColor1[3].value = White
+    globalViewModel_!!.soundScreenBackgroundControlColor2[3].value = White
+}
+
+private fun initializeMediaPlayers(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    index: Int,
     context: Context
 ){
-    Log.i(TAG, "22 22. Uris size ${uris.size}")
-    uris.clear()
-    SoundBackend.listEunoiaSounds(soundData.audioKeyS3) { result ->
-        result.items.forEach { item ->
-            SoundBackend.retrieveAudio(item.key) { audioUri ->
-                uris.add(audioUri)
-                if(uris.size == globalViewModel_!!.currentSoundPlayingSliderPositions.size) {
-                    globalViewModel_!!.currentSoundPlayingUris = uris
-                    showControls = true
-                    playSounds[i]!!.value = true
-                    playNow(soundData, context, i)
-                }
-                Log.i(TAG, "${item.key}. Uris size ${uris.size}")
-            }
+    generalMediaPlayerService.onDestroy()
+    soundMediaPlayerService.onDestroy()
+    soundMediaPlayerService.setAudioUris(soundActivityUris[index])
+    soundMediaPlayerService.setVolumes(soundActivityUriVolumes[index])
+    val intent = Intent()
+    intent.action = "PLAY"
+    soundMediaPlayerService.onStartCommand(intent, 0, 0)
+    resetAll(context, soundMediaPlayerService)
+    createMeditationBellMediaPlayer(context)
+}
+
+private fun pauseSound(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    index: Int
+) {
+    if(soundMediaPlayerService.areMediaPlayersInitialized()) {
+        if(soundMediaPlayerService.areMediaPlayersPlaying()) {
+            soundMediaPlayerService.pauseMediaPlayers()
+            soundActivityPlayButtonTexts[index]!!.value = START_SOUND
+            setGlobalSoundScreenControlsUIForPause()
+            globalViewModel_!!.isCurrentSoundPlaying = false
         }
     }
+}
+
+fun setGlobalSoundScreenControlsUIForPause() {
+    globalViewModel_!!.soundScreenIcons[3].value = R.drawable.play_icon
+    globalViewModel_!!.soundScreenBorderControlColors[3].value = Black
+    globalViewModel_!!.soundScreenBackgroundControlColor1[3].value = SoftPeach
+    globalViewModel_!!.soundScreenBackgroundControlColor2[3].value = SoftPeach
 }
 
 @Composable

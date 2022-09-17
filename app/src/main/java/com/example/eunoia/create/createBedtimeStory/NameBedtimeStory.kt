@@ -19,7 +19,6 @@ import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
-import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
@@ -266,10 +265,10 @@ fun NameBedtimeStoryUI(
                 }
         ) {
             val borders = mutableListOf<MutableState<Boolean>>()
-            for(icon in globalViewModel_!!.icons){
+            for(icon in globalViewModel_!!.soundScreenIcons){
                 borders.add(remember { mutableStateOf(false) })
             }
-            globalViewModel_!!.icons.forEachIndexed{ index, icon ->
+            globalViewModel_!!.soundScreenIcons.forEachIndexed{ index, icon ->
                 var cardModifier = Modifier
                     .padding(bottom = 15.dp)
                     .clickable {

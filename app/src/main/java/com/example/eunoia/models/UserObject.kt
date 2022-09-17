@@ -36,6 +36,7 @@ object UserObject {
     data class User(
         val id: String,
         val username: String,
+        val amplifyAuthUserId: String,
         val givenName: String,
         val familyName: String,
         val middleName: String,
@@ -56,6 +57,7 @@ object UserObject {
         val data: UserData
             get() = UserData.builder()
                 .username(this.username)
+                .amplifyAuthUserId(this.amplifyAuthUserId)
                 .givenName(this.givenName)
                 .familyName(this.familyName)
                 .middleName(this.middleName)
@@ -76,6 +78,7 @@ object UserObject {
                 val result = User(
                     userData.id,
                     userData.username,
+                    userData.amplifyAuthUserId,
                     userData.givenName,
                     userData.familyName,
                     userData.middleName,

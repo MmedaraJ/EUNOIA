@@ -111,6 +111,7 @@ class UploadFilesActivity : ComponentActivity() {
                 val user = UserObject.User(
                     UUID.randomUUID().toString(),
                     "eunoia",
+                    Amplify.Auth.currentUser.userId,
                     "Eunoia",
                     "Eunoia",
                     "",

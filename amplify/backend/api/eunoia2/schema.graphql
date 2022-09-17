@@ -10,6 +10,8 @@ type SoundData
     id: ID!
     userDataID: ID! @index(name: "SoundsOwnedByUser", sortKeyFields: ["display_name"])
     soundOwner: UserData! @belongsTo(fields: ["userDataID"])
+    secondaryUserDataID: ID! @index(name: "SecondarySoundsOwnedByUser", sortKeyFields: ["display_name"])
+    secondarySoundOwner: UserData! @belongsTo(fields: ["secondaryUserDataID"])
     original_name: String!
     display_name: String!
     short_description: String!
@@ -249,6 +251,7 @@ type UserData
 @auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
     id: ID!
     username: String!
+    amplifyAuthUserId: String!
     givenName: String!
     familyName: String!
     middleName: String!
@@ -262,6 +265,7 @@ type UserData
     authenticated: Boolean!
     subscription: String!
     soundsOwnedByUser: [SoundData!] @hasMany(indexName: "SoundsOwnedByUser", fields: ["id"])
+    secondarySoundsOwnedByUser: [SoundData!] @hasMany(indexName: "SecondarySoundsOwnedByUser", fields: ["id"])
     sounds: [SoundData!] @manyToMany(relationName: "UserSound")
     comments: [CommentData!] @hasMany(indexName: "byUserData", fields: ["id"])
     routinesOwnedByUser: [RoutineData!] @hasMany(indexName: "RoutinesOwnedByUser", fields: ["id"])

@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.RoutineData
-import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.NormalText
+import com.example.eunoia.ui.components.SimpleFlowRow
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.Snuff

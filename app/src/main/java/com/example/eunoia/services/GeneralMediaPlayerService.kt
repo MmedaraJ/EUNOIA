@@ -8,16 +8,13 @@ import android.net.Uri
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.core.net.toUri
 import com.example.eunoia.dashboard.home.UserDashboardActivity
-import com.example.eunoia.ui.bottomSheets.*
 import java.io.IOException
 
 private const val ACTION_PLAY: String = "PLAY"
-private const val TAG: String = "MediaPlayerService"
+private const val TAG: String = "GeneralMediaPlayerService"
 
-class MediaPlayerService:
+class GeneralMediaPlayerService:
     Service(),
     MediaPlayer.OnPreparedListener,
     MediaPlayer.OnErrorListener,
@@ -47,7 +44,7 @@ class MediaPlayerService:
                             (10).toFloat() / 10
                         )
                         setWakeMode(UserDashboardActivity.getInstanceActivity(), PowerManager.PARTIAL_WAKE_LOCK)
-                        setOnPreparedListener(this@MediaPlayerService)
+                        setOnPreparedListener(this@GeneralMediaPlayerService)
                         prepareAsync() // prepare async to not block main thread
                     } catch (e: IllegalArgumentException) {
                         e.printStackTrace();
@@ -63,8 +60,10 @@ class MediaPlayerService:
     }
 
     fun pauseMediaPlayer(){
-        mediaPlayer!!.pause()
-        mediaPlayerIsPlaying = false
+        if(mediaPlayerIsPlaying) {
+            mediaPlayer!!.pause()
+            mediaPlayerIsPlaying = false
+        }
     }
 
     fun startMediaPlayer(){
@@ -105,7 +104,7 @@ class MediaPlayerService:
     }
 
     override fun onCompletion(mediaPlayer: MediaPlayer?) {
-        //mediaPlayer!!.seekTo(0)
+        Log.e(TAG, "Media player completed")
     }
 
     override fun onDestroy() {

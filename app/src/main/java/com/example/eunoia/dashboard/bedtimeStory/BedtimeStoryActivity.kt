@@ -20,24 +20,25 @@ import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
-import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.UserBedtimeStoryBackend
 import com.example.eunoia.dashboard.home.OptionItem
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.BedtimeStoryObject
-import com.example.eunoia.services.MediaPlayerService
+import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import kotlinx.coroutines.CoroutineScope
 
-private val TAG = "Bedtime Story Activity"
+private const val TAG = "Bedtime Story Activity"
 var bedtimeStoryActivityUris = mutableListOf<MutableState<Uri>?>()
 var bedtimeStoryActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
-const val START_BEDTIME_STORY = "start"
-const val PAUSE_BEDTIME_STORY = "pause"
-const val WAIT_FOR_BEDTIME_STORY = "wait"
+private const val START_BEDTIME_STORY = "start"
+private const val PAUSE_BEDTIME_STORY = "pause"
+private const val WAIT_FOR_BEDTIME_STORY = "wait"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -46,16 +47,15 @@ fun BedtimeStoryActivityUI(
     context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    mediaPlayerService: MediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ) {
-    //clearBedtimeStoryActivityPlayButtonTexts()
-    //bedtimeStoryActivityMediaPlayers.clear()
-    //bedtimeStoryActivityUris.clear()
+    resetBedtimeStoryActivityPlayButtonTexts()
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
     var retrievedBedtimeStories by rememberSaveable{ mutableStateOf(false) }
     globalViewModel_!!.currentUser?.let {
-        BedtimeStoryBackend.queryCompleteApprovedBedtimeStoryBasedOnUser(it) { userBedtimeStory ->
+        UserBedtimeStoryBackend.queryApprovedUserBedtimeStoryBasedOnUser(it) { userBedtimeStory ->
             if(bedtimeStoryActivityUris.size < userBedtimeStory.size) {
                 for (i in userBedtimeStory.indices) {
                     bedtimeStoryActivityUris.add(mutableStateOf("".toUri()))
@@ -139,21 +139,28 @@ fun BedtimeStoryActivityUI(
                 }
                 .padding(bottom = 12.dp)
         ){
-            if(retrievedBedtimeStories){
-                for(i in globalViewModel_!!.currentUsersBedtimeStories!!.indices){
-                    setPlayButtonTextsCorrectly(i)
-                    DisplayUsersBedtimeStories(
-                        globalViewModel_!!.currentUsersBedtimeStories!![i]!!,
-                        i,
-                        { index ->
-                            resetMediaPlayerServiceIfNecessary(mediaPlayerService, index)
-                            resetPlayButtonTextsIfNecessary(index)
-                            playOrPauseMediaPlayerAccordingly(mediaPlayerService, index)
-                        },
-                        { index ->
-                            navigateToBedtimeStoryScreen(navController, globalViewModel_!!.currentUsersBedtimeStories!![index]!!)
-                        }
-                    )
+            if(
+                retrievedBedtimeStories &&
+                globalViewModel_!!.currentUsersBedtimeStories != null
+            ){
+                if(globalViewModel_!!.currentUsersBedtimeStories!!.size > 0){
+                    for(i in globalViewModel_!!.currentUsersBedtimeStories!!.indices){
+                        setBedtimeStoryActivityPlayButtonTextsCorrectly(i)
+                        DisplayUsersBedtimeStories(
+                            globalViewModel_!!.currentUsersBedtimeStories!![i]!!.bedtimeStoryInfoData,
+                            i,
+                            { index ->
+                                resetGeneralMediaPlayerServiceIfNecessary(generalMediaPlayerService, index)
+                                resetPlayButtonTextsIfNecessary(index)
+                                playOrPauseMediaPlayerAccordingly(generalMediaPlayerService, soundMediaPlayerService, index, context)
+                            },
+                            { index ->
+                                navigateToBedtimeStoryScreen(navController, globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData)
+                            }
+                        )
+                    }
+                }else{
+                    SurpriseMeSound{}
                 }
             }else{
                 SurpriseMeSound{}
@@ -190,11 +197,11 @@ fun BedtimeStoryActivityUI(
     }
 }
 
-fun setPlayButtonTextsCorrectly(i: Int) {
+private fun setBedtimeStoryActivityPlayButtonTextsCorrectly(i: Int) {
     if (globalViewModel_!!.currentBedtimeStoryPlaying != null) {
         if (
             globalViewModel_!!.currentBedtimeStoryPlaying!!.id ==
-            globalViewModel_!!.currentUsersBedtimeStories!![i]!!.id
+            globalViewModel_!!.currentUsersBedtimeStories!![i]!!.bedtimeStoryInfoData.id
         ) {
             bedtimeStoryActivityPlayButtonTexts[i]!!.value = PAUSE_BEDTIME_STORY
         } else {
@@ -205,51 +212,82 @@ fun setPlayButtonTextsCorrectly(i: Int) {
     }
 }
 
-fun playOrPauseMediaPlayerAccordingly(mediaPlayerService: MediaPlayerService, index: Int) {
+private fun playOrPauseMediaPlayerAccordingly(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    index: Int,
+    context: Context
+) {
     if(bedtimeStoryActivityPlayButtonTexts[index]!!.value == START_BEDTIME_STORY){
         bedtimeStoryActivityPlayButtonTexts[index]!!.value = WAIT_FOR_BEDTIME_STORY
         if(bedtimeStoryActivityUris[index]!!.value == "".toUri()) {
-            retrieveBedtimeStoryAudio(mediaPlayerService, index)
+            retrieveBedtimeStoryAudio(generalMediaPlayerService, soundMediaPlayerService, index, context)
         }else{
-            startBedtimeStory(mediaPlayerService, index)
+            startBedtimeStory(generalMediaPlayerService, soundMediaPlayerService, index, context)
         }
     }else if(
         bedtimeStoryActivityPlayButtonTexts[index]!!.value == PAUSE_BEDTIME_STORY ||
         bedtimeStoryActivityPlayButtonTexts[index]!!.value == WAIT_FOR_BEDTIME_STORY
     ){
-        pauseBedtimeStory(mediaPlayerService, index)
+        pauseBedtimeStory(generalMediaPlayerService, index)
     }
 }
 
-fun pauseBedtimeStory(mediaPlayerService: MediaPlayerService, index: Int) {
-    if(mediaPlayerService.isMediaPlayerInitialized()) {
-        if(mediaPlayerService.isMediaPlayerPlaying()) {
-            mediaPlayerService.pauseMediaPlayer()
+private fun pauseBedtimeStory(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    index: Int
+) {
+    if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+        if(generalMediaPlayerService.isMediaPlayerPlaying()) {
+            generalMediaPlayerService.pauseMediaPlayer()
             bedtimeStoryActivityPlayButtonTexts[index]!!.value =
                 START_BEDTIME_STORY
         }
     }
 }
 
-fun startBedtimeStory(mediaPlayerService: MediaPlayerService, index: Int) {
+private fun startBedtimeStory(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    index: Int,
+    context: Context
+) {
     if(bedtimeStoryActivityUris[index]!!.value != "".toUri()){
-        if(mediaPlayerService.isMediaPlayerInitialized()){
-            mediaPlayerService.startMediaPlayer()
+        if(generalMediaPlayerService.isMediaPlayerInitialized()){
+            generalMediaPlayerService.startMediaPlayer()
         }else{
-            initializeMediaPlayer(mediaPlayerService, index)
+            initializeMediaPlayer(
+                generalMediaPlayerService,
+                soundMediaPlayerService,
+                index,
+                context
+            )
         }
-        globalViewModel_!!.currentBedtimeStoryPlaying = globalViewModel_!!.currentUsersBedtimeStories!![index]
+        globalViewModel_!!.currentBedtimeStoryPlaying = globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData
         bedtimeStoryActivityPlayButtonTexts[index]!!.value = PAUSE_BEDTIME_STORY
     }
 }
 
-fun retrieveBedtimeStoryAudio(mediaPlayerService: MediaPlayerService, index: Int) {
+private fun retrieveBedtimeStoryAudio(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    index: Int,
+    context: Context
+) {
     if (
-        globalViewModel_!!.currentUsersBedtimeStories!![index]!!.audioSource == BedtimeStoryAudioSource.UPLOADED
+        globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData.audioSource == BedtimeStoryAudioSource.UPLOADED
     ) {
-        SoundBackend.retrieveAudio(globalViewModel_!!.currentUsersBedtimeStories!![index]!!.audioKeyS3) {
+        SoundBackend.retrieveAudio(
+            globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData.audioKeyS3,
+            globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData.bedtimeStoryOwner.amplifyAuthUserId
+        ) {
             bedtimeStoryActivityUris[index]!!.value = it
-            startBedtimeStory(mediaPlayerService, index)
+            startBedtimeStory(
+                generalMediaPlayerService,
+                soundMediaPlayerService,
+                index,
+                context
+            )
         }
     } else {
         //if recorded
@@ -257,15 +295,18 @@ fun retrieveBedtimeStoryAudio(mediaPlayerService: MediaPlayerService, index: Int
     }
 }
 
-fun resetMediaPlayerServiceIfNecessary(mediaPlayerService: MediaPlayerService, index: Int) {
+private fun resetGeneralMediaPlayerServiceIfNecessary(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    index: Int
+) {
     if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentUsersBedtimeStories!![index]!! != globalViewModel_!!.currentBedtimeStoryPlaying) {
-            mediaPlayerService.onDestroy()
+        if (globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData != globalViewModel_!!.currentBedtimeStoryPlaying) {
+            generalMediaPlayerService.onDestroy()
         }
     }
 }
 
-fun resetPlayButtonTextsIfNecessary(index: Int) {
+private fun resetPlayButtonTextsIfNecessary(index: Int) {
     for(j in bedtimeStoryActivityPlayButtonTexts.indices){
         if(j != index){
             if(bedtimeStoryActivityPlayButtonTexts[j]!!.value != START_BEDTIME_STORY) {
@@ -275,11 +316,25 @@ fun resetPlayButtonTextsIfNecessary(index: Int) {
     }
 }
 
-private fun initializeMediaPlayer(mediaPlayerService: MediaPlayerService, index: Int){
-    mediaPlayerService.setAudioUri(bedtimeStoryActivityUris[index]!!.value)
+private fun initializeMediaPlayer(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    index: Int,
+    context: Context
+){
+    generalMediaPlayerService.onDestroy()
+    soundMediaPlayerService.onDestroy()
+    generalMediaPlayerService.setAudioUri(bedtimeStoryActivityUris[index]!!.value)
     val intent = Intent()
     intent.action = "PLAY"
-    mediaPlayerService.onStartCommand(intent, 0, 0)
+    generalMediaPlayerService.onStartCommand(intent, 0, 0)
+    resetAll(context, soundMediaPlayerService)
+}
+
+fun resetBedtimeStoryActivityPlayButtonTexts() {
+    for(j in bedtimeStoryActivityPlayButtonTexts.indices){
+        bedtimeStoryActivityPlayButtonTexts[j]!!.value = START_BEDTIME_STORY
+    }
 }
 
 @Composable

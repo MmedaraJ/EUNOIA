@@ -106,6 +106,7 @@ class WelcomeActivity : ComponentActivity() {
             val user = UserObject.User(
                 UUID.randomUUID().toString(),
                 Amplify.Auth.currentUser.username,
+                Amplify.Auth.currentUser.userId,
                 "",
                 "",
                 "",

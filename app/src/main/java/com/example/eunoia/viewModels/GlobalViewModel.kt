@@ -1,9 +1,11 @@
 package com.example.eunoia.viewModels
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
@@ -18,13 +20,15 @@ class GlobalViewModel: ViewModel(){
     var currentSoundPlayingPresetNameAndVolumesMap by mutableStateOf<PresetNameAndVolumesMapData?>(null)
     var currentSoundPlayingContext by mutableStateOf<Context?>(null)
     var currentSoundPlayingSliderPositions = mutableListOf<MutableState<Float>?>()
-    var currentSoundPlayingUris: MutableList<Uri>? = null
+    var currentSoundPlayingUris: MutableList<Uri?>? = null
     var currentUsersSounds by mutableStateOf<MutableList<UserSound?>?>(null)
+    var soundTimerTime by mutableStateOf(0L)
+    var soundMeditationBellInterval by mutableStateOf(0)
     //adding sound
     var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)
 
     //bedtime story
-    var currentUsersBedtimeStories by mutableStateOf<MutableList<BedtimeStoryInfoData?>?>(null)
+    var currentUsersBedtimeStories by mutableStateOf<MutableList<UserBedtimeStoryInfo?>?>(null)
     var currentBedtimeStoryPlaying by mutableStateOf<BedtimeStoryInfoData?>(null)
     var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
 
@@ -48,7 +52,7 @@ class GlobalViewModel: ViewModel(){
     //navController
     var navController by mutableStateOf<NavController?>(null)
 
-    val icons = arrayOf(
+    val soundScreenIcons = arrayOf(
         mutableStateOf(R.drawable.replay_sound_icon),
         mutableStateOf(R.drawable.reset_sliders_icon),
         mutableStateOf(R.drawable.sound_timer_icon),
@@ -58,7 +62,7 @@ class GlobalViewModel: ViewModel(){
         mutableStateOf(R.drawable.meditation_bell_icon),
     )
     val addIcon = mutableStateOf(R.drawable.add_sound_icon)
-    var borderControlColors = arrayOf(
+    var soundScreenBorderControlColors = arrayOf(
         mutableStateOf(Bizarre),
         mutableStateOf(Bizarre),
         mutableStateOf(Bizarre),
@@ -68,7 +72,7 @@ class GlobalViewModel: ViewModel(){
         mutableStateOf(Bizarre),
         mutableStateOf(Bizarre),
     )
-    var backgroundControlColor1 = arrayOf(
+    var soundScreenBackgroundControlColor1 = arrayOf(
         mutableStateOf(White),
         mutableStateOf(White),
         mutableStateOf(White),
@@ -77,7 +81,7 @@ class GlobalViewModel: ViewModel(){
         mutableStateOf(White),
         mutableStateOf(White),
     )
-    var backgroundControlColor2 = arrayOf(
+    var soundScreenBackgroundControlColor2 = arrayOf(
         mutableStateOf(White),
         mutableStateOf(White),
         mutableStateOf(White),

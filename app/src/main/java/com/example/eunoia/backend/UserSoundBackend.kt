@@ -4,6 +4,7 @@ import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
+import com.amplifyframework.datastore.generated.model.SoundApprovalStatus
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.amplifyframework.datastore.generated.model.UserData
 import com.amplifyframework.datastore.generated.model.UserSound
@@ -62,13 +63,15 @@ object UserSoundBackend {
             Amplify.API.query(
                 ModelQuery.list(
                     UserSound::class.java,
-                    UserSound.USER_DATA.eq(userData.id),
+                    UserSound.USER_DATA.eq(userData.id)
                 ),
                 { response ->
                     if(response.hasData()) {
                         for (userSoundData in response.data) {
-                            Log.i(TAG, userSoundData.toString())
-                            userSoundList.add(userSoundData)
+                            if(userSoundData.soundData.approvalStatus == SoundApprovalStatus.APPROVED){
+                                Log.i(TAG, userSoundData.toString())
+                                userSoundList.add(userSoundData)
+                            }
                         }
                     }
                     completed(userSoundList)

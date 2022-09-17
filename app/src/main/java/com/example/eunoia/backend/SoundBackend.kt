@@ -5,10 +5,12 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
+import com.amazonaws.mobileconnectors.cognitoauth.Auth
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
+import com.amplifyframework.auth.AuthUserAttribute
 import com.amplifyframework.core.Amplify
-import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.*
 import com.amplifyframework.storage.StorageAccessLevel
 import com.amplifyframework.storage.options.StorageDownloadFileOptions
 import com.amplifyframework.storage.options.StorageListOptions
@@ -78,6 +80,61 @@ object SoundBackend{
                         }
                         completed(sounds)
                     }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun queryOtherSoundsBasedOnOriginalName(
+        original_name: String,
+        sound: SoundData,
+        completed: (soundList: List<SoundData>) -> Unit) {
+        scope.launch {
+            val sounds = mutableListOf<SoundData>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    SoundData::class.java,
+                    SoundData.ORIGINAL_NAME.eq(original_name)
+                        .and(SoundData.ID.ne(sound.id))
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (soundData in response.data) {
+                            Log.i(TAG, soundData.toString())
+                            sounds.add(soundData)
+                        }
+                        completed(sounds)
+                    }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun queryCompleteApprovedSoundBasedOnUser(
+        user: UserData,
+        completed: (sounds: List<SoundData?>) -> Unit
+    ) {
+        scope.launch {
+            val soundList = mutableListOf<SoundData?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    SoundData::class.java,
+                    SoundData.SOUND_OWNER.eq(user.id)
+                        //.and(SoundData.APPROVAL_STATUS.eq(SoundApprovalStatus.APPROVED))
+                        //for now, allow pending
+                        //.or(SoundData.APPROVAL_STATUS.eq(SoundApprovalStatus.PENDING)),
+                ),
+                { response ->
+                    Log.i(TAG, "Response: $response")
+                    if(response.hasData()) {
+                        for (soundData in response.data) {
+                            Log.i(TAG, soundData.toString())
+                            soundList.add(soundData)
+                        }
+                    }
+                    completed(soundList)
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -187,9 +244,14 @@ object SoundBackend{
         }
     }
 
-    fun retrieveAudio(key: String, completed : (audioUri: Uri) -> Unit) {
+    fun retrieveAudio(
+        key: String,
+        targetIdentityId: String,
+        completed : (audioUri: Uri) -> Unit
+    ) {
         val options = StorageDownloadFileOptions.builder()
             .accessLevel(StorageAccessLevel.PROTECTED)
+            .targetIdentityId(targetIdentityId)
             .build()
         val file = File.createTempFile("audio", ".aac")
 
@@ -206,12 +268,17 @@ object SoundBackend{
                 { error -> Log.e(TAG, "Download Failure", error) }
             )
         }
+        Amplify.Auth.currentUser.userId
     }
 
-    fun listEunoiaSounds(soundAudioPath: String, completed: (result: StorageListResult) -> Unit){
+    fun listS3Sounds(
+        soundAudioPath: String,
+        targetIdentityId: String,
+        completed: (result: StorageListResult) -> Unit
+    ){
         val options = StorageListOptions.builder()
             .accessLevel(StorageAccessLevel.PROTECTED)
-            .targetIdentityId("us-east-1:7dc83e15-97ea-4397-b424-ef090df376f3")
+            .targetIdentityId(targetIdentityId)
             .build()
 
         scope.launch {
@@ -219,7 +286,7 @@ object SoundBackend{
                 soundAudioPath,
                 options,
                 { result ->
-                    Log.i(TAG, "Successfully listed files")
+                    Log.i(TAG, "Successfully listed files ${result.items}")
                     completed(result)
                 },
                 { Log.e(TAG, "List failure", it) }

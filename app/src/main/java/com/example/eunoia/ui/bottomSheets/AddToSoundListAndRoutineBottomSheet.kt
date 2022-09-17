@@ -26,7 +26,6 @@ import com.amplifyframework.datastore.generated.model.SoundData
 import com.amplifyframework.datastore.generated.model.UserRoutine
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
-import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.dashboard.sound.openUserAlreadyHasSoundDialogBox
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
@@ -622,7 +621,7 @@ fun SelectRoutineIcon(
                     bottom.linkTo(parent.bottom, margin = 16.dp)
                 }
         ) {
-            globalViewModel_!!.icons.forEach{ icon ->
+            globalViewModel_!!.soundScreenIcons.forEach{ icon ->
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier

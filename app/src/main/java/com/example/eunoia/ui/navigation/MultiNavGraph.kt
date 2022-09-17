@@ -39,7 +39,8 @@ import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryActivityUI
 import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryScreen
 import com.example.eunoia.dashboard.routine.RoutineScreen
 import com.example.eunoia.models.*
-import com.example.eunoia.services.MediaPlayerService
+import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.settings.eightHourCountdown.EightHourCountdownUI
 import com.example.eunoia.ui.bottomSheets.*
 import com.example.eunoia.ui.theme.*
@@ -59,19 +60,22 @@ fun MultiBottomNavApp(globalViewModel: GlobalViewModel = viewModel()) {
         confirmStateChange = { globalViewModel_!!.allowBottomSheetClose }
     )
     val scope = rememberCoroutineScope()
-    val mediaPlayerService = MediaPlayerService()
+    val generalMediaPlayerService = GeneralMediaPlayerService()
+    val soundMediaPlayerService = SoundMediaPlayerService()
     EunoiaApp(
         globalViewModel,
         scope,
         modalBottomSheetState,
-        mediaPlayerService
-    ) {screen ->
+        generalMediaPlayerService,
+        soundMediaPlayerService,
+    ) { screen ->
         MultiNavTabContent(
-            screen = screen,
+            screen,
             globalViewModel,
             scope,
             modalBottomSheetState,
-            mediaPlayerService
+            generalMediaPlayerService,
+            soundMediaPlayerService,
         )
     }
 }
@@ -82,7 +86,8 @@ fun EunoiaApp(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    mediaPlayerService: MediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
     bodyContent: @Composable (Screen) -> Unit
 ){
     var currentTab by rememberSaveable(
@@ -128,7 +133,7 @@ fun EunoiaApp(
                             }
                             "recordAudio" -> {
                                 globalViewModel_!!.allowBottomSheetClose = false
-                                RecordAudio(globalViewModel, scope, state, mediaPlayerService)
+                                RecordAudio(globalViewModel, scope, state, generalMediaPlayerService)
                             }
                             "" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
@@ -208,7 +213,8 @@ fun MultiNavTabContent(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    mediaPlayerService: MediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val dashboardNavState = rememberSaveable(
         saver = navStateSaver()
@@ -226,12 +232,12 @@ fun MultiNavTabContent(
         saver = navStateSaver()
     ) { mutableStateOf(Bundle()) }
     when (screen) {
-        Screen.Dashboard -> DashboardTab(dashboardNavState, globalViewModel, scope, state, mediaPlayerService)
-        Screen.Create -> CreateTab(createNavState, globalViewModel, scope, state, mediaPlayerService)
-        Screen.Search -> SearchTab(searchNavState, globalViewModel, scope, state, mediaPlayerService)
-        Screen.Feedback -> FeedbackTab(feedbackNavState, globalViewModel, scope, state, mediaPlayerService)
-        Screen.Account -> AccountTab(accountNavState, globalViewModel, scope, state, mediaPlayerService)
-        else -> DashboardTab(dashboardNavState, globalViewModel, scope, state, mediaPlayerService)
+        Screen.Dashboard -> DashboardTab(dashboardNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        Screen.Create -> CreateTab(createNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        Screen.Search -> SearchTab(searchNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        Screen.Feedback -> FeedbackTab(feedbackNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        Screen.Account -> AccountTab(accountNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        else -> DashboardTab(dashboardNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
     }
 }
 
@@ -242,7 +248,8 @@ fun DashboardTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    mediaPlayerService: MediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
 
@@ -285,7 +292,9 @@ fun DashboardTab(
                 navController,
                 LocalContext.current,
                 scope,
-                state
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
             )
         }
         composable(
@@ -297,7 +306,8 @@ fun DashboardTab(
                 LocalContext.current,
                 scope,
                 state,
-                mediaPlayerService
+                generalMediaPlayerService,
+                soundMediaPlayerService
             )
         }
         composable(
@@ -311,7 +321,9 @@ fun DashboardTab(
                 sound.data,
                 LocalContext.current,
                 scope,
-                state
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
             )
         }
         composable(
@@ -383,7 +395,8 @@ fun CreateTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    mediaPlayerService: MediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
 
@@ -430,7 +443,9 @@ fun CreateTab(
                 sound.data,
                 LocalContext.current,
                 scope,
-                state
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
             )
         }
         composable(Screen.NameSound.screen_route) {
@@ -458,7 +473,8 @@ fun CreateTab(
                 LocalContext.current,
                 //globalViewModel = globalViewModel,
                 scope = scope,
-                state = state
+                state = state,
+                soundMediaPlayerService
             )
         }
         composable(Screen.NameBedtimeStory.screen_route) {
@@ -631,7 +647,8 @@ fun SearchTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    mediaPlayerService: MediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
 
@@ -669,7 +686,9 @@ fun SearchTab(
                 sound.data,
                 LocalContext.current,
                 scope,
-                state
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
             )
         }
     }
@@ -682,7 +701,8 @@ fun FeedbackTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    mediaPlayerService: MediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
 
@@ -730,7 +750,9 @@ fun FeedbackTab(
                 sound.data,
                 LocalContext.current,
                 scope,
-                state
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
             )
         }
     }
@@ -743,7 +765,8 @@ fun AccountTab(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    mediaPlayerService: MediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
 
@@ -791,7 +814,9 @@ fun AccountTab(
                 sound.data,
                 LocalContext.current,
                 scope,
-                state
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
             )
         }
     }

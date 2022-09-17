@@ -120,6 +120,7 @@ class SignInActivity : ComponentActivity() {
             val user = UserObject.User(
                 UUID.randomUUID().toString(),
                 username,
+                Amplify.Auth.currentUser.userId,
                 "",
                 "",
                 "",

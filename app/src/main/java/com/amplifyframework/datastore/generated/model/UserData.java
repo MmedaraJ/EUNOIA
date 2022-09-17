@@ -29,6 +29,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class UserData implements Model {
   public static final QueryField ID = field("UserData", "id");
   public static final QueryField USERNAME = field("UserData", "username");
+  public static final QueryField AMPLIFY_AUTH_USER_ID = field("UserData", "amplifyAuthUserId");
   public static final QueryField GIVEN_NAME = field("UserData", "givenName");
   public static final QueryField FAMILY_NAME = field("UserData", "familyName");
   public static final QueryField MIDDLE_NAME = field("UserData", "middleName");
@@ -43,6 +44,7 @@ public final class UserData implements Model {
   public static final QueryField SUBSCRIPTION = field("UserData", "subscription");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String username;
+  private final @ModelField(targetType="String", isRequired = true) String amplifyAuthUserId;
   private final @ModelField(targetType="String", isRequired = true) String givenName;
   private final @ModelField(targetType="String", isRequired = true) String familyName;
   private final @ModelField(targetType="String", isRequired = true) String middleName;
@@ -56,6 +58,7 @@ public final class UserData implements Model {
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean authenticated;
   private final @ModelField(targetType="String", isRequired = true) String subscription;
   private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "soundOwner", type = SoundData.class) List<SoundData> soundsOwnedByUser = null;
+  private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "secondarySoundOwner", type = SoundData.class) List<SoundData> secondarySoundsOwnedByUser = null;
   private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "userData", type = UserSound.class) List<UserSound> sounds = null;
   private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "commentOwner", type = CommentData.class) List<CommentData> comments = null;
   private final @ModelField(targetType="RoutineData") @HasMany(associatedWith = "routineOwner", type = RoutineData.class) List<RoutineData> routinesOwnedByUser = null;
@@ -78,6 +81,10 @@ public final class UserData implements Model {
   
   public String getUsername() {
       return username;
+  }
+  
+  public String getAmplifyAuthUserId() {
+      return amplifyAuthUserId;
   }
   
   public String getGivenName() {
@@ -130,6 +137,10 @@ public final class UserData implements Model {
   
   public List<SoundData> getSoundsOwnedByUser() {
       return soundsOwnedByUser;
+  }
+  
+  public List<SoundData> getSecondarySoundsOwnedByUser() {
+      return secondarySoundsOwnedByUser;
   }
   
   public List<UserSound> getSounds() {
@@ -196,9 +207,10 @@ public final class UserData implements Model {
       return updatedAt;
   }
   
-  private UserData(String id, String username, String givenName, String familyName, String middleName, String email, String profile_picture_key, String address, String birthdate, String gender, String nickname, String phoneNumber, Boolean authenticated, String subscription) {
+  private UserData(String id, String username, String amplifyAuthUserId, String givenName, String familyName, String middleName, String email, String profile_picture_key, String address, String birthdate, String gender, String nickname, String phoneNumber, Boolean authenticated, String subscription) {
     this.id = id;
     this.username = username;
+    this.amplifyAuthUserId = amplifyAuthUserId;
     this.givenName = givenName;
     this.familyName = familyName;
     this.middleName = middleName;
@@ -223,6 +235,7 @@ public final class UserData implements Model {
       UserData userData = (UserData) obj;
       return ObjectsCompat.equals(getId(), userData.getId()) &&
               ObjectsCompat.equals(getUsername(), userData.getUsername()) &&
+              ObjectsCompat.equals(getAmplifyAuthUserId(), userData.getAmplifyAuthUserId()) &&
               ObjectsCompat.equals(getGivenName(), userData.getGivenName()) &&
               ObjectsCompat.equals(getFamilyName(), userData.getFamilyName()) &&
               ObjectsCompat.equals(getMiddleName(), userData.getMiddleName()) &&
@@ -245,6 +258,7 @@ public final class UserData implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getUsername())
+      .append(getAmplifyAuthUserId())
       .append(getGivenName())
       .append(getFamilyName())
       .append(getMiddleName())
@@ -269,6 +283,7 @@ public final class UserData implements Model {
       .append("UserData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("username=" + String.valueOf(getUsername()) + ", ")
+      .append("amplifyAuthUserId=" + String.valueOf(getAmplifyAuthUserId()) + ", ")
       .append("givenName=" + String.valueOf(getGivenName()) + ", ")
       .append("familyName=" + String.valueOf(getFamilyName()) + ", ")
       .append("middleName=" + String.valueOf(getMiddleName()) + ", ")
@@ -314,6 +329,7 @@ public final class UserData implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -321,6 +337,7 @@ public final class UserData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       username,
+      amplifyAuthUserId,
       givenName,
       familyName,
       middleName,
@@ -335,7 +352,12 @@ public final class UserData implements Model {
       subscription);
   }
   public interface UsernameStep {
-    GivenNameStep username(String username);
+    AmplifyAuthUserIdStep username(String username);
+  }
+  
+
+  public interface AmplifyAuthUserIdStep {
+    GivenNameStep amplifyAuthUserId(String amplifyAuthUserId);
   }
   
 
@@ -405,9 +427,10 @@ public final class UserData implements Model {
   }
   
 
-  public static class Builder implements UsernameStep, GivenNameStep, FamilyNameStep, MiddleNameStep, EmailStep, ProfilePictureKeyStep, AddressStep, BirthdateStep, GenderStep, NicknameStep, PhoneNumberStep, AuthenticatedStep, SubscriptionStep, BuildStep {
+  public static class Builder implements UsernameStep, AmplifyAuthUserIdStep, GivenNameStep, FamilyNameStep, MiddleNameStep, EmailStep, ProfilePictureKeyStep, AddressStep, BirthdateStep, GenderStep, NicknameStep, PhoneNumberStep, AuthenticatedStep, SubscriptionStep, BuildStep {
     private String id;
     private String username;
+    private String amplifyAuthUserId;
     private String givenName;
     private String familyName;
     private String middleName;
@@ -427,6 +450,7 @@ public final class UserData implements Model {
         return new UserData(
           id,
           username,
+          amplifyAuthUserId,
           givenName,
           familyName,
           middleName,
@@ -442,9 +466,16 @@ public final class UserData implements Model {
     }
     
     @Override
-     public GivenNameStep username(String username) {
+     public AmplifyAuthUserIdStep username(String username) {
         Objects.requireNonNull(username);
         this.username = username;
+        return this;
+    }
+    
+    @Override
+     public GivenNameStep amplifyAuthUserId(String amplifyAuthUserId) {
+        Objects.requireNonNull(amplifyAuthUserId);
+        this.amplifyAuthUserId = amplifyAuthUserId;
         return this;
     }
     
@@ -544,9 +575,10 @@ public final class UserData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String username, String givenName, String familyName, String middleName, String email, String profilePictureKey, String address, String birthdate, String gender, String nickname, String phoneNumber, Boolean authenticated, String subscription) {
+    private CopyOfBuilder(String id, String username, String amplifyAuthUserId, String givenName, String familyName, String middleName, String email, String profilePictureKey, String address, String birthdate, String gender, String nickname, String phoneNumber, Boolean authenticated, String subscription) {
       super.id(id);
       super.username(username)
+        .amplifyAuthUserId(amplifyAuthUserId)
         .givenName(givenName)
         .familyName(familyName)
         .middleName(middleName)
@@ -564,6 +596,11 @@ public final class UserData implements Model {
     @Override
      public CopyOfBuilder username(String username) {
       return (CopyOfBuilder) super.username(username);
+    }
+    
+    @Override
+     public CopyOfBuilder amplifyAuthUserId(String amplifyAuthUserId) {
+      return (CopyOfBuilder) super.amplifyAuthUserId(amplifyAuthUserId);
     }
     
     @Override

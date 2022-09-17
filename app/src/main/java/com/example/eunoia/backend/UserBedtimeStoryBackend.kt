@@ -50,7 +50,7 @@ object UserBedtimeStoryBackend {
         }
     }
 
-    fun queryUserBedtimeStoryBasedOnUser(
+    fun queryApprovedUserBedtimeStoryBasedOnUser(
         userData: UserData,
         completed: (userBedtimeStory: List<UserBedtimeStoryInfo?>) -> Unit
     ) {
@@ -62,11 +62,13 @@ object UserBedtimeStoryBackend {
                     UserBedtimeStoryInfo.USER_DATA.eq(userData.id),
                 ),
                 { response ->
-                    Log.i(TAG, "2233 $response")
                     if(response.hasData()) {
                         for (userBedtimeStoryData in response.data) {
-                            Log.i(TAG, userBedtimeStoryData.toString())
-                            userBedtimeStoryList.add(userBedtimeStoryData)
+                            //TODO change pending to approved
+                            if(userBedtimeStoryData.bedtimeStoryInfoData.approvalStatus == BedtimeStoryApprovalStatus.PENDING) {
+                                Log.i(TAG, userBedtimeStoryData.toString())
+                                userBedtimeStoryList.add(userBedtimeStoryData)
+                            }
                         }
                     }
                     completed(userBedtimeStoryList)

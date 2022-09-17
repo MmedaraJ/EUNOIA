@@ -49,6 +49,7 @@ import com.example.eunoia.create.createSoundViewModel
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.dashboard.sound.mediaPlayers
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
@@ -275,7 +276,7 @@ fun resetSoundUploadUI(index: Int) {
 }
 
 @Composable
-fun CreatePresetMixer(context: Context){
+fun CreatePresetMixer(context: Context, soundMediaPlayerService: SoundMediaPlayerService){
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)
@@ -380,7 +381,7 @@ fun CreatePresetMixer(context: Context){
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                     }
             ) {
-                Controls(context)
+                Controls(context, soundMediaPlayerService)
             }
         }
     }
@@ -492,7 +493,7 @@ fun Sliders(){
 }
 
 @Composable
-fun Controls(applicationContext: Context){
+fun Controls(applicationContext: Context, soundMediaPlayerService: SoundMediaPlayerService){
     createMeditationBellMediaPlayer(applicationContext)
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -530,7 +531,8 @@ fun Controls(applicationContext: Context){
                 ) {
                     activateControls(
                         index,
-                        applicationContext
+                        applicationContext,
+                        soundMediaPlayerService
                     )
                 }
             }
@@ -564,10 +566,14 @@ fun clearMainMediaPlayers(){
     }
 }
 
-fun playSoundsPreset(applicationContext: Context, index: Int){
+fun playSoundsPreset(
+    applicationContext: Context,
+    index: Int,
+    soundMediaPlayerService: SoundMediaPlayerService
+){
     globalViewModel_!!.bottomSheetOpenFor = ""
     clearMainMediaPlayers()
-    com.example.eunoia.dashboard.sound.resetAll(applicationContext)
+    com.example.eunoia.dashboard.sound.resetAll(applicationContext, soundMediaPlayerService)
     fileMediaPlayers.forEachIndexed { i,  media ->
         try {
             media!!.value.start()
@@ -747,7 +753,8 @@ fun startCountDownTimer(
 
 fun changeTimerTime(
     applicationContext: Context,
-    index: Int
+    index: Int,
+    soundMediaPlayerService: SoundMediaPlayerService
 ){
     timerTime.value += 60000L
     Log.i(TAG, "Timer time set to ${timerTime.value}")
@@ -757,7 +764,8 @@ fun changeTimerTime(
         if(!isPlaying.value) {
             playSoundsPreset(
                 applicationContext,
-                3
+                3,
+                soundMediaPlayerService
             )
         }
     }else{
@@ -770,7 +778,9 @@ fun changeTimerTime(
 
 fun activateControls(
     index: Int,
-    applicationContext: Context){
+    applicationContext: Context,
+    soundMediaPlayerService: SoundMediaPlayerService
+){
     when(index){
         0 -> loopSounds(
             applicationContext,
@@ -779,7 +789,8 @@ fun activateControls(
         1 -> resetSounds()
         2 -> changeTimerTime(
             applicationContext,
-            index
+            index,
+            soundMediaPlayerService
         )
         3 -> {
             if(isPlaying.value){
@@ -790,7 +801,8 @@ fun activateControls(
             } else {
                 playSoundsPreset(
                     applicationContext,
-                    index
+                    index,
+                    soundMediaPlayerService
                 )
             }
         }

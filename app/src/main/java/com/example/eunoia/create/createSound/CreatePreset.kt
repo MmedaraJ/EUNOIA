@@ -25,6 +25,7 @@ import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSoundBackend
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.*
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -51,7 +52,8 @@ fun CreatePresetUI(
     navController: NavController,
     context: Context,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService
 ){
     presetName = ""
     go = false
@@ -122,7 +124,7 @@ fun CreatePresetUI(
                     top.linkTo(header.bottom, margin = 50.dp)
                 }
         ) {
-            CreatePresetMixer(context)
+            CreatePresetMixer(context, soundMediaPlayerService)
         }
         Column(
             modifier = Modifier

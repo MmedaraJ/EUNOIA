@@ -118,14 +118,14 @@ fun bottomSheetSoundControl(
                             start.linkTo(parent.start, margin = 32.dp)
                         }
                 ) {
-                    Controls(
+                    /*Controls(
                         globalViewModel.currentSoundPlaying!!,
                         globalViewModel.currentSoundPlayingPreset!!,
                         globalViewModel.currentSoundPlayingContext!!,
                         false,
                         scope,
                         state
-                    )
+                    )*/
                 }
             }
         }

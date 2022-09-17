@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.eunoia.R
-import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*

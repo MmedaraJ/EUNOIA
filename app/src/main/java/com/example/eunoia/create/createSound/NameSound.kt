@@ -15,7 +15,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.dashboard.sound.SimpleFlowRow
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -241,10 +240,10 @@ fun NameSoundUI(
                 }
         ) {
             val borders = mutableListOf<MutableState<Boolean>>()
-            for(icon in globalViewModel_!!.icons){
+            for(icon in globalViewModel_!!.soundScreenIcons){
                 borders.add(remember { mutableStateOf(false) })
             }
-            globalViewModel_!!.icons.forEachIndexed{ index, icon ->
+            globalViewModel_!!.soundScreenIcons.forEachIndexed{ index, icon ->
                 var cardModifier = Modifier
                     .padding(bottom = 15.dp)
                     .clickable {
