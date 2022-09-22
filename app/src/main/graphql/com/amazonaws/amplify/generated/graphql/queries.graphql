@@ -25,7 +25,13 @@ query GetSoundData($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -80,82 +86,32 @@ query GetSoundData($id: ID!) {
     tags
     audio_names
     approvalStatus
-    comment {
-      id
-      soundID
-      sound {
+    commentsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
       }
-      userDataID
-      commentOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      comment
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
-    preset {
-      id
-      soundID
-      sound {
+    presetsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        key
+        volumes
+        soundID
+        publicityStatus
         createdAt
         updatedAt
         owner
       }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
     users {
       items {
@@ -225,21 +181,11 @@ query ListSoundDatas(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -257,68 +203,6 @@ query ListSoundDatas(
 query GetCommentData($id: ID!) {
   getCommentData(id: $id) {
     id
-    soundID
-    sound {
-      id
-      userDataID
-      soundOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      original_name
-      display_name
-      short_description
-      long_description
-      audio_key_s3
-      icon
-      colorHEX
-      fullPlayTime
-      visible_to_others
-      tags
-      audio_names
-      approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
-      }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
-      }
-      users {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
     userDataID
     commentOwner {
       id
@@ -342,7 +226,13 @@ query GetCommentData($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -386,140 +276,6 @@ query GetCommentData($id: ID!) {
       owner
     }
     comment
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListCommentDatas(
-  $filter: ModelCommentDataFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listCommentDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      soundID
-      sound {
-        id
-        userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      userDataID
-      commentOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      comment
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-query GetPresetNameAndVolumesMapData($id: ID!) {
-  getPresetNameAndVolumesMapData(id: $id) {
-    key
-    volumes
-    presetID
-    preset {
-      id
-      soundID
-      sound {
-        id
-        userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    id
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListPresetNameAndVolumesMapDatas(
-  $filter: ModelPresetNameAndVolumesMapDataFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listPresetNameAndVolumesMapDatas(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      key
-      volumes
-      presetID
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
-      }
-      id
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-query GetPresetData($id: ID!) {
-  getPresetData(id: $id) {
-    id
     soundID
     sound {
       id
@@ -556,21 +312,11 @@ query GetPresetData($id: ID!) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -582,31 +328,32 @@ query GetPresetData($id: ID!) {
       updatedAt
       owner
     }
-    presets {
-      items {
-        key
-        volumes
-        presetID
+    presetID
+    preset {
+      id
+      userDataID
+      presetOwner {
         id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
         createdAt
         updatedAt
         owner
       }
-      nextToken
-    }
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListPresetDatas(
-  $filter: ModelPresetDataFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listPresetDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
+      key
+      volumes
       soundID
       sound {
         id
@@ -627,8 +374,86 @@ query ListPresetDatas(
         updatedAt
         owner
       }
-      presets {
+      publicityStatus
+      commentsOwnedByPreset {
         nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListCommentDatas(
+  $filter: ModelCommentDataFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listCommentDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      userDataID
+      commentOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      comment
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      presetID
+      preset {
+        id
+        userDataID
+        key
+        volumes
+        soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
       }
       createdAt
       updatedAt
@@ -637,11 +462,11 @@ query ListPresetDatas(
     nextToken
   }
 }
-query GetRoutineData($id: ID!) {
-  getRoutineData(id: $id) {
+query GetPresetData($id: ID!) {
+  getPresetData(id: $id) {
     id
     userDataID
-    routineOwner {
+    presetOwner {
       id
       username
       amplifyAuthUserId
@@ -663,7 +488,13 @@ query GetRoutineData($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -706,13 +537,251 @@ query GetRoutineData($id: ID!) {
       updatedAt
       owner
     }
-    original_name
-    display_name
+    key
+    volumes
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    publicityStatus
+    commentsOwnedByPreset {
+      items {
+        id
+        userDataID
+        comment
+        soundID
+        presetID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        presetDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListPresetDatas(
+  $filter: ModelPresetDataFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listPresetDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetRoutineData($id: ID!) {
+  getRoutineData(id: $id) {
+    id
+    userDataID
+    routineOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    originalName
+    displayName
     numberOfSteps
     numberOfTimesUsed
     fullPlayTime
     icon
-    visible_to_others
+    visibleToOthers
     colorHEX
     playSoundDuringStretch
     playSoundDuringPrayer
@@ -736,6 +805,17 @@ query GetRoutineData($id: ID!) {
       items {
         id
         soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
         routineDataID
         createdAt
         updatedAt
@@ -844,13 +924,13 @@ query ListRoutineDatas(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -871,6 +951,9 @@ query ListRoutineDatas(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -925,7 +1008,13 @@ query GetBedtimeStoryInfoData($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1286,7 +1375,13 @@ query GetPrayerData($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1446,7 +1541,13 @@ query GetSelfLoveData($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1604,7 +1705,13 @@ query GetStretchData($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1744,7 +1851,13 @@ query GetBreathingData($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1908,12 +2021,38 @@ query GetUserData($id: ID!) {
       }
       nextToken
     }
-    comments {
+    presetsOwnedByUser {
       items {
         id
+        userDataID
+        key
+        volumes
         soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    commentsOwnedByUser {
+      items {
+        id
         userDataID
         comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
@@ -1924,13 +2063,13 @@ query GetUserData($id: ID!) {
       items {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -2139,7 +2278,13 @@ query ListUserDatas(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2225,21 +2370,11 @@ query GetUserSound($id: ID!) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -2273,7 +2408,13 @@ query GetUserSound($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2417,21 +2558,11 @@ query GetRoutineSound($id: ID!) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -2466,13 +2597,13 @@ query GetRoutineSound($id: ID!) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -2493,6 +2624,9 @@ query GetRoutineSound($id: ID!) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -2555,13 +2689,410 @@ query ListRoutineSounds(
       routineData {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
+        visibleToOthers
+        colorHEX
+        playSoundDuringStretch
+        playSoundDuringPrayer
+        playSoundDuringBreathing
+        playSoundDuringSelfLove
+        playSoundDuringBedtimeStory
+        playSoundDuringSleep
+        eachSoundPlayTime
+        prayerPlayTime
+        bedtimeStoryPlayTime
+        selfLovePlayTime
+        stretchTime
+        breathingTime
+        currentBedtimeStoryPlayingIndex
+        currentBedtimeStoryContinuePlayingTime
+        currentSelfLovePlayingIndex
+        currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
+        playingOrder
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserPreset($id: ID!) {
+  getUserPreset(id: $id) {
+    id
+    presetDataID
+    userDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
         visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserPresets(
+  $filter: ModelUserPresetFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserPresets(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      presetDataID
+      userDataID
+      presetData {
+        id
+        userDataID
+        key
+        volumes
+        soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      userData {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetRoutinePreset($id: ID!) {
+  getRoutinePreset(id: $id) {
+    id
+    presetDataID
+    routineDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListRoutinePresets(
+  $filter: ModelRoutinePresetFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listRoutinePresets(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      presetDataID
+      routineDataID
+      presetData {
+        id
+        userDataID
+        key
+        volumes
+        soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      routineData {
+        id
+        userDataID
+        originalName
+        displayName
+        numberOfSteps
+        numberOfTimesUsed
+        fullPlayTime
+        icon
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -2621,13 +3152,13 @@ query GetRoutinePrayer($id: ID!) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -2648,6 +3179,9 @@ query GetRoutinePrayer($id: ID!) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -2735,13 +3269,13 @@ query ListRoutinePrayers(
       routineData {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -2819,13 +3353,13 @@ query GetRoutineStretch($id: ID!) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -2846,6 +3380,9 @@ query GetRoutineStretch($id: ID!) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -2923,13 +3460,13 @@ query ListRoutineStretches(
       routineData {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -2997,13 +3534,13 @@ query GetRoutineBreathing($id: ID!) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -3024,6 +3561,9 @@ query GetRoutineBreathing($id: ID!) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -3101,13 +3641,13 @@ query ListRoutineBreathings(
       routineData {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -3175,13 +3715,13 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -3202,6 +3742,9 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -3295,13 +3838,13 @@ query ListRoutineBedtimeStoryInfos(
       routineData {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -3378,13 +3921,13 @@ query GetRoutineSelfLove($id: ID!) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -3405,6 +3948,9 @@ query GetRoutineSelfLove($id: ID!) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -3491,13 +4037,13 @@ query ListRoutineSelfLoves(
       routineData {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -3574,13 +4120,13 @@ query GetUserRoutine($id: ID!) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -3601,6 +4147,9 @@ query GetUserRoutine($id: ID!) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -3648,7 +4197,13 @@ query GetUserRoutine($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3709,13 +4264,13 @@ query ListUserRoutines(
       routineData {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -3840,7 +4395,13 @@ query GetUserBedtimeStoryInfo($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -4017,7 +4578,13 @@ query GetUserPrayer($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -4190,7 +4757,13 @@ query GetUserSelfLove($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -4353,7 +4926,13 @@ query GetUserStretch($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -4507,7 +5086,13 @@ query GetUserBreathing($id: ID!) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {

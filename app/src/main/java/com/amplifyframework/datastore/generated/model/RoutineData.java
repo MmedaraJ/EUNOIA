@@ -27,17 +27,17 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "RoutinesOwnedByUser", fields = {"userDataID","display_name"})
+@Index(name = "RoutinesOwnedByUser", fields = {"userDataID","displayName"})
 public final class RoutineData implements Model {
   public static final QueryField ID = field("RoutineData", "id");
   public static final QueryField ROUTINE_OWNER = field("RoutineData", "userDataID");
-  public static final QueryField ORIGINAL_NAME = field("RoutineData", "original_name");
-  public static final QueryField DISPLAY_NAME = field("RoutineData", "display_name");
+  public static final QueryField ORIGINAL_NAME = field("RoutineData", "originalName");
+  public static final QueryField DISPLAY_NAME = field("RoutineData", "displayName");
   public static final QueryField NUMBER_OF_STEPS = field("RoutineData", "numberOfSteps");
   public static final QueryField NUMBER_OF_TIMES_USED = field("RoutineData", "numberOfTimesUsed");
   public static final QueryField FULL_PLAY_TIME = field("RoutineData", "fullPlayTime");
   public static final QueryField ICON = field("RoutineData", "icon");
-  public static final QueryField VISIBLE_TO_OTHERS = field("RoutineData", "visible_to_others");
+  public static final QueryField VISIBLE_TO_OTHERS = field("RoutineData", "visibleToOthers");
   public static final QueryField COLOR_HEX = field("RoutineData", "colorHEX");
   public static final QueryField PLAY_SOUND_DURING_STRETCH = field("RoutineData", "playSoundDuringStretch");
   public static final QueryField PLAY_SOUND_DURING_PRAYER = field("RoutineData", "playSoundDuringPrayer");
@@ -60,13 +60,13 @@ public final class RoutineData implements Model {
   public static final QueryField PLAYING_ORDER = field("RoutineData", "playingOrder");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData routineOwner;
-  private final @ModelField(targetType="String") String original_name;
-  private final @ModelField(targetType="String") String display_name;
+  private final @ModelField(targetType="String") String originalName;
+  private final @ModelField(targetType="String") String displayName;
   private final @ModelField(targetType="Int") Integer numberOfSteps;
   private final @ModelField(targetType="Int") Integer numberOfTimesUsed;
   private final @ModelField(targetType="Int") Integer fullPlayTime;
   private final @ModelField(targetType="Int") Integer icon;
-  private final @ModelField(targetType="Boolean") Boolean visible_to_others;
+  private final @ModelField(targetType="Boolean") Boolean visibleToOthers;
   private final @ModelField(targetType="Int") Integer colorHEX;
   private final @ModelField(targetType="Boolean") Boolean playSoundDuringStretch;
   private final @ModelField(targetType="Boolean") Boolean playSoundDuringPrayer;
@@ -87,6 +87,7 @@ public final class RoutineData implements Model {
   private final @ModelField(targetType="Int") Integer currentPrayerPlayingIndex;
   private final @ModelField(targetType="Int") Integer currentPrayerContinuePlayingTime;
   private final @ModelField(targetType="RoutineSound") @HasMany(associatedWith = "routineData", type = RoutineSound.class) List<RoutineSound> sounds = null;
+  private final @ModelField(targetType="RoutinePreset") @HasMany(associatedWith = "routineData", type = RoutinePreset.class) List<RoutinePreset> presets = null;
   private final @ModelField(targetType="RoutinePrayer") @HasMany(associatedWith = "routineData", type = RoutinePrayer.class) List<RoutinePrayer> prayers = null;
   private final @ModelField(targetType="RoutineStretch") @HasMany(associatedWith = "routineData", type = RoutineStretch.class) List<RoutineStretch> stretches = null;
   private final @ModelField(targetType="RoutineBreathing") @HasMany(associatedWith = "routineData", type = RoutineBreathing.class) List<RoutineBreathing> breathing = null;
@@ -105,11 +106,11 @@ public final class RoutineData implements Model {
   }
   
   public String getOriginalName() {
-      return original_name;
+      return originalName;
   }
   
   public String getDisplayName() {
-      return display_name;
+      return displayName;
   }
   
   public Integer getNumberOfSteps() {
@@ -129,7 +130,7 @@ public final class RoutineData implements Model {
   }
   
   public Boolean getVisibleToOthers() {
-      return visible_to_others;
+      return visibleToOthers;
   }
   
   public Integer getColorHex() {
@@ -212,6 +213,10 @@ public final class RoutineData implements Model {
       return sounds;
   }
   
+  public List<RoutinePreset> getPresets() {
+      return presets;
+  }
+  
   public List<RoutinePrayer> getPrayers() {
       return prayers;
   }
@@ -248,16 +253,16 @@ public final class RoutineData implements Model {
       return updatedAt;
   }
   
-  private RoutineData(String id, UserData routineOwner, String original_name, String display_name, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visible_to_others, Integer colorHEX, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<String> playingOrder) {
+  private RoutineData(String id, UserData routineOwner, String originalName, String displayName, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visibleToOthers, Integer colorHEX, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<String> playingOrder) {
     this.id = id;
     this.routineOwner = routineOwner;
-    this.original_name = original_name;
-    this.display_name = display_name;
+    this.originalName = originalName;
+    this.displayName = displayName;
     this.numberOfSteps = numberOfSteps;
     this.numberOfTimesUsed = numberOfTimesUsed;
     this.fullPlayTime = fullPlayTime;
     this.icon = icon;
-    this.visible_to_others = visible_to_others;
+    this.visibleToOthers = visibleToOthers;
     this.colorHEX = colorHEX;
     this.playSoundDuringStretch = playSoundDuringStretch;
     this.playSoundDuringPrayer = playSoundDuringPrayer;
@@ -366,13 +371,13 @@ public final class RoutineData implements Model {
       .append("RoutineData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("routineOwner=" + String.valueOf(getRoutineOwner()) + ", ")
-      .append("original_name=" + String.valueOf(getOriginalName()) + ", ")
-      .append("display_name=" + String.valueOf(getDisplayName()) + ", ")
+      .append("originalName=" + String.valueOf(getOriginalName()) + ", ")
+      .append("displayName=" + String.valueOf(getDisplayName()) + ", ")
       .append("numberOfSteps=" + String.valueOf(getNumberOfSteps()) + ", ")
       .append("numberOfTimesUsed=" + String.valueOf(getNumberOfTimesUsed()) + ", ")
       .append("fullPlayTime=" + String.valueOf(getFullPlayTime()) + ", ")
       .append("icon=" + String.valueOf(getIcon()) + ", ")
-      .append("visible_to_others=" + String.valueOf(getVisibleToOthers()) + ", ")
+      .append("visibleToOthers=" + String.valueOf(getVisibleToOthers()) + ", ")
       .append("colorHEX=" + String.valueOf(getColorHex()) + ", ")
       .append("playSoundDuringStretch=" + String.valueOf(getPlaySoundDuringStretch()) + ", ")
       .append("playSoundDuringPrayer=" + String.valueOf(getPlaySoundDuringPrayer()) + ", ")
@@ -448,13 +453,13 @@ public final class RoutineData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       routineOwner,
-      original_name,
-      display_name,
+      originalName,
+      displayName,
       numberOfSteps,
       numberOfTimesUsed,
       fullPlayTime,
       icon,
-      visible_to_others,
+      visibleToOthers,
       colorHEX,
       playSoundDuringStretch,
       playSoundDuringPrayer,
@@ -517,13 +522,13 @@ public final class RoutineData implements Model {
   public static class Builder implements RoutineOwnerStep, BuildStep {
     private String id;
     private UserData routineOwner;
-    private String original_name;
-    private String display_name;
+    private String originalName;
+    private String displayName;
     private Integer numberOfSteps;
     private Integer numberOfTimesUsed;
     private Integer fullPlayTime;
     private Integer icon;
-    private Boolean visible_to_others;
+    private Boolean visibleToOthers;
     private Integer colorHEX;
     private Boolean playSoundDuringStretch;
     private Boolean playSoundDuringPrayer;
@@ -551,13 +556,13 @@ public final class RoutineData implements Model {
         return new RoutineData(
           id,
           routineOwner,
-          original_name,
-          display_name,
+          originalName,
+          displayName,
           numberOfSteps,
           numberOfTimesUsed,
           fullPlayTime,
           icon,
-          visible_to_others,
+          visibleToOthers,
           colorHEX,
           playSoundDuringStretch,
           playSoundDuringPrayer,
@@ -589,13 +594,13 @@ public final class RoutineData implements Model {
     
     @Override
      public BuildStep originalName(String originalName) {
-        this.original_name = originalName;
+        this.originalName = originalName;
         return this;
     }
     
     @Override
      public BuildStep displayName(String displayName) {
-        this.display_name = displayName;
+        this.displayName = displayName;
         return this;
     }
     
@@ -625,7 +630,7 @@ public final class RoutineData implements Model {
     
     @Override
      public BuildStep visibleToOthers(Boolean visibleToOthers) {
-        this.visible_to_others = visibleToOthers;
+        this.visibleToOthers = visibleToOthers;
         return this;
     }
     

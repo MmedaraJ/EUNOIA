@@ -36,7 +36,7 @@ class SoundMediaPlayerService:
     private var mediaPlayersArePlaying = false
     private var mediaPlayersAreLooping = false
     private var audioUris = mutableListOf<Uri?>()
-    private var volumes = mutableListOf<Int?>()
+    private var volumes = mutableListOf<Int>()
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val action: String = intent.action!!
@@ -127,7 +127,7 @@ class SoundMediaPlayerService:
         }
     }
 
-    fun setVolumes(vols: MutableList<Int?>){
+    fun setVolumes(vols: MutableList<Int>){
         volumes.clear()
         for(volume in vols){
             volumes.add(volume)

@@ -17,7 +17,8 @@ class GlobalViewModel: ViewModel(){
     //sound
     var currentSoundPlaying by mutableStateOf<SoundData?>(null)
     var currentSoundPlayingPreset by mutableStateOf<PresetData?>(null)
-    var currentSoundPlayingPresetNameAndVolumesMap by mutableStateOf<PresetNameAndVolumesMapData?>(null)
+    var currentAllOriginalSoundPreset by mutableStateOf<MutableList<PresetData>?>(null)
+    var currentAllUserSoundPreset by mutableStateOf<MutableList<PresetData>?>(null)
     var currentSoundPlayingContext by mutableStateOf<Context?>(null)
     var currentSoundPlayingSliderPositions = mutableListOf<MutableState<Float>?>()
     var currentSoundPlayingUris: MutableList<Uri?>? = null
@@ -26,6 +27,7 @@ class GlobalViewModel: ViewModel(){
     var soundMeditationBellInterval by mutableStateOf(0)
     //adding sound
     var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)
+    var currentPresetToBeAdded by mutableStateOf<PresetData?>(null)
 
     //bedtime story
     var currentUsersBedtimeStories by mutableStateOf<MutableList<UserBedtimeStoryInfo?>?>(null)

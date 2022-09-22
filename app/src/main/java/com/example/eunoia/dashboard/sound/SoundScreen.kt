@@ -20,9 +20,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
-import com.amplifyframework.datastore.generated.model.PresetData
-import com.amplifyframework.datastore.generated.model.PresetNameAndVolumesMapData
-import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.*
+import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
 import com.example.eunoia.models.*
@@ -37,7 +36,10 @@ import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
 private const val TAG = "SoundScreen"
-var itSize = 0
+var itPresetsSize = 0
+var itCommentsSize = 0
+
+var newPresetName = ""
 
 var meditationBellInterval = mutableStateOf(0)
 var timerTime = mutableStateOf(0L)
@@ -45,12 +47,15 @@ var timerTime = mutableStateOf(0L)
 var showCommentBox by mutableStateOf(false)
 var showAssociatedSoundWithSameVolume = mutableStateOf(false)
 var comment_icon_value by mutableStateOf(R.drawable.comment_icon)
-var soundPresets: PresetData? = null
+var soundPreset: PresetData? = null
 var sliderPositions: MutableList<MutableState<Float>?>? = null
-var sliderVolumes: MutableList<Int?>? = null
-var soundPresetNameAndVolumesMapData = mutableStateOf<PresetNameAndVolumesMapData?>(null)
+var sliderVolumes: MutableList<Int>? = null
+var allOriginalSoundPresets: MutableList<PresetData>? = null
+var allUserSoundPresets: MutableList<PresetData>? = null
+var otherPresetsThatOriginatedFromThisSound: MutableList<PresetData>? = null
+var commentsForThisSound: MutableList<CommentData>? = null
 var soundUris = mutableListOf<Uri?>()
-var defaultVolumes: MutableList<Int?>? = null
+var defaultVolumes: MutableList<Int>? = null
 var soundScreenIcons = arrayOf(
     mutableStateOf(R.drawable.replay_sound_icon),
     mutableStateOf(R.drawable.reset_sliders_icon),
@@ -89,9 +94,7 @@ var soundScreenBackgroundControlColor2 = arrayOf(
     mutableStateOf(White),
 )
 
-var associatedSound: SoundData? = null
-var associatedPresetNameAndVolumesMapData: PresetNameAndVolumesMapData? = null
-val childSounds = mutableStateOf(mutableListOf<SoundData>())
+var associatedPreset: PresetData? = null
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -109,13 +112,14 @@ fun SoundScreen(
     var retrievedPresets by rememberSaveable{ mutableStateOf(false) }
 
     if(globalViewModel_!!.currentSoundPlaying != null) {
+        Log.i(TAG, "Already playing")
         if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
-            soundPresets = globalViewModel_!!.currentSoundPlayingPreset
+            soundPreset = globalViewModel_!!.currentSoundPlayingPreset
             sliderPositions = globalViewModel_!!.currentSoundPlayingSliderPositions
-            sliderVolumes = globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!.volumes
-            defaultVolumes = globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!.volumes
-            soundPresetNameAndVolumesMapData.value =
-                globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!
+            sliderVolumes = globalViewModel_!!.currentSoundPlayingPreset!!.volumes
+            defaultVolumes = globalViewModel_!!.currentSoundPlayingPreset!!.volumes
+            allOriginalSoundPresets = globalViewModel_!!.currentAllOriginalSoundPreset!!
+            allUserSoundPresets = globalViewModel_!!.currentAllUserSoundPreset!!
             soundUris = globalViewModel_!!.currentSoundPlayingUris!!
             //let controls match global view
             soundScreenIcons = globalViewModel_!!.soundScreenIcons
@@ -126,18 +130,19 @@ fun SoundScreen(
                 globalViewModel_!!.soundScreenBackgroundControlColor2
             meditationBellInterval.value = globalViewModel_!!.soundMeditationBellInterval
             timerTime.value = globalViewModel_!!.soundTimerTime
-            associatedSound = null
-            associatedPresetNameAndVolumesMapData = null
+            associatedPreset = soundPreset
             showAssociatedSoundWithSameVolume.value = false
+            otherPresetsThatOriginatedFromThisSound = mutableListOf()
+            commentsForThisSound = mutableListOf()
             retrievedPresets = true
+            Log.i(TAG, "Sound preset $soundPreset")
         }
     }
 
     if(!retrievedPresets){
+        Log.i(TAG, "Needs to get presets")
         getNecessaryPresets(soundData) {
-            resetControlsUI()
-            associatedSound = null
-            associatedPresetNameAndVolumesMapData = null
+            //associatedPreset = null
             showAssociatedSoundWithSameVolume.value = false
             retrievedPresets = true
         }
@@ -147,7 +152,6 @@ fun SoundScreen(
         val scrollState = rememberScrollState()
         var showTapText by rememberSaveable{ mutableStateOf(true) }
         var manualTopMargin by rememberSaveable{ mutableStateOf(-260) }
-        val otherSoundsThatOriginatedFromThisSound = remember{ mutableStateOf(mutableListOf<SoundData>()) }
         ConstraintLayout(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -207,15 +211,18 @@ fun SoundScreen(
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ){
+                getPresetsWithCommentsThatOriginatedFromThisSound(soundData){
+                    itPresetsSize = it.size
+                    otherPresetsThatOriginatedFromThisSound = it.toMutableList()
+                }
+
                 if(showAssociatedSoundWithSameVolume.value){
                     if(
-                        associatedSound != null &&
-                        associatedPresetNameAndVolumesMapData != null
+                        associatedPreset != null
                     ) {
-                        AssociatedSoundWithSameVolume(
-                            associatedSound!!,
-                            associatedPresetNameAndVolumesMapData!!.key,
-                            navController
+                        AssociatedPresetWithSameVolume(
+                            associatedPreset!!,
+                            soundMediaPlayerService
                         )
                     }
                 }
@@ -226,10 +233,11 @@ fun SoundScreen(
                         top.linkTo(header.bottom, margin = 50.dp)
                     }
             ) {
+                Log.i(TAG, "Sound Preset: $soundPreset")
                 Mixer(
                     soundData,
                     context,
-                    soundPresets!!,
+                    soundPreset!!,
                     scope,
                     state,
                     generalMediaPlayerService,
@@ -248,7 +256,8 @@ fun SoundScreen(
                         end.linkTo(parent.end, margin = 0.dp)
                     },
             ) {
-                PresetsUI(soundPresets!!.presets, soundData, soundMediaPlayerService)
+                Log.i(TAG, "allOriginalSoundPresets: $allOriginalSoundPresets")
+                PresetsUI(allOriginalSoundPresets!!, soundData, soundMediaPlayerService)
             }
             Column(
                 modifier = Modifier
@@ -279,8 +288,10 @@ fun SoundScreen(
                 ) {
                     if(globalViewModel_!!.currentSoundPlaying != null) {
                         if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
-                            checkIfUserIsQualifiedToComment(soundData, soundPresets!!, context)
+                            checkIfItIsOkayToOpenCommentBox(){}
                         }
+                    }else{
+                        //toast: you must be listening to the sound before commenting
                     }
                 }
             }
@@ -293,6 +304,19 @@ fun SoundScreen(
                     }
             ){
                 if(showCommentBox) {
+                    newPresetName = customizedOutlinedTextInput(
+                        width = 0,
+                        height = 55,
+                        color = White,
+                        focusedBorderColor = Black,
+                        inputFontSize = 13,
+                        placeholder = "Preset name",
+                        placeholderFontSize = 13,
+                        offset = 0
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     bigOutlinedTextInput(
                         100,
                         "Share how you feel about this sound",
@@ -303,11 +327,21 @@ fun SoundScreen(
                         Black,
                         13
                     ) {
-                        if (it != "") {
-                            if(checkIfUserIsQualifiedToComment(soundData, soundPresets!!, context)) {
-                                makeSoundObject(soundData, soundPresets!!, it)
-                            }else{
-                                showCommentBox = false
+                        if (it != "" && newPresetName.isNotEmpty()) {
+                            Log.i(TAG, "You may comment")
+                            checkIfPresetNameIsTaken(soundData, context){ show ->
+                                Log.i(TAG, "Show comment value is $show")
+
+                                if(show) {
+                                    checkIfItIsOkayToOpenCommentBox { bool ->
+                                        if(bool) {
+                                            Log.i(TAG, "You can comment")
+                                            makePublicPresetObject(soundData, it)
+                                        }
+                                    }
+                                } else {
+                                    Log.i(TAG, "You cannot comment")
+                                }
                             }
                         }
                     }
@@ -323,6 +357,7 @@ fun SoundScreen(
             ) {
                 Tip()
             }
+            var retrievedComments by rememberSaveable{ mutableStateOf(false) }
             Column(
                 modifier = Modifier
                     .constrainAs(otherUserFeedback) {
@@ -331,22 +366,26 @@ fun SoundScreen(
                         end.linkTo(parent.end, margin = 0.dp)
                     }
             ) {
-                getOtherSoundsThatOriginatedFromThisSound(soundData.originalName, soundData){
-                    itSize = it.size
-                    otherSoundsThatOriginatedFromThisSound.value = it.toMutableList()
-                    childSounds.value = it.toMutableList()
+                getCommentsForThisSound(soundData){
+                    itCommentsSize = it.size
+                    commentsForThisSound = it.toMutableList()
+                    retrievedComments = true
+                    Log.i(TAG, "COmments gotten list $commentsForThisSound")
+                    Log.i(TAG, "itCommentsSize $itCommentsSize")
                 }
-                if(
-                    otherSoundsThatOriginatedFromThisSound.value.size > 0 &&
-                    otherSoundsThatOriginatedFromThisSound.value.size == itSize
-                ) {
-                    GetTheCommentsAssociatedWithTheseSounds(
-                        otherSoundsThatOriginatedFromThisSound.value,
-                        soundData,
-                        navController,
-                        context,
-                        soundMediaPlayerService
-                    )
+
+                if(retrievedComments) {
+                    Log.i(TAG, "COmments gotten")
+                    for(comment in commentsForThisSound!!){
+                        //if(!comment.comment.isNullOrEmpty()){
+                        Log.i(TAG, "a COmment gotten: $comment")
+                        CommentsUI(
+                            comment,
+                            soundData,
+                            soundMediaPlayerService
+                        )
+                        //}
+                    }
                 }
             }
             Column(
@@ -379,112 +418,136 @@ fun SoundScreen(
     }
 }
 
+@Composable
+fun Comments(
+    soundData: SoundData,
+    soundMediaPlayerService: SoundMediaPlayerService
+){
+    Log.i(TAG, "COmments gotten")
+    for(comment in commentsForThisSound!!){
+        //if(!comment.comment.isNullOrEmpty()){
+        Log.i(TAG, "a COmment gotten: $comment")
+        CommentsUI(
+            comment,
+            soundData,
+            soundMediaPlayerService
+        )
+        //}
+    }
+}
+
 fun resetControlsUI(){
-    soundScreenIcons = arrayOf(
-        mutableStateOf(R.drawable.replay_sound_icon),
-        mutableStateOf(R.drawable.reset_sliders_icon),
-        mutableStateOf(R.drawable.sound_timer_icon),
-        mutableStateOf(R.drawable.play_icon),
-        mutableStateOf(R.drawable.increase_levels_icon),
-        mutableStateOf(R.drawable.decrease_levels_icon),
-        mutableStateOf(R.drawable.meditation_bell_icon),
-    )
-    soundScreenBorderControlColors = arrayOf(
-        mutableStateOf(Bizarre),
-        mutableStateOf(Bizarre),
-        mutableStateOf(Bizarre),
-        mutableStateOf(Black),
-        mutableStateOf(Bizarre),
-        mutableStateOf(Bizarre),
-        mutableStateOf(Bizarre),
-        mutableStateOf(Bizarre),
-    )
-    soundScreenBackgroundControlColor1 = arrayOf(
-        mutableStateOf(White),
-        mutableStateOf(White),
-        mutableStateOf(White),
-        mutableStateOf(SoftPeach),
-        mutableStateOf(White),
-        mutableStateOf(White),
-        mutableStateOf(White),
-    )
-    soundScreenBackgroundControlColor2 = arrayOf(
-        mutableStateOf(White),
-        mutableStateOf(White),
-        mutableStateOf(White),
-        mutableStateOf(Solitude),
-        mutableStateOf(White),
-        mutableStateOf(White),
-        mutableStateOf(White),
-    )
+    soundScreenIcons[3].value = R.drawable.play_icon
+
+    for(i in soundScreenBorderControlColors.indices){
+        if(i == 3){
+            soundScreenBorderControlColors[i].value = Black
+        }else{
+            soundScreenBorderControlColors[i].value = Bizarre
+        }
+    }
+
+    for(i in soundScreenBackgroundControlColor1.indices){
+        if(i == 3){
+            soundScreenBackgroundControlColor1[i].value = SoftPeach
+        }else{
+            soundScreenBackgroundControlColor1[i].value = White
+        }
+    }
+
+    for(i in soundScreenBackgroundControlColor2.indices){
+        if(i == 3){
+            soundScreenBackgroundControlColor2[i].value = Solitude
+        }else{
+            soundScreenBackgroundControlColor2[i].value = White
+        }
+    }
+    Thread.sleep(1_000)
 }
 
 private fun getNecessaryPresets(soundData: SoundData, completed: () -> Unit){
-    getSoundPresets(soundData) { presetData ->
+    getUserSoundPresets(
+        soundData,
+        soundData.soundOwner
+    ) { presets ->
+        Log.i(TAG, "Preset 09 $presets")
+        Log.i(TAG, "Soinddtata owner  09 ${soundData.soundOwner}")
         sliderPositions = mutableListOf()
         sliderVolumes = mutableListOf()
-        soundPresets = presetData
-        for(volume in presetData.presets[0].volumes){
-            if(sliderVolumes!!.size < presetData.presets[0].volumes!!.size) {
-                sliderVolumes!!.add(volume)
-            }
-        }
-
         defaultVolumes = mutableListOf()
-        for(volume in presetData.presets[0].volumes){
-            if(defaultVolumes!!.size < presetData.presets[0].volumes!!.size) {
-                defaultVolumes!!.add(volume)
-            }
-        }
+        allOriginalSoundPresets = mutableListOf()
+        allUserSoundPresets = mutableListOf()
+        otherPresetsThatOriginatedFromThisSound = mutableListOf()
+        commentsForThisSound = mutableListOf()
+        soundPreset = presets[0]
+        associatedPreset = soundPreset
 
-        for(volume in sliderVolumes!!){
-            if(sliderPositions!!.size < sliderVolumes!!.size) {
+        for(volume in presets[0].volumes){
+            if(
+                sliderVolumes!!.size < presets[0].volumes!!.size &&
+                defaultVolumes!!.size < presets[0].volumes!!.size &&
+                sliderPositions!!.size < presets[0].volumes!!.size
+            ) {
+                sliderVolumes!!.add(volume)
+                defaultVolumes!!.add(volume)
                 sliderPositions!!.add(mutableStateOf(volume!!.toFloat()))
             }
         }
-        soundPresetNameAndVolumesMapData.value = presetData.presets[0]
+
+        allOriginalSoundPresets!!.addAll(presets)
         meditationBellInterval.value = 0
         timerTime.value = 0L
-        completed()
-    }
-}
 
-fun setSliderPositions(){
-    var volumes = listOf<Int>()
-    for(preset in globalViewModel_!!.currentSoundPlayingPreset?.presets!!){
-        if(preset.key == "current_volumes"){
-            volumes = preset.volumes
+        getUserSoundPresets(
+            soundData,
+            globalViewModel_!!.currentUser!!
+        ) { presetList ->
+            if(presetList.isNotEmpty()) {
+                allUserSoundPresets!!.addAll(presetList)
+            }
+            resetControlsUI()
+            completed()
         }
     }
-    Log.i(TAG, "Volumes ==>> $volumes")
-    globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-    for(volume in volumes){
-        globalViewModel_!!.currentSoundPlayingSliderPositions.add(mutableStateOf(volume.toFloat()))
-    }
 }
 
-fun getOtherSoundsThatOriginatedFromThisSound(
-    originalSoundName: String,
-    soundData: SoundData,
-    completed: (soundList: List<SoundData>) -> Unit
-) {
-    SoundBackend.queryOtherSoundsBasedOnOriginalName(originalSoundName, soundData){ sounds ->
-        completed(sounds)
-    }
-}
-
-fun getSoundPresets(sound: SoundData, completed: (presetData: PresetData) -> Unit){
-    PresetBackend.queryPresetBasedOnSound(sound){
+fun getUserSoundPresets(sound: SoundData, userData: UserData, completed: (presets: MutableList<PresetData>) -> Unit){
+    Log.i(TAG, "Sound data getUserSoundPresets = $sound")
+    PresetBackend.queryUserPresetsBasedOnSound(sound, userData){
         completed(it)
     }
 }
 
-fun checkIfSliderPositionsAreDifferentFromOriginalCurrentVolumes(presetData: PresetData): Boolean{
+fun getPresetsWithCommentsThatOriginatedFromThisSound(
+    soundData: SoundData,
+    completed: (presetList: List<PresetData>) -> Unit
+) {
+    PresetBackend.queryPresetsWithCommentsBasedOnSound(soundData){ presets ->
+        completed(presets)
+    }
+}
+
+fun getCommentsForThisSound(
+    soundData: SoundData,
+    completed: (commentList: List<CommentData>) -> Unit
+) {
+    CommentBackend.queryCommentsBasedOnSound(soundData){ comments ->
+        completed(comments)
+    }
+}
+
+fun getSoundPresets(sound: SoundData, completed: (presets: MutableList<PresetData>) -> Unit){
+    PresetBackend.queryPresetsWithCommentsBasedOnSound(sound){
+        completed(it)
+    }
+}
+
+fun checkIfSliderPositionsAreDifferentFromOriginalCurrentVolumes(presets: MutableList<PresetData>): Boolean{
     var samePresets = 0
-    for(presetMap in presetData.presets){
+    for(preset in presets){
         var sameVolume = 0
         for(i in sliderPositions!!.indices)
-            if (sliderPositions!![i]!!.value == presetMap.volumes[i].toFloat())
+            if (sliderPositions!![i]!!.value == preset.volumes[i].toFloat())
                 sameVolume++
 
         if(sameVolume == sliderPositions!!.size){
@@ -494,146 +557,86 @@ fun checkIfSliderPositionsAreDifferentFromOriginalCurrentVolumes(presetData: Pre
     return samePresets == 0
 }
 
-fun checkIfUserIsQualifiedToComment(
+fun checkIfItIsOkayToOpenCommentBox(completed: (boolean: Boolean) -> Unit){
+    showCommentBox = associatedPreset == null
+    completed(showCommentBox)
+}
+
+fun checkIfPresetNameIsTaken(
     soundData: SoundData,
-    presetData: PresetData,
-    context: Context
-):Boolean {
-    Log.i(TAG, "display name for sound iS $displayName")
-    SoundBackend.querySoundBasedOnDisplayName(displayName){
-        if(it.isEmpty()) {
-            if (displayName.isNotEmpty()) {
-                if (checkIfSliderPositionsAreDifferentFromOriginalCurrentVolumes(presetData)) {
-                    showCommentBox = !showCommentBox
-                } else {
-                    showCommentBox = false
-                    Log.i(TAG, "You must change the volume before commenting")
-                    runOnUiThread{
-                        Toast.makeText(
-                            context,
-                            "You must change the volume before commenting",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-            else {
-                showCommentBox = false
-                Log.i(TAG, "Name the sound")
-                runOnUiThread{
-                    Toast.makeText(
-                        context,
-                        "Name the sound",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-        else {
-            showCommentBox = false
-            Log.i(TAG, "The name, $displayName, is already taken")
-            runOnUiThread{
+    context: Context,
+    completed: (bool: Boolean) -> Unit
+) {
+    PresetBackend.queryPublicPresetsBasedOnDisplayNameAndSound(
+        newPresetName,
+        soundData
+    ) {
+        if (it.isNotEmpty()) {
+            Log.i(TAG, "The name, $newPresetName, is already taken")
+            runOnUiThread {
                 Toast.makeText(
                     context,
-                    "The name, $displayName, is already taken",
+                    "The name, $newPresetName, is already taken",
                     Toast.LENGTH_SHORT
                 ).show()
             }
+            completed(false)
         }
+        completed(true)
     }
-    return showCommentBox
 }
 
-fun makeSoundObject(
+fun makePublicPresetObject(
     soundData: SoundData,
-    soundPresets: PresetData,
     comment: String
 ){
-    val sound = SoundObject.Sound(
-        UUID.randomUUID().toString(),
-        UserObject.User.from(soundData.soundOwner),
-        soundData.originalName,
-        displayName,
-        soundData.shortDescription,
-        soundData.longDescription,
-        soundData.audioKeyS3,
-        soundData.icon,
-        soundData.colorHex,
-        soundData.fullPlayTime.toLong(),
-        true,
-        soundData.tags,
-        soundData.audioNames,
-        soundData.approvalStatus
-    )
-    SoundBackend.createSound(sound){
-        showCommentBox = false
-        if (globalViewModel_!!.currentUser != null) {
-            var userAlreadyHasSound = false
-            for (userSound in globalViewModel_!!.currentUser!!.sounds) {
-                if (
-                    userSound.soundData.id == it.id &&
-                    userSound.userData.id == globalViewModel_!!.currentUser!!.id
-                ) {
-                    userAlreadyHasSound = true
-                }
-            }
-            if (!userAlreadyHasSound) {
-                UserSoundBackend.createUserSoundObject(it) {
-
-                }
-            }
-        }
-        createSoundPreset(it, soundPresets)
-        createSoundComment(it, comment)
-    }
-}
-
-private fun createSoundComment(soundData: SoundData, newComment: String){
-    val comment = CommentObject.Comment(
-        UUID.randomUUID().toString(),
-        soundData,
-        UserObject.signedInUser().value!!.data,
-        newComment
-    )
-    CommentBackend.createComment(comment){
-
-    }
-}
-
-private fun createSoundPreset(soundData: SoundData, soundPresets: PresetData){
     val preset = PresetObject.Preset(
         UUID.randomUUID().toString(),
-        soundData
+        UserObject.User.from(soundData.soundOwner),
+        newPresetName,
+        sliderVolumes!!.toList(),
+        SoundObject.Sound.from(soundData),
+        PresetPublicityStatus.PUBLIC
     )
-    PresetBackend.createPreset(preset){ newPresetData ->
-        createPresetNameAndVolumesMapData(newPresetData, soundPresets)
+
+    PresetBackend.createPreset(preset){
+        showCommentBox = false
+        if (globalViewModel_!!.currentUser != null) {
+            var userAlreadyHasPreset = false
+            for (userPreset in globalViewModel_!!.currentUser!!.presets) {
+                if (
+                    userPreset.presetData.id == it.id &&
+                    userPreset.userData.id == globalViewModel_!!.currentUser!!.id
+                ) {
+                    userAlreadyHasPreset = true
+                }
+            }
+            if (!userAlreadyHasPreset) {
+                UserPresetBackend.createUserPresetObject(it) {
+
+                }
+            }
+        }
+        createSoundComment(soundData, it, comment)
     }
 }
 
-private fun createPresetNameAndVolumesMapData(newPresetData: PresetData, currentPresetData: PresetData){
-    for(i in currentPresetData.presets.indices){
-        val volumes = mutableListOf<Int>()
-        if(currentPresetData.presets[i].key == "current_volumes") {
-            for (j in globalViewModel_!!.currentSoundPlayingSliderPositions.indices){
-                volumes.add(globalViewModel_!!.currentSoundPlayingSliderPositions[j]!!.value.toInt())
-            }
-        }
-        else {
-            for (j in currentPresetData.presets[i].volumes.indices) {
-                volumes.add(currentPresetData.presets[i].volumes[j].toInt())
-            }
-        }
-        val presetVolume = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
-            currentPresetData.presets[i].key,
-            volumes,
-            newPresetData
-        )
-        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(presetVolume){
-            //Clear comment box
-            showCommentBox = false
-        }
+private fun createSoundComment(
+    soundData: SoundData,
+    presetData: PresetData,
+    newComment: String
+){
+    val comment = CommentObject.Comment(
+        UUID.randomUUID().toString(),
+        UserObject.signedInUser().value!!.data,
+        newComment,
+        soundData,
+        presetData
+    )
+    CommentBackend.createComment(comment){
+        //alert dialog success
+        showCommentBox = false
     }
-    Log.i(TAG, "Successfully created comment")
 }
 
 fun navigateBack(navController: NavController) {

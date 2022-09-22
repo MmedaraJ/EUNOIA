@@ -25,7 +25,13 @@ subscription OnCreateSoundData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -80,82 +86,32 @@ subscription OnCreateSoundData($owner: String) {
     tags
     audio_names
     approvalStatus
-    comment {
-      id
-      soundID
-      sound {
+    commentsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
       }
-      userDataID
-      commentOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      comment
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
-    preset {
-      id
-      soundID
-      sound {
+    presetsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        key
+        volumes
+        soundID
+        publicityStatus
         createdAt
         updatedAt
         owner
       }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
     users {
       items {
@@ -210,7 +166,13 @@ subscription OnUpdateSoundData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -265,82 +227,32 @@ subscription OnUpdateSoundData($owner: String) {
     tags
     audio_names
     approvalStatus
-    comment {
-      id
-      soundID
-      sound {
+    commentsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
       }
-      userDataID
-      commentOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      comment
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
-    preset {
-      id
-      soundID
-      sound {
+    presetsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        key
+        volumes
+        soundID
+        publicityStatus
         createdAt
         updatedAt
         owner
       }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
     users {
       items {
@@ -395,7 +307,13 @@ subscription OnDeleteSoundData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -450,82 +368,32 @@ subscription OnDeleteSoundData($owner: String) {
     tags
     audio_names
     approvalStatus
-    comment {
-      id
-      soundID
-      sound {
+    commentsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
       }
-      userDataID
-      commentOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      comment
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
-    preset {
-      id
-      soundID
-      sound {
+    presetsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        key
+        volumes
+        soundID
+        publicityStatus
         createdAt
         updatedAt
         owner
       }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
     users {
       items {
@@ -557,68 +425,6 @@ subscription OnDeleteSoundData($owner: String) {
 subscription OnCreateCommentData($owner: String) {
   onCreateCommentData(owner: $owner) {
     id
-    soundID
-    sound {
-      id
-      userDataID
-      soundOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      original_name
-      display_name
-      short_description
-      long_description
-      audio_key_s3
-      icon
-      colorHEX
-      fullPlayTime
-      visible_to_others
-      tags
-      audio_names
-      approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
-      }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
-      }
-      users {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
     userDataID
     commentOwner {
       id
@@ -642,7 +448,13 @@ subscription OnCreateCommentData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -686,6 +498,118 @@ subscription OnCreateCommentData($owner: String) {
       owner
     }
     comment
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    presetID
+    preset {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
     createdAt
     updatedAt
     owner
@@ -694,68 +618,6 @@ subscription OnCreateCommentData($owner: String) {
 subscription OnUpdateCommentData($owner: String) {
   onUpdateCommentData(owner: $owner) {
     id
-    soundID
-    sound {
-      id
-      userDataID
-      soundOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      original_name
-      display_name
-      short_description
-      long_description
-      audio_key_s3
-      icon
-      colorHEX
-      fullPlayTime
-      visible_to_others
-      tags
-      audio_names
-      approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
-      }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
-      }
-      users {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
     userDataID
     commentOwner {
       id
@@ -779,7 +641,13 @@ subscription OnUpdateCommentData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -823,6 +691,118 @@ subscription OnUpdateCommentData($owner: String) {
       owner
     }
     comment
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    presetID
+    preset {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
     createdAt
     updatedAt
     owner
@@ -831,68 +811,6 @@ subscription OnUpdateCommentData($owner: String) {
 subscription OnDeleteCommentData($owner: String) {
   onDeleteCommentData(owner: $owner) {
     id
-    soundID
-    sound {
-      id
-      userDataID
-      soundOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      original_name
-      display_name
-      short_description
-      long_description
-      audio_key_s3
-      icon
-      colorHEX
-      fullPlayTime
-      visible_to_others
-      tags
-      audio_names
-      approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
-      }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
-      }
-      users {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
     userDataID
     commentOwner {
       id
@@ -916,7 +834,13 @@ subscription OnDeleteCommentData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -960,134 +884,6 @@ subscription OnDeleteCommentData($owner: String) {
       owner
     }
     comment
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnCreatePresetNameAndVolumesMapData($owner: String) {
-  onCreatePresetNameAndVolumesMapData(owner: $owner) {
-    key
-    volumes
-    presetID
-    preset {
-      id
-      soundID
-      sound {
-        id
-        userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    id
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnUpdatePresetNameAndVolumesMapData($owner: String) {
-  onUpdatePresetNameAndVolumesMapData(owner: $owner) {
-    key
-    volumes
-    presetID
-    preset {
-      id
-      soundID
-      sound {
-        id
-        userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    id
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnDeletePresetNameAndVolumesMapData($owner: String) {
-  onDeletePresetNameAndVolumesMapData(owner: $owner) {
-    key
-    volumes
-    presetID
-    preset {
-      id
-      soundID
-      sound {
-        id
-        userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    id
-    createdAt
-    updatedAt
-    owner
-  }
-}
-subscription OnCreatePresetData($owner: String) {
-  onCreatePresetData(owner: $owner) {
-    id
     soundID
     sound {
       id
@@ -1124,21 +920,11 @@ subscription OnCreatePresetData($owner: String) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -1150,12 +936,230 @@ subscription OnCreatePresetData($owner: String) {
       updatedAt
       owner
     }
-    presets {
-      items {
-        key
-        volumes
-        presetID
+    presetID
+    preset {
+      id
+      userDataID
+      presetOwner {
         id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreatePresetData($owner: String) {
+  onCreatePresetData(owner: $owner) {
+    id
+    userDataID
+    presetOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    key
+    volumes
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    publicityStatus
+    commentsOwnedByPreset {
+      items {
+        id
+        userDataID
+        comment
+        soundID
+        presetID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        presetDataID
+        routineDataID
         createdAt
         updatedAt
         owner
@@ -1170,6 +1174,80 @@ subscription OnCreatePresetData($owner: String) {
 subscription OnUpdatePresetData($owner: String) {
   onUpdatePresetData(owner: $owner) {
     id
+    userDataID
+    presetOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    key
+    volumes
     soundID
     sound {
       id
@@ -1206,21 +1284,11 @@ subscription OnUpdatePresetData($owner: String) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -1232,12 +1300,36 @@ subscription OnUpdatePresetData($owner: String) {
       updatedAt
       owner
     }
-    presets {
+    publicityStatus
+    commentsOwnedByPreset {
       items {
-        key
-        volumes
-        presetID
         id
+        userDataID
+        comment
+        soundID
+        presetID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        presetDataID
+        routineDataID
         createdAt
         updatedAt
         owner
@@ -1252,6 +1344,80 @@ subscription OnUpdatePresetData($owner: String) {
 subscription OnDeletePresetData($owner: String) {
   onDeletePresetData(owner: $owner) {
     id
+    userDataID
+    presetOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    key
+    volumes
     soundID
     sound {
       id
@@ -1288,21 +1454,11 @@ subscription OnDeletePresetData($owner: String) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -1314,12 +1470,36 @@ subscription OnDeletePresetData($owner: String) {
       updatedAt
       owner
     }
-    presets {
+    publicityStatus
+    commentsOwnedByPreset {
       items {
-        key
-        volumes
-        presetID
         id
+        userDataID
+        comment
+        soundID
+        presetID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        presetDataID
+        routineDataID
         createdAt
         updatedAt
         owner
@@ -1357,7 +1537,13 @@ subscription OnCreateRoutineData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1400,13 +1586,13 @@ subscription OnCreateRoutineData($owner: String) {
       updatedAt
       owner
     }
-    original_name
-    display_name
+    originalName
+    displayName
     numberOfSteps
     numberOfTimesUsed
     fullPlayTime
     icon
-    visible_to_others
+    visibleToOthers
     colorHEX
     playSoundDuringStretch
     playSoundDuringPrayer
@@ -1430,6 +1616,17 @@ subscription OnCreateRoutineData($owner: String) {
       items {
         id
         soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
         routineDataID
         createdAt
         updatedAt
@@ -1535,7 +1732,13 @@ subscription OnUpdateRoutineData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1578,13 +1781,13 @@ subscription OnUpdateRoutineData($owner: String) {
       updatedAt
       owner
     }
-    original_name
-    display_name
+    originalName
+    displayName
     numberOfSteps
     numberOfTimesUsed
     fullPlayTime
     icon
-    visible_to_others
+    visibleToOthers
     colorHEX
     playSoundDuringStretch
     playSoundDuringPrayer
@@ -1608,6 +1811,17 @@ subscription OnUpdateRoutineData($owner: String) {
       items {
         id
         soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
         routineDataID
         createdAt
         updatedAt
@@ -1713,7 +1927,13 @@ subscription OnDeleteRoutineData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1756,13 +1976,13 @@ subscription OnDeleteRoutineData($owner: String) {
       updatedAt
       owner
     }
-    original_name
-    display_name
+    originalName
+    displayName
     numberOfSteps
     numberOfTimesUsed
     fullPlayTime
     icon
-    visible_to_others
+    visibleToOthers
     colorHEX
     playSoundDuringStretch
     playSoundDuringPrayer
@@ -1786,6 +2006,17 @@ subscription OnDeleteRoutineData($owner: String) {
       items {
         id
         soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
         routineDataID
         createdAt
         updatedAt
@@ -1891,7 +2122,13 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2009,7 +2246,13 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2127,7 +2370,13 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2584,7 +2833,13 @@ subscription OnCreatePrayerData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2691,7 +2946,13 @@ subscription OnUpdatePrayerData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2798,7 +3059,13 @@ subscription OnDeletePrayerData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2905,7 +3172,13 @@ subscription OnCreateSelfLoveData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3011,7 +3284,13 @@ subscription OnUpdateSelfLoveData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3117,7 +3396,13 @@ subscription OnDeleteSelfLoveData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3223,7 +3508,13 @@ subscription OnCreateStretchData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3320,7 +3611,13 @@ subscription OnUpdateStretchData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3417,7 +3714,13 @@ subscription OnDeleteStretchData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3514,7 +3817,13 @@ subscription OnCreateBreathingData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3611,7 +3920,13 @@ subscription OnUpdateBreathingData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3708,7 +4023,13 @@ subscription OnDeleteBreathingData($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3829,12 +4150,38 @@ subscription OnCreateUserData($owner: String) {
       }
       nextToken
     }
-    comments {
+    presetsOwnedByUser {
       items {
         id
+        userDataID
+        key
+        volumes
         soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    commentsOwnedByUser {
+      items {
+        id
         userDataID
         comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
@@ -3845,13 +4192,13 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -4082,12 +4429,38 @@ subscription OnUpdateUserData($owner: String) {
       }
       nextToken
     }
-    comments {
+    presetsOwnedByUser {
       items {
         id
+        userDataID
+        key
+        volumes
         soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    commentsOwnedByUser {
+      items {
+        id
         userDataID
         comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
@@ -4098,13 +4471,13 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -4335,12 +4708,38 @@ subscription OnDeleteUserData($owner: String) {
       }
       nextToken
     }
-    comments {
+    presetsOwnedByUser {
       items {
         id
+        userDataID
+        key
+        volumes
         soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    commentsOwnedByUser {
+      items {
+        id
         userDataID
         comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
@@ -4351,13 +4750,13 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -4578,21 +4977,11 @@ subscription OnCreateUserSound($owner: String) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -4626,7 +5015,13 @@ subscription OnCreateUserSound($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -4714,21 +5109,11 @@ subscription OnUpdateUserSound($owner: String) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -4762,7 +5147,13 @@ subscription OnUpdateUserSound($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -4850,21 +5241,11 @@ subscription OnDeleteUserSound($owner: String) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -4898,7 +5279,13 @@ subscription OnDeleteUserSound($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -4986,21 +5373,11 @@ subscription OnCreateRoutineSound($owner: String) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -5035,13 +5412,13 @@ subscription OnCreateRoutineSound($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5062,6 +5439,9 @@ subscription OnCreateRoutineSound($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5132,21 +5512,11 @@ subscription OnUpdateRoutineSound($owner: String) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -5181,13 +5551,13 @@ subscription OnUpdateRoutineSound($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5208,6 +5578,9 @@ subscription OnUpdateRoutineSound($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5278,21 +5651,11 @@ subscription OnDeleteRoutineSound($owner: String) {
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -5327,13 +5690,13 @@ subscription OnDeleteRoutineSound($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5354,6 +5717,870 @@ subscription OnDeleteRoutineSound($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserPreset($owner: String) {
+  onCreateUserPreset(owner: $owner) {
+    id
+    presetDataID
+    userDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserPreset($owner: String) {
+  onUpdateUserPreset(owner: $owner) {
+    id
+    presetDataID
+    userDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserPreset($owner: String) {
+  onDeleteUserPreset(owner: $owner) {
+    id
+    presetDataID
+    userDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateRoutinePreset($owner: String) {
+  onCreateRoutinePreset(owner: $owner) {
+    id
+    presetDataID
+    routineDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateRoutinePreset($owner: String) {
+  onUpdateRoutinePreset(owner: $owner) {
+    id
+    presetDataID
+    routineDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteRoutinePreset($owner: String) {
+  onDeleteRoutinePreset(owner: $owner) {
+    id
+    presetDataID
+    routineDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5412,13 +6639,13 @@ subscription OnCreateRoutinePrayer($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5439,6 +6666,9 @@ subscription OnCreateRoutinePrayer($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5541,13 +6771,13 @@ subscription OnUpdateRoutinePrayer($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5568,6 +6798,9 @@ subscription OnUpdateRoutinePrayer($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5670,13 +6903,13 @@ subscription OnDeleteRoutinePrayer($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5697,6 +6930,9 @@ subscription OnDeleteRoutinePrayer($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5799,13 +7035,13 @@ subscription OnCreateRoutineStretch($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5826,6 +7062,9 @@ subscription OnCreateRoutineStretch($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5918,13 +7157,13 @@ subscription OnUpdateRoutineStretch($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5945,6 +7184,9 @@ subscription OnUpdateRoutineStretch($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6037,13 +7279,13 @@ subscription OnDeleteRoutineStretch($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6064,6 +7306,9 @@ subscription OnDeleteRoutineStretch($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6156,13 +7401,13 @@ subscription OnCreateRoutineBreathing($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6183,6 +7428,9 @@ subscription OnCreateRoutineBreathing($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6275,13 +7523,13 @@ subscription OnUpdateRoutineBreathing($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6302,6 +7550,9 @@ subscription OnUpdateRoutineBreathing($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6394,13 +7645,13 @@ subscription OnDeleteRoutineBreathing($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6421,6 +7672,9 @@ subscription OnDeleteRoutineBreathing($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6513,13 +7767,13 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6540,6 +7794,9 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6644,13 +7901,13 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6671,6 +7928,9 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6775,13 +8035,13 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6802,6 +8062,9 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6906,13 +8169,13 @@ subscription OnCreateRoutineSelfLove($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6933,6 +8196,9 @@ subscription OnCreateRoutineSelfLove($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7034,13 +8300,13 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7061,6 +8327,9 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7162,13 +8431,13 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7189,6 +8458,9 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7290,13 +8562,13 @@ subscription OnCreateUserRoutine($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7317,6 +8589,9 @@ subscription OnCreateUserRoutine($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7364,7 +8639,13 @@ subscription OnCreateUserRoutine($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -7440,13 +8721,13 @@ subscription OnUpdateUserRoutine($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7467,6 +8748,9 @@ subscription OnUpdateUserRoutine($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7514,7 +8798,13 @@ subscription OnUpdateUserRoutine($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -7590,13 +8880,13 @@ subscription OnDeleteUserRoutine($owner: String) {
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7617,6 +8907,9 @@ subscription OnDeleteUserRoutine($owner: String) {
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7664,7 +8957,13 @@ subscription OnDeleteUserRoutine($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -7785,7 +9084,13 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -7906,7 +9211,13 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8027,7 +9338,13 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8146,7 +9463,13 @@ subscription OnCreateUserPrayer($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8265,7 +9588,13 @@ subscription OnUpdateUserPrayer($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8384,7 +9713,13 @@ subscription OnDeleteUserPrayer($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8502,7 +9837,13 @@ subscription OnCreateUserSelfLove($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8620,7 +9961,13 @@ subscription OnUpdateUserSelfLove($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8738,7 +10085,13 @@ subscription OnDeleteUserSelfLove($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8847,7 +10200,13 @@ subscription OnCreateUserStretch($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8956,7 +10315,13 @@ subscription OnUpdateUserStretch($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9065,7 +10430,13 @@ subscription OnDeleteUserStretch($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9174,7 +10545,13 @@ subscription OnCreateUserBreathing($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9283,7 +10660,13 @@ subscription OnUpdateUserBreathing($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9392,7 +10775,13 @@ subscription OnDeleteUserBreathing($owner: String) {
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {

@@ -39,7 +39,7 @@ import kotlinx.coroutines.*
 private const val TAG = "Sound Activity"
 var soundActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
 var soundActivityUris = mutableListOf<MutableList<Uri?>>()
-var soundActivityUriVolumes = mutableListOf<MutableList<Int?>>()
+var soundActivityUriVolumes = mutableListOf<MutableList<Int>>()
 var soundActivityPresets = mutableListOf<MutableState<PresetData?>?>()
 private const val START_SOUND = "start"
 private const val PAUSE_SOUND = "pause"
@@ -339,15 +339,12 @@ private fun startSound(
 }
 
 private fun getNecessaryPresets(index: Int, completed: () -> Unit){
-    getSoundPresets(globalViewModel_!!.currentUsersSounds!![index]!!.soundData) { presetData ->
-        soundActivityPresets[index]!!.value = presetData
-        for(j in presetData.presets.indices){
-            if(j == 0){
-                soundActivityUriVolumes[index] = presetData.presets[j].volumes
-                globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = presetData.presets[j]
-                Log.i(TAG, "preset name map size -0000 ${globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!.volumes.size}")
-            }
-        }
+    getUserSoundPresets(
+        globalViewModel_!!.currentUsersSounds!![index]!!.soundData,
+        globalViewModel_!!.currentUsersSounds!![index]!!.soundData.soundOwner,
+    ) { presetData ->
+        soundActivityPresets[index]!!.value = presetData[0]
+        soundActivityUriVolumes[index] = presetData[0].volumes
         completed()
     }
 }
@@ -356,7 +353,7 @@ private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
     globalViewModel_!!.currentSoundPlaying = globalViewModel_!!.currentUsersSounds!![index]!!.soundData
     globalViewModel_!!.currentSoundPlayingPreset = soundActivityPresets[index]!!.value
     globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-    for (volume in globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!.volumes) {
+    for (volume in globalViewModel_!!.currentSoundPlayingPreset!!.volumes) {
         globalViewModel_!!.currentSoundPlayingSliderPositions.add(
             mutableStateOf(volume.toFloat())
         )

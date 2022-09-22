@@ -18,7 +18,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.eunoia.models.PresetNameAndVolumesMapObject
+import com.example.eunoia.models.PresetObject
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -37,7 +37,7 @@ var fileUris = mutableListOf<MutableState<Uri>?>()
 var fileMediaPlayers = mutableListOf<MutableState<MediaPlayer>?>()
 var fileNames = mutableListOf<MutableState<String>?>()
 var audioFileLengthMilliSeconds = mutableListOf<MutableState<Long>?>()
-var soundPresetNameAndVolumesMap = mutableListOf<MutableState<PresetNameAndVolumesMapObject.PresetNameAndVolumesMap>?>()
+var createSoundPresets = mutableListOf<MutableState<PresetObject.Preset>?>()
 var selectedIndex by mutableStateOf(0)
 var TAG = "Upload Sounds"
 

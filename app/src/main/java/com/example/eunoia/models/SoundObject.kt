@@ -3,9 +3,6 @@ package com.example.eunoia.models
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavType
 import com.amplifyframework.datastore.generated.model.*
 import com.google.gson.Gson
@@ -40,7 +37,6 @@ object SoundObject {
                 .originalName(this.original_name)
                 .displayName(this.display_name)
                 .shortDescription(this.short_description)
-                .longDescription(this.long_description)
                 .audioKeyS3(this.audio_key_s3)
                 .icon(this.icon)
                 .colorHex(this.colorHex)
@@ -49,6 +45,7 @@ object SoundObject {
                 .tags(this.tags)
                 .audioNames(this.audio_names)
                 .approvalStatus(this.approvalStatus)
+                .longDescription(this.long_description)
                 .id(this.id)
                 .build()
 

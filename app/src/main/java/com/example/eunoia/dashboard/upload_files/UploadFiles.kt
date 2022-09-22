@@ -21,15 +21,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.core.Amplify
-import com.amplifyframework.datastore.generated.model.PresetData
-import com.amplifyframework.datastore.generated.model.SoundApprovalStatus
-import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.*
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
+import com.example.eunoia.create.createSound.createSoundPresets
+import com.example.eunoia.create.createSound.go
+import com.example.eunoia.create.createSound.presetName
+import com.example.eunoia.create.createSound.saving
 import com.example.eunoia.models.*
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.components.StandardBlueButton
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.EUNOIATheme
 import java.io.File
 import java.io.FileOutputStream
@@ -168,56 +171,76 @@ class UploadFilesActivity : ComponentActivity() {
         }
     }
 
-    private fun createPresetNameAndVolumesMapData(presetData: PresetData){
-        val originalVolumes = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
-            "original_volumes",
-            listOf(5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
-            presetData
+    private fun createUserPreset(presetData: PresetData){
+        val userPresetModel = UserPresetObject.UserPresetModel(
+            UUID.randomUUID().toString(),
+            UserObject.signedInUser().value!!,
+            PresetObject.Preset.from(presetData),
         )
-        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(originalVolumes){}
-        val currentVolumes = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
-            "current_volumes",
-            listOf(5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
-            presetData
-        )
-        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(currentVolumes){}
+        UserPresetBackend.createUserPreset(userPresetModel){
 
-        val preset1 = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
-            "preset1",
-            listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-            presetData
-        )
-        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(preset1){}
-
-        val preset2 = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
-            "preset2",
-            listOf(10, 9, 8, 7, 6, 5, 4, 3, 2, 1),
-            presetData
-        )
-        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(preset2){}
-
-        val preset3 = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
-            "preset3",
-            listOf(10, 9, 8, 7, 6, 1, 2, 3, 4, 5),
-            presetData
-        )
-        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(preset3){}
-
-        val preset4 = PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
-            "preset4",
-            listOf(10, 8, 6, 4, 2, 1, 2, 4, 6, 8, 10),
-            presetData
-        )
-        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(preset4){}
+        }
     }
 
     private fun createSoundPreset(soundData: SoundData){
-        val preset = PresetObject.Preset(
+        val originalVolumes = PresetObject.Preset(
             UUID.randomUUID().toString(),
-            soundData
+            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            "original_volumes",
+            listOf(5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
+            SoundObject.Sound.from(soundData),
+            PresetPublicityStatus.PUBLIC
         )
-        PresetBackend.createPreset(preset){
-            createPresetNameAndVolumesMapData(it)
+        PresetBackend.createPreset(originalVolumes){
+            createUserPreset(it)
+        }
+
+        val preset1 = PresetObject.Preset(
+            UUID.randomUUID().toString(),
+            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            "preset1",
+            listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+            SoundObject.Sound.from(soundData),
+            PresetPublicityStatus.PUBLIC
+        )
+        PresetBackend.createPreset(preset1){
+            createUserPreset(it)
+        }
+
+        val preset2 = PresetObject.Preset(
+            UUID.randomUUID().toString(),
+            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            "preset2",
+            listOf(10, 9, 8, 7, 6, 5, 4, 3, 2, 1),
+            SoundObject.Sound.from(soundData),
+            PresetPublicityStatus.PUBLIC
+        )
+        PresetBackend.createPreset(preset2){
+            createUserPreset(it)
+        }
+
+        val preset3 = PresetObject.Preset(
+            UUID.randomUUID().toString(),
+            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            "preset3",
+            listOf(10, 9, 8, 7, 6, 1, 2, 3, 4, 5),
+            SoundObject.Sound.from(soundData),
+            PresetPublicityStatus.PUBLIC
+        )
+        PresetBackend.createPreset(preset3){
+            createUserPreset(it)
+        }
+
+        val preset4 = PresetObject.Preset(
+            UUID.randomUUID().toString(),
+            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            "preset4",
+            listOf(10, 8, 6, 4, 2, 1, 2, 4, 6, 8),
+            SoundObject.Sound.from(soundData),
+            PresetPublicityStatus.PUBLIC
+        )
+        PresetBackend.createPreset(preset4){
+            createUserPreset(it)
         }
     }
 
@@ -242,19 +265,6 @@ class UploadFilesActivity : ComponentActivity() {
             createUserSound(it)
             createSoundPreset(it)
         }
-
-        /*if(ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED){
-            selectAudios()
-        }else{
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                3
-            )
-        }*/
     }
 
     private fun createUserSound(soundData: SoundData){

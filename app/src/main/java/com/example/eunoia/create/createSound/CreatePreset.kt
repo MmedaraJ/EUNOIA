@@ -17,11 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.PresetData
+import com.amplifyframework.datastore.generated.model.PresetPublicityStatus
 import com.amplifyframework.datastore.generated.model.SoundApprovalStatus
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.backend.PresetBackend
-import com.example.eunoia.backend.PresetNameAndVolumesMapBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.UserPresetBackend
 import com.example.eunoia.backend.UserSoundBackend
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.*
@@ -34,7 +35,6 @@ import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.SwansDown
 import com.example.eunoia.ui.theme.WePeep
-import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
@@ -277,7 +277,7 @@ fun resetAll(){
     fileUris.clear()
     fileMediaPlayers.clear()
     fileNames.clear()
-    soundPresetNameAndVolumesMap.clear()
+    createSoundPresets.clear()
     selectedIndex = 0
     presetName = ""
     fullPlayTime = 0
@@ -315,7 +315,7 @@ fun createSound(navController: NavController){
 
     SoundBackend.createSound(sound){
         createUserSound(it)
-        createSoundPreset(it, navController)
+        createSoundPreset(it)
     }
 }
 
@@ -352,24 +352,25 @@ private fun createUserSound(soundData: SoundData){
     }
 }
 
-private fun createSoundPreset(soundData: SoundData, navController: NavController){
-    val preset = PresetObject.Preset(
-        UUID.randomUUID().toString(),
-        soundData
-    )
-    PresetBackend.createPreset(preset){
-        createPresetNameAndVolumesMapData(it, soundData, navController)
+private fun createSoundPreset(soundData: SoundData) {
+    for(i in createSoundPresets.indices){
+        createSoundPresets[i]!!.value.sound = SoundObject.Sound.from(soundData)
+        PresetBackend.createPreset(createSoundPresets[i]!!.value){
+            createUserPreset(it, i)
+        }
     }
 }
 
-private fun createPresetNameAndVolumesMapData(presetData: PresetData, soundData: SoundData, navController: NavController) {
-    for(i in soundPresetNameAndVolumesMap.indices){
-        soundPresetNameAndVolumesMap[i]!!.value.preset = presetData
-        PresetNameAndVolumesMapBackend.createPresetNameAndVolumesMap(soundPresetNameAndVolumesMap[i]!!.value){
-            if(i == soundPresetNameAndVolumesMap.size - 1){
-                saving = false
-                go = true
-            }
+private fun createUserPreset(presetData: PresetData, index: Int){
+    val userPresetModel = UserPresetObject.UserPresetModel(
+        UUID.randomUUID().toString(),
+        UserObject.signedInUser().value!!,
+        PresetObject.Preset.from(presetData),
+    )
+    UserPresetBackend.createUserPreset(userPresetModel){
+        if(index == createSoundPresets.size - 1){
+            saving = false
+            go = true
         }
     }
 }
@@ -379,18 +380,23 @@ fun saveThisPreset(){
     for(volume in sliderVolumes){
         volumes.add(volume!!.value)
     }
-    val presetVolume = mutableStateOf(PresetNameAndVolumesMapObject.PresetNameAndVolumesMap(
-        presetName,
-        volumes,
-        null
-    ))
-    soundPresetNameAndVolumesMap.add(presetVolume)
+    val preset = mutableStateOf(
+        PresetObject.Preset(
+            UUID.randomUUID().toString(),
+            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            presetName,
+            volumes,
+            null,
+            PresetPublicityStatus.PUBLIC
+        )
+    )
+    createSoundPresets.add(preset)
     sliderVolumes.clear()
 }
 
 fun volumesDoNotAlreadyExist(): Boolean{
-    for(i in soundPresetNameAndVolumesMap.indices){
-        val volumes = soundPresetNameAndVolumesMap[i]!!.value.volumes
+    for(i in createSoundPresets.indices){
+        val volumes = createSoundPresets[i]!!.value.volumes
         var count = 0
         for(j in volumes.indices) {
             if (sliderVolumes[j]!!.value == volumes[j]){

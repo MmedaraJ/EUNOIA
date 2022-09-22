@@ -28,7 +28,13 @@ mutation CreateSoundData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -83,82 +89,32 @@ mutation CreateSoundData(
     tags
     audio_names
     approvalStatus
-    comment {
-      id
-      soundID
-      sound {
+    commentsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
       }
-      userDataID
-      commentOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      comment
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
-    preset {
-      id
-      soundID
-      sound {
+    presetsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        key
+        volumes
+        soundID
+        publicityStatus
         createdAt
         updatedAt
         owner
       }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
     users {
       items {
@@ -216,7 +172,13 @@ mutation UpdateSoundData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -271,82 +233,32 @@ mutation UpdateSoundData(
     tags
     audio_names
     approvalStatus
-    comment {
-      id
-      soundID
-      sound {
+    commentsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
       }
-      userDataID
-      commentOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      comment
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
-    preset {
-      id
-      soundID
-      sound {
+    presetsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        key
+        volumes
+        soundID
+        publicityStatus
         createdAt
         updatedAt
         owner
       }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
     users {
       items {
@@ -404,7 +316,13 @@ mutation DeleteSoundData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -459,82 +377,32 @@ mutation DeleteSoundData(
     tags
     audio_names
     approvalStatus
-    comment {
-      id
-      soundID
-      sound {
+    commentsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
       }
-      userDataID
-      commentOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      comment
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
-    preset {
-      id
-      soundID
-      sound {
+    presetsOwnedBySound {
+      items {
         id
         userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
+        key
+        volumes
+        soundID
+        publicityStatus
         createdAt
         updatedAt
         owner
       }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
+      nextToken
     }
     users {
       items {
@@ -569,68 +437,6 @@ mutation CreateCommentData(
 ) {
   createCommentData(input: $input, condition: $condition) {
     id
-    soundID
-    sound {
-      id
-      userDataID
-      soundOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      original_name
-      display_name
-      short_description
-      long_description
-      audio_key_s3
-      icon
-      colorHEX
-      fullPlayTime
-      visible_to_others
-      tags
-      audio_names
-      approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
-      }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
-      }
-      users {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
     userDataID
     commentOwner {
       id
@@ -654,7 +460,13 @@ mutation CreateCommentData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -698,6 +510,118 @@ mutation CreateCommentData(
       owner
     }
     comment
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    presetID
+    preset {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
     createdAt
     updatedAt
     owner
@@ -709,68 +633,6 @@ mutation UpdateCommentData(
 ) {
   updateCommentData(input: $input, condition: $condition) {
     id
-    soundID
-    sound {
-      id
-      userDataID
-      soundOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      original_name
-      display_name
-      short_description
-      long_description
-      audio_key_s3
-      icon
-      colorHEX
-      fullPlayTime
-      visible_to_others
-      tags
-      audio_names
-      approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
-      }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
-      }
-      users {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
     userDataID
     commentOwner {
       id
@@ -794,7 +656,13 @@ mutation UpdateCommentData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -838,6 +706,118 @@ mutation UpdateCommentData(
       owner
     }
     comment
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    presetID
+    preset {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
     createdAt
     updatedAt
     owner
@@ -849,68 +829,6 @@ mutation DeleteCommentData(
 ) {
   deleteCommentData(input: $input, condition: $condition) {
     id
-    soundID
-    sound {
-      id
-      userDataID
-      soundOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      original_name
-      display_name
-      short_description
-      long_description
-      audio_key_s3
-      icon
-      colorHEX
-      fullPlayTime
-      visible_to_others
-      tags
-      audio_names
-      approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
-      }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
-      }
-      users {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
     userDataID
     commentOwner {
       id
@@ -934,7 +852,13 @@ mutation DeleteCommentData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -978,146 +902,6 @@ mutation DeleteCommentData(
       owner
     }
     comment
-    createdAt
-    updatedAt
-    owner
-  }
-}
-mutation CreatePresetNameAndVolumesMapData(
-  $input: CreatePresetNameAndVolumesMapDataInput!
-  $condition: ModelPresetNameAndVolumesMapDataConditionInput
-) {
-  createPresetNameAndVolumesMapData(input: $input, condition: $condition) {
-    key
-    volumes
-    presetID
-    preset {
-      id
-      soundID
-      sound {
-        id
-        userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    id
-    createdAt
-    updatedAt
-    owner
-  }
-}
-mutation UpdatePresetNameAndVolumesMapData(
-  $input: UpdatePresetNameAndVolumesMapDataInput!
-  $condition: ModelPresetNameAndVolumesMapDataConditionInput
-) {
-  updatePresetNameAndVolumesMapData(input: $input, condition: $condition) {
-    key
-    volumes
-    presetID
-    preset {
-      id
-      soundID
-      sound {
-        id
-        userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    id
-    createdAt
-    updatedAt
-    owner
-  }
-}
-mutation DeletePresetNameAndVolumesMapData(
-  $input: DeletePresetNameAndVolumesMapDataInput!
-  $condition: ModelPresetNameAndVolumesMapDataConditionInput
-) {
-  deletePresetNameAndVolumesMapData(input: $input, condition: $condition) {
-    key
-    volumes
-    presetID
-    preset {
-      id
-      soundID
-      sound {
-        id
-        userDataID
-        original_name
-        display_name
-        short_description
-        long_description
-        audio_key_s3
-        icon
-        colorHEX
-        fullPlayTime
-        visible_to_others
-        tags
-        audio_names
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      presets {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    id
-    createdAt
-    updatedAt
-    owner
-  }
-}
-mutation CreatePresetData(
-  $input: CreatePresetDataInput!
-  $condition: ModelPresetDataConditionInput
-) {
-  createPresetData(input: $input, condition: $condition) {
-    id
     soundID
     sound {
       id
@@ -1154,21 +938,11 @@ mutation CreatePresetData(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -1180,12 +954,233 @@ mutation CreatePresetData(
       updatedAt
       owner
     }
-    presets {
-      items {
-        key
-        volumes
-        presetID
+    presetID
+    preset {
+      id
+      userDataID
+      presetOwner {
         id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreatePresetData(
+  $input: CreatePresetDataInput!
+  $condition: ModelPresetDataConditionInput
+) {
+  createPresetData(input: $input, condition: $condition) {
+    id
+    userDataID
+    presetOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    key
+    volumes
+    soundID
+    sound {
+      id
+      userDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    publicityStatus
+    commentsOwnedByPreset {
+      items {
+        id
+        userDataID
+        comment
+        soundID
+        presetID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        presetDataID
+        routineDataID
         createdAt
         updatedAt
         owner
@@ -1203,6 +1198,80 @@ mutation UpdatePresetData(
 ) {
   updatePresetData(input: $input, condition: $condition) {
     id
+    userDataID
+    presetOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    key
+    volumes
     soundID
     sound {
       id
@@ -1239,21 +1308,11 @@ mutation UpdatePresetData(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -1265,12 +1324,36 @@ mutation UpdatePresetData(
       updatedAt
       owner
     }
-    presets {
+    publicityStatus
+    commentsOwnedByPreset {
       items {
-        key
-        volumes
-        presetID
         id
+        userDataID
+        comment
+        soundID
+        presetID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        presetDataID
+        routineDataID
         createdAt
         updatedAt
         owner
@@ -1288,6 +1371,80 @@ mutation DeletePresetData(
 ) {
   deletePresetData(input: $input, condition: $condition) {
     id
+    userDataID
+    presetOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    key
+    volumes
     soundID
     sound {
       id
@@ -1324,21 +1481,11 @@ mutation DeletePresetData(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -1350,12 +1497,36 @@ mutation DeletePresetData(
       updatedAt
       owner
     }
-    presets {
+    publicityStatus
+    commentsOwnedByPreset {
       items {
-        key
-        volumes
-        presetID
         id
+        userDataID
+        comment
+        soundID
+        presetID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    users {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    routines {
+      items {
+        id
+        presetDataID
+        routineDataID
         createdAt
         updatedAt
         owner
@@ -1396,7 +1567,13 @@ mutation CreateRoutineData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1439,13 +1616,13 @@ mutation CreateRoutineData(
       updatedAt
       owner
     }
-    original_name
-    display_name
+    originalName
+    displayName
     numberOfSteps
     numberOfTimesUsed
     fullPlayTime
     icon
-    visible_to_others
+    visibleToOthers
     colorHEX
     playSoundDuringStretch
     playSoundDuringPrayer
@@ -1469,6 +1646,17 @@ mutation CreateRoutineData(
       items {
         id
         soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
         routineDataID
         createdAt
         updatedAt
@@ -1577,7 +1765,13 @@ mutation UpdateRoutineData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1620,13 +1814,13 @@ mutation UpdateRoutineData(
       updatedAt
       owner
     }
-    original_name
-    display_name
+    originalName
+    displayName
     numberOfSteps
     numberOfTimesUsed
     fullPlayTime
     icon
-    visible_to_others
+    visibleToOthers
     colorHEX
     playSoundDuringStretch
     playSoundDuringPrayer
@@ -1650,6 +1844,17 @@ mutation UpdateRoutineData(
       items {
         id
         soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
         routineDataID
         createdAt
         updatedAt
@@ -1758,7 +1963,13 @@ mutation DeleteRoutineData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -1801,13 +2012,13 @@ mutation DeleteRoutineData(
       updatedAt
       owner
     }
-    original_name
-    display_name
+    originalName
+    displayName
     numberOfSteps
     numberOfTimesUsed
     fullPlayTime
     icon
-    visible_to_others
+    visibleToOthers
     colorHEX
     playSoundDuringStretch
     playSoundDuringPrayer
@@ -1831,6 +2042,17 @@ mutation DeleteRoutineData(
       items {
         id
         soundDataID
+        routineDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
         routineDataID
         createdAt
         updatedAt
@@ -1939,7 +2161,13 @@ mutation CreateBedtimeStoryInfoData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2060,7 +2288,13 @@ mutation UpdateBedtimeStoryInfoData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2181,7 +2415,13 @@ mutation DeleteBedtimeStoryInfoData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2659,7 +2899,13 @@ mutation CreatePrayerData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2769,7 +3015,13 @@ mutation UpdatePrayerData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2879,7 +3131,13 @@ mutation DeletePrayerData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -2989,7 +3247,13 @@ mutation CreateSelfLoveData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3098,7 +3362,13 @@ mutation UpdateSelfLoveData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3207,7 +3477,13 @@ mutation DeleteSelfLoveData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3316,7 +3592,13 @@ mutation CreateStretchData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3416,7 +3698,13 @@ mutation UpdateStretchData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3516,7 +3804,13 @@ mutation DeleteStretchData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3616,7 +3910,13 @@ mutation CreateBreathingData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3716,7 +4016,13 @@ mutation UpdateBreathingData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3816,7 +4122,13 @@ mutation DeleteBreathingData(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -3940,12 +4252,38 @@ mutation CreateUserData(
       }
       nextToken
     }
-    comments {
+    presetsOwnedByUser {
       items {
         id
+        userDataID
+        key
+        volumes
         soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    commentsOwnedByUser {
+      items {
+        id
         userDataID
         comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
@@ -3956,13 +4294,13 @@ mutation CreateUserData(
       items {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -4196,12 +4534,38 @@ mutation UpdateUserData(
       }
       nextToken
     }
-    comments {
+    presetsOwnedByUser {
       items {
         id
+        userDataID
+        key
+        volumes
         soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    commentsOwnedByUser {
+      items {
+        id
         userDataID
         comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
@@ -4212,13 +4576,13 @@ mutation UpdateUserData(
       items {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -4452,12 +4816,38 @@ mutation DeleteUserData(
       }
       nextToken
     }
-    comments {
+    presetsOwnedByUser {
       items {
         id
+        userDataID
+        key
+        volumes
         soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    presets {
+      items {
+        id
+        presetDataID
+        userDataID
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    commentsOwnedByUser {
+      items {
+        id
         userDataID
         comment
+        soundID
+        presetID
         createdAt
         updatedAt
         owner
@@ -4468,13 +4858,13 @@ mutation DeleteUserData(
       items {
         id
         userDataID
-        original_name
-        display_name
+        originalName
+        displayName
         numberOfSteps
         numberOfTimesUsed
         fullPlayTime
         icon
-        visible_to_others
+        visibleToOthers
         colorHEX
         playSoundDuringStretch
         playSoundDuringPrayer
@@ -4698,21 +5088,11 @@ mutation CreateUserSound(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -4746,7 +5126,13 @@ mutation CreateUserSound(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -4837,21 +5223,11 @@ mutation UpdateUserSound(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -4885,7 +5261,13 @@ mutation UpdateUserSound(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -4976,21 +5358,11 @@ mutation DeleteUserSound(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -5024,7 +5396,13 @@ mutation DeleteUserSound(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -5115,21 +5493,11 @@ mutation CreateRoutineSound(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -5164,13 +5532,13 @@ mutation CreateRoutineSound(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5191,6 +5559,9 @@ mutation CreateRoutineSound(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5264,21 +5635,11 @@ mutation UpdateRoutineSound(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -5313,13 +5674,13 @@ mutation UpdateRoutineSound(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5340,6 +5701,9 @@ mutation UpdateRoutineSound(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5413,21 +5777,11 @@ mutation DeleteRoutineSound(
       tags
       audio_names
       approvalStatus
-      comment {
-        id
-        soundID
-        userDataID
-        comment
-        createdAt
-        updatedAt
-        owner
+      commentsOwnedBySound {
+        nextToken
       }
-      preset {
-        id
-        soundID
-        createdAt
-        updatedAt
-        owner
+      presetsOwnedBySound {
+        nextToken
       }
       users {
         nextToken
@@ -5462,13 +5816,13 @@ mutation DeleteRoutineSound(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5489,6 +5843,888 @@ mutation DeleteRoutineSound(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateUserPreset(
+  $input: CreateUserPresetInput!
+  $condition: ModelUserPresetConditionInput
+) {
+  createUserPreset(input: $input, condition: $condition) {
+    id
+    presetDataID
+    userDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateUserPreset(
+  $input: UpdateUserPresetInput!
+  $condition: ModelUserPresetConditionInput
+) {
+  updateUserPreset(input: $input, condition: $condition) {
+    id
+    presetDataID
+    userDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteUserPreset(
+  $input: DeleteUserPresetInput!
+  $condition: ModelUserPresetConditionInput
+) {
+  deleteUserPreset(input: $input, condition: $condition) {
+    id
+    presetDataID
+    userDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userData {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation CreateRoutinePreset(
+  $input: CreateRoutinePresetInput!
+  $condition: ModelRoutinePresetConditionInput
+) {
+  createRoutinePreset(input: $input, condition: $condition) {
+    id
+    presetDataID
+    routineDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateRoutinePreset(
+  $input: UpdateRoutinePresetInput!
+  $condition: ModelRoutinePresetConditionInput
+) {
+  updateRoutinePreset(input: $input, condition: $condition) {
+    id
+    presetDataID
+    routineDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteRoutinePreset(
+  $input: DeleteRoutinePresetInput!
+  $condition: ModelRoutinePresetConditionInput
+) {
+  deleteRoutinePreset(input: $input, condition: $condition) {
+    id
+    presetDataID
+    routineDataID
+    presetData {
+      id
+      userDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        userDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    routineData {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5550,13 +6786,13 @@ mutation CreateRoutinePrayer(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5577,6 +6813,9 @@ mutation CreateRoutinePrayer(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5682,13 +6921,13 @@ mutation UpdateRoutinePrayer(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5709,6 +6948,9 @@ mutation UpdateRoutinePrayer(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5814,13 +7056,13 @@ mutation DeleteRoutinePrayer(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5841,6 +7083,9 @@ mutation DeleteRoutinePrayer(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -5946,13 +7191,13 @@ mutation CreateRoutineStretch(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -5973,6 +7218,9 @@ mutation CreateRoutineStretch(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6068,13 +7316,13 @@ mutation UpdateRoutineStretch(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6095,6 +7343,9 @@ mutation UpdateRoutineStretch(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6190,13 +7441,13 @@ mutation DeleteRoutineStretch(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6217,6 +7468,9 @@ mutation DeleteRoutineStretch(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6312,13 +7566,13 @@ mutation CreateRoutineBreathing(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6339,6 +7593,9 @@ mutation CreateRoutineBreathing(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6434,13 +7691,13 @@ mutation UpdateRoutineBreathing(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6461,6 +7718,9 @@ mutation UpdateRoutineBreathing(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6556,13 +7816,13 @@ mutation DeleteRoutineBreathing(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6583,6 +7843,9 @@ mutation DeleteRoutineBreathing(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6678,13 +7941,13 @@ mutation CreateRoutineBedtimeStoryInfo(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6705,6 +7968,9 @@ mutation CreateRoutineBedtimeStoryInfo(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6812,13 +8078,13 @@ mutation UpdateRoutineBedtimeStoryInfo(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6839,6 +8105,9 @@ mutation UpdateRoutineBedtimeStoryInfo(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -6946,13 +8215,13 @@ mutation DeleteRoutineBedtimeStoryInfo(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -6973,6 +8242,9 @@ mutation DeleteRoutineBedtimeStoryInfo(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7080,13 +8352,13 @@ mutation CreateRoutineSelfLove(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7107,6 +8379,9 @@ mutation CreateRoutineSelfLove(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7211,13 +8486,13 @@ mutation UpdateRoutineSelfLove(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7238,6 +8513,9 @@ mutation UpdateRoutineSelfLove(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7342,13 +8620,13 @@ mutation DeleteRoutineSelfLove(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7369,6 +8647,9 @@ mutation DeleteRoutineSelfLove(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7473,13 +8754,13 @@ mutation CreateUserRoutine(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7500,6 +8781,9 @@ mutation CreateUserRoutine(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7547,7 +8831,13 @@ mutation CreateUserRoutine(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -7626,13 +8916,13 @@ mutation UpdateUserRoutine(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7653,6 +8943,9 @@ mutation UpdateUserRoutine(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7700,7 +8993,13 @@ mutation UpdateUserRoutine(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -7779,13 +9078,13 @@ mutation DeleteUserRoutine(
         updatedAt
         owner
       }
-      original_name
-      display_name
+      originalName
+      displayName
       numberOfSteps
       numberOfTimesUsed
       fullPlayTime
       icon
-      visible_to_others
+      visibleToOthers
       colorHEX
       playSoundDuringStretch
       playSoundDuringPrayer
@@ -7806,6 +9105,9 @@ mutation DeleteUserRoutine(
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
       sounds {
+        nextToken
+      }
+      presets {
         nextToken
       }
       prayers {
@@ -7853,7 +9155,13 @@ mutation DeleteUserRoutine(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -7977,7 +9285,13 @@ mutation CreateUserBedtimeStoryInfo(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8101,7 +9415,13 @@ mutation UpdateUserBedtimeStoryInfo(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8225,7 +9545,13 @@ mutation DeleteUserBedtimeStoryInfo(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8347,7 +9673,13 @@ mutation CreateUserPrayer(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8469,7 +9801,13 @@ mutation UpdateUserPrayer(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8591,7 +9929,13 @@ mutation DeleteUserPrayer(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8712,7 +10056,13 @@ mutation CreateUserSelfLove(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8833,7 +10183,13 @@ mutation UpdateUserSelfLove(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -8954,7 +10310,13 @@ mutation DeleteUserSelfLove(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9066,7 +10428,13 @@ mutation CreateUserStretch(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9178,7 +10546,13 @@ mutation UpdateUserStretch(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9290,7 +10664,13 @@ mutation DeleteUserStretch(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9402,7 +10782,13 @@ mutation CreateUserBreathing(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9514,7 +10900,13 @@ mutation UpdateUserBreathing(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {
@@ -9626,7 +11018,13 @@ mutation DeleteUserBreathing(
       sounds {
         nextToken
       }
-      comments {
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
         nextToken
       }
       routinesOwnedByUser {

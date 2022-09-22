@@ -13,7 +13,7 @@ import java.util.Set;
  */
 
 public final class AmplifyModelProvider implements ModelProvider {
-  private static final String AMPLIFY_MODEL_VERSION = "d2e360a52d059e61620cdfedab4cc887";
+  private static final String AMPLIFY_MODEL_VERSION = "10234d38e469f9d6724bbb636bb0aab5";
   private static AmplifyModelProvider amplifyGeneratedModelInstance;
   private AmplifyModelProvider() {
     
@@ -34,7 +34,7 @@ public final class AmplifyModelProvider implements ModelProvider {
   @Override
    public Set<Class<? extends Model>> models() {
     final Set<Class<? extends Model>> modifiableSet = new HashSet<>(
-          Arrays.<Class<? extends Model>>asList(SoundData.class, UserData.class, CommentData.class, RoutineData.class, PrayerData.class, StretchData.class, BreathingData.class, BedtimeStoryInfoData.class, BedtimeStoryInfoChapterData.class, ChapterPageData.class, SelfLoveData.class, PresetData.class, PresetNameAndVolumesMapData.class, UserSound.class, RoutineSound.class, UserRoutine.class, UserStretch.class, UserPrayer.class, UserBreathing.class, UserSelfLove.class, UserBedtimeStoryInfo.class, RoutinePrayer.class, RoutineStretch.class, RoutineBreathing.class, RoutineBedtimeStoryInfo.class, RoutineSelfLove.class)
+          Arrays.<Class<? extends Model>>asList(SoundData.class, UserData.class, PresetData.class, CommentData.class, RoutineData.class, PrayerData.class, StretchData.class, BreathingData.class, BedtimeStoryInfoData.class, BedtimeStoryInfoChapterData.class, ChapterPageData.class, SelfLoveData.class, UserSound.class, RoutineSound.class, UserPreset.class, UserRoutine.class, UserStretch.class, UserPrayer.class, UserBreathing.class, UserSelfLove.class, UserBedtimeStoryInfo.class, RoutinePreset.class, RoutinePrayer.class, RoutineStretch.class, RoutineBreathing.class, RoutineBedtimeStoryInfo.class, RoutineSelfLove.class)
         );
     
         return Immutable.of(modifiableSet);

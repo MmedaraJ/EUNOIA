@@ -6,6 +6,7 @@ import com.amplifyframework.api.graphql.model.ModelPagination
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.CommentData
+import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.models.CommentObject
 import kotlinx.coroutines.CoroutineScope
@@ -35,13 +36,47 @@ object CommentBackend {
         }
     }
 
-    fun queryCommentBasedOnSound(sound: SoundData, completed: (comment: CommentData) -> Unit) {
+    fun queryCommentsBasedOnSound(
+        sound: SoundData,
+        completed: (comment: MutableList<CommentData>) -> Unit
+    ) {
         scope.launch {
+            val commentList = mutableListOf<CommentData>()
             Amplify.API.query(
                 ModelQuery.list(
                     CommentData::class.java,
                     CommentData.SOUND.eq(sound.id),
-                    ModelPagination.limit(1_00)
+                    //ModelPagination.limit(1_00)
+                ),
+                { response ->
+                    if(response.hasErrors()){
+                        Log.e(TAG, response.errors.first().message)
+                    }
+                    else{
+                        if(response.hasData()) {
+                            for (commentData in response.data) {
+                                Log.i(TAG, "Retrieved comments: $commentData")
+                                commentList.add(commentData)
+                            }
+                        }
+                    }
+                    completed(commentList)
+                },
+                {
+                    error -> Log.e(TAG, "Query failure", error)
+                    completed(commentList)
+                }
+            )
+        }
+    }
+
+    fun queryCommentBasedOnPreset(presetData: PresetData, completed: (comment: CommentData) -> Unit) {
+        scope.launch {
+            Amplify.API.query(
+                ModelQuery.list(
+                    CommentData::class.java,
+                    CommentData.PRESET.eq(presetData.id),
+                    ModelPagination.limit(100)
                 ),
                 { response ->
                     if(response.hasErrors()){

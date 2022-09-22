@@ -58,9 +58,10 @@ public final class UserData implements Model {
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean authenticated;
   private final @ModelField(targetType="String", isRequired = true) String subscription;
   private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "soundOwner", type = SoundData.class) List<SoundData> soundsOwnedByUser = null;
-  private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "secondarySoundOwner", type = SoundData.class) List<SoundData> secondarySoundsOwnedByUser = null;
   private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "userData", type = UserSound.class) List<UserSound> sounds = null;
-  private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "commentOwner", type = CommentData.class) List<CommentData> comments = null;
+  private final @ModelField(targetType="PresetData") @HasMany(associatedWith = "presetOwner", type = PresetData.class) List<PresetData> presetsOwnedByUser = null;
+  private final @ModelField(targetType="UserPreset") @HasMany(associatedWith = "userData", type = UserPreset.class) List<UserPreset> presets = null;
+  private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "commentOwner", type = CommentData.class) List<CommentData> commentsOwnedByUser = null;
   private final @ModelField(targetType="RoutineData") @HasMany(associatedWith = "routineOwner", type = RoutineData.class) List<RoutineData> routinesOwnedByUser = null;
   private final @ModelField(targetType="UserRoutine") @HasMany(associatedWith = "userData", type = UserRoutine.class) List<UserRoutine> routines = null;
   private final @ModelField(targetType="StretchData") @HasMany(associatedWith = "stretchOwner", type = StretchData.class) List<StretchData> stretchesOwnedByUser = null;
@@ -139,16 +140,20 @@ public final class UserData implements Model {
       return soundsOwnedByUser;
   }
   
-  public List<SoundData> getSecondarySoundsOwnedByUser() {
-      return secondarySoundsOwnedByUser;
-  }
-  
   public List<UserSound> getSounds() {
       return sounds;
   }
   
-  public List<CommentData> getComments() {
-      return comments;
+  public List<PresetData> getPresetsOwnedByUser() {
+      return presetsOwnedByUser;
+  }
+  
+  public List<UserPreset> getPresets() {
+      return presets;
+  }
+  
+  public List<CommentData> getCommentsOwnedByUser() {
+      return commentsOwnedByUser;
   }
   
   public List<RoutineData> getRoutinesOwnedByUser() {

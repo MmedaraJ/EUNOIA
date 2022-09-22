@@ -1,21 +1,36 @@
 package com.example.eunoia.models
 
+import android.net.Uri
+import android.os.Parcelable
 import com.amplifyframework.datastore.generated.model.PresetData
-import com.amplifyframework.datastore.generated.model.PresetNameAndVolumesMapData
-import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.PresetPublicityStatus
+import com.google.gson.Gson
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 object PresetObject{
     private const val TAG = "PresetObject"
 
+    @Parcelize
     data class Preset(
         val id: String,
-        val sound: SoundData?
-    ){
-        //override fun toString(): String = presets.toString()
-        //return an API PresetData from this PresetObject
+        val presetOwner: @RawValue UserObject.User,
+        val key: String,
+        val volumes: List<Int>,
+        var sound: @RawValue SoundObject.Sound?,
+        val publicityStatus: PresetPublicityStatus
+    ): Parcelable{
+        override fun toString(): String {
+            return Uri.encode(Gson().toJson(this))
+        }
+
         val data: PresetData
             get() = PresetData.builder()
-                .sound(this.sound)
+                .presetOwner(this.presetOwner.data)
+                .key(this.key)
+                .volumes(this.volumes)
+                .sound(this.sound!!.data)
+                .publicityStatus(this.publicityStatus)
                 .id(this.id)
                 .build()
 
@@ -23,7 +38,11 @@ object PresetObject{
             fun from(presetData: PresetData): Preset{
                 val result = Preset(
                     presetData.id,
-                    presetData.sound
+                    UserObject.User.from(presetData.presetOwner),
+                    presetData.key,
+                    presetData.volumes,
+                    SoundObject.Sound.from(presetData.sound),
+                    presetData.publicityStatus
                 )
                 return result
             }

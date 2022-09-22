@@ -128,7 +128,7 @@ fun SavePreset(){
 }
 
 fun nameDoesNotAlreadyExist(): Boolean{
-    for(map in soundPresetNameAndVolumesMap){
+    for(map in createSoundPresets){
         if(map!!.value.key == presetName){
             return false
         }

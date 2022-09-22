@@ -254,12 +254,11 @@ fun Sliders(
                                     if (globalViewModel_!!.currentSoundPlaying != null) {
                                         if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
                                             if(
-                                                childSounds.value.size > 0 &&
-                                                childSounds.value.size == itSize
+                                                otherPresetsThatOriginatedFromThisSound!!.size > 0 &&
+                                                otherPresetsThatOriginatedFromThisSound!!.size == itPresetsSize
                                             ) {
-                                                getAssociatedSoundWithSameVolume(
-                                                    childSounds.value,
-                                                    navController
+                                                getAssociatedPresetWithSameVolume(
+                                                    otherPresetsThatOriginatedFromThisSound!!,
                                                 )
                                             }
                                         }
@@ -405,6 +404,7 @@ fun Controls(
                     0
                 ) {
                     globalViewModel_!!.currentSoundToBeAdded = sound
+                    globalViewModel_!!.currentPresetToBeAdded = soundPreset
                     globalViewModel_!!.bottomSheetOpenFor = "addToSoundListOrRoutine"
                     openBottomSheet(scope, state)
                 }
@@ -452,8 +452,6 @@ fun resetSounds(
     if(globalViewModel_!!.currentSoundPlaying != null){
         if(globalViewModel_!!.currentSoundPlaying!!.id == soundData.id){
             if(soundMediaPlayerService.areMediaPlayersInitialized()) {
-                soundMediaPlayerService.onDestroy()
-                Log.i(TAG, "preset name map size -0 ${soundPresetNameAndVolumesMapData.value!!.volumes.size}")
                 resetSliders()
                 meditationBellInterval.value = 0
                 globalViewModel_!!.soundMeditationBellInterval = 0
@@ -462,6 +460,7 @@ fun resetSounds(
                 globalViewModel_!!.soundTimerTime = 0
                 startCountDownTimer(context, timerTime.value, soundMediaPlayerService)
                 globalViewModel_!!.isCurrentSoundPlaying = false
+                soundMediaPlayerService.onDestroy()
             }
         }
     }
@@ -489,10 +488,17 @@ fun resetAll(applicationContext: Context, soundMediaPlayerService: SoundMediaPla
     startCountDownTimer(applicationContext, timerTime.value, soundMediaPlayerService)
 }
 
-fun resetSliders(){
-    Log.i(TAG, "0th vol size ${soundPresets!!.presets[0].volumes[0]}")
+fun resetSlidersAfterReset(){
     sliderPositions!!.forEachIndexed { index, sliderPosition ->
-        sliderPosition!!.value = soundPresets!!.presets[0].volumes[index].toFloat()
+        sliderPosition!!.value = globalViewModel_!!.currentSoundPlayingPreset!!.volumes[index].toFloat()
+        globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value = globalViewModel_!!.currentSoundPlayingPreset!!.volumes[index].toFloat()
+    }
+}
+
+fun resetSliders(){
+    sliderPositions!!.forEachIndexed { index, sliderPosition ->
+        sliderPosition!!.value = soundPreset!!.volumes[index].toFloat()
+        globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value = soundPreset!!.volumes[index].toFloat()
     }
 }
 
@@ -506,18 +512,17 @@ fun increaseSliderLevels(
             sliderPositions!!.forEachIndexed{ index, sliderPosition ->
                 if(sliderPosition!!.value < 10) {
                     sliderPosition.value++
-                    sliderVolumes!![index] = sliderVolumes!![index]!! + 1
+                    sliderVolumes!![index] = sliderVolumes!![index] + 1
                     soundMediaPlayerService.setVolumes(sliderVolumes!!)
                     soundMediaPlayerService.adjustMediaPlayerVolumes()
                 }
             }
             if(
-                childSounds.value.size > 0 &&
-                childSounds.value.size == itSize
+                otherPresetsThatOriginatedFromThisSound!!.size > 0 &&
+                otherPresetsThatOriginatedFromThisSound!!.size == itPresetsSize
             ) {
-                getAssociatedSoundWithSameVolume(
-                    childSounds.value,
-                    navController
+                getAssociatedPresetWithSameVolume(
+                    otherPresetsThatOriginatedFromThisSound!!,
                 )
             }
         }
@@ -540,12 +545,11 @@ fun decreaseSliderLevels(
                 }
             }
             if(
-                childSounds.value.size > 0 &&
-                childSounds.value.size == itSize
+                otherPresetsThatOriginatedFromThisSound!!.size > 0 &&
+                otherPresetsThatOriginatedFromThisSound!!.size == itPresetsSize
             ) {
-                getAssociatedSoundWithSameVolume(
-                    childSounds.value,
-                    navController
+                getAssociatedPresetWithSameVolume(
+                    otherPresetsThatOriginatedFromThisSound!!,
                 )
             }
         }
@@ -759,16 +763,12 @@ fun playOrPauseAccordingly(
 ) {
     if(globalViewModel_!!.currentSoundPlaying != null) {
         if(globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
-            Log.i(TAG, "Testing play after reset 0")
             if(soundMediaPlayerService.areMediaPlayersInitialized()) {
-                Log.i(TAG, "Testing play after reset 1")
                 if (soundMediaPlayerService.areMediaPlayersPlaying()) {
-                    Log.i(TAG, "Testing play after reset 2")
                     pauseSoundScreenSounds(
                         soundMediaPlayerService
                     )
                 } else {
-                    Log.i(TAG, "Testing play after reset 3")
                     startSoundScreenSounds(
                         soundMediaPlayerService,
                         generalMediaPlayerService,
@@ -777,7 +777,6 @@ fun playOrPauseAccordingly(
                     )
                 }
             }else {
-                Log.i(TAG, "Testing play after reset 4")
                 startSoundScreenSounds(
                     soundMediaPlayerService,
                     generalMediaPlayerService,
@@ -786,7 +785,6 @@ fun playOrPauseAccordingly(
                 )
             }
         }else{
-            Log.i(TAG, "I must receive audio /.")
             retrieveSoundAudio(
                 soundMediaPlayerService,
                 generalMediaPlayerService,
@@ -795,7 +793,6 @@ fun playOrPauseAccordingly(
             )
         }
     }else{
-        Log.i(TAG, "Testing play after reset 5")
         retrieveSoundAudio(
             soundMediaPlayerService,
             generalMediaPlayerService,
@@ -842,14 +839,11 @@ private fun startSoundScreenSounds(
     context: Context,
     soundData: SoundData
 ) {
-    Log.i(TAG, "Testing play after reset 6")
     if(soundUris.isNotEmpty()){
         if(soundMediaPlayerService.areMediaPlayersInitialized()){
             if(globalViewModel_!!.currentSoundPlaying!!.id == soundData.id){
                 soundMediaPlayerService.startMediaPlayers()
-                Log.i(TAG, "Same sounds /.")
             }else{
-                Log.i(TAG, "Different sounds /.")
                 initializeMediaPlayers(
                     soundMediaPlayerService,
                     generalMediaPlayerService,
@@ -880,10 +874,8 @@ private fun initializeMediaPlayers(
     context: Context,
     soundData: SoundData
 ){
-    Log.i(TAG, "Sound uri size 03 = ${soundUris.size}")
     generalMediaPlayerService.onDestroy()
     soundMediaPlayerService.onDestroy()
-    Log.i(TAG, "Sound uri size 04 = ${soundUris.size}")
     soundMediaPlayerService.setAudioUris(soundUris)
     soundMediaPlayerService.setVolumes(sliderVolumes!!)
     val intent = Intent()
@@ -902,11 +894,11 @@ private fun initializeMediaPlayers(
 
 private fun setGlobalPropertiesAfterPlayingSound(soundData: SoundData, context: Context) {
     globalViewModel_!!.currentSoundPlaying = soundData
-    globalViewModel_!!.currentSoundPlayingPreset = soundPresets
-    globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = soundPresetNameAndVolumesMapData.value
-    Log.i(TAG, "0th size 3 ${soundPresetNameAndVolumesMapData.value!!.volumes[0]}")
+    globalViewModel_!!.currentSoundPlayingPreset = soundPreset
+    globalViewModel_!!.currentAllOriginalSoundPreset = allOriginalSoundPresets
+    globalViewModel_!!.currentAllUserSoundPreset = allUserSoundPresets
     globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-    for (volume in globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap!!.volumes) {
+    for (volume in globalViewModel_!!.currentSoundPlayingPreset!!.volumes) {
         globalViewModel_!!.currentSoundPlayingSliderPositions.add(
             mutableStateOf(volume.toFloat())
         )
@@ -1264,61 +1256,9 @@ fun Tip(){
 }
 
 @Composable
-fun GetTheCommentsAssociatedWithTheseSounds(
-    sounds: MutableList<SoundData>,
-    currentSound: SoundData,
-    navController: NavController,
-    context: Context,
-    soundMediaPlayerService: SoundMediaPlayerService
-){
-    for(sound in sounds){
-        var commentData by remember{ mutableStateOf<CommentData?>(null) }
-        getCommentForThisSound(sound){
-            commentData = it
-        }
-
-        //check if user already has this sound saved and do not display it
-        var userAlreadyHasSound = false
-        for (userSound in globalViewModel_!!.currentUser!!.sounds) {
-            if (
-                userSound.soundData.id == sound.id &&
-                userSound.userData.id == globalViewModel_!!.currentUser!!.id
-            ) {
-                userAlreadyHasSound = true
-                break
-            }
-        }
-
-        if(
-            !userAlreadyHasSound &&
-            commentData != null &&
-            sound.id != currentSound.id &&
-            commentData!!.commentOwner.id != globalViewModel_!!.currentUser!!.id &&
-            sound.approvalStatus.equals(SoundApprovalStatus.APPROVED)
-        ) {
-            OtherUsersCommentsUI(
-                sound,
-                commentData!!,
-                navController,
-                context,
-                soundMediaPlayerService
-            )
-        }
-    }
-}
-
-fun getCommentForThisSound(sound: SoundData, completed: (commentData: CommentData) -> Unit){
-    CommentBackend.queryCommentBasedOnSound(sound){
-        completed(it)
-    }
-}
-
-@Composable
-fun OtherUsersCommentsUI(
-    sound: SoundData,
-    comment: CommentData,
-    navController: NavController,
-    context: Context,
+fun CommentsUI(
+    commentData: CommentData,
+    soundData: SoundData,
     soundMediaPlayerService: SoundMediaPlayerService
 ){
     var clicked by rememberSaveable{ mutableStateOf(false) }
@@ -1326,11 +1266,17 @@ fun OtherUsersCommentsUI(
         .padding(bottom = 16.dp)
         .wrapContentHeight()
         .clickable {
-            clicked = !clicked
-            /*globalViewModel_!!.currentSoundPlayingPreset = null
-            resetAll(context, soundMediaPlayerService)*/
-            navigateToSoundScreen(navController, sound)
-            clicked = !clicked
+            if(globalViewModel_!!.currentSoundPlaying != null) {
+                if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
+                    clicked = true
+                    changePreset(
+                        commentData.preset,
+                        soundMediaPlayerService
+                    ) {
+
+                    }
+                }
+            }
         }
         .fillMaxWidth()
 
@@ -1364,7 +1310,7 @@ fun OtherUsersCommentsUI(
                         }
                 ) {
                     LightText(
-                        text = comment.comment,
+                        text = commentData.comment,
                         color = Black,
                         fontSize = 13,
                         xOffset = 0,
@@ -1378,12 +1324,12 @@ fun OtherUsersCommentsUI(
 
 @Composable
 fun PresetsUI(
-    allPresetNameAndVolumeMapData: List<PresetNameAndVolumesMapData>,
+    allPresets: MutableList<PresetData>,
     soundData: SoundData,
     soundMediaPlayerService: SoundMediaPlayerService
 ){
     val borders = mutableListOf<MutableState<Boolean>>()
-    for(i in allPresetNameAndVolumeMapData.indices){
+    for(i in allPresets.indices){
         if(i == 0){
             borders.add(remember{ mutableStateOf(true) })
         }else {
@@ -1391,7 +1337,7 @@ fun PresetsUI(
         }
     }
 
-    allPresetNameAndVolumeMapData.forEachIndexed{ index, presetNameAndVolumeMapData ->
+    allPresets.forEachIndexed{ index, presetData ->
         var changePreset by rememberSaveable { mutableStateOf(false) }
         var cardModifier = Modifier
             .padding(bottom = 8.dp)
@@ -1411,7 +1357,7 @@ fun PresetsUI(
 
         if (changePreset) {
             changePreset(
-                presetNameAndVolumeMapData,
+                presetData,
                 soundMediaPlayerService
             ) {
                 changePreset = false
@@ -1444,7 +1390,7 @@ fun PresetsUI(
                         }
                 ) {
                     LightText(
-                        text = presetNameAndVolumeMapData.key,
+                        text = presetData.key,
                         color = Black,
                         fontSize = 16,
                         xOffset = 0,
@@ -1457,22 +1403,24 @@ fun PresetsUI(
 }
 
 fun changePreset(
-    presetNameAndVolumeMapData: PresetNameAndVolumesMapData,
+    preset: PresetData,
     soundMediaPlayerService: SoundMediaPlayerService,
     completed: () -> Unit
 ){
-    sliderVolumes = presetNameAndVolumeMapData.volumes
-    defaultVolumes = presetNameAndVolumeMapData.volumes
-    sliderPositions = mutableListOf()
-    globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-    for(volume in sliderVolumes!!){
+    sliderVolumes = preset.volumes
+    defaultVolumes = preset.volumes
+    //sliderPositions = mutableListOf()
+    //globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
+    /*for(volume in sliderVolumes!!){
         if(sliderPositions!!.size < sliderVolumes!!.size) {
-            sliderPositions!!.add(mutableStateOf(volume!!.toFloat()))
+            sliderPositions!!.add(mutableStateOf(volume.toFloat()))
             globalViewModel_!!.currentSoundPlayingSliderPositions.add(mutableStateOf(volume.toFloat()))
         }
-    }
-    soundPresetNameAndVolumesMapData.value = presetNameAndVolumeMapData
-    globalViewModel_!!.currentSoundPlayingPresetNameAndVolumesMap = soundPresetNameAndVolumesMapData.value
+    }*/
+    soundPreset = preset
+    globalViewModel_!!.currentSoundPlayingPreset = preset
+    globalViewModel_!!.currentAllOriginalSoundPreset = allOriginalSoundPresets
+    globalViewModel_!!.currentAllUserSoundPreset = allUserSoundPresets
 
     soundMediaPlayerService.setVolumes(sliderVolumes!!)
     soundMediaPlayerService.adjustMediaPlayerVolumes()
@@ -1481,65 +1429,62 @@ fun changePreset(
     completed()
 }
 
-fun getAssociatedSoundWithSameVolume(
-    otherSoundsThatOriginatedFromThisSound: MutableList<SoundData>,
-    navController: NavController
+fun getAssociatedPresetWithSameVolume(
+    otherPresetsThatOriginatedFromThisSound: MutableList<PresetData>,
 ){
     var foundSimilarVolumes by mutableStateOf(false)
-    var presetMapData:  PresetNameAndVolumesMapData? = null
-    for(sound in otherSoundsThatOriginatedFromThisSound){
-        //var presets: PresetData? = null
-        getSoundPresets(sound){
-            for(presetMap in it.presets) {
-                var sameVolume = 0
-                for (i in sliderVolumes!!.indices){
-                    if(i < sliderVolumes!!.size) {
-                        if (sliderVolumes!![i] == presetMap.volumes[i]) {
-                            sameVolume++
-                        }
-                        if (sameVolume == sliderVolumes!!.size) {
-                            foundSimilarVolumes = true
-                            presetMapData = presetMap
-                            break
-                        }
-                    }
+    var presetData:  PresetData? = null
+    for(preset in otherPresetsThatOriginatedFromThisSound){
+        var sameVolume = 0
+        for (i in sliderVolumes!!.indices){
+            if(i < sliderVolumes!!.size) {
+                if (sliderVolumes!![i] == preset.volumes[i]) {
+                    sameVolume++
                 }
-                if(foundSimilarVolumes){
-                    associatedSound = sound
-                    associatedPresetNameAndVolumesMapData = presetMapData
-                    if(associatedSound != null && associatedPresetNameAndVolumesMapData != null){
-                        showAssociatedSoundWithSameVolume.value = true
-                    }
+                if (sameVolume == sliderVolumes!!.size) {
+                    foundSimilarVolumes = true
+                    presetData = preset
                     break
                 }
+            }
+            if(foundSimilarVolumes){
+                associatedPreset = presetData
+                if(associatedPreset != null){
+                    showAssociatedSoundWithSameVolume.value = true
+                }
+                break
             }
         }
     }
 
     if(!foundSimilarVolumes){
         showAssociatedSoundWithSameVolume.value = false
-        associatedSound = null
-        associatedPresetNameAndVolumesMapData = null
+        associatedPreset = null
+        //TODO get original preset with same volume
     }
 }
 
+//TODO get original preset with same volume
+
 @Composable
-fun AssociatedSoundWithSameVolume(
-    soundData: SoundData,
-    presetName: String,
-    navController: NavController
+fun AssociatedPresetWithSameVolume(
+    presetData: PresetData,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ){
     var clicked by rememberSaveable{ mutableStateOf(false) }
     var cardModifier = Modifier
         .padding(bottom = 16.dp)
         .wrapContentHeight()
         .clickable {
-            clicked = !clicked
-            associatedSound = null
-            associatedPresetNameAndVolumesMapData = null
-            showAssociatedSoundWithSameVolume.value = false
-            navigateToSoundScreen(navController, soundData)
-            clicked = !clicked
+            /*clicked = !clicked
+            changePreset(
+                presetData,
+                soundMediaPlayerService
+            ) {
+                associatedPreset = null
+                showAssociatedSoundWithSameVolume.value = false
+            }
+            clicked = !clicked*/
         }
         .wrapContentWidth()
 
@@ -1571,7 +1516,7 @@ fun AssociatedSoundWithSameVolume(
                     }
             ) {
                 LightText(
-                    text = "This sound has this volume",
+                    text = "This preset already has this volume",
                     color = Black,
                     fontSize = 16,
                     xOffset = 0,
@@ -1587,7 +1532,7 @@ fun AssociatedSoundWithSameVolume(
                     }
             ) {
                 NormalText(
-                    text = "${soundData.displayName} - '$presetName' preset",
+                    text = presetData.key,
                     color = Black,
                     fontSize = 16,
                     xOffset = 0,

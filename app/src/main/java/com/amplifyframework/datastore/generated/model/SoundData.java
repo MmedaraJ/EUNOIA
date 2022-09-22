@@ -1,7 +1,6 @@
 package com.amplifyframework.datastore.generated.model;
 
 import com.amplifyframework.core.model.annotations.BelongsTo;
-import com.amplifyframework.core.model.annotations.HasOne;
 import com.amplifyframework.core.model.annotations.HasMany;
 import com.amplifyframework.core.model.temporal.Temporal;
 
@@ -49,7 +48,7 @@ public final class SoundData implements Model {
   private final @ModelField(targetType="String", isRequired = true) String original_name;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="String", isRequired = true) String short_description;
-  private final @ModelField(targetType="String", isRequired = true) String long_description;
+  private final @ModelField(targetType="String") String long_description;
   private final @ModelField(targetType="String", isRequired = true) String audio_key_s3;
   private final @ModelField(targetType="Int", isRequired = true) Integer icon;
   private final @ModelField(targetType="Int", isRequired = true) Integer colorHEX;
@@ -58,8 +57,8 @@ public final class SoundData implements Model {
   private final @ModelField(targetType="String", isRequired = true) List<String> tags;
   private final @ModelField(targetType="String", isRequired = true) List<String> audio_names;
   private final @ModelField(targetType="SoundApprovalStatus") SoundApprovalStatus approvalStatus;
-  private final @ModelField(targetType="CommentData") @HasOne(associatedWith = "sound", type = CommentData.class) CommentData comment = null;
-  private final @ModelField(targetType="PresetData") @HasOne(associatedWith = "sound", type = PresetData.class) PresetData preset = null;
+  private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "sound", type = CommentData.class) List<CommentData> commentsOwnedBySound = null;
+  private final @ModelField(targetType="PresetData") @HasMany(associatedWith = "sound", type = PresetData.class) List<PresetData> presetsOwnedBySound = null;
   private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "soundData", type = UserSound.class) List<UserSound> users = null;
   private final @ModelField(targetType="RoutineSound") @HasMany(associatedWith = "soundData", type = RoutineSound.class) List<RoutineSound> routines = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
@@ -120,12 +119,12 @@ public final class SoundData implements Model {
       return approvalStatus;
   }
   
-  public CommentData getComment() {
-      return comment;
+  public List<CommentData> getCommentsOwnedBySound() {
+      return commentsOwnedBySound;
   }
   
-  public PresetData getPreset() {
-      return preset;
+  public List<PresetData> getPresetsOwnedBySound() {
+      return presetsOwnedBySound;
   }
   
   public List<UserSound> getUsers() {
@@ -298,12 +297,7 @@ public final class SoundData implements Model {
   
 
   public interface ShortDescriptionStep {
-    LongDescriptionStep shortDescription(String shortDescription);
-  }
-  
-
-  public interface LongDescriptionStep {
-    AudioKeyS3Step longDescription(String longDescription);
+    AudioKeyS3Step shortDescription(String shortDescription);
   }
   
 
@@ -345,17 +339,17 @@ public final class SoundData implements Model {
   public interface BuildStep {
     SoundData build();
     BuildStep id(String id);
+    BuildStep longDescription(String longDescription);
     BuildStep approvalStatus(SoundApprovalStatus approvalStatus);
   }
   
 
-  public static class Builder implements SoundOwnerStep, OriginalNameStep, DisplayNameStep, ShortDescriptionStep, LongDescriptionStep, AudioKeyS3Step, IconStep, ColorHexStep, FullPlayTimeStep, VisibleToOthersStep, TagsStep, AudioNamesStep, BuildStep {
+  public static class Builder implements SoundOwnerStep, OriginalNameStep, DisplayNameStep, ShortDescriptionStep, AudioKeyS3Step, IconStep, ColorHexStep, FullPlayTimeStep, VisibleToOthersStep, TagsStep, AudioNamesStep, BuildStep {
     private String id;
     private UserData soundOwner;
     private String original_name;
     private String display_name;
     private String short_description;
-    private String long_description;
     private String audio_key_s3;
     private Integer icon;
     private Integer colorHEX;
@@ -363,6 +357,7 @@ public final class SoundData implements Model {
     private Boolean visible_to_others;
     private List<String> tags;
     private List<String> audio_names;
+    private String long_description;
     private SoundApprovalStatus approvalStatus;
     @Override
      public SoundData build() {
@@ -407,16 +402,9 @@ public final class SoundData implements Model {
     }
     
     @Override
-     public LongDescriptionStep shortDescription(String shortDescription) {
+     public AudioKeyS3Step shortDescription(String shortDescription) {
         Objects.requireNonNull(shortDescription);
         this.short_description = shortDescription;
-        return this;
-    }
-    
-    @Override
-     public AudioKeyS3Step longDescription(String longDescription) {
-        Objects.requireNonNull(longDescription);
-        this.long_description = longDescription;
         return this;
     }
     
@@ -470,6 +458,12 @@ public final class SoundData implements Model {
     }
     
     @Override
+     public BuildStep longDescription(String longDescription) {
+        this.long_description = longDescription;
+        return this;
+    }
+    
+    @Override
      public BuildStep approvalStatus(SoundApprovalStatus approvalStatus) {
         this.approvalStatus = approvalStatus;
         return this;
@@ -493,7 +487,6 @@ public final class SoundData implements Model {
         .originalName(originalName)
         .displayName(displayName)
         .shortDescription(shortDescription)
-        .longDescription(longDescription)
         .audioKeyS3(audioKeyS3)
         .icon(icon)
         .colorHex(colorHex)
@@ -501,6 +494,7 @@ public final class SoundData implements Model {
         .visibleToOthers(visibleToOthers)
         .tags(tags)
         .audioNames(audioNames)
+        .longDescription(longDescription)
         .approvalStatus(approvalStatus);
     }
     
@@ -522,11 +516,6 @@ public final class SoundData implements Model {
     @Override
      public CopyOfBuilder shortDescription(String shortDescription) {
       return (CopyOfBuilder) super.shortDescription(shortDescription);
-    }
-    
-    @Override
-     public CopyOfBuilder longDescription(String longDescription) {
-      return (CopyOfBuilder) super.longDescription(longDescription);
     }
     
     @Override
@@ -562,6 +551,11 @@ public final class SoundData implements Model {
     @Override
      public CopyOfBuilder audioNames(List<String> audioNames) {
       return (CopyOfBuilder) super.audioNames(audioNames);
+    }
+    
+    @Override
+     public CopyOfBuilder longDescription(String longDescription) {
+      return (CopyOfBuilder) super.longDescription(longDescription);
     }
     
     @Override
