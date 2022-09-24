@@ -168,7 +168,12 @@ fun SoundActivityUI(
                                 )
                             },
                             { index ->
-                                navigateToSoundScreen(navController, globalViewModel_!!.currentUsersSounds!![index]!!.soundData)
+                                if(soundActivityPlayButtonTexts[index]!!.value != WAIT_FOR_SOUND) {
+                                    navigateToSoundScreen(
+                                        navController,
+                                        globalViewModel_!!.currentUsersSounds!![index]!!.soundData
+                                    )
+                                }
                             }
                         )
                     }

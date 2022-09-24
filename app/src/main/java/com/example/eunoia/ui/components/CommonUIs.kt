@@ -379,8 +379,10 @@ fun customizedOutlinedTextInput(
     height: Int,
     color: Color,
     focusedBorderColor: Color,
+    unfocusedBorderColor: Color,
     inputFontSize: Int,
     placeholder: String,
+    placeholderColor: Color,
     placeholderFontSize: Int,
     offset: Int
 ): String{
@@ -393,7 +395,7 @@ fun customizedOutlinedTextInput(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = color,
             focusedBorderColor = focusedBorderColor,
-            unfocusedBorderColor = color,
+            unfocusedBorderColor = unfocusedBorderColor,
             textColor = Black
         ),
         singleLine = true,
@@ -408,7 +410,7 @@ fun customizedOutlinedTextInput(
             Text(
                 text = placeholder,
                 style = MaterialTheme.typography.h4,
-                color = BeautyBush,
+                color = placeholderColor,
                 fontSize = placeholderFontSize.sp,
                 modifier = Modifier
                     .padding(0.dp)

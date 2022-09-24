@@ -50,7 +50,7 @@ object PresetBackend {
                 ModelQuery.list(
                     PresetData::class.java,
                     PresetData.SOUND.eq(sound.id)
-                        .and(PresetData.PRESET_OWNER.ne(globalViewModel_!!.currentUser!!.id))
+                        //.and(PresetData.PRESET_OWNER.ne(globalViewModel_!!.currentUser!!.id))
                         .and(PresetData.PUBLICITY_STATUS.eq(PresetPublicityStatus.PUBLIC))
                 ),
                 { response ->

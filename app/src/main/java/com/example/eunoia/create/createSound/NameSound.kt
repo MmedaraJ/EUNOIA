@@ -118,9 +118,11 @@ fun NameSoundUI(
                 height = 55,
                 color = SoftPeach,
                 focusedBorderColor = BeautyBush,
+                unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
                 placeholder = "Name",
                 placeholderFontSize = 16,
+                placeholderColor = BeautyBush,
                 offset = 0
             )
         }
@@ -189,9 +191,11 @@ fun NameSoundUI(
                 height = 55,
                 color = SoftPeach,
                 focusedBorderColor = BeautyBush,
+                unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
                 placeholder = "Tags",
                 placeholderFontSize = 16,
+                placeholderColor = BeautyBush,
                 offset = 0
             )
         }

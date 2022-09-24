@@ -16,7 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.eunoia.dashboard.sound.soundScreenBorderControlColors
 import com.example.eunoia.ui.components.LightText
+import com.example.eunoia.ui.theme.BeautyBush
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.Mischka
 import com.example.eunoia.ui.theme.PeriwinkleGray
@@ -33,6 +35,7 @@ fun openBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
 
 @OptIn(ExperimentalMaterialApi::class)
 fun closeBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
+    soundScreenBorderControlColors[7].value = BeautyBush
     scope.launch{
         state.hide()
     }

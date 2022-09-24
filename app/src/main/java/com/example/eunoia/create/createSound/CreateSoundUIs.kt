@@ -82,9 +82,11 @@ fun SoundUploader(
             height = 55,
             color = SoftPeach,
             focusedBorderColor = BeautyBush,
+            unfocusedBorderColor = SoftPeach,
             inputFontSize = 16,
             placeholder = "Name of this audio",
             placeholderFontSize = 16,
+            placeholderColor = BeautyBush,
             offset = 0
         )
         fileNames[index]!!.value = fileName
@@ -110,9 +112,11 @@ fun SavePreset(){
             height = 55,
             color = SoftPeach,
             focusedBorderColor = BeautyBush,
+            unfocusedBorderColor = SoftPeach,
             inputFontSize = 16,
             placeholder = "Name of this audio",
             placeholderFontSize = 16,
+            placeholderColor = BeautyBush,
             offset = 0
         )
         presetName = fileName

@@ -35,7 +35,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
-import com.example.eunoia.backend.CommentBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -403,8 +402,9 @@ fun Controls(
                     0,
                     0
                 ) {
+                    soundScreenBorderControlColors[7].value = Black
                     globalViewModel_!!.currentSoundToBeAdded = sound
-                    globalViewModel_!!.currentPresetToBeAdded = soundPreset
+                    globalViewModel_!!.currentPresetToBeAdded = associatedPreset
                     globalViewModel_!!.bottomSheetOpenFor = "addToSoundListOrRoutine"
                     openBottomSheet(scope, state)
                 }
@@ -889,6 +889,14 @@ private fun initializeMediaPlayers(
     globalViewModel_!!.soundTimerTime = 0
     startCountDownTimer(context, timerTime.value, soundMediaPlayerService)
 
+    globalViewModel_!!.currentSoundPlayingPreset = soundPreset
+    globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
+    for (volume in globalViewModel_!!.currentSoundPlayingPreset!!.volumes) {
+        globalViewModel_!!.currentSoundPlayingSliderPositions.add(
+            mutableStateOf(volume.toFloat())
+        )
+    }
+
     createMeditationBellMediaPlayer(context)
 }
 
@@ -897,12 +905,7 @@ private fun setGlobalPropertiesAfterPlayingSound(soundData: SoundData, context: 
     globalViewModel_!!.currentSoundPlayingPreset = soundPreset
     globalViewModel_!!.currentAllOriginalSoundPreset = allOriginalSoundPresets
     globalViewModel_!!.currentAllUserSoundPreset = allUserSoundPresets
-    globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-    for (volume in globalViewModel_!!.currentSoundPlayingPreset!!.volumes) {
-        globalViewModel_!!.currentSoundPlayingSliderPositions.add(
-            mutableStateOf(volume.toFloat())
-        )
-    }
+
     globalViewModel_!!.currentSoundPlayingUris = soundUris
     globalViewModel_!!.currentSoundPlayingContext = context
     globalViewModel_!!.isCurrentSoundPlaying = true
@@ -1011,121 +1014,12 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                 instruction2,
                 tap
             ) = createRefs()
-            Column(
-                modifier = Modifier
-                    .constrainAs(title) {
-                        top.linkTo(parent.top, margin = 0.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                    }
-            ) {
-                if(!showTapColumn){
-                    NormalText(
-                        text = "[how to generate Noise Control panel]",
-                        color = Black,
-                        fontSize = 16,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }else{
-                    NormalText(
-                        text = "[how to generate Noise Control panel]",
-                        color = BeautyBush,
-                        fontSize = 16,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(short_desc) {
-                        top.linkTo(title.bottom, margin = 2.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                    }
-            ) {
-                if(!showTapColumn){
-                    ExtraLightText(
-                        text = "Noise Control panel allows you to create your own white noise and adjust " +
-                                "selected white noise to your taste.",
-                        color = Black,
-                        fontSize = 10,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }else{
-                    ExtraLightText(
-                        text = "Noise Control panel allows you to create your own white noise and adjust " +
-                                "selected white noise to your taste.",
-                        color = BeautyBush,
-                        fontSize = 10,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(instruction1) {
-                        top.linkTo(short_desc.bottom, margin = 8.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                    }
-            ) {
-                if(!showTapColumn){
-                    AlignedLightText(
-                        text = "Each slider controls a particular frequency band, from the lowest to the" +
-                                " highest frequency. Adjust sliders to taste.",
-                        color = Black,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }else{
-                    AlignedLightText(
-                        text = "Each slider controls a particular frequency band, from the lowest to the" +
-                                " highest frequency. Adjust sliders to taste.",
-                        color = BeautyBush,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(instruction2) {
-                        top.linkTo(instruction1.bottom, margin = 16.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                    }
-            ) {
-                if(!showTapColumn){
-                    AlignedLightText(
-                        text = "To mask undesirable noises, focus on bands sharing the same tone as the " +
-                                "noise you want to cover. Doing so achieves a higher efficiency, and quieter " +
-                                "masking noise levels.",
-                        color = Black,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }else{
-                    AlignedLightText(
-                        text = "To mask undesirable noises, focus on bands sharing the same tone as the " +
-                                "noise you want to cover. Doing so achieves a higher efficiency, and quieter " +
-                                "masking noise levels.",
-                        color = BeautyBush,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
+
             if(showTapColumn){
                 Column(
                     modifier = Modifier
                         .constrainAs(tap) {
-                            top.linkTo(instruction2.bottom, margin = 0.dp)
+                            top.linkTo(parent.top, margin = 0.dp)
                             start.linkTo(parent.start, margin = 0.dp)
                             end.linkTo(parent.end, margin = 0.dp)
                             bottom.linkTo(parent.bottom, margin = 0.dp)
@@ -1176,6 +1070,73 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                             }
                         }
                     }
+                }
+            } else{
+                Column(
+                    modifier = Modifier
+                        .constrainAs(title) {
+                            top.linkTo(parent.top, margin = 0.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                        }
+                ) {
+                    NormalText(
+                        text = "[how to generate Noise Control panel]",
+                        color = Black,
+                        fontSize = 16,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .constrainAs(short_desc) {
+                            top.linkTo(title.bottom, margin = 2.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                        }
+                ) {
+                    ExtraLightText(
+                        text = "Noise Control panel allows you to create your own white noise and adjust " +
+                                "selected white noise to your taste.",
+                        color = Black,
+                        fontSize = 10,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .constrainAs(instruction1) {
+                            top.linkTo(short_desc.bottom, margin = 8.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                            end.linkTo(parent.end, margin = 0.dp)
+                        }
+                ) {
+                    AlignedLightText(
+                        text = "Each slider controls a particular frequency band, from the lowest to the" +
+                                " highest frequency. Adjust sliders to taste.",
+                        color = Black,
+                        fontSize = 13,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .constrainAs(instruction2) {
+                            top.linkTo(instruction1.bottom, margin = 16.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                            end.linkTo(parent.end, margin = 0.dp)
+                        }
+                ) {
+                    AlignedLightText(
+                        text = "To mask undesirable noises, focus on bands sharing the same tone as the " +
+                                "noise you want to cover. Doing so achieves a higher efficiency, and quieter " +
+                                "masking noise levels.",
+                        color = Black,
+                        fontSize = 13,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
                 }
             }
         }
@@ -1257,65 +1218,75 @@ fun Tip(){
 
 @Composable
 fun CommentsUI(
-    commentData: CommentData,
+    allComments: MutableList<CommentData>,
     soundData: SoundData,
     soundMediaPlayerService: SoundMediaPlayerService
 ){
-    var clicked by rememberSaveable{ mutableStateOf(false) }
-    var cardModifier = Modifier
-        .padding(bottom = 16.dp)
-        .wrapContentHeight()
-        .clickable {
-            if(globalViewModel_!!.currentSoundPlaying != null) {
-                if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
-                    clicked = true
-                    changePreset(
-                        commentData.preset,
-                        soundMediaPlayerService
-                    ) {
+    val borders = mutableListOf<MutableState<Boolean>>()
+    for(i in allComments.indices){
+        borders.add(remember { mutableStateOf(false) })
+    }
 
+    allComments.forEachIndexed { index, commentData ->
+        var cardModifier = Modifier
+            .padding(bottom = 16.dp)
+            .wrapContentHeight()
+            .clickable {
+                if (globalViewModel_!!.currentSoundPlaying != null) {
+                    if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
+                        borders.forEach { border ->
+                            border.value = false
+                        }
+                        borders[index].value = !borders[index].value
+
+                        changePreset(
+                            commentData.preset,
+                            soundMediaPlayerService
+                        ) {
+
+                        }
                     }
                 }
             }
-        }
-        .fillMaxWidth()
-
-    if(clicked){
-        cardModifier = cardModifier.then(
-            Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.small)
-        )
-    }
-
-    Column(
-        modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
-    ) {
-        Card(
-            modifier = cardModifier,
-            shape = MaterialTheme.shapes.small,
-            backgroundColor = Snuff,
-            elevation = 8.dp,
+
+        if (borders[index].value) {
+            cardModifier = cardModifier.then(
+                Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.small)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
-            ConstraintLayout(
-                modifier = Modifier.padding(16.dp)
+            Card(
+                modifier = cardModifier,
+                shape = MaterialTheme.shapes.small,
+                backgroundColor = Snuff,
+                elevation = 8.dp,
             ) {
-                val (user_feedback) = createRefs()
-                Column(
-                    modifier = Modifier
-                        .constrainAs(user_feedback) {
-                            top.linkTo(parent.top, margin = 0.dp)
-                            start.linkTo(parent.start, margin = 0.dp)
-                            bottom.linkTo(parent.bottom, margin = 0.dp)
-                        }
+                ConstraintLayout(
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    LightText(
-                        text = commentData.comment,
-                        color = Black,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
+                    val (user_feedback) = createRefs()
+                    Column(
+                        modifier = Modifier
+                            .constrainAs(user_feedback) {
+                                top.linkTo(parent.top, margin = 0.dp)
+                                start.linkTo(parent.start, margin = 0.dp)
+                                bottom.linkTo(parent.bottom, margin = 0.dp)
+                            }
+                    ) {
+                        LightText(
+                            text = commentData.comment,
+                            color = Black,
+                            fontSize = 13,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+                    }
                 }
             }
         }
@@ -1450,6 +1421,7 @@ fun getAssociatedPresetWithSameVolume(
             if(foundSimilarVolumes){
                 associatedPreset = presetData
                 if(associatedPreset != null){
+                    showCommentBox = false
                     showAssociatedSoundWithSameVolume.value = true
                 }
                 break
@@ -1468,6 +1440,7 @@ fun getAssociatedPresetWithSameVolume(
 
 @Composable
 fun AssociatedPresetWithSameVolume(
+    soundData: SoundData,
     presetData: PresetData,
     soundMediaPlayerService: SoundMediaPlayerService,
 ){
@@ -1476,15 +1449,18 @@ fun AssociatedPresetWithSameVolume(
         .padding(bottom = 16.dp)
         .wrapContentHeight()
         .clickable {
-            /*clicked = !clicked
-            changePreset(
-                presetData,
-                soundMediaPlayerService
-            ) {
-                associatedPreset = null
-                showAssociatedSoundWithSameVolume.value = false
-            }
-            clicked = !clicked*/
+            /*if(globalViewModel_!!.currentSoundPlaying != null) {
+                if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
+                    clicked = !clicked
+                    changePreset(
+                        presetData,
+                        soundMediaPlayerService
+                    ) {
+                        //associatedPreset = null
+                        //showAssociatedSoundWithSameVolume.value = false
+                    }
+                }
+            }*/
         }
         .wrapContentWidth()
 

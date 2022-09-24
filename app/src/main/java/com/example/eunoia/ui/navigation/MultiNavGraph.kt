@@ -123,6 +123,10 @@ fun EunoiaApp(
                                 globalViewModel_!!.allowBottomSheetClose = true
                                 globalViewModel_!!.routineNameToBeAdded = InputRoutineName(scope, state)
                             }
+                            "inputPresetName" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel_!!.presetNameToBeCreated = InputPresetName(scope, state)
+                            }
                             "selectRoutineColor" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
                                 SelectRoutineColor(scope, state)

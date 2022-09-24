@@ -21,13 +21,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amplifyframework.datastore.generated.model.RoutineSound
-import com.amplifyframework.datastore.generated.model.SoundData
-import com.amplifyframework.datastore.generated.model.UserRoutine
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
-import com.example.eunoia.dashboard.sound.openUserAlreadyHasSoundDialogBox
+import com.example.eunoia.dashboard.sound.*
+import com.example.eunoia.models.PresetObject
 import com.example.eunoia.models.RoutineObject
+import com.example.eunoia.models.SoundObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.components.*
@@ -92,6 +92,7 @@ fun AddToSoundListAndRoutineBottomSheet(
                                         userSound.userData.id == globalViewModel_!!.currentUser!!.id
                                     ) {
                                         userAlreadyHasSound = true
+                                        break
                                     }
                                 }
                                 if (!userAlreadyHasSound) {
@@ -159,7 +160,11 @@ fun AddToSoundListAndRoutineBottomSheet(
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
                     .clickable {
-                        globalViewModel_!!.bottomSheetOpenFor = "addToRoutine"
+                        if(globalViewModel_!!.currentPresetToBeAdded == null) {
+                            globalViewModel_!!.bottomSheetOpenFor = "inputPresetName"
+                        }else{
+                            globalViewModel_!!.bottomSheetOpenFor = "addToRoutine"
+                        }
                         openBottomSheet(scope, state)
                     }
                     .fillMaxWidth()
@@ -220,10 +225,10 @@ fun SelectRoutine(
         AlertDialogBox("Saved!")
     }
     if(openUserAlreadyHasSoundDialogBox){
-        AlertDialogBox(text = "You already have this sound")
+        AlertDialogBox(text = "You already have this preset")
     }
     if(openRoutineAlreadyHasSoundDialogBox){
-        AlertDialogBox(text = "Routine already has this sound")
+        AlertDialogBox(text = "Routine already has this preset")
     }
     //val userRoutines = globalViewModel_!!.currentUser!!.routinesOwnedByUser
     val userRoutines = remember{ mutableStateOf(mutableListOf<UserRoutine?>()) }
@@ -308,41 +313,40 @@ fun SelectRoutine(
                 if(userRoutines.value.size > 0 && userRoutines.value.size == userRoutinesSize){
                     Log.i(TAG, "2. ${userRoutines.value}")
                     userRoutines.value.forEach{ userRoutine ->
-                        var routineSoundsSize = 0
-                        val routineSounds = remember{ mutableStateOf(mutableListOf<RoutineSound?>()) }
-                        RoutineSoundBackend.queryRoutineSoundBasedOnRoutine(userRoutine!!.routineData){
-                            routineSoundsSize = it.size
-                            routineSounds.value = it.toMutableList()
+                        var routinePresetsSize = 0
+                        val routinePresets = remember{ mutableStateOf(mutableListOf<RoutinePreset?>()) }
+                        RoutinePresetBackend.queryRoutinePresetBasedOnRoutine(userRoutine!!.routineData){
+                            routinePresetsSize = it.size
+                            routinePresets.value = it.toMutableList()
                         }
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .padding(bottom = 15.dp)
                                 .clickable {
-                                    if (routineSounds.value.size > 0 && routineSounds.value.size == routineSoundsSize) {
-                                        var routineAlreadyHasSound = false
-                                        for (routineSound in routineSounds.value) {
-                                            if (routineSound!!.soundData.id == globalViewModel_!!.currentSoundToBeAdded!!.id) {
-                                                routineAlreadyHasSound = true
-                                            }
-                                        }
-                                        if (!routineAlreadyHasSound) {
-                                            if(!userRoutine.routineData.playingOrder.contains("sound")){
-                                                userRoutine.routineData.playingOrder.add("sound")
-                                                RoutineBackend.updateRoutine(userRoutine.routineData){
-
-                                                }
-                                            }
-                                            RoutineSoundBackend.createRoutineSoundObject(
-                                                globalViewModel_!!.currentSoundToBeAdded!!,
-                                                userRoutine.routineData
-                                            ) {
-                                                closeBottomSheet(scope, state)
-                                                openSavedElementDialogBox = true
+                                    if (routinePresets.value.size > 0 && routinePresets.value.size == routinePresetsSize) {
+                                        if (globalViewModel_!!.currentPresetToBeAdded == null) {
+                                            makePrivatePresetObject() {
+                                                setUpUserSound(userRoutine)
+                                                setUpRoutineSound(userRoutine)
+                                                setUpRoutinePreset(
+                                                    routinePresets,
+                                                    userRoutine,
+                                                    scope,
+                                                    state
+                                                )
                                             }
                                         } else {
-                                            closeBottomSheet(scope, state)
-                                            openRoutineAlreadyHasSoundDialogBox = true
+                                            setUpUserPreset() {
+                                                setUpUserSound(userRoutine)
+                                                setUpRoutineSound(userRoutine)
+                                                setUpRoutinePreset(
+                                                    routinePresets,
+                                                    userRoutine,
+                                                    scope,
+                                                    state
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -367,8 +371,10 @@ fun SelectRoutine(
                             }
                             Spacer(modifier = Modifier.height(4.dp))
                             var goodDisplayName = userRoutine.routineData.displayName
-                            if(goodDisplayName.length > 11){
-                                goodDisplayName = goodDisplayName.substring(0, 12) + ".."
+                            if(goodDisplayName != null){
+                                if(goodDisplayName.length > 11){
+                                    goodDisplayName = goodDisplayName.substring(0, 12) + ".."
+                                }
                             }
                             NormalText(
                                 text = goodDisplayName,
@@ -383,6 +389,218 @@ fun SelectRoutine(
             }
         }
     //}
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+fun setUpRoutinePreset(
+    routinePresets: MutableState<MutableList<RoutinePreset?>>,
+    userRoutine: UserRoutine,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+) {
+    var routineAlreadyHasPreset = false
+
+    for (routinePreset in routinePresets.value) {
+        if (routinePreset!!.presetData.id == globalViewModel_!!.currentPresetToBeAdded!!.id) {
+            routineAlreadyHasPreset = true
+        }
+    }
+
+    if (!routineAlreadyHasPreset) {
+        RoutinePresetBackend.createRoutinePresetObject(
+            globalViewModel_!!.currentPresetToBeAdded!!,
+            userRoutine.routineData
+        ) {
+            closeBottomSheet(scope, state)
+            openSavedElementDialogBox = true
+        }
+    } else {
+        closeBottomSheet(scope, state)
+        openRoutineAlreadyHasSoundDialogBox = true
+    }
+}
+
+fun setUpRoutineSound(userRoutine: UserRoutine){
+    var routineSoundsSize = 0
+    var routineSounds = mutableListOf<RoutineSound?>()
+
+    RoutineSoundBackend.queryRoutineSoundBasedOnRoutine(userRoutine.routineData){
+        routineSoundsSize = it.size
+        routineSounds = it.toMutableList()
+    }
+
+    if (routineSounds.size > 0 && routineSounds.size == routineSoundsSize) {
+        var routineAlreadyHasSound = false
+
+        for (routineSound in routineSounds) {
+            if (routineSound!!.soundData.id == globalViewModel_!!.currentSoundToBeAdded!!.id) {
+                routineAlreadyHasSound = true
+            }
+        }
+
+        if (!routineAlreadyHasSound) {
+            if (!userRoutine.routineData.playingOrder.contains("sound")) {
+                userRoutine.routineData.playingOrder.add("sound")
+                RoutineBackend.updateRoutine(userRoutine.routineData) {
+
+                }
+            }
+
+            RoutineSoundBackend.createRoutineSoundObject(
+                globalViewModel_!!.currentSoundToBeAdded!!,
+                userRoutine.routineData
+            ) {}
+        }
+    }
+}
+
+fun setUpUserSound(userRoutine: UserRoutine){
+    var userSoundsSize = 0
+    var userSounds = mutableListOf<UserSound?>()
+
+    UserSoundBackend.queryUserSoundBasedOnUser(userRoutine.userData){
+        userSoundsSize = it.size
+        userSounds = it.toMutableList()
+    }
+
+    if (userSounds.size > 0 && userSounds.size == userSoundsSize) {
+        var userAlreadyHasSound = false
+        for (userSound in userSounds) {
+            if (userSound!!.soundData.id == globalViewModel_!!.currentSoundToBeAdded!!.id) {
+                userAlreadyHasSound = true
+            }
+        }
+        if (!userAlreadyHasSound) {
+            UserSoundBackend.createUserSoundObject(
+                globalViewModel_!!.currentSoundToBeAdded!!
+            ) {}
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+fun setUpRoutineAndUserPresetAfterMakingNewRoutine(
+    routineData: RoutineData,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+){
+    RoutinePresetBackend.createRoutinePresetObject(
+        globalViewModel_!!.currentPresetToBeAdded!!,
+        routineData
+    ) {
+        //setup user sound
+        if (globalViewModel_!!.currentPresetToBeAdded != null) {
+            if (globalViewModel_!!.currentUser != null) {
+                var userAlreadyHasPreset = false
+                for (userPreset in globalViewModel_!!.currentUser!!.presets) {
+                    if (
+                        userPreset.presetData.id == globalViewModel_!!.currentPresetToBeAdded!!.id &&
+                        userPreset.userData.id == globalViewModel_!!.currentUser!!.id
+                    ) {
+                        userAlreadyHasPreset = true
+                    }
+                }
+                if (!userAlreadyHasPreset) {
+                    UserPresetBackend.createUserPresetObject(
+                        globalViewModel_!!.currentPresetToBeAdded!!
+                    ) {
+
+                    }
+                }
+            }
+        }
+        closeBottomSheet(scope, state)
+        openSavedElementDialogBox = true
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+fun setUpRoutineAndUserSoundAfterMakingNewRoutine(
+    routineData: RoutineData,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+){
+    RoutineSoundBackend.createRoutineSoundObject(
+        globalViewModel_!!.currentSoundToBeAdded!!,
+        routineData
+    ) {
+        //setup user sound
+        if (globalViewModel_!!.currentSoundToBeAdded != null) {
+            if (globalViewModel_!!.currentUser != null) {
+                var userAlreadyHasSound = false
+                for (userSound in globalViewModel_!!.currentUser!!.sounds) {
+                    if (
+                        userSound.soundData.id == globalViewModel_!!.currentSoundToBeAdded!!.id &&
+                        userSound.userData.id == globalViewModel_!!.currentUser!!.id
+                    ) {
+                        userAlreadyHasSound = true
+                    }
+                }
+                if (!userAlreadyHasSound) {
+                    UserSoundBackend.createUserSoundObject(
+                        globalViewModel_!!.currentSoundToBeAdded!!
+                    ) {
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+fun setUpUserPreset(completed: () -> Unit){
+    if (globalViewModel_!!.currentUser != null) {
+        var userAlreadyHasPreset = false
+        for (userPreset in globalViewModel_!!.currentUser!!.presets) {
+            if (
+                userPreset.presetData.id == globalViewModel_!!.currentPresetToBeAdded!!.id &&
+                userPreset.userData.id == globalViewModel_!!.currentUser!!.id
+            ) {
+                userAlreadyHasPreset = true
+            }
+        }
+        if (!userAlreadyHasPreset) {
+            UserPresetBackend.createUserPresetObject(globalViewModel_!!.currentPresetToBeAdded!!) {
+                completed()
+            }
+        }
+    }
+}
+
+private fun makePrivatePresetObject(completed: (presetData: PresetData) -> Unit){
+    val preset = PresetObject.Preset(
+        UUID.randomUUID().toString(),
+        UserObject.User.from(globalViewModel_!!.currentUser!!),
+        globalViewModel_!!.presetNameToBeCreated,
+        sliderVolumes!!.toList(),
+        SoundObject.Sound.from(globalViewModel_!!.currentSoundToBeAdded!!),
+        PresetPublicityStatus.PRIVATE
+    )
+
+    PresetBackend.createPreset(preset) { presetData ->
+        if (globalViewModel_!!.currentUser != null) {
+            var userAlreadyHasPreset = false
+            for (userPreset in globalViewModel_!!.currentUser!!.presets) {
+                if (
+                    userPreset.presetData.id == presetData.id &&
+                    userPreset.userData.id == globalViewModel_!!.currentUser!!.id
+                ) {
+                    userAlreadyHasPreset = true
+                }
+            }
+            if (!userAlreadyHasPreset) {
+                UserPresetBackend.createUserPresetObject(presetData) {
+                    globalViewModel_!!.currentPresetToBeAdded = presetData
+                    if(globalViewModel_!!.currentAllUserSoundPreset == null) {
+                        globalViewModel_!!.currentAllUserSoundPreset = mutableListOf()
+                    }
+                    globalViewModel_!!.currentAllUserSoundPreset!!.add(presetData)
+                    allUserSoundPresets!!.add(presetData)
+                    completed(presetData)
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -449,6 +667,78 @@ fun InputRoutineName(
             StandardBlueButton("Routine name"){
                 if(globalViewModel_!!.routineNameToBeAdded != ""){
                     globalViewModel_!!.bottomSheetOpenFor = "selectRoutineColor"
+                    openBottomSheet(scope, state)
+                }
+            }
+        }
+    }
+    return name
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun InputPresetName(
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+): String {
+    if(openSavedElementDialogBox){
+        AlertDialogBox("Saved!")
+    }
+    if(openUserAlreadyHasSoundDialogBox){
+        AlertDialogBox(text = "You already have this sound")
+    }
+    if(openRoutineAlreadyHasSoundDialogBox){
+        AlertDialogBox(text = "Routine already has this sound")
+    }
+    var name by rememberSaveable{ mutableStateOf("") }
+    ConstraintLayout(
+        modifier = Modifier
+            .background(OldLace)
+    ) {
+        val (
+            title,
+            routineName,
+            done
+        ) = createRefs()
+        Column(
+            modifier = Modifier
+                .constrainAs(title) {
+                    top.linkTo(parent.top, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                }
+        ) {
+            NormalText(
+                text = "Name this preset",
+                color = Black,
+                fontSize = 13,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(routineName) {
+                    top.linkTo(title.bottom, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                }
+        ) {
+            name = standardOutlinedTextInputMax30(211, 50, "Preset name", 0)
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(done) {
+                    top.linkTo(routineName.bottom, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                }
+        ) {
+            StandardBlueButton("Preset name"){
+                if(globalViewModel_!!.presetNameToBeCreated != ""){
+                    globalViewModel_!!.bottomSheetOpenFor = "addToRoutine"
                     openBottomSheet(scope, state)
                 }
             }
@@ -629,9 +919,7 @@ fun SelectRoutineIcon(
                         .clickable {
                             globalViewModel_!!.routineIconToBeAdded = icon.value
                             val routine = RoutineObject.Routine(
-                                UUID
-                                    .randomUUID()
-                                    .toString(),
+                                UUID.randomUUID().toString(),
                                 UserObject.signedInUser().value!!,
                                 globalViewModel_!!.routineNameToBeAdded,
                                 globalViewModel_!!.routineNameToBeAdded,
@@ -665,32 +953,27 @@ fun SelectRoutineIcon(
                                 UserRoutineBackend.createUserRoutineObject(it) { userRoutine ->
                                     Log.i(TAG, "1123. $userRoutine")
                                 }
-                                RoutineSoundBackend.createRoutineSoundObject(
-                                    globalViewModel_!!.currentSoundToBeAdded!!,
-                                    it
-                                ) {
-                                    if (globalViewModel_!!.currentSoundToBeAdded != null) {
-                                        if (globalViewModel_!!.currentUser != null) {
-                                            var userAlreadyHasSound = false
-                                            for (userSound in globalViewModel_!!.currentUser!!.sounds) {
-                                                if (
-                                                    userSound.soundData.id == globalViewModel_!!.currentSoundToBeAdded!!.id &&
-                                                    userSound.userData.id == globalViewModel_!!.currentUser!!.id
-                                                ) {
-                                                    userAlreadyHasSound = true
-                                                }
-                                            }
-                                            if (!userAlreadyHasSound) {
-                                                UserSoundBackend.createUserSoundObject(
-                                                    globalViewModel_!!.currentSoundToBeAdded!!
-                                                ) {
 
-                                                }
-                                            }
-                                        }
+                                setUpRoutineAndUserSoundAfterMakingNewRoutine(
+                                    it,
+                                    scope,
+                                    state
+                                )
+
+                                if (globalViewModel_!!.currentPresetToBeAdded == null) {
+                                    makePrivatePresetObject { preset ->
+                                        setUpRoutineAndUserPresetAfterMakingNewRoutine(
+                                            it,
+                                            scope,
+                                            state
+                                        )
                                     }
-                                    closeBottomSheet(scope, state)
-                                    openSavedElementDialogBox = true
+                                } else{
+                                    setUpRoutineAndUserPresetAfterMakingNewRoutine(
+                                        it,
+                                        scope,
+                                        state
+                                    )
                                 }
                             }
                         }

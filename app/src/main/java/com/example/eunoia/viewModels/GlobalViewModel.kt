@@ -25,9 +25,11 @@ class GlobalViewModel: ViewModel(){
     var currentUsersSounds by mutableStateOf<MutableList<UserSound?>?>(null)
     var soundTimerTime by mutableStateOf(0L)
     var soundMeditationBellInterval by mutableStateOf(0)
+
     //adding sound
     var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)
     var currentPresetToBeAdded by mutableStateOf<PresetData?>(null)
+    var presetNameToBeCreated by mutableStateOf("")
 
     //bedtime story
     var currentUsersBedtimeStories by mutableStateOf<MutableList<UserBedtimeStoryInfo?>?>(null)
