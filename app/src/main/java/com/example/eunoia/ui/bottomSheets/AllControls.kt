@@ -17,11 +17,10 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.eunoia.dashboard.sound.soundScreenBorderControlColors
+import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.components.LightText
-import com.example.eunoia.ui.theme.BeautyBush
-import com.example.eunoia.ui.theme.Black
-import com.example.eunoia.ui.theme.Mischka
-import com.example.eunoia.ui.theme.PeriwinkleGray
+import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -35,7 +34,7 @@ fun openBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
 
 @OptIn(ExperimentalMaterialApi::class)
 fun closeBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
-    soundScreenBorderControlColors[7].value = BeautyBush
+    soundScreenBorderControlColors[7].value = Bizarre
     scope.launch{
         state.hide()
     }
@@ -46,15 +45,35 @@ fun closeBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
 fun BottomSheetAllControls(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ){
     Column(
         modifier = Modifier
             .padding(start = 16.dp, top = 16.dp, end = 16.dp)
     ) {
-        val soundPlaying = bottomSheetSoundControl(globalViewModel, scope, state)
-        val bedtimeStoryPlaying = bottomSheetSoundControl(globalViewModel, scope, state)
-        val selfLovePlaying = bottomSheetSoundControl(globalViewModel, scope, state)
+        val soundPlaying = bottomSheetSoundControl(
+            globalViewModel,
+            scope,
+            state,
+            generalMediaPlayerService,
+            soundMediaPlayerService
+        )
+        val bedtimeStoryPlaying = bottomSheetSoundControl(
+            globalViewModel,
+            scope,
+            state,
+            generalMediaPlayerService,
+            soundMediaPlayerService
+        )
+        val selfLovePlaying = bottomSheetSoundControl(
+            globalViewModel,
+            scope,
+            state,
+            generalMediaPlayerService,
+            soundMediaPlayerService
+        )
 
         if(!(soundPlaying && bedtimeStoryPlaying && selfLovePlaying)){
             Card(

@@ -3,6 +3,7 @@ package com.example.eunoia.viewModels
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.CountDownTimer
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
@@ -25,6 +26,9 @@ class GlobalViewModel: ViewModel(){
     var currentUsersSounds by mutableStateOf<MutableList<UserSound?>?>(null)
     var soundTimerTime by mutableStateOf(0L)
     var soundMeditationBellInterval by mutableStateOf(0)
+    var soundCountDownTimer: CountDownTimer? = null
+    var soundSliderVolumes: MutableList<Int>? = null
+    var soundMeditationBellMediaPlayer: MediaPlayer? = null
 
     //adding sound
     var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)

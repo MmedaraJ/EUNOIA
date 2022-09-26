@@ -42,6 +42,7 @@ import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
 import java.lang.Math.*
 import kotlin.concurrent.fixedRateTimer
@@ -243,6 +244,7 @@ fun Sliders(
                                     sliderVolumes!![index] = it.toInt()
                                     if (globalViewModel_!!.currentSoundPlaying != null) {
                                         if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
+                                            globalViewModel_!!.soundSliderVolumes!![index] = it.toInt()
                                             soundMediaPlayerService.setVolumes(sliderVolumes!!)
                                             soundMediaPlayerService.adjustMediaPlayerVolumes()
                                         }
@@ -420,11 +422,12 @@ fun createMeditationBellMediaPlayer(context: Context){
             return
         }
         meditationBellMediaPlayer.value = MediaPlayer.create(context, it)
+        globalViewModel_!!.soundMeditationBellMediaPlayer = meditationBellMediaPlayer.value
         return
     }
 }
 
-fun loopSounds(
+private fun loopSounds(
     soundData: SoundData,
     soundMediaPlayerService: SoundMediaPlayerService,
 ){
@@ -488,13 +491,6 @@ fun resetAll(applicationContext: Context, soundMediaPlayerService: SoundMediaPla
     startCountDownTimer(applicationContext, timerTime.value, soundMediaPlayerService)
 }
 
-fun resetSlidersAfterReset(){
-    sliderPositions!!.forEachIndexed { index, sliderPosition ->
-        sliderPosition!!.value = globalViewModel_!!.currentSoundPlayingPreset!!.volumes[index].toFloat()
-        globalViewModel_!!.currentSoundPlayingSliderPositions[index]!!.value = globalViewModel_!!.currentSoundPlayingPreset!!.volumes[index].toFloat()
-    }
-}
-
 fun resetSliders(){
     sliderPositions!!.forEachIndexed { index, sliderPosition ->
         sliderPosition!!.value = soundPreset!!.volumes[index].toFloat()
@@ -513,6 +509,7 @@ fun increaseSliderLevels(
                 if(sliderPosition!!.value < 10) {
                     sliderPosition.value++
                     sliderVolumes!![index] = sliderVolumes!![index] + 1
+                    globalViewModel_!!.soundSliderVolumes!![index] = sliderVolumes!![index]
                     soundMediaPlayerService.setVolumes(sliderVolumes!!)
                     soundMediaPlayerService.adjustMediaPlayerVolumes()
                 }
@@ -539,7 +536,8 @@ fun decreaseSliderLevels(
             sliderPositions!!.forEachIndexed{ index, sliderPosition ->
                 if(sliderPosition!!.value > 0) {
                     sliderPosition.value--
-                    sliderVolumes!![index] = sliderVolumes!![index]!! - 1
+                    sliderVolumes!![index] = sliderVolumes!![index] - 1
+                    globalViewModel_!!.soundSliderVolumes!![index] = sliderVolumes!![index]
                     soundMediaPlayerService.setVolumes(sliderVolumes!!)
                     soundMediaPlayerService.adjustMediaPlayerVolumes()
                 }
@@ -580,6 +578,7 @@ fun ringMeditationBell(
                     if (meditationBellInterval.value <= 5) {
                         activateLocalControlButton(index)
                         meditationBellMediaPlayer.value?.start()
+                        globalViewModel_!!.soundMeditationBellMediaPlayer?.start()
                     } else {
                         deActivateLocalControlButton(index)
                         meditationBellInterval.value = 0
@@ -635,7 +634,6 @@ fun resetBothLocalAndGlobalControlButtons(){
     deActivateGlobalControlButton(6)
 }
 
-var countDownTimer: CountDownTimer? = null
 fun startCountDownTimer(
     context: Context,
     time: Long,
@@ -643,6 +641,10 @@ fun startCountDownTimer(
 ){
     if(countDownTimer != null){
         countDownTimer!!.cancel()
+    }
+
+    if(globalViewModel_!!.soundCountDownTimer != null){
+        globalViewModel_!!.soundCountDownTimer!!.cancel()
     }
 
     countDownTimer = object : CountDownTimer(time, 100) {
@@ -661,8 +663,10 @@ fun startCountDownTimer(
             globalViewModel_!!.soundTimerTime = 0
         }
     }
+    globalViewModel_!!.soundCountDownTimer = countDownTimer
 
     countDownTimer!!.start()
+    globalViewModel_!!.soundCountDownTimer!!.start()
 }
 
 fun changeTimerTime(
@@ -677,7 +681,7 @@ fun changeTimerTime(
             if(soundMediaPlayerService.areMediaPlayersInitialized()) {
                 timerTime.value += 60000L
                 globalViewModel_!!.soundTimerTime += 60000L
-                Log.i(TAG, "Timer time set to ${timerTime.value}")
+                Log.i(TAG, "Timer time set to ${formatMilliSecond(timerTime.value)} minutes")
                 if (timerTime.value in 60000L..300000L) {
                     activateLocalControlButton(index)
                     activateGlobalControlButton(index)
@@ -905,7 +909,7 @@ private fun setGlobalPropertiesAfterPlayingSound(soundData: SoundData, context: 
     globalViewModel_!!.currentSoundPlayingPreset = soundPreset
     globalViewModel_!!.currentAllOriginalSoundPreset = allOriginalSoundPresets
     globalViewModel_!!.currentAllUserSoundPreset = allUserSoundPresets
-
+    globalViewModel_!!.soundSliderVolumes = sliderVolumes
     globalViewModel_!!.currentSoundPlayingUris = soundUris
     globalViewModel_!!.currentSoundPlayingContext = context
     globalViewModel_!!.isCurrentSoundPlaying = true
@@ -926,7 +930,7 @@ private fun pauseSoundScreenSounds(
     }
 }
 
-fun activateLocalControlButton(index: Int){
+private fun activateLocalControlButton(index: Int){
     soundScreenBorderControlColors[index].value = Black
     soundScreenBackgroundControlColor1[index].value = SoftPeach
     soundScreenBackgroundControlColor2[index].value = Solitude
@@ -935,7 +939,7 @@ fun activateLocalControlButton(index: Int){
     }
 }
 
-fun deActivateLocalControlButton(index: Int){
+private fun deActivateLocalControlButton(index: Int){
     soundScreenBorderControlColors[index].value = Bizarre
     soundScreenBackgroundControlColor1[index].value = White
     soundScreenBackgroundControlColor2[index].value = White
@@ -944,7 +948,7 @@ fun deActivateLocalControlButton(index: Int){
     }
 }
 
-fun activateGlobalControlButton(index: Int){
+private fun activateGlobalControlButton(index: Int){
     globalViewModel_!!.soundScreenBorderControlColors[index].value = soundScreenBorderControlColors[index].value
     globalViewModel_!!.soundScreenBackgroundControlColor1[index].value = soundScreenBackgroundControlColor1[index].value
     globalViewModel_!!.soundScreenBackgroundControlColor2[index].value = soundScreenBackgroundControlColor2[index].value
@@ -953,7 +957,7 @@ fun activateGlobalControlButton(index: Int){
     }
 }
 
-fun deActivateGlobalControlButton(index: Int){
+private fun deActivateGlobalControlButton(index: Int){
     globalViewModel_!!.soundScreenBorderControlColors[index].value = soundScreenBorderControlColors[index].value
     globalViewModel_!!.soundScreenBackgroundControlColor1[index].value = soundScreenBackgroundControlColor1[index].value
     globalViewModel_!!.soundScreenBackgroundControlColor2[index].value = soundScreenBackgroundControlColor2[index].value
@@ -1379,6 +1383,7 @@ fun changePreset(
     completed: () -> Unit
 ){
     sliderVolumes = preset.volumes
+    globalViewModel_!!.soundSliderVolumes = preset.volumes
     defaultVolumes = preset.volumes
     //sliderPositions = mutableListOf()
     //globalViewModel_!!.currentSoundPlayingSliderPositions.clear()

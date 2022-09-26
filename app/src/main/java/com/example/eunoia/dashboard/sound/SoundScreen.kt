@@ -3,6 +3,7 @@ package com.example.eunoia.dashboard.sound
 import android.content.Context
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -59,6 +60,7 @@ var otherPresetsThatOriginatedFromThisSound: MutableList<PresetData>? = null
 var commentsForThisSound = mutableListOf<CommentData>()
 var soundUris = mutableListOf<Uri?>()
 var defaultVolumes: MutableList<Int>? = null
+var countDownTimer: CountDownTimer? = null
 var soundScreenIcons = arrayOf(
     mutableStateOf(R.drawable.replay_sound_icon),
     mutableStateOf(R.drawable.reset_sliders_icon),
@@ -126,10 +128,13 @@ fun SoundScreen(
             setParametersFromGlobalVariables{
                 retrievedPresets = true
             }
+        }else{
+            getNecessaryPresets(soundData) {
+                showAssociatedSoundWithSameVolume.value = false
+                retrievedPresets = true
+            }
         }
-    }
-
-    if(!retrievedPresets){
+    }else{
         getNecessaryPresets(soundData) {
             showAssociatedSoundWithSameVolume.value = false
             retrievedPresets = true
@@ -420,16 +425,19 @@ fun SoundScreen(
 }
 
 fun setParametersFromGlobalVariables(completed: () -> Unit) {
-    setUpParameters()
-    setAllOriginalSoundPresets()
-    setAllUserSoundPresets()
-    completed()
+    setUpParameters{
+        setAllOriginalSoundPresets{
+            setAllUserSoundPresets{
+                completed()
+            }
+        }
+    }
 }
 
-fun setUpParameters() {
+fun setUpParameters(completed: () -> Unit) {
     soundPreset = globalViewModel_!!.currentSoundPlayingPreset
     sliderPositions = globalViewModel_!!.currentSoundPlayingSliderPositions
-    sliderVolumes = globalViewModel_!!.currentSoundPlayingPreset!!.volumes
+    sliderVolumes = globalViewModel_!!.soundSliderVolumes
     defaultVolumes = globalViewModel_!!.currentSoundPlayingPreset!!.volumes
     soundUris = globalViewModel_!!.currentSoundPlayingUris!!
     soundScreenIcons = globalViewModel_!!.soundScreenIcons
@@ -439,13 +447,16 @@ fun setUpParameters() {
     meditationBellInterval.value = globalViewModel_!!.soundMeditationBellInterval
     timerTime.value = globalViewModel_!!.soundTimerTime
     associatedPreset = soundPreset
+    countDownTimer = globalViewModel_!!.soundCountDownTimer
     showAssociatedSoundWithSameVolume.value = false
     otherPresetsThatOriginatedFromThisSound = mutableListOf()
+    completed()
 }
 
-fun setAllUserSoundPresets() {
+fun setAllUserSoundPresets(completed: () -> Unit) {
     if(globalViewModel_!!.currentAllUserSoundPreset != null){
         allUserSoundPresets = globalViewModel_!!.currentAllUserSoundPreset!!
+        completed()
     }else{
         allUserSoundPresets = mutableListOf()
         getUserSoundPresets(
@@ -455,13 +466,15 @@ fun setAllUserSoundPresets() {
             if(presetList.isNotEmpty()) {
                 allUserSoundPresets!!.addAll(presetList)
             }
+            completed()
         }
     }
 }
 
-fun setAllOriginalSoundPresets() {
+fun setAllOriginalSoundPresets(completed: () -> Unit) {
     if(globalViewModel_!!.currentAllOriginalSoundPreset != null){
         allOriginalSoundPresets = globalViewModel_!!.currentAllOriginalSoundPreset!!
+        completed()
     }else{
         allOriginalSoundPresets = mutableListOf()
         getUserSoundPresets(
@@ -471,6 +484,7 @@ fun setAllOriginalSoundPresets() {
             if(it.isNotEmpty()) {
                 allOriginalSoundPresets!!.addAll(it)
             }
+            completed()
         }
     }
 }

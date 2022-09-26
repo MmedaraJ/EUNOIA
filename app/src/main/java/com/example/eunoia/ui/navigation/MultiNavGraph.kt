@@ -108,7 +108,13 @@ fun EunoiaApp(
                     ) {
                         when(globalViewModel.bottomSheetOpenFor){
                             "controls" -> {
-                                BottomSheetAllControls(globalViewModel, scope, state)
+                                BottomSheetAllControls(
+                                    globalViewModel,
+                                    scope,
+                                    state,
+                                    generalMediaPlayerService,
+                                    soundMediaPlayerService
+                                )
                                 globalViewModel_!!.allowBottomSheetClose = true
                             }
                             "addToSoundListOrRoutine" -> {
@@ -141,7 +147,13 @@ fun EunoiaApp(
                             }
                             "" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
-                                BottomSheetAllControls(globalViewModel, scope, state)
+                                BottomSheetAllControls(
+                                    globalViewModel,
+                                    scope,
+                                    state,
+                                    generalMediaPlayerService,
+                                    soundMediaPlayerService
+                                )
                             }
                         }
                     }

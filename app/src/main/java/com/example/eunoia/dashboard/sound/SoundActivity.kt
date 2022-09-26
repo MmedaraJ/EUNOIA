@@ -29,6 +29,7 @@ import com.example.eunoia.models.SoundObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.ui.bottomSheets.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
@@ -169,6 +170,7 @@ fun SoundActivityUI(
                             },
                             { index ->
                                 if(soundActivityPlayButtonTexts[index]!!.value != WAIT_FOR_SOUND) {
+                                    soundScreenBorderControlColors[7].value = Bizarre
                                     navigateToSoundScreen(
                                         navController,
                                         globalViewModel_!!.currentUsersSounds!![index]!!.soundData
@@ -358,6 +360,7 @@ private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
     globalViewModel_!!.currentSoundPlaying = globalViewModel_!!.currentUsersSounds!![index]!!.soundData
     globalViewModel_!!.currentSoundPlayingPreset = soundActivityPresets[index]!!.value
     globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
+    globalViewModel_!!.soundSliderVolumes = globalViewModel_!!.currentSoundPlayingPreset!!.volumes
     for (volume in globalViewModel_!!.currentSoundPlayingPreset!!.volumes) {
         globalViewModel_!!.currentSoundPlayingSliderPositions.add(
             mutableStateOf(volume.toFloat())
@@ -367,14 +370,7 @@ private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
     globalViewModel_!!.currentSoundPlayingContext = context
     soundActivityPlayButtonTexts[index]!!.value = PAUSE_SOUND
     globalViewModel_!!.isCurrentSoundPlaying = true
-    setGlobalSoundScreenControlsUIForPlay()
-}
-
-private fun setGlobalSoundScreenControlsUIForPlay() {
-    globalViewModel_!!.soundScreenIcons[3].value = R.drawable.pause_icon
-    globalViewModel_!!.soundScreenBorderControlColors[3].value = Bizarre
-    globalViewModel_!!.soundScreenBackgroundControlColor1[3].value = White
-    globalViewModel_!!.soundScreenBackgroundControlColor2[3].value = White
+    com.example.eunoia.ui.bottomSheets.deActivateGlobalControlButton(3)
 }
 
 private fun initializeMediaPlayers(
@@ -392,6 +388,7 @@ private fun initializeMediaPlayers(
     soundMediaPlayerService.onStartCommand(intent, 0, 0)
     resetAll(context, soundMediaPlayerService)
     createMeditationBellMediaPlayer(context)
+    resetGlobalControlButtons()
 }
 
 private fun pauseSound(
@@ -402,17 +399,10 @@ private fun pauseSound(
         if(soundMediaPlayerService.areMediaPlayersPlaying()) {
             soundMediaPlayerService.pauseMediaPlayers()
             soundActivityPlayButtonTexts[index]!!.value = START_SOUND
-            setGlobalSoundScreenControlsUIForPause()
+            com.example.eunoia.ui.bottomSheets.activateGlobalControlButton(3)
             globalViewModel_!!.isCurrentSoundPlaying = false
         }
     }
-}
-
-fun setGlobalSoundScreenControlsUIForPause() {
-    globalViewModel_!!.soundScreenIcons[3].value = R.drawable.play_icon
-    globalViewModel_!!.soundScreenBorderControlColors[3].value = Black
-    globalViewModel_!!.soundScreenBackgroundControlColor1[3].value = SoftPeach
-    globalViewModel_!!.soundScreenBackgroundControlColor2[3].value = SoftPeach
 }
 
 @Composable
