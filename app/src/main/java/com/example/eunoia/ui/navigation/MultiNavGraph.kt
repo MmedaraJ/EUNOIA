@@ -44,12 +44,14 @@ import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.settings.eightHourCountdown.EightHourCountdownUI
 import com.example.eunoia.ui.bottomSheets.*
 import com.example.eunoia.ui.bottomSheets.recordAudio.RecordAudio
+import com.example.eunoia.ui.bottomSheets.sound.*
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.RecordAudioViewModel
 import kotlinx.coroutines.CoroutineScope
 
 var globalViewModel_: GlobalViewModel? = null
 var recordAudioViewModel: RecordAudioViewModel? = null
+var generalMediaPlayerService_: GeneralMediaPlayerService? = null
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -64,6 +66,7 @@ fun MultiBottomNavApp(
     )
     val scope = rememberCoroutineScope()
     val generalMediaPlayerService = GeneralMediaPlayerService()
+    generalMediaPlayerService_ = generalMediaPlayerService
     val soundMediaPlayerService = SoundMediaPlayerService()
     EunoiaApp(
         globalViewModel,
@@ -313,7 +316,6 @@ fun DashboardTab(
                 LocalContext.current,
                 scope,
                 state,
-                generalMediaPlayerService,
                 soundMediaPlayerService
             )
         }
@@ -342,7 +344,6 @@ fun DashboardTab(
                 LocalContext.current,
                 scope,
                 state,
-                generalMediaPlayerService,
                 soundMediaPlayerService
             )
         }
@@ -466,7 +467,6 @@ fun CreateTab(
                 LocalContext.current,
                 scope,
                 state,
-                generalMediaPlayerService,
                 soundMediaPlayerService
             )
         }
@@ -710,7 +710,6 @@ fun SearchTab(
                 LocalContext.current,
                 scope,
                 state,
-                generalMediaPlayerService,
                 soundMediaPlayerService
             )
         }
@@ -774,7 +773,6 @@ fun FeedbackTab(
                 LocalContext.current,
                 scope,
                 state,
-                generalMediaPlayerService,
                 soundMediaPlayerService
             )
         }
@@ -838,7 +836,6 @@ fun AccountTab(
                 LocalContext.current,
                 scope,
                 state,
-                generalMediaPlayerService,
                 soundMediaPlayerService
             )
         }

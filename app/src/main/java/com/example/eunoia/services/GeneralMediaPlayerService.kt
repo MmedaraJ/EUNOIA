@@ -104,7 +104,9 @@ class GeneralMediaPlayerService:
     }
 
     override fun onCompletion(mediaPlayer: MediaPlayer?) {
-        Log.e(TAG, "Media player completed")
+        /*mediaPlayer!!.pause()
+        mediaPlayer.seekTo(0)*/
+        Log.i(TAG, "Media player completed")
     }
 
     override fun onDestroy() {

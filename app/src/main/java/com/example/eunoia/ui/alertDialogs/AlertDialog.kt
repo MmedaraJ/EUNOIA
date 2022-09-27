@@ -12,8 +12,8 @@ import androidx.compose.ui.unit.dp
 import com.example.eunoia.create.createBedtimeStory.openBedtimeStoryNameTakenDialogBox
 import com.example.eunoia.create.createBedtimeStory.openTooManyIncompleteBedtimeStoryDialogBox
 import com.example.eunoia.dashboard.sound.openUserAlreadyHasSoundDialogBox
-import com.example.eunoia.ui.bottomSheets.openRoutineAlreadyHasSoundDialogBox
-import com.example.eunoia.ui.bottomSheets.openSavedElementDialogBox
+import com.example.eunoia.ui.bottomSheets.sound.openRoutineAlreadyHasSoundDialogBox
+import com.example.eunoia.ui.bottomSheets.sound.openSavedElementDialogBox
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.theme.*
 

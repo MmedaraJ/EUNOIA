@@ -11,7 +11,9 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
+import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.BedtimeStoryTimer
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 class GlobalViewModel: ViewModel(){
@@ -118,6 +120,9 @@ class GlobalViewModel: ViewModel(){
     var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
     var currentBedtimeStoryPlayingUri: Uri? = null
     var bedtimeStoryTimeDisplay = mutableStateOf("00.00")
+    var bedtimeStoryCircularSliderAngle = mutableStateOf(0f)
+    var bedtimeStoryCircularSliderClicked = mutableStateOf(false)
+    var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
 
     var currentBedtimeStoryToBeAdded by mutableStateOf<BedtimeStoryInfoData?>(null)
 

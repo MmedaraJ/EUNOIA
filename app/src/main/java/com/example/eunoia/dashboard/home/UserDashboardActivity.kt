@@ -50,6 +50,7 @@ import com.example.eunoia.ui.bottomSheets.recordAudio.recordingFile
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingTimeDisplay
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.MultiBottomNavApp
+import com.example.eunoia.ui.navigation.generalMediaPlayerService_
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
@@ -64,8 +65,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.lang.ref.WeakReference
-
-var generalMediaPlayerService_: GeneralMediaPlayerService? = null
 
 class UserDashboardActivity :
     ComponentActivity(),
@@ -297,12 +296,11 @@ class UserDashboardActivity :
 
     override fun onBedtimeStoryTimerTick(durationString: String, durationMilliSeconds: Long) {
         globalViewModel_!!.bedtimeStoryTimeDisplay.value = durationString
-        clicked.value = false
-        angle.value = (
+        globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
+        globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = (
             (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
             (globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime).toFloat()
         ) * 360f
-        Log.i(TAG, "Angle is ${angle.value}")
     }
 }
 
@@ -316,7 +314,6 @@ fun UserDashboardActivityUI(
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
     globalViewModel_!!.navController = navController
-    generalMediaPlayerService_ = generalMediaPlayerService
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     //if(globalViewModel_!!.currentUsersRoutines == null) {

@@ -45,6 +45,7 @@ class BedtimeStoryTimer(listener: OnBedtimeStoryTimerTickListener){
 
     fun setDuration(ms: Long): String{
         duration = ms
+        handler.postDelayed(runnable, delay)
         handler.removeCallbacks(runnable)
         return format()
     }

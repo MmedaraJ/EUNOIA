@@ -1,6 +1,7 @@
 package com.example.eunoia.ui.bottomSheets.bedtimeStory
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,9 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.amplifyframework.datastore.generated.model.SoundData
-import com.example.eunoia.dashboard.bedtimeStory.navigateToBedtimeStoryScreen
+import com.example.eunoia.R
+import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.bedtimeStory.*
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -34,9 +38,8 @@ import com.example.eunoia.ui.components.AnImageWithColor
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.theme.Black
-import com.example.eunoia.ui.theme.Mischka
-import com.example.eunoia.ui.theme.PeriwinkleGray
+import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.timerFormatMS
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 
@@ -150,14 +153,10 @@ fun BottomSheetBedtimeStoryControlPanelUI(
                         start.linkTo(parent.start, margin = 32.dp)
                     }
             ) {
-                /*Controls(
-                    globalViewModel.currentSoundPlaying!!,
-                    globalViewModel.currentSoundPlayingPreset!!,
-                    globalViewModel.currentSoundPlayingContext!!,
-                    false,
-                    scope,
-                    state
-                )*/
+                BottomSheetBedtimeStoryControls(
+                    globalViewModel_!!.currentBedtimeStoryPlaying!!,
+                    generalMediaPlayerService
+                )
             }
         }
     }
@@ -166,7 +165,6 @@ fun BottomSheetBedtimeStoryControlPanelUI(
 @Composable
 fun BottomSheetBedtimeStoryControls(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
-    applicationContext: Context,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ){
     Row(
@@ -206,7 +204,6 @@ fun BottomSheetBedtimeStoryControls(
                     activateControls(
                         bedtimeStoryInfoData,
                         index,
-                        applicationContext,
                         generalMediaPlayerService,
                     )
                 }
@@ -218,34 +215,240 @@ fun BottomSheetBedtimeStoryControls(
 private fun activateControls(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
     index: Int,
-    context: Context,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ){
     when(index){
-        /*0 -> resetBedtimeStory(
+        0 -> resetBedtimeStory(
             generalMediaPlayerService,
             bedtimeStoryInfoData,
-            context
         )
         1 -> seekBack15(
-            index,
             bedtimeStoryInfoData,
-            context,
             generalMediaPlayerService,
         )
         2 -> {
-            playOrPauseAccordingly(
+            pauseOrPlayBedtimeStoryAccordingly(
                 bedtimeStoryInfoData,
                 generalMediaPlayerService,
-                generalMediaPlayerService,
-                context
             )
         }
         3 -> seekForward15(
-            index,
             bedtimeStoryInfoData,
-            context,
             generalMediaPlayerService,
-        )*/
+        )
+    }
+}
+
+fun resetBedtimeStory(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData
+){
+    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
+        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
+                resetBothLocalAndGlobalControlButtonsAfterReset()
+                globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
+                globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = 0f
+                globalViewModel_!!.bedtimeStoryTimer.stop()
+                globalViewModel_!!.bedtimeStoryTimeDisplay.value =
+                    timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+                globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+                generalMediaPlayerService.onDestroy()
+            }
+        }
+    }
+}
+
+fun seekBack15(
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    generalMediaPlayerService: GeneralMediaPlayerService
+) {
+    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
+        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+            if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+                var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
+                if(newSeekTo < 0){
+                    newSeekTo = 0
+                }
+                generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
+                globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
+                globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = (
+                        (generalMediaPlayerService.getMediaPlayer()!!.currentPosition).toFloat() /
+                                (bedtimeStoryInfoData.fullPlayTime).toFloat()
+                        ) * 360f
+                globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
+                    globalViewModel_!!.bedtimeStoryTimer.start()
+                }
+            }
+        }
+    }
+}
+
+fun seekForward15(
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    generalMediaPlayerService: GeneralMediaPlayerService
+) {
+    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
+        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+            if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+                var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
+                if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
+                    newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.duration - 2000
+                    activateBedtimeStoryGlobalControlButton(2)
+                    deActivateBedtimeStoryGlobalControlButton(0)
+                }
+                generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
+                globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
+                globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = (
+                        generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toFloat() /
+                                bedtimeStoryInfoData.fullPlayTime.toFloat()
+                        ) * 360f
+                globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
+                    globalViewModel_!!.bedtimeStoryTimer.start()
+                }
+            }
+        }
+    }
+}
+
+fun pauseOrPlayBedtimeStoryAccordingly(
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+) {
+    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
+        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
+                if (generalMediaPlayerService.isMediaPlayerPlaying()) {
+                    pauseBedtimeStory(generalMediaPlayerService)
+                }else{
+                    startBedtimeStory(
+                        generalMediaPlayerService,
+                        bedtimeStoryInfoData,
+                    )
+                }
+            }else{
+                startBedtimeStory(
+                    generalMediaPlayerService,
+                    bedtimeStoryInfoData,
+                )
+            }
+        }else{
+            retrieveBedtimeStoryAudio(
+                generalMediaPlayerService,
+                bedtimeStoryInfoData,
+            )
+        }
+    }else{
+        retrieveBedtimeStoryAudio(
+            generalMediaPlayerService,
+            bedtimeStoryInfoData,
+        )
+    }
+}
+
+private fun pauseBedtimeStory(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+) {
+    if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+        if(generalMediaPlayerService.isMediaPlayerPlaying()) {
+            generalMediaPlayerService.pauseMediaPlayer()
+            globalViewModel_!!.bedtimeStoryTimer.pause()
+            activateBedtimeStoryGlobalControlButton(2)
+            activateBedtimeStoryGlobalControlButton(2)
+            globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+        }
+    }
+}
+
+private fun startBedtimeStory(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+) {
+    if(globalViewModel_!!.currentBedtimeStoryPlayingUri != null){
+        if(generalMediaPlayerService.isMediaPlayerInitialized()){
+            if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+                generalMediaPlayerService.startMediaPlayer()
+            }else{
+                initializeMediaPlayer(
+                    generalMediaPlayerService,
+                    bedtimeStoryInfoData
+                )
+            }
+        }else{
+            initializeMediaPlayer(
+                generalMediaPlayerService,
+                bedtimeStoryInfoData
+            )
+        }
+        globalViewModel_!!.bedtimeStoryTimer.start()
+        globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
+        deActivateBedtimeStoryGlobalControlButton(2)
+        deActivateBedtimeStoryGlobalControlButton(0)
+    }
+}
+
+private fun initializeMediaPlayer(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData
+){
+    generalMediaPlayerService.onDestroy()
+    generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentBedtimeStoryPlayingUri!!)
+    val intent = Intent()
+    intent.action = "PLAY"
+    generalMediaPlayerService.onStartCommand(intent, 0, 0)
+    globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
+    globalViewModel_!!.bedtimeStoryTimer.setDuration(0L)
+    resetGlobalControlButtons()
+    //resetAll(context, soundMediaPlayerService)
+}
+
+private fun retrieveBedtimeStoryAudio(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+) {
+    if (
+        bedtimeStoryInfoData.audioSource == BedtimeStoryAudioSource.UPLOADED
+    ) {
+        SoundBackend.retrieveAudio(
+            bedtimeStoryInfoData.audioKeyS3,
+            bedtimeStoryInfoData.bedtimeStoryOwner.amplifyAuthUserId
+        ) {
+            globalViewModel_!!.currentBedtimeStoryPlayingUri = it
+            startBedtimeStory(
+                generalMediaPlayerService,
+                bedtimeStoryInfoData,
+            )
+        }
+    } else {
+        //if recorded
+        //get chapter, get pages, get recordings from s3, play them one after the order
+    }
+}
+
+fun resetGlobalControlButtons(){
+    deActivateBedtimeStoryGlobalControlButton(0)
+    deActivateBedtimeStoryGlobalControlButton(1)
+    activateBedtimeStoryGlobalControlButton(2)
+    deActivateBedtimeStoryGlobalControlButton(3)
+    deActivateBedtimeStoryGlobalControlButton(4)
+}
+
+fun activateBedtimeStoryGlobalControlButton(index: Int){
+    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value = Black
+    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value = SoftPeach
+    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value = Solitude
+    if(index == 2){
+        globalViewModel_!!.bedtimeStoryScreenIcons[index].value = R.drawable.play_icon
+    }
+}
+
+fun deActivateBedtimeStoryGlobalControlButton(index: Int){
+    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value = Bizarre
+    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value = White
+    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value = White
+    if(index == 2){
+        globalViewModel_!!.bedtimeStoryScreenIcons[index].value = R.drawable.pause_icon
     }
 }

@@ -474,6 +474,7 @@ private fun startSoundScreenSounds(
         }
         deActivateGlobalControlButton(3)
         deActivateGlobalControlButton(1)
+        globalViewModel_!!.isCurrentSoundPlaying = true
     }
 }
 

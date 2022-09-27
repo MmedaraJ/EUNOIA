@@ -36,7 +36,6 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -65,7 +64,6 @@ fun Mixer(
     preset: PresetData,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
     navController: NavController
 ){
@@ -164,9 +162,7 @@ fun Mixer(
             ) {
                 Sliders(
                     sound,
-                    generalMediaPlayerService,
                     soundMediaPlayerService,
-                    navController
                 )
             }
             Column(
@@ -185,7 +181,6 @@ fun Mixer(
                     true,
                     scope,
                     state,
-                    generalMediaPlayerService,
                     soundMediaPlayerService,
                     navController
                 )
@@ -197,9 +192,7 @@ fun Mixer(
 @Composable
 fun Sliders(
     soundData: SoundData,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
-    navController: NavController
 ){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -337,7 +330,6 @@ fun Controls(
     showAddIcon: Boolean,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
     navController: NavController
 ){
@@ -380,7 +372,6 @@ fun Controls(
                         sound,
                         index,
                         applicationContext,
-                        generalMediaPlayerService,
                         soundMediaPlayerService,
                         navController
                     )
@@ -665,7 +656,6 @@ fun changeTimerTime(
     index: Int,
     soundData: SoundData,
     context: Context,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     if (globalViewModel_!!.currentSoundPlaying != null) {
@@ -681,7 +671,6 @@ fun changeTimerTime(
                         playOrPauseAccordingly(
                             soundData,
                             soundMediaPlayerService,
-                            generalMediaPlayerService,
                             context
                         )
                     }
@@ -707,7 +696,6 @@ private fun activateControls(
     soundData: SoundData,
     index: Int,
     context: Context,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
     navController: NavController
 ){
@@ -722,14 +710,12 @@ private fun activateControls(
                 index,
                 soundData,
                 context,
-                generalMediaPlayerService,
                 soundMediaPlayerService,
             )
         3 -> {
             playOrPauseAccordingly(
                 soundData,
                 soundMediaPlayerService,
-                generalMediaPlayerService,
                 context
             )
         }
@@ -754,7 +740,6 @@ private fun activateControls(
 fun playOrPauseAccordingly(
     soundData: SoundData,
     soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     context: Context
 ) {
     if(globalViewModel_!!.currentSoundPlaying != null) {
@@ -767,7 +752,6 @@ fun playOrPauseAccordingly(
                 } else {
                     startSoundScreenSounds(
                         soundMediaPlayerService,
-                        generalMediaPlayerService,
                         context,
                         soundData
                     )
@@ -775,7 +759,6 @@ fun playOrPauseAccordingly(
             }else {
                 startSoundScreenSounds(
                     soundMediaPlayerService,
-                    generalMediaPlayerService,
                     context,
                     soundData
                 )
@@ -783,7 +766,6 @@ fun playOrPauseAccordingly(
         }else{
             retrieveSoundAudio(
                 soundMediaPlayerService,
-                generalMediaPlayerService,
                 context,
                 soundData
             )
@@ -791,7 +773,6 @@ fun playOrPauseAccordingly(
     }else{
         retrieveSoundAudio(
             soundMediaPlayerService,
-            generalMediaPlayerService,
             context,
             soundData
         )
@@ -800,7 +781,6 @@ fun playOrPauseAccordingly(
 
 private fun retrieveSoundAudio(
     soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     context: Context,
     soundData: SoundData
 ) {
@@ -818,7 +798,6 @@ private fun retrieveSoundAudio(
                 if(i == s3List.items.size - 1){
                     startSoundScreenSounds(
                         soundMediaPlayerService,
-                        generalMediaPlayerService,
                         context,
                         soundData
                     )
@@ -830,7 +809,6 @@ private fun retrieveSoundAudio(
 
 private fun startSoundScreenSounds(
     soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     context: Context,
     soundData: SoundData
 ) {
@@ -841,7 +819,6 @@ private fun startSoundScreenSounds(
             }else{
                 initializeMediaPlayers(
                     soundMediaPlayerService,
-                    generalMediaPlayerService,
                     context,
                     soundData
                 )
@@ -850,7 +827,6 @@ private fun startSoundScreenSounds(
             Log.i(TAG, "Uri SIZEEE 02 is ${soundUris.size} /.")
             initializeMediaPlayers(
                 soundMediaPlayerService,
-                generalMediaPlayerService,
                 context,
                 soundData
             )
@@ -865,11 +841,9 @@ private fun startSoundScreenSounds(
 
 private fun initializeMediaPlayers(
     soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     context: Context,
     soundData: SoundData
 ){
-    generalMediaPlayerService.onDestroy()
     soundMediaPlayerService.onDestroy()
     soundMediaPlayerService.setAudioUris(soundUris)
     soundMediaPlayerService.setVolumes(sliderVolumes!!)

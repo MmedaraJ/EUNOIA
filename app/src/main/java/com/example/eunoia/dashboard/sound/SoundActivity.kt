@@ -24,7 +24,6 @@ import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSoundBackend
 import com.example.eunoia.dashboard.home.*
 import com.example.eunoia.models.SoundObject
-import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.sound.resetGlobalControlButtons
@@ -51,7 +50,6 @@ fun SoundActivityUI(
     context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     resetSoundActivityPlayButtonTexts()
@@ -161,7 +159,6 @@ fun SoundActivityUI(
                                 resetPlayButtonTextsIfNecessary(index)
                                 playOrPauseMediaPlayerAccordingly(
                                     soundMediaPlayerService,
-                                    generalMediaPlayerService,
                                     index,
                                     context
                                 )
@@ -262,7 +259,6 @@ private fun resetSoundMediaPlayerServiceIfNecessary(
 
 private fun playOrPauseMediaPlayerAccordingly(
     soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     index: Int,
     context: Context
 ) {
@@ -272,7 +268,6 @@ private fun playOrPauseMediaPlayerAccordingly(
             getNecessaryPresets(index) {
                 retrieveSoundAudio(
                     soundMediaPlayerService,
-                    generalMediaPlayerService,
                     index,
                     context
                 )
@@ -280,7 +275,6 @@ private fun playOrPauseMediaPlayerAccordingly(
         }else{
             startSound(
                 soundMediaPlayerService,
-                generalMediaPlayerService,
                 index,
                 context
             )
@@ -295,7 +289,6 @@ private fun playOrPauseMediaPlayerAccordingly(
 
 private fun retrieveSoundAudio(
     soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     index: Int,
     context: Context
 ) {
@@ -312,7 +305,6 @@ private fun retrieveSoundAudio(
                 if(i == s3List.items.size - 1){
                     startSound(
                         soundMediaPlayerService,
-                        generalMediaPlayerService,
                         index,
                         context
                     )
@@ -324,7 +316,6 @@ private fun retrieveSoundAudio(
 
 private fun startSound(
     soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     index: Int,
     context: Context
 ) {
@@ -334,7 +325,6 @@ private fun startSound(
         }else{
             initializeMediaPlayers(
                 soundMediaPlayerService,
-                generalMediaPlayerService,
                 index,
                 context
             )
@@ -369,15 +359,14 @@ private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
     soundActivityPlayButtonTexts[index]!!.value = PAUSE_SOUND
     globalViewModel_!!.isCurrentSoundPlaying = true
     com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(3)
+    com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(1)
 }
 
 private fun initializeMediaPlayers(
     soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     index: Int,
     context: Context
 ){
-    generalMediaPlayerService.onDestroy()
     soundMediaPlayerService.onDestroy()
     soundMediaPlayerService.setAudioUris(soundActivityUris[index])
     soundMediaPlayerService.setVolumes(soundActivityUriVolumes[index])

@@ -1,4 +1,4 @@
-package com.example.eunoia.ui.bottomSheets
+package com.example.eunoia.ui.bottomSheets.sound
 
 import android.util.Log
 import androidx.compose.foundation.Canvas
@@ -30,6 +30,8 @@ import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
+import com.example.eunoia.ui.bottomSheets.closeBottomSheet
+import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*

@@ -29,8 +29,6 @@ import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.BedtimeStoryTimer
-import com.example.eunoia.utils.Timer
-import com.example.eunoia.utils.formatMilliSecond
 import com.example.eunoia.utils.timerFormatMS
 import kotlinx.coroutines.CoroutineScope
 
@@ -62,6 +60,9 @@ var bedtimeStoryScreenBackgroundControlColor2 = arrayOf(
     mutableStateOf(White),
     mutableStateOf(White),
 )
+var angle = mutableStateOf(0f)
+var clicked = mutableStateOf(false)
+var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -77,19 +78,20 @@ fun BedtimeStoryScreen(
 
     if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
         if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
-            setParametersFromGlobalVariables(
-                bedtimeStoryInfoData,
-                generalMediaPlayerService
-            ){
+            setParametersFromGlobalVariables{
                 retrievedUris = true
             }
         }else{
             resetBedtimeStoryControlsUI()
+            angle.value = 0f
+            clicked.value = false
             bedtimeStoryTimeDisplay.value = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
             retrievedUris = true
         }
     }else{
         resetBedtimeStoryControlsUI()
+        angle.value = 0f
+        clicked.value = false
         bedtimeStoryTimeDisplay.value = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
         retrievedUris = true
     }
@@ -104,6 +106,7 @@ fun BedtimeStoryScreen(
         ) {
             val (
                 header,
+                title,
                 playBox,
                 controls,
                 description
@@ -127,13 +130,29 @@ fun BedtimeStoryScreen(
                     }
                 )
             }
+            Column(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        top.linkTo(header.bottom, margin = 40.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                    }
+            ) {
+                NormalText(
+                    text = "Bedtime Story",
+                    color = Black,
+                    fontSize = 12,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .constrainAs(playBox) {
-                        top.linkTo(header.bottom, margin = 40.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
+                        top.linkTo(title.bottom, margin = 20.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
                     }
                     .fillMaxWidth()
             ) {
@@ -154,6 +173,9 @@ fun BedtimeStoryScreen(
                                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeek.toInt())
                                 bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                                 bedtimeStoryTimer.start()
+                                if(!globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
+                                    bedtimeStoryTimer.pause()
+                                }
                             }
                         }
                     }
@@ -203,11 +225,10 @@ fun BedtimeStoryScreen(
             ) {
                 PurpleBackgroundControls(
                     bedtimeStoryInfoData = bedtimeStoryInfoData,
+                    generalMediaPlayerService = generalMediaPlayerService,
                     scope = scope,
                     state = state
-                ) {
-
-                }
+                )
             }
             Column(
                 modifier = Modifier
@@ -246,21 +267,14 @@ fun BedtimeStoryScreen(
 }
 
 private fun setParametersFromGlobalVariables(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     completed: () -> Unit
 ) {
-    setUpParameters(
-        bedtimeStoryInfoData,
-        generalMediaPlayerService
-    ){
+    setUpParameters{
         completed()
     }
 }
 
 fun setUpParameters(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     completed: () -> Unit
 ) {
     bedtimeStoryUri = globalViewModel_!!.currentBedtimeStoryPlayingUri!!
@@ -269,6 +283,9 @@ fun setUpParameters(
     bedtimeStoryScreenBackgroundControlColor1 = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1
     bedtimeStoryScreenBackgroundControlColor2 = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2
     bedtimeStoryTimeDisplay.value = globalViewModel_!!.bedtimeStoryTimeDisplay.value
+    bedtimeStoryTimer = globalViewModel_!!.bedtimeStoryTimer
+    angle.value = globalViewModel_!!.bedtimeStoryCircularSliderAngle.value
+    clicked.value = globalViewModel_!!.bedtimeStoryCircularSliderClicked.value
     completed()
 }
 

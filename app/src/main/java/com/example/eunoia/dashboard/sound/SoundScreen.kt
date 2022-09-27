@@ -26,11 +26,10 @@ import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
 import com.example.eunoia.models.*
-import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.openSavedElementDialogBox
+import com.example.eunoia.ui.bottomSheets.sound.openSavedElementDialogBox
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
@@ -108,7 +107,6 @@ fun SoundScreen(
     context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
 ){
     if(openSavedElementDialogBox){
@@ -234,7 +232,6 @@ fun SoundScreen(
                     soundPreset!!,
                     scope,
                     state,
-                    generalMediaPlayerService,
                     soundMediaPlayerService,
                     navController
                 )

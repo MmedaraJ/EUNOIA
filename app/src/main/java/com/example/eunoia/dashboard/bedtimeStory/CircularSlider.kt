@@ -1,10 +1,7 @@
-package com.example.eunoia.ui.components
+package com.example.eunoia.dashboard.bedtimeStory
 
-import android.graphics.Paint
-import android.graphics.RectF
 import android.util.Log
 import android.view.MotionEvent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -13,19 +10,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.dp
-import com.example.eunoia.dashboard.home.generalMediaPlayerService_
 import com.example.eunoia.services.GeneralMediaPlayerService
-import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.Black
 import kotlin.math.*
 
-var angle = mutableStateOf(0f)
-var clicked = mutableStateOf(false)
 private const val TAG = "Circular slider"
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -67,7 +58,6 @@ fun CircularSlider(
             a = 0f
         }
         appliedAngle = a
-        Log.i("Circular slider", "1. Applied angle: ${(appliedAngle/360f) * 18000}")
     }
 
     LaunchedEffect(key1 = appliedAngle){

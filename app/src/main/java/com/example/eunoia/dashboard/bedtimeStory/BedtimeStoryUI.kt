@@ -1,6 +1,5 @@
 package com.example.eunoia.dashboard.bedtimeStory
 
-import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -29,20 +28,19 @@ import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.components.AnImageWithColor
-import com.example.eunoia.ui.components.LightText
-import com.example.eunoia.ui.components.NormalText
+import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.timerFormatMS
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PurpleBackgroundControls(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
+    generalMediaPlayerService: GeneralMediaPlayerService,
     scope: CoroutineScope,
-    state: ModalBottomSheetState,
-    lambda: () -> Unit
+    state: ModalBottomSheetState
 ){
     Card(
         modifier = Modifier
@@ -112,14 +110,13 @@ fun PurpleBackgroundControls(
                         start.linkTo(parent.start, margin = 32.dp)
                     }
             ) {
-                /*Controls(
-                    globalViewModel.currentSoundPlaying!!,
-                    globalViewModel.currentSoundPlayingPreset!!,
-                    globalViewModel.currentSoundPlayingContext!!,
-                    false,
+                BottomSheetBedtimeStoryControls(
+                    bedtimeStoryInfoData,
+                    generalMediaPlayerService,
+                    true,
                     scope,
                     state
-                )*/
+                )
             }
         }
     }
@@ -129,7 +126,6 @@ fun PurpleBackgroundControls(
 @Composable
 fun BottomSheetBedtimeStoryControls(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
-    applicationContext: Context,
     generalMediaPlayerService: GeneralMediaPlayerService,
     showAddIcon: Boolean,
     scope: CoroutineScope,
@@ -172,7 +168,6 @@ fun BottomSheetBedtimeStoryControls(
                     activateControls(
                         bedtimeStoryInfoData,
                         index,
-                        applicationContext,
                         generalMediaPlayerService,
                     )
                 }
@@ -183,7 +178,7 @@ fun BottomSheetBedtimeStoryControls(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
-                    .background(bedtimeStoryScreenBorderControlColors[7].value),
+                    .background(bedtimeStoryScreenBorderControlColors[4].value),
                 contentAlignment = Alignment.Center
             ) {
                 AnImageWithColor(
@@ -195,7 +190,7 @@ fun BottomSheetBedtimeStoryControls(
                     0,
                     0
                 ) {
-                    bedtimeStoryScreenBorderControlColors[5].value = Black
+                    bedtimeStoryScreenBorderControlColors[4].value = Black
                     globalViewModel_!!.currentBedtimeStoryToBeAdded = bedtimeStoryInfoData
                     globalViewModel_!!.bottomSheetOpenFor = "addToSoundListOrRoutine"
                     openBottomSheet(scope, state)
@@ -208,35 +203,101 @@ fun BottomSheetBedtimeStoryControls(
 private fun activateControls(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
     index: Int,
-    context: Context,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ){
     when(index){
-        /*0 -> resetBedtimeStory(
+        0 -> resetBedtimeStory(
             generalMediaPlayerService,
-            bedtimeStoryInfoData,
-            context
+            bedtimeStoryInfoData
         )
         1 -> seekBack15(
-            index,
             bedtimeStoryInfoData,
-            context,
             generalMediaPlayerService,
         )
         2 -> {
-            playOrPauseAccordingly(
+            pauseOrPlayBedtimeStoryAccordingly(
                 bedtimeStoryInfoData,
                 generalMediaPlayerService,
-                generalMediaPlayerService,
-                context
             )
         }
         3 -> seekForward15(
-            index,
             bedtimeStoryInfoData,
-            context,
             generalMediaPlayerService,
-        )*/
+        )
+    }
+}
+
+fun resetBedtimeStory(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData
+){
+    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
+        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
+                resetBothLocalAndGlobalControlButtonsAfterReset()
+                clicked.value = false
+                angle.value = 0f
+                bedtimeStoryTimer.stop()
+                bedtimeStoryTimeDisplay.value =
+                    timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+                globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+                generalMediaPlayerService.onDestroy()
+            }
+        }
+    }
+}
+
+fun seekBack15(
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    generalMediaPlayerService: GeneralMediaPlayerService
+) {
+    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
+        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+            if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+                var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
+                if(newSeekTo < 0){
+                    newSeekTo = 0
+                }
+                generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
+                clicked.value = false
+                angle.value = (
+                    (generalMediaPlayerService.getMediaPlayer()!!.currentPosition).toFloat() /
+                    (bedtimeStoryInfoData.fullPlayTime).toFloat()
+                ) * 360f
+                bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
+                    bedtimeStoryTimer.start()
+                }
+            }
+        }
+    }
+}
+
+fun seekForward15(
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    generalMediaPlayerService: GeneralMediaPlayerService
+) {
+    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
+        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+            if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+                var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
+                if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
+                    newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.duration - 2000
+                    activateGlobalBedtimeStoryControlButton(2)
+                    deActivateGlobalBedtimeStoryControlButton(0)
+                }
+                generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
+                clicked.value = false
+                angle.value = (
+                    generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toFloat() /
+                    bedtimeStoryInfoData.fullPlayTime.toFloat()
+                ) * 360f
+                bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
+                    bedtimeStoryTimer.start()
+                }
+            }
+        }
     }
 }
 
@@ -371,6 +432,18 @@ fun resetBothLocalAndGlobalControlButtons(){
     deActivateLocalBedtimeStoryControlButton(3)
 
     deActivateGlobalBedtimeStoryControlButton(0)
+    deActivateGlobalBedtimeStoryControlButton(1)
+    activateGlobalBedtimeStoryControlButton(2)
+    deActivateGlobalBedtimeStoryControlButton(3)
+}
+
+fun resetBothLocalAndGlobalControlButtonsAfterReset(){
+    activateLocalBedtimeStoryControlButton(0)
+    deActivateLocalBedtimeStoryControlButton(1)
+    activateLocalBedtimeStoryControlButton(2)
+    deActivateLocalBedtimeStoryControlButton(3)
+
+    activateGlobalBedtimeStoryControlButton(0)
     deActivateGlobalBedtimeStoryControlButton(1)
     activateGlobalBedtimeStoryControlButton(2)
     deActivateGlobalBedtimeStoryControlButton(3)

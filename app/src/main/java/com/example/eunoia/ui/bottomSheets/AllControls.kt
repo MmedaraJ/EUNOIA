@@ -17,6 +17,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.eunoia.dashboard.sound.soundScreenBorderControlColors
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.bottomSheets.bedtimeStory.bottomSheetBedtimeStoryControlPanel
 import com.example.eunoia.ui.bottomSheets.sound.bottomSheetSoundControlPanel
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.theme.*
@@ -59,13 +60,14 @@ fun BottomSheetAllControls(
             generalMediaPlayerService,
             soundMediaPlayerService
         )
-        val bedtimeStoryPlaying = bottomSheetSoundControlPanel(
+
+        val bedtimeStoryPlaying = bottomSheetBedtimeStoryControlPanel(
             globalViewModel,
             scope,
             state,
             generalMediaPlayerService,
-            soundMediaPlayerService
         )
+
         val selfLovePlaying = bottomSheetSoundControlPanel(
             globalViewModel,
             scope,
@@ -74,7 +76,11 @@ fun BottomSheetAllControls(
             soundMediaPlayerService
         )
 
-        if(!(soundPlaying && bedtimeStoryPlaying && selfLovePlaying)){
+        if(
+            !soundPlaying &&
+            !bedtimeStoryPlaying &&
+            !selfLovePlaying
+        ){
             Card(
                 modifier = Modifier
                     .padding(bottom = 16.dp)

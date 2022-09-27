@@ -26,7 +26,7 @@ import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.openSavedElementDialogBox
+import com.example.eunoia.ui.bottomSheets.sound.openSavedElementDialogBox
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.CustomizableButton
 import com.example.eunoia.ui.components.NormalText

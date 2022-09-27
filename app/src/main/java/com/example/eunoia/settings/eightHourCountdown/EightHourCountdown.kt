@@ -25,7 +25,7 @@ import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
-import com.example.eunoia.ui.components.CircularSlider
+import com.example.eunoia.dashboard.bedtimeStory.CircularSlider
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.PurpleBackgroundStart
 import com.example.eunoia.ui.navigation.globalViewModel_
