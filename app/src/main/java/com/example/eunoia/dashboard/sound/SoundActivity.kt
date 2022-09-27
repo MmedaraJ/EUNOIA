@@ -16,20 +16,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSoundBackend
-import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryActivityPlayButtonTexts
 import com.example.eunoia.dashboard.home.*
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.resetGlobalControlButtons
+import com.example.eunoia.ui.bottomSheets.sound.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
@@ -370,7 +368,7 @@ private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
     globalViewModel_!!.currentSoundPlayingContext = context
     soundActivityPlayButtonTexts[index]!!.value = PAUSE_SOUND
     globalViewModel_!!.isCurrentSoundPlaying = true
-    com.example.eunoia.ui.bottomSheets.deActivateGlobalControlButton(3)
+    com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(3)
 }
 
 private fun initializeMediaPlayers(
@@ -399,7 +397,7 @@ private fun pauseSound(
         if(soundMediaPlayerService.areMediaPlayersPlaying()) {
             soundMediaPlayerService.pauseMediaPlayers()
             soundActivityPlayButtonTexts[index]!!.value = START_SOUND
-            com.example.eunoia.ui.bottomSheets.activateGlobalControlButton(3)
+            com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(3)
             globalViewModel_!!.isCurrentSoundPlaying = false
         }
     }

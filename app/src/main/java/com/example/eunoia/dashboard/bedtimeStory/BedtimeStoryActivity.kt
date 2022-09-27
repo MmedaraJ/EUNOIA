@@ -23,6 +23,7 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
 import com.example.eunoia.dashboard.home.OptionItem
+import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -31,6 +32,7 @@ import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
+import com.example.eunoia.utils.BedtimeStoryTimer
 import kotlinx.coroutines.CoroutineScope
 
 private const val TAG = "Bedtime Story Activity"
@@ -39,6 +41,8 @@ var bedtimeStoryActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
 private const val START_BEDTIME_STORY = "start"
 private const val PAUSE_BEDTIME_STORY = "pause"
 private const val WAIT_FOR_BEDTIME_STORY = "wait"
+var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
+var bedtimeStoryTimeDisplay = mutableStateOf("00.00")
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -203,7 +207,11 @@ private fun setBedtimeStoryActivityPlayButtonTextsCorrectly(i: Int) {
             globalViewModel_!!.currentBedtimeStoryPlaying!!.id ==
             globalViewModel_!!.currentUsersBedtimeStories!![i]!!.bedtimeStoryInfoData.id
         ) {
-            bedtimeStoryActivityPlayButtonTexts[i]!!.value = PAUSE_BEDTIME_STORY
+            if(globalViewModel_!!.isCurrentBedtimeStoryPlaying){
+                bedtimeStoryActivityPlayButtonTexts[i]!!.value = PAUSE_BEDTIME_STORY
+            }else{
+                bedtimeStoryActivityPlayButtonTexts[i]!!.value = START_BEDTIME_STORY
+            }
         } else {
             bedtimeStoryActivityPlayButtonTexts[i]!!.value = START_BEDTIME_STORY
         }
@@ -242,6 +250,9 @@ private fun pauseBedtimeStory(
             generalMediaPlayerService.pauseMediaPlayer()
             bedtimeStoryActivityPlayButtonTexts[index]!!.value =
                 START_BEDTIME_STORY
+            bedtimeStoryTimer.pause()
+            globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+            //activate global controls
         }
     }
 }
@@ -263,9 +274,17 @@ private fun startBedtimeStory(
                 context
             )
         }
-        globalViewModel_!!.currentBedtimeStoryPlaying = globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData
-        bedtimeStoryActivityPlayButtonTexts[index]!!.value = PAUSE_BEDTIME_STORY
+        bedtimeStoryTimer.start()
+        setGlobalPropertiesAfterPlayingBedtimeStory(index)
     }
+}
+
+private fun setGlobalPropertiesAfterPlayingBedtimeStory(index: Int){
+    globalViewModel_!!.currentBedtimeStoryPlaying = globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData
+    globalViewModel_!!.currentBedtimeStoryPlayingUri = bedtimeStoryActivityUris[index]!!.value
+    bedtimeStoryActivityPlayButtonTexts[index]!!.value = PAUSE_BEDTIME_STORY
+    globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
+    //deactivate global bedtime story control play button
 }
 
 private fun retrieveBedtimeStoryAudio(
@@ -323,12 +342,14 @@ private fun initializeMediaPlayer(
     context: Context
 ){
     generalMediaPlayerService.onDestroy()
-    soundMediaPlayerService.onDestroy()
+    //soundMediaPlayerService.onDestroy()
     generalMediaPlayerService.setAudioUri(bedtimeStoryActivityUris[index]!!.value)
     val intent = Intent()
     intent.action = "PLAY"
     generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    resetAll(context, soundMediaPlayerService)
+    bedtimeStoryTimer.setMaxDuration(globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData.fullPlayTime.toLong())
+    bedtimeStoryTimer.setDuration(0L)
+    //resetAll(context, soundMediaPlayerService)
 }
 
 fun resetBedtimeStoryActivityPlayButtonTexts() {

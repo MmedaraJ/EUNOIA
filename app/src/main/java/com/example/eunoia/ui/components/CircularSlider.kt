@@ -18,8 +18,15 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
+import com.example.eunoia.dashboard.home.generalMediaPlayerService_
+import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.Black
 import kotlin.math.*
+
+var angle = mutableStateOf(0f)
+var clicked = mutableStateOf(false)
+private const val TAG = "Circular slider"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -33,18 +40,22 @@ fun CircularSlider(
     progressColor: Color = Color.Black,
     backgroundColor: Color = Color.LightGray,
     debug: Boolean = false,
-    onChange: ((Float)->Unit)? = null
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    appliedAngleChanged: (appliedAngle: Float) -> Unit
 ){
     var width by remember { mutableStateOf(0) }
     var height by remember { mutableStateOf(0) }
-    var angle by remember { mutableStateOf(-270f) }
+    //var angle by remember { mutableStateOf(-270f) }
     var down  by remember { mutableStateOf(false) }
     var radius by remember { mutableStateOf(0f) }
     var center by remember { mutableStateOf(Offset.Zero) }
     var appliedAngle by remember { mutableStateOf(0f) }
-    LaunchedEffect(key1 = angle){
-        var a = angle
-        a += 270f
+
+    LaunchedEffect(key1 = angle.value){
+        var a = angle.value
+        if(clicked.value) {
+            a += 270f
+        }
         if(a<=0f){
             a += 360f
         }
@@ -58,10 +69,11 @@ fun CircularSlider(
         appliedAngle = a
         Log.i("Circular slider", "1. Applied angle: ${(appliedAngle/360f) * 18000}")
     }
+
     LaunchedEffect(key1 = appliedAngle){
-        Log.i("Circular slider", "Applied angle changed: $appliedAngle")
-        onChange?.invoke(appliedAngle/360f)
+        appliedAngleChanged(appliedAngle)
     }
+
     Canvas(
         modifier = modifier
             .onGloballyPositioned {
@@ -72,26 +84,24 @@ fun CircularSlider(
             }
             .pointerInteropFilter {
                 val x = it.x
-                Log.i("Circular Slider", "X = $x")
                 val y = it.y
-                Log.i("Circular Slider", "Y = $y")
                 val offset = Offset(x, y)
-                Log.i("Circular Slider", "Offset = $offset")
-                Log.i("Circular Slider", "Action = ${it.action}")
                 when (it.action) {
                     MotionEvent.ACTION_DOWN -> {
                         val d = distance(offset, center)
                         val a = angle(center, offset)
                         if (d >= radius - touchStroke / 2f && d <= radius + touchStroke / 2f) {
                             down = true
-                            angle = a + 0
+                            clicked.value = true
+                            angle.value = a + 0
                         } else {
                             down = false
                         }
                     }
                     MotionEvent.ACTION_MOVE -> {
                         if (down) {
-                            angle = angle(center, offset)
+                            clicked.value = true
+                            angle.value = angle(center, offset)
                         }
                     }
                     MotionEvent.ACTION_UP -> {

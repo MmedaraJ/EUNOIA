@@ -1,6 +1,5 @@
 package com.example.eunoia.backend
 
-import android.content.Context
 import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
@@ -10,9 +9,6 @@ import com.amplifyframework.datastore.generated.model.PresetPublicityStatus
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.models.PresetObject
-import com.example.eunoia.models.SoundObject
-import com.example.eunoia.models.UserObject
-import com.example.eunoia.ui.navigation.globalViewModel_
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

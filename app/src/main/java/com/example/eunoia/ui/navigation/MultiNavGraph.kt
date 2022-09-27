@@ -43,6 +43,7 @@ import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.settings.eightHourCountdown.EightHourCountdownUI
 import com.example.eunoia.ui.bottomSheets.*
+import com.example.eunoia.ui.bottomSheets.recordAudio.RecordAudio
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.RecordAudioViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +53,9 @@ var recordAudioViewModel: RecordAudioViewModel? = null
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MultiBottomNavApp(globalViewModel: GlobalViewModel = viewModel()) {
+fun MultiBottomNavApp(
+    globalViewModel: GlobalViewModel = viewModel(),
+) {
     globalViewModel_ = globalViewModel
     recordAudioViewModel = viewModel()
     val modalBottomSheetState = rememberModalBottomSheetState(
@@ -297,7 +300,8 @@ fun DashboardTab(
                 navController,
                 globalViewModel,
                 scope,
-                state
+                state,
+                generalMediaPlayerService
             )
         }
         composable(
@@ -354,9 +358,10 @@ fun DashboardTab(
             Log.i("BedtimeStoryScreen", "You are now on the BedtimeStoryScreen tab")
             BedtimeStoryScreen(
                 navController = navController,
-                bedtimeStoryData!!.data,
+                bedtimeStoryInfoData = bedtimeStoryData!!.data,
                 scope = scope,
-                state = state
+                state = state,
+                generalMediaPlayerService = generalMediaPlayerService
             )
         }
         composable(Screen.Settings.screen_route) {
@@ -384,7 +389,8 @@ fun DashboardTab(
                 navController,
                 LocalContext.current,
                 scope,
-                state
+                state,
+                generalMediaPlayerService
             )
         }
         composable(
@@ -587,7 +593,8 @@ fun CreateTab(
                 navController = navController,
                 bedtimeStoryData!!.data,
                 scope = scope,
-                state = state
+                state = state,
+                generalMediaPlayerService = generalMediaPlayerService
             )
         }
         composable(Screen.IncompleteBedtimeStories.screen_route) {

@@ -17,3 +17,15 @@ fun formatMilliSecond(milliseconds: Long): String{
 
     return finalTimerString
 }
+
+fun timerFormatMS(milliseconds: Long): String{
+    val millis = milliseconds % 1000
+    val seconds = (milliseconds / 1000) % 60
+    val minutes = (milliseconds / (1000 * 60)) % 60
+    val hours = (milliseconds / (1000 * 60 * 60))
+
+    return if (hours > 0)
+        "%02d:%02d:%02d.%02d".format(hours, minutes, seconds, millis/10)
+    else
+        "%02d:%02d.%02d".format(minutes, seconds, millis/10)
+}

@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryScreen
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.dashboard.sound.navigateBack
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.CircularSlider
@@ -38,7 +38,8 @@ fun EightHourCountdownUI(
     navController: NavController,
     context: Context,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService
 ) {
     val scrollState = rememberScrollState()
     ConstraintLayout(
@@ -100,7 +101,8 @@ fun EightHourCountdownUI(
                 progressColor = Black,
                 backgroundColor = PeriwinkleGray.copy(alpha = 0.5F),
                 modifier = Modifier.size(389.73.dp),
-            )
+                generalMediaPlayerService = generalMediaPlayerService
+            ){}
             Card(
                 elevation = 8.dp,
                 modifier = Modifier.clip(CircleShape)
@@ -150,7 +152,8 @@ fun Preview() {
             rememberNavController(),
             LocalContext.current,
             rememberCoroutineScope(),
-            rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+            rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+            GeneralMediaPlayerService()
         )
     }
 }

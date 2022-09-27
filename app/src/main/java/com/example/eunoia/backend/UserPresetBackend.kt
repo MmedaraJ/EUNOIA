@@ -2,7 +2,6 @@ package com.example.eunoia.backend
 
 import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
-import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.PresetObject

@@ -7,9 +7,7 @@ import android.content.res.Configuration
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
-import android.speech.RecognizerIntent
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,10 +39,15 @@ import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.create.createSound.*
 import com.example.eunoia.create.createSound.selectedIndex
+import com.example.eunoia.dashboard.bedtimeStory.bedtimeStoryTimeDisplay
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.bottomSheets.*
+import com.example.eunoia.ui.bottomSheets.recordAudio.recorder
+import com.example.eunoia.ui.bottomSheets.recordAudio.recordingFile
+import com.example.eunoia.ui.bottomSheets.recordAudio.recordingTimeDisplay
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.MultiBottomNavApp
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -53,6 +56,7 @@ import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.ui.theme.Grey
 import com.example.eunoia.ui.theme.Peach
 import com.example.eunoia.ui.theme.White
+import com.example.eunoia.utils.BedtimeStoryTimer
 import com.example.eunoia.utils.Timer
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -60,9 +64,14 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.lang.ref.WeakReference
-import java.util.*
 
-class UserDashboardActivity : ComponentActivity(), Timer.OnTimerTickListener {
+var generalMediaPlayerService_: GeneralMediaPlayerService? = null
+
+class UserDashboardActivity :
+    ComponentActivity(),
+    Timer.OnTimerTickListener,
+    BedtimeStoryTimer.OnBedtimeStoryTimerTickListener
+{
     private val _currentUser = MutableLiveData<UserData>(null)
     var currentUser: LiveData<UserData> = _currentUser
 
@@ -285,6 +294,16 @@ class UserDashboardActivity : ComponentActivity(), Timer.OnTimerTickListener {
     override fun justTick(durationString: String, durationMilliSeconds: Long) {
         recordingTimeDisplay.value = durationString
     }
+
+    override fun onBedtimeStoryTimerTick(durationString: String, durationMilliSeconds: Long) {
+        globalViewModel_!!.bedtimeStoryTimeDisplay.value = durationString
+        clicked.value = false
+        angle.value = (
+            (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
+            (globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime).toFloat()
+        ) * 360f
+        Log.i(TAG, "Angle is ${angle.value}")
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -293,9 +312,11 @@ fun UserDashboardActivityUI(
     navController: NavHostController,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService
 ) {
     globalViewModel_!!.navController = navController
+    generalMediaPlayerService_ = generalMediaPlayerService
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     //if(globalViewModel_!!.currentUsersRoutines == null) {

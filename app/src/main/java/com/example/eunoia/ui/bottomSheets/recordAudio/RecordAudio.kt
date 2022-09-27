@@ -1,4 +1,4 @@
-package com.example.eunoia.ui.bottomSheets
+package com.example.eunoia.ui.bottomSheets.recordAudio
 
 import android.Manifest
 import android.app.Activity
@@ -39,6 +39,7 @@ import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.navigation.recordAudioViewModel

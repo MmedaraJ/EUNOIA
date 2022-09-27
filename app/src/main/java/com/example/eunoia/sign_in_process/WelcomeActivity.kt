@@ -16,9 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.R
 import com.example.eunoia.backend.AuthBackend
@@ -32,7 +29,6 @@ import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.StandardBlueButton
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.EUNOIATheme
-import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

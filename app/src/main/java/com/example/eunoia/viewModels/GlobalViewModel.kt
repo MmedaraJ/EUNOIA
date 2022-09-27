@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 class GlobalViewModel: ViewModel(){
     //sound
     var currentSoundPlaying by mutableStateOf<SoundData?>(null)
+    var isCurrentSoundPlaying by mutableStateOf(false)
     var currentSoundPlayingPreset by mutableStateOf<PresetData?>(null)
     var currentAllOriginalSoundPreset by mutableStateOf<MutableList<PresetData>?>(null)
     var currentAllUserSoundPreset by mutableStateOf<MutableList<PresetData>?>(null)
@@ -35,11 +36,6 @@ class GlobalViewModel: ViewModel(){
     var currentPresetToBeAdded by mutableStateOf<PresetData?>(null)
     var presetNameToBeCreated by mutableStateOf("")
 
-    //bedtime story
-    var currentUsersBedtimeStories by mutableStateOf<MutableList<UserBedtimeStoryInfo?>?>(null)
-    var currentBedtimeStoryPlaying by mutableStateOf<BedtimeStoryInfoData?>(null)
-    var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
-
     //routine
     var currentRoutinePlaying by mutableStateOf("")
     var routineNameToBeAdded by mutableStateOf("")
@@ -48,7 +44,6 @@ class GlobalViewModel: ViewModel(){
     var currentUsersRoutines by mutableStateOf<MutableList<UserRoutine?>?>(null)
 
     var currentSelfLovePlaying by mutableStateOf("")
-    var isCurrentSoundPlaying by mutableStateOf(false)
     var isCurrentRoutinePlaying by mutableStateOf(false)
     var isCurrentSelfLovePlaying by mutableStateOf(false)
 
@@ -113,19 +108,45 @@ class GlobalViewModel: ViewModel(){
 
     var allowBottomSheetClose by mutableStateOf(true)
 
-    fun changeCurrentSoundPlaying(soundData: SoundData?){
-        currentSoundPlaying = soundData
-    }
 
-    fun changeCurrentSoundPlayingPreset(presetData: PresetData?){
-        currentSoundPlayingPreset = presetData
-    }
+    /**
+     * bedtime story
+     *
+     */
+    var currentUsersBedtimeStories by mutableStateOf<MutableList<UserBedtimeStoryInfo?>?>(null)
+    var currentBedtimeStoryPlaying by mutableStateOf<BedtimeStoryInfoData?>(null)
+    var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
+    var currentBedtimeStoryPlayingUri: Uri? = null
+    var bedtimeStoryTimeDisplay = mutableStateOf("00.00")
 
-    fun changeCurrentRoutinePlaying(text: String){
-        currentRoutinePlaying = text
-    }
+    var currentBedtimeStoryToBeAdded by mutableStateOf<BedtimeStoryInfoData?>(null)
 
-    fun changeCurrentSelfLovePlaying(text: String){
-        currentSelfLovePlaying = text
-    }
+    val bedtimeStoryScreenIcons = arrayOf(
+        mutableStateOf(R.drawable.reset_sliders_icon),
+        mutableStateOf(R.drawable.seek_back_15),
+        mutableStateOf(R.drawable.play_icon),
+        mutableStateOf(R.drawable.seek_forward_15),
+    )
+
+    var bedtimeStoryScreenBorderControlColors = arrayOf(
+        mutableStateOf(Bizarre),
+        mutableStateOf(Bizarre),
+        mutableStateOf(Black),
+        mutableStateOf(Bizarre),
+        mutableStateOf(Bizarre),
+    )
+    var bedtimeStoryScreenBackgroundControlColor1 = arrayOf(
+        mutableStateOf(White),
+        mutableStateOf(White),
+        mutableStateOf(SoftPeach),
+        mutableStateOf(White),
+        mutableStateOf(White),
+    )
+    var bedtimeStoryScreenBackgroundControlColor2 = arrayOf(
+        mutableStateOf(White),
+        mutableStateOf(White),
+        mutableStateOf(Solitude),
+        mutableStateOf(White),
+        mutableStateOf(White),
+    )
 }

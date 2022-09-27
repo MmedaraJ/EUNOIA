@@ -470,14 +470,6 @@ fun resetSounds(
 }
 
 fun resetAll(applicationContext: Context, soundMediaPlayerService: SoundMediaPlayerService){
-    mediaPlayers.forEach { mediaPlayer ->
-        mediaPlayer.stop()
-        mediaPlayer.reset()
-        mediaPlayer.release()
-    }
-    mediaPlayers.clear()
-    isPlaying.value = false
-    isLooping.value = false
     meditationBellInterval.value = 0
     globalViewModel_!!.soundMeditationBellInterval = 0
     resetBothLocalAndGlobalControlButtons()
@@ -824,7 +816,6 @@ private fun retrieveSoundAudio(
             ) { uri ->
                 soundUris.add(uri)
                 if(i == s3List.items.size - 1){
-                    Log.i(TAG, "Uri SIZEEE 01 is ${soundUris.size} /.")
                     startSoundScreenSounds(
                         soundMediaPlayerService,
                         generalMediaPlayerService,

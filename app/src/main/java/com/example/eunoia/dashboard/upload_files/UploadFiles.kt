@@ -25,10 +25,6 @@ import com.amplifyframework.datastore.generated.model.*
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
-import com.example.eunoia.create.createSound.createSoundPresets
-import com.example.eunoia.create.createSound.go
-import com.example.eunoia.create.createSound.presetName
-import com.example.eunoia.create.createSound.saving
 import com.example.eunoia.models.*
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.components.StandardBlueButton

@@ -1,4 +1,4 @@
-package com.example.eunoia.ui.bottomSheets
+package com.example.eunoia.ui.bottomSheets.sound
 
 import android.content.Context
 import android.content.Intent
@@ -17,7 +17,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
@@ -36,6 +34,7 @@ import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.components.AnImageWithColor
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.NormalText
@@ -51,7 +50,7 @@ private const val TAG = "bottomSheetSoundControl"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun bottomSheetSoundControl(
+fun bottomSheetSoundControlPanel(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
@@ -139,7 +138,7 @@ fun bottomSheetSoundControl(
                             start.linkTo(parent.start, margin = 32.dp)
                         }
                 ) {
-                    BottomSheetControls(
+                    BottomSheetSoundControls(
                         globalViewModel.currentSoundPlaying!!,
                         globalViewModel.currentSoundPlayingPreset!!,
                         globalViewModel.currentSoundPlayingContext!!,
@@ -154,7 +153,7 @@ fun bottomSheetSoundControl(
 }
 
 @Composable
-fun BottomSheetControls(
+fun BottomSheetSoundControls(
     sound: SoundData,
     preset: PresetData,
     applicationContext: Context,

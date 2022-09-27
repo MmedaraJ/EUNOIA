@@ -12,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.amplifyframework.api.graphql.model.ModelMutation
-import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
 import com.amplifyframework.datastore.generated.model.ChapterPageData
 import com.example.eunoia.backend.ChapterPageBackend

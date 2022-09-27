@@ -2,14 +2,12 @@ package com.example.eunoia.ui.bottomSheets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -19,6 +17,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.eunoia.dashboard.sound.soundScreenBorderControlColors
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.bottomSheets.sound.bottomSheetSoundControlPanel
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -53,21 +52,21 @@ fun BottomSheetAllControls(
         modifier = Modifier
             .padding(start = 16.dp, top = 16.dp, end = 16.dp)
     ) {
-        val soundPlaying = bottomSheetSoundControl(
+        val soundPlaying = bottomSheetSoundControlPanel(
             globalViewModel,
             scope,
             state,
             generalMediaPlayerService,
             soundMediaPlayerService
         )
-        val bedtimeStoryPlaying = bottomSheetSoundControl(
+        val bedtimeStoryPlaying = bottomSheetSoundControlPanel(
             globalViewModel,
             scope,
             state,
             generalMediaPlayerService,
             soundMediaPlayerService
         )
-        val selfLovePlaying = bottomSheetSoundControl(
+        val selfLovePlaying = bottomSheetSoundControlPanel(
             globalViewModel,
             scope,
             state,

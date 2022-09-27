@@ -21,9 +21,7 @@ import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
-import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.dashboard.home.UserDashboardActivity
-import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox

@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintLayoutBaseScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
@@ -424,7 +423,7 @@ fun SoundScreen(
     }
 }
 
-fun setParametersFromGlobalVariables(completed: () -> Unit) {
+private fun setParametersFromGlobalVariables(completed: () -> Unit) {
     setUpParameters{
         setAllOriginalSoundPresets{
             setAllUserSoundPresets{
@@ -523,15 +522,12 @@ private fun getNecessaryPresets(soundData: SoundData, completed: () -> Unit){
         soundData,
         soundData.soundOwner
     ) { presets ->
-        Log.i(TAG, "Preset 09 $presets")
-        Log.i(TAG, "Soinddtata owner  09 ${soundData.soundOwner}")
         sliderPositions = mutableListOf()
         sliderVolumes = mutableListOf()
         defaultVolumes = mutableListOf()
         allOriginalSoundPresets = mutableListOf()
         allUserSoundPresets = mutableListOf()
         otherPresetsThatOriginatedFromThisSound = mutableListOf()
-        //commentsForThisSound = mutableListOf()
         soundPreset = presets[0]
         associatedPreset = soundPreset
 

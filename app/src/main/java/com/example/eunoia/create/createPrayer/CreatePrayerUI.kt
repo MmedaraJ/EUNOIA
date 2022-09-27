@@ -28,9 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import com.example.eunoia.create.createBedtimeStory.uploadedFileBedtimeStory
 import com.example.eunoia.create.createSound.TAG
-import com.example.eunoia.ui.bottomSheets.deleteRecordingFile
+import com.example.eunoia.ui.bottomSheets.recordAudio.deleteRecordingFile
 import com.example.eunoia.ui.components.CustomizableButton
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.theme.Black
