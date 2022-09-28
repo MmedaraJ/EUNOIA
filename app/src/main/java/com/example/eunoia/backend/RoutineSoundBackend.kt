@@ -76,4 +76,31 @@ object RoutineSoundBackend {
             )
         }
     }
+
+    fun queryRoutineSoundBasedOnRoutineAndSound(
+        routineData: RoutineData,
+        soundData: SoundData,
+        completed: (routineSound: List<RoutineSound?>) -> Unit
+    ) {
+        scope.launch {
+            val routineSoundList = mutableListOf<RoutineSound?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    RoutineSound::class.java,
+                    RoutineSound.ROUTINE_DATA.eq(routineData.id)
+                        .and(RoutineSound.SOUND_DATA.eq(soundData.id)),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (routineSoundData in response.data) {
+                            Log.i(TAG, routineSoundData.toString())
+                            routineSoundList.add(routineSoundData)
+                        }
+                    }
+                    completed(routineSoundList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
 }

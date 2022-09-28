@@ -1,5 +1,7 @@
 package com.example.eunoia.utils
 
+import com.amplifyframework.datastore.generated.model.UserRoutine
+
 fun formatMilliSecond(milliseconds: Long): String{
     var finalTimerString = ""
     var secondsString = ""
@@ -28,4 +30,32 @@ fun timerFormatMS(milliseconds: Long): String{
         "%02d:%02d:%02d.%02d".format(hours, minutes, seconds, millis/10)
     else
         "%02d:%02d.%02d".format(minutes, seconds, millis/10)
+}
+
+fun displayRoutineNameForBottomSheet(userRoutine: UserRoutine): String{
+    var goodDisplayName = ""
+    if(userRoutine.routineData.displayName != null){
+        val displayName = userRoutine.routineData.displayName
+        var textSize = displayName.length
+        var i = 0
+        val maxLength = 12
+
+        while(textSize > 0) {
+            var limit = i+maxLength+1
+            if(limit > displayName.length){
+                limit = displayName.length
+            }
+
+            if(displayName.substring(i, limit).isNotEmpty()) {
+                goodDisplayName = goodDisplayName + displayName.substring(i, limit) + "\n"
+            }
+
+            i += limit
+            if(i > displayName.length){
+                i = displayName.length
+            }
+            textSize -= maxLength
+        }
+    }
+    return goodDisplayName
 }

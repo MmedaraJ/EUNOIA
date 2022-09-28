@@ -29,9 +29,8 @@ import com.example.eunoia.models.*
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.sound.openSavedElementDialogBox
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -99,6 +98,17 @@ var soundScreenBackgroundControlColor2 = arrayOf(
 
 var associatedPreset: PresetData? = null
 
+
+@Composable
+private fun SetUpAlertDialogs(){
+    if(commentCreatedDialog){
+        AlertDialogBox("Comment Created")
+    }
+    if(openPresetAlreadyExistsDialog){
+        AlertDialogBox("This preset already exists")
+    }
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SoundScreen(
@@ -109,13 +119,7 @@ fun SoundScreen(
     state: ModalBottomSheetState,
     soundMediaPlayerService: SoundMediaPlayerService,
 ){
-    if(openSavedElementDialogBox){
-        AlertDialogBox("Comment Created")
-    }
-    if(openUserAlreadyHasSoundDialogBox){
-        AlertDialogBox("This preset already exists")
-    }
-
+    SetUpAlertDialogs()
     globalViewModel_!!.navController = navController
     showCommentBox = false
     var retrievedPresets by rememberSaveable{ mutableStateOf(false) }
@@ -191,7 +195,6 @@ fun SoundScreen(
                 ControlPanelManual(showTapText){
                     showTapText = !showTapText
                     manualTopMargin = if (manualTopMargin == -32) 0 else -32
-                    Log.i(TAG, "manualTopMargin is $manualTopMargin")
                 }
             }
             Column(
@@ -208,9 +211,7 @@ fun SoundScreen(
                 }
 
                 if(showAssociatedSoundWithSameVolume.value){
-                    if(
-                        associatedPreset != null
-                    ) {
+                    if(associatedPreset != null) {
                         AssociatedPresetWithSameVolume(
                             soundData,
                             associatedPreset!!,
@@ -604,11 +605,15 @@ fun checkIfItIsOkayToOpenCommentBox(context: Context, completed: (boolean: Boole
     if(associatedPreset == null){
         showCommentBox = !showCommentBox
     }
-
     if(!showCommentBox) {
-        openUserAlreadyHasSoundDialogBox = true
+        runOnUiThread {
+            Toast.makeText(
+                context,
+                "This preset already exists",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
-
     completed(showCommentBox)
 }
 
@@ -651,26 +656,11 @@ fun makePublicPresetObject(
         PresetPublicityStatus.PUBLIC
     )
 
-    PresetBackend.createPreset(preset){
-        showCommentBox = false
-        if (globalViewModel_!!.currentUser != null) {
-            var userAlreadyHasPreset = false
-            for (userPreset in globalViewModel_!!.currentUser!!.presets) {
-                if (
-                    userPreset.presetData.id == it.id &&
-                    userPreset.userData.id == globalViewModel_!!.currentUser!!.id
-                ) {
-                    userAlreadyHasPreset = true
-                }
-            }
-            if (!userAlreadyHasPreset) {
-                UserPresetBackend.createUserPresetObject(it) {
-
-                }
-            }
+    PresetBackend.createPreset(preset){ newPreset ->
+        UserPresetBackend.createUserPresetObject(newPreset) {
+            allUserSoundPresets!!.add(newPreset)
+            createSoundComment(soundData, newPreset, comment)
         }
-        allUserSoundPresets!!.add(it)
-        createSoundComment(soundData, it, comment)
     }
 }
 
@@ -688,7 +678,7 @@ private fun createSoundComment(
     )
     CommentBackend.createComment(comment){
         showCommentBox = false
-        openSavedElementDialogBox = true
+        commentCreatedDialog = true
     }
 }
 

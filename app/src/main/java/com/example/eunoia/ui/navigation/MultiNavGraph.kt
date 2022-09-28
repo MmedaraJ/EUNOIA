@@ -43,6 +43,7 @@ import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.settings.eightHourCountdown.EightHourCountdownUI
 import com.example.eunoia.ui.bottomSheets.*
+import com.example.eunoia.ui.bottomSheets.bedtimeStory.*
 import com.example.eunoia.ui.bottomSheets.recordAudio.RecordAudio
 import com.example.eunoia.ui.bottomSheets.sound.*
 import com.example.eunoia.ui.theme.*
@@ -52,6 +53,19 @@ import kotlinx.coroutines.CoroutineScope
 var globalViewModel_: GlobalViewModel? = null
 var recordAudioViewModel: RecordAudioViewModel? = null
 var generalMediaPlayerService_: GeneralMediaPlayerService? = null
+
+var commentCreatedDialog by mutableStateOf(false)
+var openSavedElementDialogBox by mutableStateOf(false)
+var openPresetAlreadyExistsDialog by mutableStateOf(false)
+var openUserAlreadyHasSoundDialogBox by mutableStateOf(false)
+var openPresetNameIsAlreadyTakenDialog by mutableStateOf(false)
+var openBedtimeStoryNameTakenDialogBox by mutableStateOf(false)
+var openRoutineAlreadyHasSoundDialogBox by mutableStateOf(false)
+var openRoutineNameIsAlreadyTakenDialog by mutableStateOf(false)
+var openRoutineAlreadyHasPresetDialogBox by mutableStateOf(false)
+var openUserAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
+var openTooManyIncompleteBedtimeStoryDialogBox by mutableStateOf(false)
+var openRoutineAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -113,6 +127,9 @@ fun EunoiaApp(
                             .defaultMinSize(minHeight = 1.dp)
                     ) {
                         when(globalViewModel.bottomSheetOpenFor){
+                            /**
+                             * Currently playing controls
+                             */
                             "controls" -> {
                                 BottomSheetAllControls(
                                     globalViewModel,
@@ -123,6 +140,10 @@ fun EunoiaApp(
                                 )
                                 globalViewModel_!!.allowBottomSheetClose = true
                             }
+
+                            /**
+                             * Add sound to list or routine
+                             */
                             "addToSoundListOrRoutine" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
                                 AddToSoundListAndRoutineBottomSheet(scope, state)
@@ -133,11 +154,11 @@ fun EunoiaApp(
                             }
                             "inputRoutineName" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
-                                globalViewModel_!!.routineNameToBeAdded = InputRoutineName(scope, state)
+                                globalViewModel_!!.routineNameToBeAdded = inputRoutineName(scope, state)
                             }
                             "inputPresetName" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
-                                globalViewModel_!!.presetNameToBeCreated = InputPresetName(scope, state)
+                                globalViewModel_!!.presetNameToBeCreated = inputPresetName(scope, state)
                             }
                             "selectRoutineColor" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
@@ -147,10 +168,39 @@ fun EunoiaApp(
                                 globalViewModel_!!.allowBottomSheetClose = true
                                 SelectRoutineIcon(scope, state)
                             }
+
+                            /**
+                             * Add bedtime story to list or routine
+                             */
+                            "addToBedtimeStoryListOrRoutine" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                AddToBedtimeStoryListAndRoutineBottomSheet(scope, state)
+                            }
+                            "addBedtimeStoryToRoutine" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                SelectRoutineForBedtimeStory(scope, state)
+                            }
+                            "inputRoutineNameForBedtimeStory" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel_!!.routineNameToBeAdded = inputRoutineNameForBedtimeStory(scope, state)
+                            }
+                            "selectRoutineColorForBedtimeStory" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                SelectRoutineColorForBedtimeStory(scope, state)
+                            }
+                            "selectRoutineIconForBedtimeStory" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                SelectRoutineIconForBedtimeStory(scope, state)
+                            }
+
+                            /**
+                             * Record audio
+                             */
                             "recordAudio" -> {
                                 globalViewModel_!!.allowBottomSheetClose = false
                                 RecordAudio(globalViewModel, scope, state, generalMediaPlayerService)
                             }
+
                             "" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
                                 BottomSheetAllControls(

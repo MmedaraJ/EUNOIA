@@ -4,21 +4,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.eunoia.create.createBedtimeStory.openBedtimeStoryNameTakenDialogBox
-import com.example.eunoia.create.createBedtimeStory.openTooManyIncompleteBedtimeStoryDialogBox
-import com.example.eunoia.dashboard.sound.openUserAlreadyHasSoundDialogBox
-import com.example.eunoia.ui.bottomSheets.sound.openRoutineAlreadyHasSoundDialogBox
-import com.example.eunoia.ui.bottomSheets.sound.openSavedElementDialogBox
 import com.example.eunoia.ui.components.NormalText
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.*
-
-private var alertMessage = ""
-private var openDialogBox = mutableStateOf(false)
 
 @Composable
 fun AlertDialogBox(text: String){
@@ -27,12 +18,18 @@ fun AlertDialogBox(text: String){
         AlertDialog(
             onDismissRequest = {
                 openDialog.value = false
-                openDialogBox.value = false
+                commentCreatedDialog = false
                 openSavedElementDialogBox = false
+                openPresetAlreadyExistsDialog = false
                 openUserAlreadyHasSoundDialogBox = false
-                openRoutineAlreadyHasSoundDialogBox = false
+                openPresetNameIsAlreadyTakenDialog = false
                 openBedtimeStoryNameTakenDialogBox = false
+                openRoutineAlreadyHasSoundDialogBox = false
+                openRoutineNameIsAlreadyTakenDialog = false
+                openRoutineAlreadyHasPresetDialogBox = false
+                openUserAlreadyHasBedtimeStoryDialogBox = false
                 openTooManyIncompleteBedtimeStoryDialogBox = false
+                openRoutineAlreadyHasBedtimeStoryDialogBox = false
             },
             text = {
                 Column{

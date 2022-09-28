@@ -24,7 +24,7 @@ import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -43,8 +43,6 @@ const val MIN_BEDTIME_STORY_NAME = 5
 const val MIN_BEDTIME_STORY_DESCRIPTION = 10
 const val MIN_BEDTIME_STORY_TAGS = 3
 var incompleteBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?>()
-var openBedtimeStoryNameTakenDialogBox by mutableStateOf(false)
-var openTooManyIncompleteBedtimeStoryDialogBox by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

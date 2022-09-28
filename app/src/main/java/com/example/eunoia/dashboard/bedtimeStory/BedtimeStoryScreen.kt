@@ -172,9 +172,12 @@ fun BedtimeStoryScreen(
                                         ) * generalMediaPlayerService.getMediaPlayer()!!.duration
                                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeek.toInt())
                                 bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                                //globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                                 bedtimeStoryTimer.start()
+                                //globalViewModel_!!.bedtimeStoryTimer.start()
                                 if(!globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
                                     bedtimeStoryTimer.pause()
+                                    //globalViewModel_!!.bedtimeStoryTimer.pause()
                                 }
                             }
                         }
@@ -282,7 +285,7 @@ fun setUpParameters(
     bedtimeStoryScreenBorderControlColors = globalViewModel_!!.bedtimeStoryScreenBorderControlColors
     bedtimeStoryScreenBackgroundControlColor1 = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1
     bedtimeStoryScreenBackgroundControlColor2 = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2
-    bedtimeStoryTimeDisplay.value = globalViewModel_!!.bedtimeStoryTimeDisplay.value
+    bedtimeStoryTimeDisplay = globalViewModel_!!.bedtimeStoryTimeDisplay
     bedtimeStoryTimer = globalViewModel_!!.bedtimeStoryTimer
     angle.value = globalViewModel_!!.bedtimeStoryCircularSliderAngle.value
     clicked.value = globalViewModel_!!.bedtimeStoryCircularSliderClicked.value

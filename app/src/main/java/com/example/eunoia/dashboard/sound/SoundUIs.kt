@@ -49,12 +49,8 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 private const val TAG = "Mixer"
-var mediaPlayers = mutableListOf<MediaPlayer>()
-private val isPlaying = mutableStateOf(false)
-private val isLooping = mutableStateOf(false)
 private val meditationBellMediaPlayer = MutableLiveData<MediaPlayer>()
 var displayName = ""
-var openUserAlreadyHasSoundDialogBox by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

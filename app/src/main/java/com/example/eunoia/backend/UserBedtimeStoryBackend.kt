@@ -77,4 +77,31 @@ object UserBedtimeStoryBackend {
             )
         }
     }
+
+    fun queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
+        userData: UserData,
+        bedtimeStoryInfo: BedtimeStoryInfoData,
+        completed: (userBedtimeStory: List<UserBedtimeStoryInfo?>) -> Unit
+    ) {
+        scope.launch {
+            val userBedtimeStoryList = mutableListOf<UserBedtimeStoryInfo?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    UserBedtimeStoryInfo::class.java,
+                    UserBedtimeStoryInfo.USER_DATA.eq(userData.id)
+                        .and(UserBedtimeStoryInfo.BEDTIME_STORY_INFO_DATA.eq(bedtimeStoryInfo.id)),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (userBedtimeStoryData in response.data) {
+                            Log.i(TAG, userBedtimeStoryData.toString())
+                            userBedtimeStoryList.add(userBedtimeStoryData)
+                        }
+                    }
+                    completed(userBedtimeStoryList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
 }

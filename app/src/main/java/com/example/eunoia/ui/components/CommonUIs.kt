@@ -481,11 +481,11 @@ fun bigOutlinedTextInput(
             unfocusedBorderColor = unfocusedBorderColor,
             textColor = textColor
         ),
-        textStyle = MaterialTheme.typography.h3,
+        textStyle = MaterialTheme.typography.h4,
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
         placeholder = {
             Column(verticalArrangement = Arrangement.Top){
-                ExtraLightText(
+                LightText(
                     placeholder,
                     placeholderColor,
                     placeholderTextSize,

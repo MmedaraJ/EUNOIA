@@ -2,9 +2,9 @@ package com.example.eunoia.backend
 
 import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
+import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
-import com.amplifyframework.datastore.generated.model.RoutineData
-import com.amplifyframework.datastore.generated.model.UserRoutine
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.RoutineObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +46,36 @@ object RoutineBackend {
                 {
                     Log.i(TAG, "Error while updating routine: ", it)
                 }
+            )
+        }
+    }
+
+    fun queryRoutinesBasedOnDisplayName(
+        routineName: String,
+        completed: (routines: MutableList<RoutineData>) -> Unit
+    ) {
+        scope.launch {
+            val routineList = mutableListOf<RoutineData>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    RoutineData::class.java,
+                    RoutineData.DISPLAY_NAME.eq(routineName)
+                ),
+                { response ->
+                    if(response.hasErrors()){
+                        Log.e(TAG, response.errors.first().message)
+                    }
+                    else{
+                        if(response.hasData()) {
+                            for (routineData in response.data) {
+                                Log.i(TAG, routineData.toString())
+                                routineList.add(routineData)
+                            }
+                        }
+                        completed(routineList)
+                    }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
             )
         }
     }

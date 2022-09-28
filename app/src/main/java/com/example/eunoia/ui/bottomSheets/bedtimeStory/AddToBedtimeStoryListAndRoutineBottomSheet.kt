@@ -1,6 +1,5 @@
-package com.example.eunoia.ui.bottomSheets.sound
+package com.example.eunoia.ui.bottomSheets.bedtimeStory
 
-import android.graphics.drawable.Icon
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -19,32 +18,32 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
-import com.example.eunoia.dashboard.sound.*
-import com.example.eunoia.models.PresetObject
 import com.example.eunoia.models.RoutineObject
-import com.example.eunoia.models.SoundObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
+import com.example.eunoia.ui.alertDialogs.*
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.ui.bottomSheets.sound.*
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
-import com.example.eunoia.ui.theme.*
+import com.example.eunoia.ui.theme.Black
+import com.example.eunoia.ui.theme.OldLace
+import com.example.eunoia.ui.theme.SwansDown
 import com.example.eunoia.utils.displayRoutineNameForBottomSheet
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-private const val TAG = "AddToSoundListAndRoutineBottomSheet"
+private const val TAG = "AddToBedtimeStoryListAndRoutineBottomSheet"
 var userRoutinesSize = 0
 private const val MAX_ROUTINE_PLAYTIME = 2_700_000
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AddToSoundListAndRoutineBottomSheet(
+fun AddToBedtimeStoryListAndRoutineBottomSheet(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -61,21 +60,21 @@ fun AddToSoundListAndRoutineBottomSheet(
                 .background(OldLace),
         ) {
             val (
-                soundList,
+                bedtimeStoryList,
                 divider,
                 routineItems
             ) = createRefs()
             ConstraintLayout(
                 modifier = Modifier
                     .background(OldLace)
-                    .constrainAs(soundList) {
+                    .constrainAs(bedtimeStoryList) {
                         top.linkTo(parent.top, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         bottom.linkTo(divider.top, margin = 0.dp)
                     }
                     .clickable {
-                        addToSoundListClicked(scope, state)
+                        addToBedtimeStoryListClicked(scope, state)
                     }
                     .fillMaxWidth()
             ) {
@@ -92,7 +91,7 @@ fun AddToSoundListAndRoutineBottomSheet(
                         }
                 ) {
                     NormalText(
-                        text = "Add to your sound list",
+                        text = "Add to your bedtime story list",
                         color = Black,
                         fontSize = 13,
                         xOffset = 0,
@@ -130,11 +129,7 @@ fun AddToSoundListAndRoutineBottomSheet(
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
                     .clickable {
-                        if (globalViewModel_!!.currentPresetToBeAdded == null) {
-                            globalViewModel_!!.bottomSheetOpenFor = "inputPresetName"
-                        } else {
-                            globalViewModel_!!.bottomSheetOpenFor = "addToRoutine"
-                        }
+                        globalViewModel_!!.bottomSheetOpenFor = "addBedtimeStoryToRoutine"
                         openBottomSheet(scope, state)
                     }
                     .fillMaxWidth()
@@ -185,58 +180,52 @@ fun AddToSoundListAndRoutineBottomSheet(
     }
 }
 
+@Composable
+private fun SetUpAlertDialogs(){
+    if(openSavedElementDialogBox){
+        AlertDialogBox("Saved!")
+    }
+    if(openRoutineNameIsAlreadyTakenDialog){
+        AlertDialogBox("Routine name already exists")
+    }
+    if(openUserAlreadyHasBedtimeStoryDialogBox){
+        AlertDialogBox(text = "You already have this bedtime story")
+    }
+    if(openRoutineAlreadyHasBedtimeStoryDialogBox){
+        AlertDialogBox(text = "Routine already has this bedtime story")
+    }
+}
+
 @OptIn(ExperimentalMaterialApi::class)
-private fun addToSoundListClicked(
+private fun addToBedtimeStoryListClicked(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    if (globalViewModel_!!.currentSoundToBeAdded != null) {
+    if (globalViewModel_!!.currentBedtimeStoryToBeAdded != null) {
         if (globalViewModel_!!.currentUser != null) {
-            UserSoundBackend.queryUserSoundBasedOnSoundAndUser(
+            UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
                 globalViewModel_!!.currentUser!!,
-                globalViewModel_!!.currentSoundToBeAdded!!
+                globalViewModel_!!.currentBedtimeStoryToBeAdded!!
             ){
-                if(it.isEmpty()){
-                    UserSoundBackend.createUserSoundObject(
-                        globalViewModel_!!.currentSoundToBeAdded!!
+                if (it.isEmpty()) {
+                    UserBedtimeStoryBackend.createUserBedtimeStoryObject(
+                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
                     ) {
                         closeBottomSheet(scope, state)
                         openSavedElementDialogBox = true
                     }
                 }else{
                     closeBottomSheet(scope, state)
-                    openUserAlreadyHasSoundDialogBox = true
+                    openUserAlreadyHasBedtimeStoryDialogBox = true
                 }
             }
         }
     }
 }
 
-@Composable
-private fun SetUpAlertDialogs(){
-    if(openSavedElementDialogBox){
-        AlertDialogBox("Saved!")
-    }
-    if(openUserAlreadyHasSoundDialogBox){
-        AlertDialogBox(text = "You already have this sound")
-    }
-    if(openRoutineAlreadyHasSoundDialogBox){
-        AlertDialogBox(text = "Routine already has this sound")
-    }
-    if(openRoutineAlreadyHasPresetDialogBox){
-        AlertDialogBox(text = "Routine already has this preset")
-    }
-    if(openRoutineNameIsAlreadyTakenDialog){
-        AlertDialogBox("Routine name already exists")
-    }
-    if(openPresetNameIsAlreadyTakenDialog){
-        AlertDialogBox("Preset name already exists")
-    }
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectRoutine(
+fun SelectRoutineForBedtimeStory(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
@@ -247,126 +236,126 @@ fun SelectRoutine(
         userRoutines.value = it.toMutableList()
     }
 
-        ConstraintLayout(
+    ConstraintLayout(
+        modifier = Modifier
+            .background(OldLace)
+    ) {
+        val (
+            title,
+            routines,
+        ) = createRefs()
+        Column(
             modifier = Modifier
-                .background(OldLace)
+                .constrainAs(title) {
+                    top.linkTo(parent.top, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                }
         ) {
-            val (
-                title,
-                routines,
-            ) = createRefs()
+            NormalText(
+                text = "Add to",
+                color = Black,
+                fontSize = 13,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        SimpleFlowRow(
+            verticalGap = 8.dp,
+            horizontalGap = 8.dp,
+            alignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(routines) {
+                    top.linkTo(title.bottom, margin = 8.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                }
+        ) {
             Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .constrainAs(title) {
-                        top.linkTo(parent.top, margin = 16.dp)
-                        start.linkTo(parent.start, margin = 16.dp)
+                    .padding(bottom = 15.dp)
+                    .clickable {
+                        globalViewModel_!!.bottomSheetOpenFor = "inputRoutineNameForBedtimeStory"
+                        openBottomSheet(scope, state)
                     }
             ) {
+                Box{
+                    Card(
+                        modifier = Modifier
+                            .size(71.dp, 71.dp)
+                            .fillMaxWidth(),
+                        shape = MaterialTheme.shapes.small,
+                        backgroundColor = SwansDown,
+                        elevation = 8.dp
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.star_1),
+                            contentDescription = "new routine",
+                            colorFilter = ColorFilter.tint(Black),
+                            modifier = Modifier
+                                .size(width = 25.64.dp, height = 25.64.dp)
+                                .padding(20.dp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
                 NormalText(
-                    text = "Add to",
-                    color = Black,
-                    fontSize = 13,
+                    text = "new routine",
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 9,
                     xOffset = 0,
                     yOffset = 0
                 )
             }
-            SimpleFlowRow(
-                verticalGap = 8.dp,
-                horizontalGap = 8.dp,
-                alignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .constrainAs(routines) {
-                        top.linkTo(title.bottom, margin = 8.dp)
-                        end.linkTo(parent.end, margin = 16.dp)
-                        start.linkTo(parent.start, margin = 16.dp)
-                        bottom.linkTo(parent.bottom, margin = 16.dp)
-                    }
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(bottom = 15.dp)
-                        .clickable {
-                            globalViewModel_!!.bottomSheetOpenFor = "inputRoutineName"
-                            openBottomSheet(scope, state)
-                        }
-                ) {
-                    Box{
-                        Card(
-                            modifier = Modifier
-                                .size(71.dp, 71.dp)
-                                .fillMaxWidth(),
-                            shape = MaterialTheme.shapes.small,
-                            backgroundColor = SwansDown,
-                            elevation = 8.dp
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.star_1),
-                                contentDescription = "new routine",
-                                colorFilter = ColorFilter.tint(Black),
-                                modifier = Modifier
-                                    .size(width = 25.64.dp, height = 25.64.dp)
-                                    .padding(20.dp)
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    NormalText(
-                        text = "new routine",
-                        color = MaterialTheme.colors.primary,
-                        fontSize = 9,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-                if(userRoutines.value.size > 0 && userRoutines.value.size == userRoutinesSize){
-                    userRoutines.value.forEach{ userRoutine ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .padding(bottom = 15.dp)
-                                .clickable {
-                                    selectRoutineClicked(
-                                        userRoutine!!,
-                                        scope,
-                                        state
-                                    )
-                                }
-                        ) {
-                            Box{
-                                Card(
-                                    modifier = Modifier
-                                        .size(71.dp, 71.dp)
-                                        .fillMaxWidth(),
-                                    shape = MaterialTheme.shapes.small,
-                                    backgroundColor = Color(userRoutine!!.routineData.colorHex),
-                                    elevation = 8.dp
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = userRoutine.routineData.icon),
-                                        contentDescription = "routine icon",
-                                        modifier = Modifier
-                                            .size(width = 25.64.dp, height = 25.64.dp)
-                                            .padding(20.dp)
-                                    )
-                                }
+            if(userRoutines.value.size > 0 && userRoutines.value.size == userRoutinesSize){
+                userRoutines.value.forEach{ userRoutine ->
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(bottom = 15.dp)
+                            .clickable {
+                                selectRoutineClicked(
+                                    userRoutine!!,
+                                    scope,
+                                    state
+                                )
                             }
-
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            val goodDisplayName = displayRoutineNameForBottomSheet(userRoutine!!)
-                            NormalText(
-                                text = goodDisplayName,
-                                color = MaterialTheme.colors.primary,
-                                fontSize = 9,
-                                xOffset = 0,
-                                yOffset = 0
-                            )
+                    ) {
+                        Box{
+                            Card(
+                                modifier = Modifier
+                                    .size(71.dp, 71.dp)
+                                    .fillMaxWidth(),
+                                shape = MaterialTheme.shapes.small,
+                                backgroundColor = Color(userRoutine!!.routineData.colorHex),
+                                elevation = 8.dp
+                            ) {
+                                Image(
+                                    painter = painterResource(id = userRoutine.routineData.icon),
+                                    contentDescription = "routine icon",
+                                    modifier = Modifier
+                                        .size(width = 25.64.dp, height = 25.64.dp)
+                                        .padding(20.dp)
+                                )
+                            }
                         }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        val goodDisplayName = displayRoutineNameForBottomSheet(userRoutine!!)
+                        NormalText(
+                            text = goodDisplayName,
+                            color = MaterialTheme.colors.primary,
+                            fontSize = 9,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
                     }
                 }
             }
         }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -375,186 +364,87 @@ private fun selectRoutineClicked(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    if (globalViewModel_!!.currentPresetToBeAdded == null) {
-        makePrivatePresetObject{
-            setUpRoutinePreset(userRoutine, {}){
-                setUpRoutineSound(userRoutine) {
-                    setUpUserSound {
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
-                    }
-                }
-            }
+    setUpRoutineBedtimeStory(
+        userRoutine,
+        {
+            closeBottomSheet(scope, state)
+            openRoutineAlreadyHasBedtimeStoryDialogBox = true
         }
-    } else {
-        setUpRoutinePreset(
-            userRoutine,
-            {
-                closeBottomSheet(scope, state)
-                openRoutineAlreadyHasPresetDialogBox = true
-            }
-        ){
-            setUpRoutineSound(userRoutine) {
-                setUpUserSound {
-                    setUpUserPreset {
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
-                    }
-                }
-            }
+    ) {
+        setUpUserBedtimeStory{
+            closeBottomSheet(scope, state)
+            openSavedElementDialogBox = true
         }
     }
 }
 
-fun setUpRoutinePreset(
+fun setUpRoutineBedtimeStory(
     userRoutine: UserRoutine,
     alreadyExists: () -> Unit,
-    completed: () -> Unit,
+    completed: () -> Unit
 ) {
-    RoutinePresetBackend.queryRoutinePresetBasedOnRoutineAndPreset(
-        userRoutine.routineData,
-        globalViewModel_!!.currentPresetToBeAdded!!
+    RoutineBedtimeStoryBackend.queryRoutineBedtimeStoryBasedOnRoutine(
+        userRoutine.routineData
     ){
         if (it.isEmpty()) {
-            RoutinePresetBackend.createRoutinePresetObject(
-                globalViewModel_!!.currentPresetToBeAdded!!,
-                userRoutine.routineData
-            ) {
-                completed()
-            }
-        } else {
-            alreadyExists()
-        }
-    }
-}
-
-fun setUpRoutineSound(userRoutine: UserRoutine, completed: () -> Unit){
-    RoutineSoundBackend.queryRoutineSoundBasedOnRoutineAndSound(
-        userRoutine.routineData,
-        globalViewModel_!!.currentSoundToBeAdded!!
-    ){
-        if (it.isEmpty()) {
-            if (!userRoutine.routineData.playingOrder.contains("sound")) {
+            if (!userRoutine.routineData.playingOrder.contains("bedtimeStory")) {
                 val playOrder = userRoutine.routineData.playingOrder
-                playOrder.add("sound")
+                playOrder.add("bedtimeStory")
+
+                //updated play time should be <= 45'
+                var playTime = userRoutine.routineData.fullPlayTime
+                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime > playTime) {
+                    playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+                    if (playTime > MAX_ROUTINE_PLAYTIME) {
+                        playTime = MAX_ROUTINE_PLAYTIME
+                    }
+                }
 
                 val numberOfSteps = userRoutine.routineData.numberOfSteps + 1
 
                 val routine = userRoutine.routineData.copyOfBuilder()
                     .numberOfSteps(numberOfSteps)
+                    .fullPlayTime(playTime)
+                    .currentBedtimeStoryPlayingIndex(0)
+                    .currentBedtimeStoryContinuePlayingTime(0)
                     .playingOrder(playOrder)
                     .build()
-                Log.i(TAG, "About to update sound")
-                RoutineBackend.updateRoutine(routine) {
-                    Log.i(TAG, "done to update sound")
-                    RoutineSoundBackend.createRoutineSoundObject(
-                        globalViewModel_!!.currentSoundToBeAdded!!,
-                        userRoutine.routineData
+
+                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
+                    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
+                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+                        updatedRoutine
                     ) {
                         completed()
                     }
                 }
-            }else{
-                completed()
             }
         }else{
-            completed()
+            alreadyExists()
         }
     }
 }
 
-fun setUpUserSound(completed: () -> Unit){
-    UserSoundBackend.queryUserSoundBasedOnSoundAndUser(
+fun setUpUserBedtimeStory(completed: () -> Unit) {
+    UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
         globalViewModel_!!.currentUser!!,
-        globalViewModel_!!.currentSoundToBeAdded!!
+        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
     ){
-        if(it.isEmpty()){
-            UserSoundBackend.createUserSoundObject(
-                globalViewModel_!!.currentSoundToBeAdded!!
+        if (it.isEmpty()) {
+            UserBedtimeStoryBackend.createUserBedtimeStoryObject(
+                globalViewModel_!!.currentBedtimeStoryToBeAdded!!
             ) {
                 completed()
             }
         }else{
             completed()
-        }
-    }
-}
-
-fun setUpRoutineAndUserPresetAfterMakingNewRoutine(
-    routineData: RoutineData,
-    completed: () -> Unit
-){
-    RoutinePresetBackend.createRoutinePresetObject(
-        globalViewModel_!!.currentPresetToBeAdded!!,
-        routineData
-    ) {
-        setUpUserPreset{
-            completed()
-        }
-    }
-}
-
-fun setUpRoutineAndUserSoundAfterMakingNewRoutine(
-    routineData: RoutineData,
-    completed: () -> Unit
-){
-    RoutineSoundBackend.createRoutineSoundObject(
-        globalViewModel_!!.currentSoundToBeAdded!!,
-        routineData
-    ) {
-        setUpUserSound{
-            completed()
-        }
-    }
-}
-
-fun setUpUserPreset(
-    completed: () -> Unit
-){
-    UserPresetBackend.queryUserPresetBasedOnUserAndPreset(
-        globalViewModel_!!.currentUser!!,
-        globalViewModel_!!.currentPresetToBeAdded!!
-    ){
-        if(it.isEmpty()){
-            UserPresetBackend.createUserPresetObject(
-                globalViewModel_!!.currentPresetToBeAdded!!
-            ) {
-                completed()
-            }
-        }else{
-            completed()
-        }
-    }
-}
-
-private fun makePrivatePresetObject(
-    completed: (presetData: PresetData) -> Unit
-){
-    val preset = PresetObject.Preset(
-        UUID.randomUUID().toString(),
-        UserObject.User.from(globalViewModel_!!.currentUser!!),
-        globalViewModel_!!.presetNameToBeCreated,
-        sliderVolumes!!.toList(),
-        SoundObject.Sound.from(globalViewModel_!!.currentSoundToBeAdded!!),
-        PresetPublicityStatus.PRIVATE
-    )
-
-    PresetBackend.createPreset(preset) { presetData ->
-        UserPresetBackend.createUserPresetObject(presetData) {
-            globalViewModel_!!.currentPresetToBeAdded = presetData
-            if(globalViewModel_!!.currentAllUserSoundPreset == null) {
-                globalViewModel_!!.currentAllUserSoundPreset = mutableListOf()
-            }
-            globalViewModel_!!.currentAllUserSoundPreset!!.add(presetData)
-            allUserSoundPresets!!.add(presetData)
-            completed(presetData)
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun inputRoutineName(
+fun inputRoutineNameForBedtimeStory(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ): String {
@@ -607,9 +497,9 @@ fun inputRoutineName(
         ) {
             StandardBlueButton("Routine name"){
                 if(name.isNotEmpty()){
-                    checkIfRoutineNameIsTaken{
-                        if(!it){
-                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineColor"
+                    checkIfRoutineNameIsTaken {
+                        if (!it) {
+                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineColorForBedtimeStory"
                             openBottomSheet(scope, state)
                         }else{
                             openRoutineNameIsAlreadyTakenDialog = true
@@ -624,102 +514,7 @@ fun inputRoutineName(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun inputPresetName(
-    scope: CoroutineScope,
-    state: ModalBottomSheetState
-): String {
-    SetUpAlertDialogs()
-    var name by rememberSaveable{ mutableStateOf("") }
-    ConstraintLayout(
-        modifier = Modifier
-            .background(OldLace)
-    ) {
-        val (
-            title,
-            routineName,
-            done
-        ) = createRefs()
-        Column(
-            modifier = Modifier
-                .constrainAs(title) {
-                    top.linkTo(parent.top, margin = 16.dp)
-                    start.linkTo(parent.start, margin = 16.dp)
-                }
-        ) {
-            NormalText(
-                text = "Name this preset",
-                color = Black,
-                fontSize = 13,
-                xOffset = 0,
-                yOffset = 0
-            )
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .constrainAs(routineName) {
-                    top.linkTo(title.bottom, margin = 16.dp)
-                    end.linkTo(parent.end, margin = 16.dp)
-                    start.linkTo(parent.start, margin = 16.dp)
-                }
-        ) {
-            name = standardOutlinedTextInputMax30(211, 50, "Preset name", 0)
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .constrainAs(done) {
-                    top.linkTo(routineName.bottom, margin = 16.dp)
-                    end.linkTo(parent.end, margin = 16.dp)
-                    start.linkTo(parent.start, margin = 16.dp)
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
-                }
-        ) {
-            StandardBlueButton("Preset name"){
-                if(globalViewModel_!!.presetNameToBeCreated != ""){
-                    checkIfPresetNameIsTaken{
-                        if(!it){
-                            globalViewModel_!!.bottomSheetOpenFor = "addToRoutine"
-                            openBottomSheet(scope, state)
-                        }else{
-                            openPresetNameIsAlreadyTakenDialog = true
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return name
-}
-
-private fun checkIfPresetNameIsTaken(completed: (bool: Boolean) -> Unit){
-    PresetBackend.queryPublicPresetsBasedOnDisplayNameAndSound(
-        globalViewModel_!!.presetNameToBeCreated,
-        globalViewModel_!!.currentSoundToBeAdded!!
-    ) {
-        if(it.isEmpty()){
-            completed(false)
-        }else{
-            completed(true)
-        }
-    }
-}
-
-fun checkIfRoutineNameIsTaken(completed: (bool: Boolean) -> Unit){
-    RoutineBackend.queryRoutinesBasedOnDisplayName(
-        globalViewModel_!!.routineNameToBeAdded
-    ) {
-        if(it.isEmpty()){
-            completed(false)
-        }else{
-            completed(true)
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun SelectRoutineColor(
+fun SelectRoutineColorForBedtimeStory(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
@@ -792,7 +587,8 @@ fun SelectRoutineColor(
                         .padding(bottom = 15.dp)
                         .clickable {
                             globalViewModel_!!.routineColorToBeAdded = color
-                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineIcon"
+                            globalViewModel_!!.bottomSheetOpenFor =
+                                "selectRoutineIconForBedtimeStory"
                             openBottomSheet(scope, state)
                         }
                 ) {
@@ -814,7 +610,7 @@ fun SelectRoutineColor(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectRoutineIcon(
+fun SelectRoutineIconForBedtimeStory(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
@@ -899,9 +695,9 @@ private fun newRoutineIconSelected(
 ) {
     globalViewModel_!!.routineIconToBeAdded = icon.value
     //45' default playtime
-    var playTime = MAX_ROUTINE_PLAYTIME
-    if(globalViewModel_!!.currentSoundToBeAdded!!.fullPlayTime < playTime){
-        playTime = globalViewModel_!!.currentSoundToBeAdded!!.fullPlayTime
+    var playTime = 2700000
+    if(globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime < playTime){
+        playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
     }
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
@@ -926,13 +722,13 @@ private fun newRoutineIconSelected(
         selfLovePlayTime = 600000,
         stretchTime = 600000,
         breathingTime = 600000,
-        currentBedtimeStoryPlayingIndex = -1,
-        currentBedtimeStoryContinuePlayingTime = -1,
+        currentBedtimeStoryPlayingIndex = 0,
+        currentBedtimeStoryContinuePlayingTime = 0,
         currentSelfLovePlayingIndex = -1,
         currentSelfLoveContinuePlayingTime = -1,
         currentPrayerPlayingIndex = -1,
         currentPrayerContinuePlayingTime = -1,
-        playingOrder = listOf("sleep", "sound")
+        playingOrder = listOf("sleep", "bedtimeStory")
     )
 
     createRoutineAndOtherNecessaryData(
@@ -950,21 +746,24 @@ private fun createRoutineAndOtherNecessaryData(
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
         UserRoutineBackend.createUserRoutineObject(newRoutine) {
-            setUpRoutineAndUserSoundAfterMakingNewRoutine(newRoutine){
-                if (globalViewModel_!!.currentPresetToBeAdded == null) {
-                    makePrivatePresetObject {
-                        setUpRoutineAndUserPresetAfterMakingNewRoutine(newRoutine){
-                            closeBottomSheet(scope, state)
-                            openSavedElementDialogBox = true
-                        }
-                    }
-                } else{
-                    setUpRoutineAndUserPresetAfterMakingNewRoutine(newRoutine){
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
-                    }
-                }
+            setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(newRoutine) {
+                closeBottomSheet(scope, state)
+                openSavedElementDialogBox = true
             }
+        }
+    }
+}
+
+fun setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(
+    routineData: RoutineData,
+    completed: () -> Unit
+){
+    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
+        globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+        routineData
+    ) {
+        setUpUserBedtimeStory {
+            completed()
         }
     }
 }

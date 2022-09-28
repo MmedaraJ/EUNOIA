@@ -26,11 +26,10 @@ import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.sound.openSavedElementDialogBox
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.CustomizableButton
 import com.example.eunoia.ui.components.NormalText
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.SwansDown

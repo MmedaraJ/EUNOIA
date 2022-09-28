@@ -2,6 +2,7 @@ package com.example.eunoia.backend
 
 import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
+import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.PresetObject
@@ -50,9 +51,9 @@ object UserPresetBackend {
         }
     }
 
-    /*fun queryUserPresetBasedOnUserAndSound(
+    fun queryUserPresetBasedOnUserAndPreset(
         userData: UserData,
-        soundData: SoundData,
+        presetData: PresetData,
         completed: (userPreset: List<UserPreset?>) -> Unit
     ) {
         scope.launch {
@@ -61,15 +62,13 @@ object UserPresetBackend {
                 ModelQuery.list(
                     UserPreset::class.java,
                     UserPreset.USER_DATA.eq(userData.id)
-                        .and(UserPreset.PRESET_DATA.eq(so))
+                        .and(UserPreset.PRESET_DATA.eq(presetData.id))
                 ),
                 { response ->
                     if(response.hasData()) {
                         for (userPresetData in response.data) {
-                            if(userPresetData.PresetData.approvalStatus == PresetApprovalStatus.APPROVED){
-                                Log.i(TAG, userPresetData.toString())
-                                userPresetList.add(userPresetData)
-                            }
+                            Log.i(TAG, userPresetData.toString())
+                            userPresetList.add(userPresetData)
                         }
                     }
                     completed(userPresetList)
@@ -77,5 +76,5 @@ object UserPresetBackend {
                 { error -> Log.e(TAG, "Query failure", error) }
             )
         }
-    }*/
+    }
 }

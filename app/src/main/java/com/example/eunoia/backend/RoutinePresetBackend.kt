@@ -80,4 +80,31 @@ object RoutinePresetBackend {
             )
         }
     }
+
+    fun queryRoutinePresetBasedOnRoutineAndPreset(
+        routineData: RoutineData,
+        presetData: PresetData,
+        completed: (routinePreset: List<RoutinePreset?>) -> Unit
+    ) {
+        scope.launch {
+            val routinePresetList = mutableListOf<RoutinePreset?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    RoutinePreset::class.java,
+                    RoutinePreset.ROUTINE_DATA.eq(routineData.id)
+                        .and(RoutinePreset.PRESET_DATA.eq(presetData.id)),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (routinePresetData in response.data) {
+                            Log.i(TAG, routinePresetData.toString())
+                            routinePresetList.add(routinePresetData)
+                        }
+                    }
+                    completed(routinePresetList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
 }

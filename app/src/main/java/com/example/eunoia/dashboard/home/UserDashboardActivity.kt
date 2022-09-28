@@ -295,12 +295,14 @@ class UserDashboardActivity :
     }
 
     override fun onBedtimeStoryTimerTick(durationString: String, durationMilliSeconds: Long) {
-        globalViewModel_!!.bedtimeStoryTimeDisplay.value = durationString
-        globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
-        globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = (
-            (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
-            (globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime).toFloat()
-        ) * 360f
+        //if(generalMediaPlayerService_!!.isMediaPlayerInitialized()){
+            globalViewModel_!!.bedtimeStoryTimeDisplay.value = durationString
+            globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
+            globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = (
+                    (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
+                            (globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime).toFloat()
+                    ) * 360f
+        //}
     }
 }
 

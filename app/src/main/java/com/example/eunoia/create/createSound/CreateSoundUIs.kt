@@ -48,7 +48,6 @@ import com.example.eunoia.R
 import com.example.eunoia.create.createSoundViewModel
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.gradientBackground
-import com.example.eunoia.dashboard.sound.mediaPlayers
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -58,6 +57,7 @@ import java.io.File
 import java.lang.IllegalStateException
 import kotlin.concurrent.fixedRateTimer
 
+var mediaPlayers = mutableListOf<MediaPlayer>()
 private val isPlaying = mutableStateOf(false)
 private val isLooping = mutableStateOf(false)
 private val meditationBellInterval = mutableStateOf(0)

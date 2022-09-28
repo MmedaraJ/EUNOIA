@@ -81,6 +81,35 @@ object UserSoundBackend {
         }
     }
 
+    fun queryUserSoundBasedOnSoundAndUser(
+        userData: UserData,
+        soundData: SoundData,
+        completed: (userSound: List<UserSound?>) -> Unit
+    ) {
+        scope.launch {
+            val userSoundList = mutableListOf<UserSound?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    UserSound::class.java,
+                    UserSound.USER_DATA.eq(userData.id)
+                        .and(UserSound.SOUND_DATA.eq(soundData.id))
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (userSoundData in response.data) {
+                            if(userSoundData.soundData.approvalStatus == SoundApprovalStatus.APPROVED){
+                                Log.i(TAG, userSoundData.toString())
+                                userSoundList.add(userSoundData)
+                            }
+                        }
+                    }
+                    completed(userSoundList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
     fun queryUserSoundBasedOnSound(
         soundData: SoundData,
         completed: (userSound: List<UserSound?>) -> Unit
