@@ -1,10 +1,7 @@
 package com.example.eunoia.dashboard.routine
 
 import android.content.Context
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
@@ -69,8 +66,8 @@ fun RoutineScreen(
             modifier = Modifier
                 .constrainAs(startBlock) {
                     top.linkTo(header.bottom, margin = 40.dp)
-                    start.linkTo(parent.start, margin = 0.dp)
-                    end.linkTo(parent.end, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
                 }
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -85,16 +82,17 @@ fun RoutineScreen(
             modifier = Modifier
                 .constrainAs(elements) {
                     top.linkTo(startBlock.bottom, margin = 24.dp)
-                    start.linkTo(parent.start, margin = 0.dp)
-                    end.linkTo(parent.end, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
                 }
+                .wrapContentHeight()
         ) {
             RoutineElements(navController, routineData)
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Preview(
     showBackground = true,
     name = "Light mode"

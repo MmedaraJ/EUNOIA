@@ -135,22 +135,22 @@ fun BottomSheetBedtimeStoryControls(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        globalViewModel_!!.bedtimeStoryScreenIcons.forEachIndexed { index, icon ->
+        bedtimeStoryScreenIcons.forEachIndexed { index, icon ->
             Box(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
                     .gradientBackground(
                         listOf(
-                            globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value,
-                            globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value
+                            bedtimeStoryScreenBackgroundControlColor1[index].value,
+                            bedtimeStoryScreenBackgroundControlColor2[index].value
                         ),
                         angle = 45f
                     )
                     .border(
                         BorderStroke(
                             0.5.dp,
-                            globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value
+                            bedtimeStoryScreenBorderControlColors[index].value
                         ),
                         RoundedCornerShape(50.dp)
                     ),
@@ -159,7 +159,7 @@ fun BottomSheetBedtimeStoryControls(
                 AnImageWithColor(
                     icon.value,
                     "icon",
-                    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value,
+                    bedtimeStoryScreenBorderControlColors[index].value,
                     12.dp,
                     12.dp,
                     0,
@@ -238,9 +238,9 @@ fun resetBedtimeStory(
                 clicked.value = false
                 angle.value = 0f
                 bedtimeStoryTimer.stop()
-                //globalViewModel_!!.bedtimeStoryTimer.stop()
-                bedtimeStoryTimeDisplay.value = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
-                //globalViewModel_!!.bedtimeStoryTimeDisplay.value = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+                globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
+                bedtimeStoryTimeDisplay = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+                globalViewModel_!!.bedtimeStoryTimeDisplay = bedtimeStoryTimeDisplay
                 globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
                 generalMediaPlayerService.onDestroy()
             }
@@ -268,12 +268,10 @@ fun seekBack15(
                 bedtimeStoryTimer.setDuration(
                     generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
                 )
-                /*globalViewModel_!!.bedtimeStoryTimer.setDuration(
-                    generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
-                )*/
+                globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
                 if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
                     bedtimeStoryTimer.start()
-                    //globalViewModel_!!.bedtimeStoryTimer.start()
+                    globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
                 }
             }
         }
@@ -292,6 +290,8 @@ fun seekForward15(
                     newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.duration - 2000
                     activateGlobalBedtimeStoryControlButton(2)
                     deActivateGlobalBedtimeStoryControlButton(0)
+                    activateLocalBedtimeStoryControlButton(2)
+                    deActivateLocalBedtimeStoryControlButton(0)
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
                 clicked.value = false
@@ -302,12 +302,10 @@ fun seekForward15(
                 bedtimeStoryTimer.setDuration(
                     generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
                 )
-                /*globalViewModel_!!.bedtimeStoryTimer.setDuration(
-                    generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
-                )*/
+                globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
                 if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
                     bedtimeStoryTimer.start()
-                    //globalViewModel_!!.bedtimeStoryTimer.start()
+                    globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
                 }
             }
         }
@@ -356,7 +354,7 @@ private fun pauseBedtimeStory(
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
             bedtimeStoryTimer.pause()
-            globalViewModel_!!.bedtimeStoryTimer.pause()
+            globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
             activateLocalBedtimeStoryControlButton(2)
             activateGlobalBedtimeStoryControlButton(2)
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
@@ -385,7 +383,7 @@ private fun startBedtimeStory(
             )
         }
         bedtimeStoryTimer.start()
-        //globalViewModel_!!.bedtimeStoryTimer.start()
+        globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
         deActivateLocalBedtimeStoryControlButton(2)
         deActivateLocalBedtimeStoryControlButton(0)
         setGlobalPropertiesAfterPlayingBedtimeStory(bedtimeStoryInfoData)
@@ -403,8 +401,7 @@ private fun initializeMediaPlayer(
     generalMediaPlayerService.onStartCommand(intent, 0, 0)
     bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
     bedtimeStoryTimer.setDuration(0L)
-    /*globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
-    globalViewModel_!!.bedtimeStoryTimer.setDuration(0L)*/
+    globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
     resetBothLocalAndGlobalControlButtons()
     //resetAll(context, soundMediaPlayerService)
 }

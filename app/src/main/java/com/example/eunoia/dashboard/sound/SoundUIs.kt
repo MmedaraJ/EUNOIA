@@ -910,20 +910,20 @@ private fun deActivateLocalControlButton(index: Int){
 }
 
 private fun activateGlobalControlButton(index: Int){
-    globalViewModel_!!.soundScreenBorderControlColors[index].value = soundScreenBorderControlColors[index].value
-    globalViewModel_!!.soundScreenBackgroundControlColor1[index].value = soundScreenBackgroundControlColor1[index].value
-    globalViewModel_!!.soundScreenBackgroundControlColor2[index].value = soundScreenBackgroundControlColor2[index].value
+    globalViewModel_!!.soundScreenBorderControlColors[index] = soundScreenBorderControlColors[index]
+    globalViewModel_!!.soundScreenBackgroundControlColor1[index] = soundScreenBackgroundControlColor1[index]
+    globalViewModel_!!.soundScreenBackgroundControlColor2[index] = soundScreenBackgroundControlColor2[index]
     if(index == 3){
-        globalViewModel_!!.soundScreenIcons[index].value = soundScreenIcons[index].value
+        globalViewModel_!!.soundScreenIcons[index] = soundScreenIcons[index]
     }
 }
 
 private fun deActivateGlobalControlButton(index: Int){
-    globalViewModel_!!.soundScreenBorderControlColors[index].value = soundScreenBorderControlColors[index].value
-    globalViewModel_!!.soundScreenBackgroundControlColor1[index].value = soundScreenBackgroundControlColor1[index].value
-    globalViewModel_!!.soundScreenBackgroundControlColor2[index].value = soundScreenBackgroundControlColor2[index].value
+    globalViewModel_!!.soundScreenBorderControlColors[index] = soundScreenBorderControlColors[index]
+    globalViewModel_!!.soundScreenBackgroundControlColor1[index] = soundScreenBackgroundControlColor1[index]
+    globalViewModel_!!.soundScreenBackgroundControlColor2[index] = soundScreenBackgroundControlColor2[index]
     if(index == 3){
-        globalViewModel_!!.soundScreenIcons[index].value = soundScreenIcons[index].value
+        globalViewModel_!!.soundScreenIcons[index] = soundScreenIcons[index]
     }
 }
 

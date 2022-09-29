@@ -25,6 +25,7 @@ import com.amplifyframework.datastore.generated.model.*
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
+import com.example.eunoia.dashboard.bedtimeStory.bedtimeStoryScreenBackgroundControlColor2
 import com.example.eunoia.models.*
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
@@ -437,10 +438,20 @@ fun setUpParameters(completed: () -> Unit) {
     sliderVolumes = globalViewModel_!!.soundSliderVolumes
     defaultVolumes = globalViewModel_!!.currentSoundPlayingPreset!!.volumes
     soundUris = globalViewModel_!!.currentSoundPlayingUris!!
-    soundScreenIcons = globalViewModel_!!.soundScreenIcons
-    soundScreenBorderControlColors = globalViewModel_!!.soundScreenBorderControlColors
-    soundScreenBackgroundControlColor1 = globalViewModel_!!.soundScreenBackgroundControlColor1
-    soundScreenBackgroundControlColor2 = globalViewModel_!!.soundScreenBackgroundControlColor2
+
+    for(i in soundScreenIcons.indices){
+        soundScreenIcons[i] = globalViewModel_!!.soundScreenIcons[i]
+    }
+    for(i in soundScreenBorderControlColors.indices){
+        soundScreenBorderControlColors[i] = globalViewModel_!!.soundScreenBorderControlColors[i]
+    }
+    for(i in soundScreenBackgroundControlColor1.indices){
+        soundScreenBackgroundControlColor1[i] = globalViewModel_!!.soundScreenBackgroundControlColor1[i]
+    }
+    for(i in soundScreenBackgroundControlColor2.indices){
+        soundScreenBackgroundControlColor2[i] = globalViewModel_!!.soundScreenBackgroundControlColor2[i]
+    }
+
     meditationBellInterval.value = globalViewModel_!!.soundMeditationBellInterval
     timerTime.value = globalViewModel_!!.soundTimerTime
     associatedPreset = soundPreset

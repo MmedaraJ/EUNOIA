@@ -1,6 +1,5 @@
 package com.example.eunoia.ui.bottomSheets.sound
 
-import android.graphics.drawable.Icon
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -19,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
@@ -861,7 +859,7 @@ fun SelectRoutineIcon(
                         .padding(bottom = 15.dp)
                         .clickable {
                             newRoutineIconSelected(
-                                icon,
+                                icon.value,
                                 scope,
                                 state
                             )
@@ -893,11 +891,11 @@ fun SelectRoutineIcon(
 
 @OptIn(ExperimentalMaterialApi::class)
 private fun newRoutineIconSelected(
-    icon: MutableState<Int>,
+    icon: Int,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    globalViewModel_!!.routineIconToBeAdded = icon.value
+    globalViewModel_!!.routineIconToBeAdded = icon
     //45' default playtime
     var playTime = MAX_ROUTINE_PLAYTIME
     if(globalViewModel_!!.currentSoundToBeAdded!!.fullPlayTime < playTime){

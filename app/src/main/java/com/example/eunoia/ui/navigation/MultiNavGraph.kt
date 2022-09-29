@@ -406,10 +406,10 @@ fun DashboardTab(
             )
         ) { backStackEntry ->
             val bedtimeStoryData = backStackEntry.arguments?.getParcelable<BedtimeStoryObject.BedtimeStory>("bedtimeStoryData")
-            Log.i("BedtimeStoryScreen", "You are now on the BedtimeStoryScreen tab")
+            Log.i("BedtimeStoryScreen", "You are now on the ${bedtimeStoryData!!.displayName} tab")
             BedtimeStoryScreen(
                 navController = navController,
-                bedtimeStoryInfoData = bedtimeStoryData!!.data,
+                bedtimeStoryInfoData = bedtimeStoryData.data,
                 scope = scope,
                 state = state,
                 generalMediaPlayerService = generalMediaPlayerService

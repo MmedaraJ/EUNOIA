@@ -1,6 +1,5 @@
 package com.example.eunoia.ui.bottomSheets.bedtimeStory
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -657,7 +656,7 @@ fun SelectRoutineIconForBedtimeStory(
                         .padding(bottom = 15.dp)
                         .clickable {
                             newRoutineIconSelected(
-                                icon,
+                                icon.value,
                                 scope,
                                 state
                             )
@@ -689,11 +688,11 @@ fun SelectRoutineIconForBedtimeStory(
 
 @OptIn(ExperimentalMaterialApi::class)
 private fun newRoutineIconSelected(
-    icon: MutableState<Int>,
+    icon: Int,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    globalViewModel_!!.routineIconToBeAdded = icon.value
+    globalViewModel_!!.routineIconToBeAdded = icon
     //45' default playtime
     var playTime = 2700000
     if(globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime < playTime){

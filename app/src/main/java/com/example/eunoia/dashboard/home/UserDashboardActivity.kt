@@ -39,7 +39,6 @@ import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.create.createSound.*
 import com.example.eunoia.create.createSound.selectedIndex
-import com.example.eunoia.dashboard.bedtimeStory.bedtimeStoryTimeDisplay
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -296,9 +295,9 @@ class UserDashboardActivity :
 
     override fun onBedtimeStoryTimerTick(durationString: String, durationMilliSeconds: Long) {
         //if(generalMediaPlayerService_!!.isMediaPlayerInitialized()){
-            globalViewModel_!!.bedtimeStoryTimeDisplay.value = durationString
-            globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
-            globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = (
+            globalViewModel_!!.bedtimeStoryTimeDisplay = durationString
+            globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
+            globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
                     (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
                             (globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime).toFloat()
                     ) * 360f

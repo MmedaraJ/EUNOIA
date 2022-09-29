@@ -178,7 +178,7 @@ fun BottomSheetBedtimeStoryControls(
                     .clip(CircleShape)
                     .gradientBackground(
                         listOf(
-                            globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value,
+                           globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value,
                             globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value
                         ),
                         angle = 45f
@@ -247,10 +247,10 @@ fun resetBedtimeStory(
         if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
             if (generalMediaPlayerService.isMediaPlayerInitialized()) {
                 resetBothLocalAndGlobalControlButtonsAfterReset()
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = 0f
+                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
+                globalViewModel_!!.bedtimeStoryCircularSliderAngle = 0f
                 globalViewModel_!!.bedtimeStoryTimer.stop()
-                globalViewModel_!!.bedtimeStoryTimeDisplay.value =
+                globalViewModel_!!.bedtimeStoryTimeDisplay =
                     timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
                 globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
                 generalMediaPlayerService.onDestroy()
@@ -271,8 +271,8 @@ fun seekBack15(
                     newSeekTo = 0
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = (
+                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
+                globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
                         (generalMediaPlayerService.getMediaPlayer()!!.currentPosition).toFloat() /
                                 (bedtimeStoryInfoData.fullPlayTime).toFloat()
                         ) * 360f
@@ -299,8 +299,8 @@ fun seekForward15(
                     deActivateBedtimeStoryGlobalControlButton(0)
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked.value = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle.value = (
+                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
+                globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
                         generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toFloat() /
                                 bedtimeStoryInfoData.fullPlayTime.toFloat()
                         ) * 360f

@@ -67,6 +67,7 @@ class GlobalViewModel: ViewModel(){
         mutableStateOf(R.drawable.meditation_bell_icon),
     )
     val addIcon = mutableStateOf(R.drawable.add_sound_icon)
+
     var soundScreenBorderControlColors = arrayOf(
         mutableStateOf(Bizarre),
         mutableStateOf(Bizarre),
@@ -119,9 +120,9 @@ class GlobalViewModel: ViewModel(){
     var currentBedtimeStoryPlaying by mutableStateOf<BedtimeStoryInfoData?>(null)
     var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
     var currentBedtimeStoryPlayingUri: Uri? = null
-    var bedtimeStoryTimeDisplay = mutableStateOf("00.00")
-    var bedtimeStoryCircularSliderAngle = mutableStateOf(0f)
-    var bedtimeStoryCircularSliderClicked = mutableStateOf(false)
+    var bedtimeStoryTimeDisplay by mutableStateOf("00.00")
+    var bedtimeStoryCircularSliderAngle by mutableStateOf(0f)
+    var bedtimeStoryCircularSliderClicked by mutableStateOf(false)
     var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
 
     var currentBedtimeStoryToBeAdded by mutableStateOf<BedtimeStoryInfoData?>(null)

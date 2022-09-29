@@ -31,7 +31,6 @@ fun CircularSlider(
     progressColor: Color = Color.Black,
     backgroundColor: Color = Color.LightGray,
     debug: Boolean = false,
-    generalMediaPlayerService: GeneralMediaPlayerService,
     appliedAngleChanged: (appliedAngle: Float) -> Unit
 ){
     var width by remember { mutableStateOf(0) }

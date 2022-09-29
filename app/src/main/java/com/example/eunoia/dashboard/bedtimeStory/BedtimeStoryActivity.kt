@@ -42,7 +42,6 @@ var bedtimeStoryActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
 private const val START_BEDTIME_STORY = "start"
 private const val PAUSE_BEDTIME_STORY = "pause"
 private const val WAIT_FOR_BEDTIME_STORY = "wait"
-var bedtimeStoryTimeDisplay = mutableStateOf("00.00")
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

@@ -2,6 +2,7 @@ package com.example.eunoia.dashboard.bedtimeStory
 
 import android.content.res.Configuration
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -26,6 +27,7 @@ import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
+import com.example.eunoia.ui.navigation.generalMediaPlayerService_
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.BedtimeStoryTimer
@@ -63,6 +65,7 @@ var bedtimeStoryScreenBackgroundControlColor2 = arrayOf(
 var angle = mutableStateOf(0f)
 var clicked = mutableStateOf(false)
 var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
+var bedtimeStoryTimeDisplay by mutableStateOf("00.00")
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -82,17 +85,19 @@ fun BedtimeStoryScreen(
                 retrievedUris = true
             }
         }else{
+            Log.d(TAG, "one 1")
             resetBedtimeStoryControlsUI()
             angle.value = 0f
             clicked.value = false
-            bedtimeStoryTimeDisplay.value = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+            bedtimeStoryTimeDisplay = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
             retrievedUris = true
         }
     }else{
+        Log.d(TAG, "two 2")
         resetBedtimeStoryControlsUI()
         angle.value = 0f
         clicked.value = false
-        bedtimeStoryTimeDisplay.value = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+        bedtimeStoryTimeDisplay = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
         retrievedUris = true
     }
 
@@ -161,7 +166,6 @@ fun BedtimeStoryScreen(
                     progressColor = Black,
                     backgroundColor = PeriwinkleGray.copy(alpha = 0.5F),
                     modifier = Modifier.size(320.dp),
-                    generalMediaPlayerService = generalMediaPlayerService
                 ){ appliedAngle ->
                     if(globalViewModel_!!.currentBedtimeStoryPlaying != null){
                         if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
@@ -174,10 +178,10 @@ fun BedtimeStoryScreen(
                                 bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                                 //globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                                 bedtimeStoryTimer.start()
-                                //globalViewModel_!!.bedtimeStoryTimer.start()
+                                globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
                                 if(!globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
                                     bedtimeStoryTimer.pause()
-                                    //globalViewModel_!!.bedtimeStoryTimer.pause()
+                                    globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
                                 }
                             }
                         }
@@ -208,7 +212,7 @@ fun BedtimeStoryScreen(
                             }
                     ) {
                         LightText(
-                            text = bedtimeStoryTimeDisplay.value,
+                            text = bedtimeStoryTimeDisplay,
                             color = Black,
                             fontSize = 10,
                             xOffset = 0,
@@ -277,18 +281,31 @@ private fun setParametersFromGlobalVariables(
     }
 }
 
+private const val TAG = "BedtimeStoryScreen"
+
 fun setUpParameters(
     completed: () -> Unit
 ) {
+    Log.d(TAG, "setup params")
     bedtimeStoryUri = globalViewModel_!!.currentBedtimeStoryPlayingUri!!
-    bedtimeStoryScreenIcons = globalViewModel_!!.bedtimeStoryScreenIcons
-    bedtimeStoryScreenBorderControlColors = globalViewModel_!!.bedtimeStoryScreenBorderControlColors
-    bedtimeStoryScreenBackgroundControlColor1 = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1
-    bedtimeStoryScreenBackgroundControlColor2 = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2
+
+    for(i in bedtimeStoryScreenIcons.indices){
+        bedtimeStoryScreenIcons[i].value = globalViewModel_!!.bedtimeStoryScreenIcons[i].value
+    }
+    for(i in bedtimeStoryScreenBorderControlColors.indices){
+        bedtimeStoryScreenBorderControlColors[i].value = globalViewModel_!!.bedtimeStoryScreenBorderControlColors[i].value
+    }
+    for(i in bedtimeStoryScreenBackgroundControlColor1.indices){
+        bedtimeStoryScreenBackgroundControlColor1[i].value = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[i].value
+    }
+    for(i in bedtimeStoryScreenBackgroundControlColor2.indices){
+        bedtimeStoryScreenBackgroundControlColor2[i].value = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[i].value
+    }
+
     bedtimeStoryTimeDisplay = globalViewModel_!!.bedtimeStoryTimeDisplay
     bedtimeStoryTimer = globalViewModel_!!.bedtimeStoryTimer
-    angle.value = globalViewModel_!!.bedtimeStoryCircularSliderAngle.value
-    clicked.value = globalViewModel_!!.bedtimeStoryCircularSliderClicked.value
+    angle.value = globalViewModel_!!.bedtimeStoryCircularSliderAngle
+    clicked.value = globalViewModel_!!.bedtimeStoryCircularSliderClicked
     completed()
 }
 

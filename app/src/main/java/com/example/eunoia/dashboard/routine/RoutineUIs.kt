@@ -15,6 +15,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.RoutineData
 import com.example.eunoia.dashboard.sound.gradientBackground
+import com.example.eunoia.ui.components.AlignedNormalText
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.SimpleFlowRow
@@ -45,6 +46,10 @@ fun RoutineElements(
                 }
         ) {
             routineData.playingOrder.forEach { element ->
+                var text = element
+                if(element == "bedtimeStory"){
+                    text = "bedtime\nstory"
+                }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -54,7 +59,6 @@ fun RoutineElements(
                 ) {
                     Card(
                         modifier = Modifier
-                            .height(189.dp)
                             .fillMaxWidth(0.45F),
                         shape = MaterialTheme.shapes.large,
                         elevation = 2.dp
@@ -70,11 +74,13 @@ fun RoutineElements(
                                     angle = 180f
                                 )
                                 .clickable { }
+                                .weight(1f)
+                                .aspectRatio(1f)
                         ) {
-                            NormalText(
-                                text = element,
+                            AlignedNormalText(
+                                text = text,
                                 color = Black,
-                                fontSize = 16,
+                                fontSize = 13,
                                 xOffset = 0,
                                 yOffset = 0
                             )

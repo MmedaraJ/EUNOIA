@@ -71,8 +71,8 @@ fun CreateUI(
             modifier = Modifier
                 .constrainAs(title) {
                     top.linkTo(header.bottom, margin = 40.dp)
-                    start.linkTo(parent.start, margin = 0.dp)
-                    end.linkTo(parent.end, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
                 }
         ) {
             NormalText(
@@ -87,10 +87,11 @@ fun CreateUI(
             modifier = Modifier
                 .constrainAs(intro) {
                     top.linkTo(title.bottom, margin = 16.dp)
-                    start.linkTo(parent.start, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
                 }
         ) {
-            LightText(
+            AlignedLightText(
                 text = "Add to a routine or share with others if you want. " +
                         "The more people use your element, the more money you earn.",
                 color = Black,
@@ -103,18 +104,12 @@ fun CreateUI(
             modifier = Modifier
                 .constrainAs(elements) {
                     top.linkTo(intro.bottom, margin = 24.dp)
-                    start.linkTo(parent.start, margin = 0.dp)
-                    end.linkTo(parent.end, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
                 }
+                .wrapContentHeight()
         ) {
             Elements(navController)
-        }
-        Column(
-            modifier = Modifier
-                .constrainAs(endSpace) {
-                    top.linkTo(elements.bottom, margin = 40.dp)
-                }
-        ){
             Spacer(modifier = Modifier.height(40.dp))
         }
     }
