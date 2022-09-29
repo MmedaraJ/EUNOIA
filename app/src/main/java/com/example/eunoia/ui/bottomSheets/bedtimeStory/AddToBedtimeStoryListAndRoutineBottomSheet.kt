@@ -382,8 +382,9 @@ fun setUpRoutineBedtimeStory(
     alreadyExists: () -> Unit,
     completed: () -> Unit
 ) {
-    RoutineBedtimeStoryBackend.queryRoutineBedtimeStoryBasedOnRoutine(
-        userRoutine.routineData
+    RoutineBedtimeStoryBackend.queryRoutineBedtimeStoryBasedOnBedtimeStoryAndRoutine(
+        userRoutine.routineData,
+        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
     ){
         if (it.isEmpty()) {
             if (!userRoutine.routineData.playingOrder.contains("bedtimeStory")) {
@@ -416,6 +417,13 @@ fun setUpRoutineBedtimeStory(
                     ) {
                         completed()
                     }
+                }
+            }else{
+                RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
+                    globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+                    userRoutine.routineData
+                ) {
+                    completed()
                 }
             }
         }else{

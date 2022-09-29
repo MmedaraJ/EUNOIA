@@ -185,7 +185,7 @@ fun BedtimeStoryActivityUI(
         Column(
             modifier = Modifier
                 .constrainAs(favoriteBedtimeStoryTitle) {
-                    top.linkTo(options.bottom, margin = 0.dp)
+                    top.linkTo(options.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }

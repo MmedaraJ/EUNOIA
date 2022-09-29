@@ -442,18 +442,22 @@ fun setUpRoutineSound(userRoutine: UserRoutine, completed: () -> Unit){
                     .numberOfSteps(numberOfSteps)
                     .playingOrder(playOrder)
                     .build()
-                Log.i(TAG, "About to update sound")
-                RoutineBackend.updateRoutine(routine) {
-                    Log.i(TAG, "done to update sound")
+
+                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
                     RoutineSoundBackend.createRoutineSoundObject(
                         globalViewModel_!!.currentSoundToBeAdded!!,
-                        userRoutine.routineData
+                        updatedRoutine
                     ) {
                         completed()
                     }
                 }
             }else{
-                completed()
+                RoutineSoundBackend.createRoutineSoundObject(
+                    globalViewModel_!!.currentSoundToBeAdded!!,
+                    userRoutine.routineData
+                ) {
+                    completed()
+                }
             }
         }else{
             completed()

@@ -78,4 +78,56 @@ object RoutineBedtimeStoryBackend {
             )
         }
     }
+
+    fun queryRoutineBedtimeStoryBasedOnBedtimeStory(
+        bedtimeStoryData: BedtimeStoryInfoData,
+        completed: (routineBedtimeStory: List<RoutineBedtimeStoryInfo?>) -> Unit
+    ) {
+        scope.launch {
+            val routineBedtimeStoryList = mutableListOf<RoutineBedtimeStoryInfo?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    RoutineBedtimeStoryInfo::class.java,
+                    RoutineBedtimeStoryInfo.BEDTIME_STORY_INFO_DATA.eq(bedtimeStoryData.id),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (routineBedtimeStoryData in response.data) {
+                            Log.i(TAG, routineBedtimeStoryData.toString())
+                            routineBedtimeStoryList.add(routineBedtimeStoryData)
+                        }
+                    }
+                    completed(routineBedtimeStoryList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun queryRoutineBedtimeStoryBasedOnBedtimeStoryAndRoutine(
+        routineData: RoutineData,
+        bedtimeStoryData: BedtimeStoryInfoData,
+        completed: (routineBedtimeStory: List<RoutineBedtimeStoryInfo?>) -> Unit
+    ) {
+        scope.launch {
+            val routineBedtimeStoryList = mutableListOf<RoutineBedtimeStoryInfo?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    RoutineBedtimeStoryInfo::class.java,
+                    RoutineBedtimeStoryInfo.BEDTIME_STORY_INFO_DATA.eq(bedtimeStoryData.id)
+                        .and(RoutineBedtimeStoryInfo.ROUTINE_DATA.eq(routineData.id)),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (routineBedtimeStoryData in response.data) {
+                            Log.i(TAG, routineBedtimeStoryData.toString())
+                            routineBedtimeStoryList.add(routineBedtimeStoryData)
+                        }
+                    }
+                    completed(routineBedtimeStoryList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
 }
