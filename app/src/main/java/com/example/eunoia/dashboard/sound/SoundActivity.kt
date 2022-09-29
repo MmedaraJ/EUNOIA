@@ -43,6 +43,39 @@ private const val START_SOUND = "start"
 private const val PAUSE_SOUND = "pause"
 private const val WAIT_FOR_SOUND = "wait"
 
+private val allElements = listOf(
+    "pouring\nrain",
+    "coffee\nhouse",
+    "library",
+    "baking",
+    "beach\nwaves",
+    "next door",
+    "keyboard",
+    "train\ntrack",
+)
+
+private val allIcons = listOf(
+    R.drawable.pouring_rain_icon,
+    R.drawable.coffee_house_icon,
+    R.drawable.library_icon,
+    R.drawable.baking_icon,
+    R.drawable.beach_waves_icon,
+    R.drawable.next_door_icon,
+    R.drawable.keyboard_icon,
+    R.drawable.train_track_icon,
+)
+
+private val allPros = listOf(
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+)
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SoundActivityUI(
@@ -125,7 +158,30 @@ fun SoundActivityUI(
                 top.linkTo(introTitle.bottom, margin = 8.dp)
             }
         ) {
-            OptionsList(navController, context)
+            OptionItemTest(
+                allElements,
+                allIcons,
+                allPros
+            ) {
+                when (it) {
+                    "pouring\nrain" -> {
+                    }
+                    "coffee\nhouse" -> {
+                    }
+                    "library" -> {
+                    }
+                    "baking" -> {
+                    }
+                    "beach\nwaves" -> {
+                    }
+                    "next door" -> {
+                    }
+                    "keyboard" -> {
+                    }
+                    "train\ntrack" -> {
+                    }
+                }
+            }
         }
         Column(
             modifier = Modifier

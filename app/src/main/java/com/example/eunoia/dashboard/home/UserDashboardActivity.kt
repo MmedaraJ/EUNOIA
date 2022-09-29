@@ -18,11 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.*
 import androidx.navigation.NavController
@@ -52,10 +54,7 @@ import com.example.eunoia.ui.navigation.MultiBottomNavApp
 import com.example.eunoia.ui.navigation.generalMediaPlayerService_
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
-import com.example.eunoia.ui.theme.EUNOIATheme
-import com.example.eunoia.ui.theme.Grey
-import com.example.eunoia.ui.theme.Peach
-import com.example.eunoia.ui.theme.White
+import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.BedtimeStoryTimer
 import com.example.eunoia.utils.Timer
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -379,12 +378,31 @@ fun UserDashboardActivityUI(
                 top.linkTo(introTitle.bottom, margin = 8.dp)
             }
         ) {
-            OptionsList(context, navController)
+            OptionItemTest(
+                allElements,
+                allIcons,
+                allPros
+            ) {
+                when (it) {
+                    "sound" -> {
+                        toSoundActivity(navController)
+                    }
+                    "prayer" -> {
+                        navController.navigate(Screen.NamePrayer.screen_route)
+                    }
+                    "bedtime\nstory" -> {
+                        toBedtimeStoryActivity(navController)
+                    }
+                    "self-love" -> {
+                        navController.navigate(Screen.NameSelfLove.screen_route)
+                    }
+                }
+            }
         }
         Column(
             modifier = Modifier
                 .constrainAs(favorite_routine_title) {
-                    top.linkTo(options.bottom, margin = 0.dp)
+                    top.linkTo(options.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -469,6 +487,145 @@ private fun OptionsList(context: Context, navController: NavHostController){
     }
 }
 
+private val allElements = listOf(
+    "sleep",
+    "music",
+    "meditate",
+    "sound",
+    "self-love",
+    "stretch",
+    "slumber\nparty",
+    "bedtime\nstory",
+)
+
+private val allIcons = listOf(
+    R.drawable.sleep_icon,
+    R.drawable.music_icon,
+    R.drawable.meditate_icon,
+    R.drawable.sound_icon,
+    R.drawable.self_love_icon,
+    R.drawable.stretch_icon,
+    R.drawable.slumber_party_icon,
+    R.drawable.bedtime_story_icon,
+)
+
+private val allPros = listOf(
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+)
+
+@Composable
+fun OptionItemTest(
+    allElements: List<String>,
+    allIcons: List<Int>,
+    allPros: List<Boolean>,
+    elementClicked: (element: String) -> Unit,
+){
+    ConstraintLayout{
+        val (
+            elements,
+        ) = createRefs()
+        SimpleFlowRow(
+            verticalGap = 16.dp,
+            horizontalGap = 12.dp,
+            alignment = Alignment.Start,
+            modifier = Modifier
+                .constrainAs(elements) {
+                    top.linkTo(parent.top, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    bottom.linkTo(parent.bottom, margin = 0.dp)
+                }
+        ) {
+            allElements.forEachIndexed { index, element ->
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .clickable {
+                            elementClicked(element)
+                        }
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth(0.222F),
+                        shape = MaterialTheme.shapes.small,
+                        elevation = 8.dp
+                    ) {
+                        Box {
+                            if(allPros[index]) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .zIndex(2f)
+                                        .graphicsLayer {
+                                            translationX = 120f
+                                        }
+                                ) {
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.5f)
+                                            .fillMaxHeight(0.2f)
+                                            .offset(),
+                                        shape = MaterialTheme.shapes.small,
+                                        backgroundColor = Color.Black,
+                                    ) {
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                        ) {
+                                            MorgeNormalText(
+                                                text = "PRO",
+                                                color = Color.White,
+                                                fontSize = 12,
+                                                xOffset = 0,
+                                                yOffset = 0
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .background(White)
+                                    .aspectRatio(1f)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = allIcons[index]),
+                                    contentDescription = "$element icon",
+                                    modifier = Modifier
+                                        .fillMaxSize(0.33F)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                    ){
+                        AlignedNormalText(
+                            text = element,
+                            color = MaterialTheme.colors.primary,
+                            fontSize = 9,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun OptionItem(
     displayName: String,
@@ -486,15 +643,19 @@ fun OptionItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(bottom = 15.dp)
+            .fillMaxWidth(0.225F)
             .clickable { lambda(displayName) }
     ){
         Box(
+            modifier = Modifier
+                .weight(1f)
+                .aspectRatio(1f)
         ){
             Card(
-                modifier = Modifier
-                    .size(width.dp, height.dp)
+                modifier = Modifier,
+                    //.size(width.dp, height.dp)
                     //.fillMaxWidth(0.2F),
-                    .fillMaxWidth(),
+                    //.fillMaxWidth(),
                 shape = MaterialTheme.shapes.small,
                 backgroundColor = White,
                 elevation = 8.dp

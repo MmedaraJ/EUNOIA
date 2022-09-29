@@ -23,6 +23,7 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
 import com.example.eunoia.dashboard.home.OptionItem
+import com.example.eunoia.dashboard.home.OptionItemTest
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.BedtimeStoryObject
@@ -42,6 +43,39 @@ var bedtimeStoryActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
 private const val START_BEDTIME_STORY = "start"
 private const val PAUSE_BEDTIME_STORY = "pause"
 private const val WAIT_FOR_BEDTIME_STORY = "wait"
+
+private val allElements = listOf(
+    "pouring\nrain",
+    "coffee\nhouse",
+    "library",
+    "baking",
+    "beach\nwaves",
+    "next door",
+    "keyboard",
+    "train\ntrack",
+)
+
+private val allIcons = listOf(
+    R.drawable.pouring_rain_icon,
+    R.drawable.coffee_house_icon,
+    R.drawable.library_icon,
+    R.drawable.baking_icon,
+    R.drawable.beach_waves_icon,
+    R.drawable.next_door_icon,
+    R.drawable.keyboard_icon,
+    R.drawable.train_track_icon,
+)
+
+private val allPros = listOf(
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -123,7 +157,30 @@ fun BedtimeStoryActivityUI(
                 top.linkTo(introTitle.bottom, margin = 8.dp)
             }
         ) {
-            OptionsList(navController, context)
+            OptionItemTest(
+                allElements,
+                allIcons,
+                allPros
+            ) {
+                when (it) {
+                    "pouring\nrain" -> {
+                    }
+                    "coffee\nhouse" -> {
+                    }
+                    "library" -> {
+                    }
+                    "baking" -> {
+                    }
+                    "beach\nwaves" -> {
+                    }
+                    "next door" -> {
+                    }
+                    "keyboard" -> {
+                    }
+                    "train\ntrack" -> {
+                    }
+                }
+            }
         }
         Column(
             modifier = Modifier
