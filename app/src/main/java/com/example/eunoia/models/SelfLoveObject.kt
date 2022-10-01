@@ -13,9 +13,10 @@ object SelfLoveObject {
     @Parcelize
     data class SelfLove(
         val id: String,
-        val selfLoveOwner: @RawValue UserObject.User,
+        val selfLoveOwner: @RawValue UserObject.User?,
         val displayName: String,
-        val description: String,
+        val shortDescription: String?,
+        val longDescription: String?,
         val audioKeyS3: String,
         val icon: Int?,
         val fullPlayTime: Long,
@@ -31,9 +32,8 @@ object SelfLoveObject {
 
         val data: SelfLoveData
             get() = SelfLoveData.builder()
-                .selfLoveOwner(this.selfLoveOwner.data)
+                .selfLoveOwner(this.selfLoveOwner!!.data)
                 .displayName(this.displayName)
-                .description(this.description)
                 .audioKeyS3(this.audioKeyS3)
                 .icon(this.icon)
                 .fullPlayTime(this.fullPlayTime.toInt())
@@ -42,6 +42,8 @@ object SelfLoveObject {
                 .tags(this.tags)
                 .audioSource(this.audioSource)
                 .approvalStatus(this.approvalStatus)
+                .shortDescription(this.shortDescription)
+                .longDescription(this.longDescription)
                 .id(this.id)
                 .build()
 
@@ -51,7 +53,8 @@ object SelfLoveObject {
                     selfLoveData.id,
                     UserObject.User.from(selfLoveData.selfLoveOwner),
                     selfLoveData.displayName,
-                    selfLoveData.description,
+                    selfLoveData.shortDescription,
+                    selfLoveData.longDescription,
                     selfLoveData.audioKeyS3,
                     selfLoveData.icon,
                     selfLoveData.fullPlayTime.toLong(),

@@ -14,6 +14,8 @@ import com.example.eunoia.R
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.BedtimeStoryTimer
+import com.example.eunoia.utils.PrayerTimer
+import com.example.eunoia.utils.SelfLoveTimer
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 class GlobalViewModel: ViewModel(){
@@ -45,9 +47,7 @@ class GlobalViewModel: ViewModel(){
     var routineIconToBeAdded by mutableStateOf<Int?>(null)
     var currentUsersRoutines by mutableStateOf<MutableList<UserRoutine?>?>(null)
 
-    var currentSelfLovePlaying by mutableStateOf("")
     var isCurrentRoutinePlaying by mutableStateOf(false)
-    var isCurrentSelfLovePlaying by mutableStateOf(false)
 
     var bottomSheetOpenFor by mutableStateOf("")
 
@@ -149,6 +149,94 @@ class GlobalViewModel: ViewModel(){
         mutableStateOf(White),
     )
     var bedtimeStoryScreenBackgroundControlColor2 = arrayOf(
+        mutableStateOf(White),
+        mutableStateOf(White),
+        mutableStateOf(Solitude),
+        mutableStateOf(White),
+        mutableStateOf(White),
+    )
+
+
+    /**
+     * self love
+     */
+    var currentUsersSelfLoves by mutableStateOf<MutableList<UserSelfLove?>?>(null)
+    var currentSelfLovePlaying by mutableStateOf<SelfLoveData?>(null)
+    var isCurrentSelfLovePlaying by mutableStateOf(false)
+    var currentSelfLovePlayingUri: Uri? = null
+    var selfLoveTimeDisplay by mutableStateOf("00.00")
+    var selfLoveCircularSliderAngle by mutableStateOf(0f)
+    var selfLoveCircularSliderClicked by mutableStateOf(false)
+    var selfLoveTimer = SelfLoveTimer(UserDashboardActivity.getInstanceActivity())
+
+    var currentSelfLoveToBeAdded by mutableStateOf<SelfLoveData?>(null)
+
+    val selfLoveScreenIcons = arrayOf(
+        mutableStateOf(R.drawable.reset_sliders_icon),
+        mutableStateOf(R.drawable.seek_back_15),
+        mutableStateOf(R.drawable.play_icon),
+        mutableStateOf(R.drawable.seek_forward_15),
+    )
+
+    var selfLoveScreenBorderControlColors = arrayOf(
+        mutableStateOf(Bizarre),
+        mutableStateOf(Bizarre),
+        mutableStateOf(Black),
+        mutableStateOf(Bizarre),
+        mutableStateOf(Bizarre),
+    )
+    var selfLoveScreenBackgroundControlColor1 = arrayOf(
+        mutableStateOf(White),
+        mutableStateOf(White),
+        mutableStateOf(SoftPeach),
+        mutableStateOf(White),
+        mutableStateOf(White),
+    )
+    var selfLoveScreenBackgroundControlColor2 = arrayOf(
+        mutableStateOf(White),
+        mutableStateOf(White),
+        mutableStateOf(Solitude),
+        mutableStateOf(White),
+        mutableStateOf(White),
+    )
+
+
+    /**
+     * prayer
+     */
+    var currentUsersPrayers by mutableStateOf<MutableList<UserPrayer?>?>(null)
+    var currentPrayerPlaying by mutableStateOf<PrayerData?>(null)
+    var isCurrentPrayerPlaying by mutableStateOf(false)
+    var currentPrayerPlayingUri: Uri? = null
+    var prayerTimeDisplay by mutableStateOf("00.00")
+    var prayerCircularSliderAngle by mutableStateOf(0f)
+    var prayerCircularSliderClicked by mutableStateOf(false)
+    var prayerTimer = PrayerTimer(UserDashboardActivity.getInstanceActivity())
+
+    var currentPrayerToBeAdded by mutableStateOf<PrayerData?>(null)
+
+    val prayerScreenIcons = arrayOf(
+        mutableStateOf(R.drawable.reset_sliders_icon),
+        mutableStateOf(R.drawable.seek_back_15),
+        mutableStateOf(R.drawable.play_icon),
+        mutableStateOf(R.drawable.seek_forward_15),
+    )
+
+    var prayerScreenBorderControlColors = arrayOf(
+        mutableStateOf(Bizarre),
+        mutableStateOf(Bizarre),
+        mutableStateOf(Black),
+        mutableStateOf(Bizarre),
+        mutableStateOf(Bizarre),
+    )
+    var prayerScreenBackgroundControlColor1 = arrayOf(
+        mutableStateOf(White),
+        mutableStateOf(White),
+        mutableStateOf(SoftPeach),
+        mutableStateOf(White),
+        mutableStateOf(White),
+    )
+    var prayerScreenBackgroundControlColor2 = arrayOf(
         mutableStateOf(White),
         mutableStateOf(White),
         mutableStateOf(Solitude),

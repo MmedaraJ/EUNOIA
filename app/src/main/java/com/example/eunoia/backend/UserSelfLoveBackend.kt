@@ -4,9 +4,7 @@ import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
-import com.amplifyframework.datastore.generated.model.SelfLoveData
-import com.amplifyframework.datastore.generated.model.UserData
-import com.amplifyframework.datastore.generated.model.UserSelfLove
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserSelfLoveObject
@@ -53,7 +51,7 @@ object UserSelfLoveBackend {
         }
     }
 
-    fun queryUserSelfLoveBasedOnUser(
+    fun queryApprovedUserSelfLoveBasedOnUser(
         userData: UserData,
         completed: (userSelfLove: List<UserSelfLove?>) -> Unit
     ) {
@@ -63,6 +61,36 @@ object UserSelfLoveBackend {
                 ModelQuery.list(
                     UserSelfLove::class.java,
                     UserSelfLove.USER_DATA.eq(userData.id),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (userSelfLoveData in response.data) {
+                            //TODO change pending to approved
+                            if(userSelfLoveData.selfLoveData.approvalStatus == SelfLoveApprovalStatus.PENDING) {
+                                Log.i(TAG, userSelfLoveData.toString())
+                                userSelfLoveList.add(userSelfLoveData)
+                            }
+                        }
+                    }
+                    completed(userSelfLoveList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun queryUserSelfLoveBasedOnUserAndSelfLove(
+        userData: UserData,
+        selfLoveData: SelfLoveData,
+        completed: (userSelfLove: List<UserSelfLove?>) -> Unit
+    ) {
+        scope.launch {
+            val userSelfLoveList = mutableListOf<UserSelfLove?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    UserSelfLove::class.java,
+                    UserSelfLove.USER_DATA.eq(userData.id)
+                        .and(UserSelfLove.SELF_LOVE_DATA.eq(selfLoveData.id)),
                 ),
                 { response ->
                     if(response.hasData()) {

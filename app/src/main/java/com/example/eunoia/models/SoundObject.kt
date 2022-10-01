@@ -13,7 +13,7 @@ object SoundObject {
     @Parcelize
     data class Sound(
         val id: String,
-        val soundOwner: @RawValue UserObject.User,
+        val soundOwner: @RawValue UserObject.User?,
         val original_name: String,
         val display_name: String,
         val short_description: String,
@@ -33,10 +33,9 @@ object SoundObject {
 
         val data: SoundData
             get() = SoundData.builder()
-                .soundOwner(this.soundOwner.data)
+                .soundOwner(this.soundOwner!!.data)
                 .originalName(this.original_name)
                 .displayName(this.display_name)
-                .shortDescription(this.short_description)
                 .audioKeyS3(this.audio_key_s3)
                 .icon(this.icon)
                 .colorHex(this.colorHex)
@@ -46,6 +45,7 @@ object SoundObject {
                 .audioNames(this.audio_names)
                 .approvalStatus(this.approvalStatus)
                 .longDescription(this.long_description)
+                .shortDescription(this.short_description)
                 .id(this.id)
                 .build()
 

@@ -15,9 +15,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openSoundNameTakenDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -25,15 +27,18 @@ import kotlinx.coroutines.CoroutineScope
 
 var soundIcon by mutableStateOf(-1)
 var soundName by mutableStateOf("")
-var shortDescription by mutableStateOf("")
+var soundShortDescription by mutableStateOf("")
 var soundTags by mutableStateOf("")
 var iconSelectionTitle by mutableStateOf("")
 var soundNameErrorMessage by mutableStateOf("")
 var soundDescriptionErrorMessage by mutableStateOf("")
 var soundTagsErrorMessage by mutableStateOf("")
 const val MIN_SOUND_NAME = 5
-const val MIN_SOUND_DESCRIPTION = 10
+const val MIN_SOUND_SHORT_DESCRIPTION = 10
 const val MIN_SOUND_TAGS = 3
+const val MAX_SOUND_NAME = 30
+const val MAX_SOUND_SHORT_DESCRIPTION = 50
+const val MAX_SOUND_TAGS = 50
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -45,6 +50,7 @@ fun NameSoundUI(
 ){
     val scrollState = rememberScrollState()
 
+    SetupAlertDialogs()
     initializeSoundNameError()
     initializeSoundDescriptionError()
     initializeSoundTagsError()
@@ -114,7 +120,7 @@ fun NameSoundUI(
                 }
         ) {
             soundName = customizedOutlinedTextInput(
-                width = 0,
+                maxLength = MAX_SOUND_NAME,
                 height = 55,
                 color = SoftPeach,
                 focusedBorderColor = BeautyBush,
@@ -150,17 +156,18 @@ fun NameSoundUI(
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            shortDescription = customizableBigOutlinedTextInput(
-                height = 100,
-                placeholder = "Short Description",
-                backgroundColor = SoftPeach,
+            soundShortDescription = customizedOutlinedTextInput(
+                maxLength = MAX_SOUND_SHORT_DESCRIPTION,
+                height = 55,
+                color = SoftPeach,
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
-                textColor = Black,
-                placeholderColor = BeautyBush,
-                placeholderTextSize = 16,
                 inputFontSize = 16,
-            ){}
+                placeholder = "Short description",
+                placeholderFontSize = 16,
+                placeholderColor = BeautyBush,
+                offset = 0
+            )
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -187,7 +194,7 @@ fun NameSoundUI(
                 }
         ) {
             soundTags = customizedOutlinedTextInput(
-                width = 0,
+                maxLength = MAX_SOUND_TAGS,
                 height = 55,
                 color = SoftPeach,
                 focusedBorderColor = BeautyBush,
@@ -299,7 +306,7 @@ fun NameSoundUI(
         ) {
             if(
                 soundName.length >= MIN_SOUND_NAME &&
-                shortDescription.length >= MIN_SOUND_DESCRIPTION &&
+                soundShortDescription.length >= MIN_SOUND_SHORT_DESCRIPTION &&
                 soundTags.length >= MIN_SOUND_TAGS &&
                 soundIcon != -1 //&&
                 //checkOtherSoundsWithSimilarNames()
@@ -316,7 +323,17 @@ fun NameSoundUI(
                     textType = "morge",
                     maxWidthFraction = 1F
                 ) {
-                    navController.navigate(Screen.UploadSounds.screen_route)
+                    var otherSoundsWithSameName by mutableStateOf(-1)
+                    SoundBackend.querySoundBasedOnDisplayName(soundName){
+                        otherSoundsWithSameName = if(it.isEmpty()) 0 else it.size
+                    }
+                    Thread.sleep(1_000)
+
+                    if(otherSoundsWithSameName < 1) {
+                        navController.navigate(Screen.UploadSounds.screen_route)
+                    }else{
+                        openSoundNameTakenDialogBox = true
+                    }
                 }
             }
         }
@@ -328,6 +345,13 @@ fun NameSoundUI(
         ){
             Spacer(modifier = Modifier.height(40.dp))
         }
+    }
+}
+
+@Composable
+private fun SetupAlertDialogs(){
+    if(openSoundNameTakenDialogBox){
+        AlertDialogBox(text = "The name '$soundName' already exists")
     }
 }
 
@@ -353,10 +377,10 @@ fun initializeSoundNameError() {
 }
 
 fun initializeSoundDescriptionError() {
-    soundDescriptionErrorMessage = if(shortDescription.isEmpty()){
+    soundDescriptionErrorMessage = if(soundShortDescription.isEmpty()){
         "Describe this sound"
-    } else if(shortDescription.length < MIN_SOUND_DESCRIPTION){
-        "Description must be at least $MIN_SOUND_DESCRIPTION characters"
+    } else if(soundShortDescription.length < MIN_SOUND_SHORT_DESCRIPTION){
+        "Description must be at least $MIN_SOUND_SHORT_DESCRIPTION characters"
     } else{
         ""
     }

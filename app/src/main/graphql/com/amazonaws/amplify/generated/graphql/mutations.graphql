@@ -2211,7 +2211,8 @@ mutation CreateBedtimeStoryInfoData(
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -2338,7 +2339,8 @@ mutation UpdateBedtimeStoryInfoData(
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -2465,7 +2467,8 @@ mutation DeleteBedtimeStoryInfoData(
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -2546,7 +2549,8 @@ mutation CreateBedtimeStoryInfoChapterData(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -2620,7 +2624,8 @@ mutation UpdateBedtimeStoryInfoChapterData(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -2694,7 +2699,8 @@ mutation DeleteBedtimeStoryInfoChapterData(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -2755,7 +2761,8 @@ mutation CreateChapterPageData(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -2800,7 +2807,8 @@ mutation UpdateChapterPageData(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -2845,7 +2853,8 @@ mutation DeleteChapterPageData(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -2949,7 +2958,8 @@ mutation CreatePrayerData(
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -3065,7 +3075,8 @@ mutation UpdatePrayerData(
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -3181,7 +3192,8 @@ mutation DeletePrayerData(
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -3297,7 +3309,8 @@ mutation CreateSelfLoveData(
       owner
     }
     display_name
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -3412,7 +3425,8 @@ mutation UpdateSelfLoveData(
       owner
     }
     display_name
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -3527,7 +3541,8 @@ mutation DeleteSelfLoveData(
       owner
     }
     display_name
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -4365,7 +4380,8 @@ mutation CreateUserData(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4419,7 +4435,8 @@ mutation CreateUserData(
         id
         userDataID
         display_name
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4450,7 +4467,8 @@ mutation CreateUserData(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4647,7 +4665,8 @@ mutation UpdateUserData(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4701,7 +4720,8 @@ mutation UpdateUserData(
         id
         userDataID
         display_name
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4732,7 +4752,8 @@ mutation UpdateUserData(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4929,7 +4950,8 @@ mutation DeleteUserData(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4983,7 +5005,8 @@ mutation DeleteUserData(
         id
         userDataID
         display_name
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -5014,7 +5037,8 @@ mutation DeleteUserData(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -6865,7 +6889,8 @@ mutation CreateRoutinePrayer(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -7000,7 +7025,8 @@ mutation UpdateRoutinePrayer(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -7135,7 +7161,8 @@ mutation DeleteRoutinePrayer(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8020,7 +8047,8 @@ mutation CreateRoutineBedtimeStoryInfo(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8157,7 +8185,8 @@ mutation UpdateRoutineBedtimeStoryInfo(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8294,7 +8323,8 @@ mutation DeleteRoutineBedtimeStoryInfo(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8431,7 +8461,8 @@ mutation CreateRoutineSelfLove(
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8565,7 +8596,8 @@ mutation UpdateRoutineSelfLove(
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8699,7 +8731,8 @@ mutation DeleteRoutineSelfLove(
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9241,7 +9274,8 @@ mutation CreateUserBedtimeStoryInfo(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9371,7 +9405,8 @@ mutation UpdateUserBedtimeStoryInfo(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9501,7 +9536,8 @@ mutation DeleteUserBedtimeStoryInfo(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9631,7 +9667,8 @@ mutation CreateUserPrayer(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9759,7 +9796,8 @@ mutation UpdateUserPrayer(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9887,7 +9925,8 @@ mutation DeleteUserPrayer(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -10015,7 +10054,8 @@ mutation CreateUserSelfLove(
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -10142,7 +10182,8 @@ mutation UpdateUserSelfLove(
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -10269,7 +10310,8 @@ mutation DeleteUserSelfLove(
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime

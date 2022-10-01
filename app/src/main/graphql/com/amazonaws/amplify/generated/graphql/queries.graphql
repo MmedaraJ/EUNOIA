@@ -1058,7 +1058,8 @@ query GetBedtimeStoryInfoData($id: ID!) {
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -1140,7 +1141,8 @@ query ListBedtimeStoryInfoDatas(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -1195,7 +1197,8 @@ query GetBedtimeStoryInfoChapterData($id: ID!) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -1255,7 +1258,8 @@ query ListBedtimeStoryInfoChapterDatas(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -1295,7 +1299,8 @@ query GetChapterPageData($id: ID!) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -1425,7 +1430,8 @@ query GetPrayerData($id: ID!) {
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -1492,7 +1498,8 @@ query ListPrayerDatas(
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -1591,7 +1598,8 @@ query GetSelfLoveData($id: ID!) {
       owner
     }
     display_name
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -1657,7 +1665,8 @@ query ListSelfLoveDatas(
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -2134,7 +2143,8 @@ query GetUserData($id: ID!) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -2188,7 +2198,8 @@ query GetUserData($id: ID!) {
         id
         userDataID
         display_name
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -2219,7 +2230,8 @@ query GetUserData($id: ID!) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -3231,7 +3243,8 @@ query GetRoutinePrayer($id: ID!) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -3304,7 +3317,8 @@ query ListRoutinePrayers(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -3794,7 +3808,8 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -3873,7 +3888,8 @@ query ListRoutineBedtimeStoryInfos(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4000,7 +4016,8 @@ query GetRoutineSelfLove($id: ID!) {
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -4072,7 +4089,8 @@ query ListRoutineSelfLoves(
         id
         userDataID
         display_name
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4351,7 +4369,8 @@ query GetUserBedtimeStoryInfo($id: ID!) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -4467,7 +4486,8 @@ query ListUserBedtimeStoryInfos(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4536,7 +4556,8 @@ query GetUserPrayer($id: ID!) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -4646,7 +4667,8 @@ query ListUserPrayers(
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4716,7 +4738,8 @@ query GetUserSelfLove($id: ID!) {
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -4825,7 +4848,8 @@ query ListUserSelfLoves(
         id
         userDataID
         display_name
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime

@@ -32,7 +32,8 @@ public final class PrayerData implements Model {
   public static final QueryField ID = field("PrayerData", "id");
   public static final QueryField PRAYER_OWNER = field("PrayerData", "userDataID");
   public static final QueryField DISPLAY_NAME = field("PrayerData", "displayName");
-  public static final QueryField DESCRIPTION = field("PrayerData", "description");
+  public static final QueryField SHORT_DESCRIPTION = field("PrayerData", "shortDescription");
+  public static final QueryField LONG_DESCRIPTION = field("PrayerData", "longDescription");
   public static final QueryField AUDIO_KEY_S3 = field("PrayerData", "audioKeyS3");
   public static final QueryField ICON = field("PrayerData", "icon");
   public static final QueryField FULL_PLAY_TIME = field("PrayerData", "fullPlayTime");
@@ -45,7 +46,8 @@ public final class PrayerData implements Model {
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData prayerOwner;
   private final @ModelField(targetType="String", isRequired = true) String displayName;
-  private final @ModelField(targetType="String", isRequired = true) String description;
+  private final @ModelField(targetType="String") String shortDescription;
+  private final @ModelField(targetType="String") String longDescription;
   private final @ModelField(targetType="String", isRequired = true) String audioKeyS3;
   private final @ModelField(targetType="Int", isRequired = true) Integer icon;
   private final @ModelField(targetType="Int", isRequired = true) Integer fullPlayTime;
@@ -71,8 +73,12 @@ public final class PrayerData implements Model {
       return displayName;
   }
   
-  public String getDescription() {
-      return description;
+  public String getShortDescription() {
+      return shortDescription;
+  }
+  
+  public String getLongDescription() {
+      return longDescription;
   }
   
   public String getAudioKeyS3() {
@@ -127,11 +133,12 @@ public final class PrayerData implements Model {
       return updatedAt;
   }
   
-  private PrayerData(String id, UserData prayerOwner, String displayName, String description, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
+  private PrayerData(String id, UserData prayerOwner, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
     this.id = id;
     this.prayerOwner = prayerOwner;
     this.displayName = displayName;
-    this.description = description;
+    this.shortDescription = shortDescription;
+    this.longDescription = longDescription;
     this.audioKeyS3 = audioKeyS3;
     this.icon = icon;
     this.fullPlayTime = fullPlayTime;
@@ -154,7 +161,8 @@ public final class PrayerData implements Model {
       return ObjectsCompat.equals(getId(), prayerData.getId()) &&
               ObjectsCompat.equals(getPrayerOwner(), prayerData.getPrayerOwner()) &&
               ObjectsCompat.equals(getDisplayName(), prayerData.getDisplayName()) &&
-              ObjectsCompat.equals(getDescription(), prayerData.getDescription()) &&
+              ObjectsCompat.equals(getShortDescription(), prayerData.getShortDescription()) &&
+              ObjectsCompat.equals(getLongDescription(), prayerData.getLongDescription()) &&
               ObjectsCompat.equals(getAudioKeyS3(), prayerData.getAudioKeyS3()) &&
               ObjectsCompat.equals(getIcon(), prayerData.getIcon()) &&
               ObjectsCompat.equals(getFullPlayTime(), prayerData.getFullPlayTime()) &&
@@ -175,7 +183,8 @@ public final class PrayerData implements Model {
       .append(getId())
       .append(getPrayerOwner())
       .append(getDisplayName())
-      .append(getDescription())
+      .append(getShortDescription())
+      .append(getLongDescription())
       .append(getAudioKeyS3())
       .append(getIcon())
       .append(getFullPlayTime())
@@ -198,7 +207,8 @@ public final class PrayerData implements Model {
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("prayerOwner=" + String.valueOf(getPrayerOwner()) + ", ")
       .append("displayName=" + String.valueOf(getDisplayName()) + ", ")
-      .append("description=" + String.valueOf(getDescription()) + ", ")
+      .append("shortDescription=" + String.valueOf(getShortDescription()) + ", ")
+      .append("longDescription=" + String.valueOf(getLongDescription()) + ", ")
       .append("audioKeyS3=" + String.valueOf(getAudioKeyS3()) + ", ")
       .append("icon=" + String.valueOf(getIcon()) + ", ")
       .append("fullPlayTime=" + String.valueOf(getFullPlayTime()) + ", ")
@@ -240,6 +250,7 @@ public final class PrayerData implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -248,7 +259,8 @@ public final class PrayerData implements Model {
     return new CopyOfBuilder(id,
       prayerOwner,
       displayName,
-      description,
+      shortDescription,
+      longDescription,
       audioKeyS3,
       icon,
       fullPlayTime,
@@ -265,12 +277,7 @@ public final class PrayerData implements Model {
   
 
   public interface DisplayNameStep {
-    DescriptionStep displayName(String displayName);
-  }
-  
-
-  public interface DescriptionStep {
-    AudioKeyS3Step description(String description);
+    AudioKeyS3Step displayName(String displayName);
   }
   
 
@@ -297,6 +304,8 @@ public final class PrayerData implements Model {
   public interface BuildStep {
     PrayerData build();
     BuildStep id(String id);
+    BuildStep shortDescription(String shortDescription);
+    BuildStep longDescription(String longDescription);
     BuildStep religion(String religion);
     BuildStep country(String country);
     BuildStep tags(List<String> tags);
@@ -305,15 +314,16 @@ public final class PrayerData implements Model {
   }
   
 
-  public static class Builder implements PrayerOwnerStep, DisplayNameStep, DescriptionStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, BuildStep {
+  public static class Builder implements PrayerOwnerStep, DisplayNameStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, BuildStep {
     private String id;
     private UserData prayerOwner;
     private String displayName;
-    private String description;
     private String audioKeyS3;
     private Integer icon;
     private Integer fullPlayTime;
     private Boolean visibleToOthers;
+    private String shortDescription;
+    private String longDescription;
     private String religion;
     private String country;
     private List<String> tags;
@@ -327,7 +337,8 @@ public final class PrayerData implements Model {
           id,
           prayerOwner,
           displayName,
-          description,
+          shortDescription,
+          longDescription,
           audioKeyS3,
           icon,
           fullPlayTime,
@@ -347,16 +358,9 @@ public final class PrayerData implements Model {
     }
     
     @Override
-     public DescriptionStep displayName(String displayName) {
+     public AudioKeyS3Step displayName(String displayName) {
         Objects.requireNonNull(displayName);
         this.displayName = displayName;
-        return this;
-    }
-    
-    @Override
-     public AudioKeyS3Step description(String description) {
-        Objects.requireNonNull(description);
-        this.description = description;
         return this;
     }
     
@@ -385,6 +389,18 @@ public final class PrayerData implements Model {
      public BuildStep visibleToOthers(Boolean visibleToOthers) {
         Objects.requireNonNull(visibleToOthers);
         this.visibleToOthers = visibleToOthers;
+        return this;
+    }
+    
+    @Override
+     public BuildStep shortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+        return this;
+    }
+    
+    @Override
+     public BuildStep longDescription(String longDescription) {
+        this.longDescription = longDescription;
         return this;
     }
     
@@ -430,15 +446,16 @@ public final class PrayerData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData prayerOwner, String displayName, String description, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
+    private CopyOfBuilder(String id, UserData prayerOwner, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
       super.id(id);
       super.prayerOwner(prayerOwner)
         .displayName(displayName)
-        .description(description)
         .audioKeyS3(audioKeyS3)
         .icon(icon)
         .fullPlayTime(fullPlayTime)
         .visibleToOthers(visibleToOthers)
+        .shortDescription(shortDescription)
+        .longDescription(longDescription)
         .religion(religion)
         .country(country)
         .tags(tags)
@@ -454,11 +471,6 @@ public final class PrayerData implements Model {
     @Override
      public CopyOfBuilder displayName(String displayName) {
       return (CopyOfBuilder) super.displayName(displayName);
-    }
-    
-    @Override
-     public CopyOfBuilder description(String description) {
-      return (CopyOfBuilder) super.description(description);
     }
     
     @Override
@@ -479,6 +491,16 @@ public final class PrayerData implements Model {
     @Override
      public CopyOfBuilder visibleToOthers(Boolean visibleToOthers) {
       return (CopyOfBuilder) super.visibleToOthers(visibleToOthers);
+    }
+    
+    @Override
+     public CopyOfBuilder shortDescription(String shortDescription) {
+      return (CopyOfBuilder) super.shortDescription(shortDescription);
+    }
+    
+    @Override
+     public CopyOfBuilder longDescription(String longDescription) {
+      return (CopyOfBuilder) super.longDescription(longDescription);
     }
     
     @Override

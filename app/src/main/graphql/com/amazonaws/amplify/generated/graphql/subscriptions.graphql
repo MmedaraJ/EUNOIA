@@ -2172,7 +2172,8 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -2296,7 +2297,8 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -2420,7 +2422,8 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -2498,7 +2501,8 @@ subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -2569,7 +2573,8 @@ subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -2640,7 +2645,8 @@ subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -2698,7 +2704,8 @@ subscription OnCreateChapterPageData($owner: String) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -2740,7 +2747,8 @@ subscription OnUpdateChapterPageData($owner: String) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -2782,7 +2790,8 @@ subscription OnDeleteChapterPageData($owner: String) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -2883,7 +2892,8 @@ subscription OnCreatePrayerData($owner: String) {
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -2996,7 +3006,8 @@ subscription OnUpdatePrayerData($owner: String) {
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -3109,7 +3120,8 @@ subscription OnDeletePrayerData($owner: String) {
       owner
     }
     displayName
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -3222,7 +3234,8 @@ subscription OnCreateSelfLoveData($owner: String) {
       owner
     }
     display_name
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -3334,7 +3347,8 @@ subscription OnUpdateSelfLoveData($owner: String) {
       owner
     }
     display_name
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -3446,7 +3460,8 @@ subscription OnDeleteSelfLoveData($owner: String) {
       owner
     }
     display_name
-    description
+    shortDescription
+    longDescription
     audioKeyS3
     icon
     fullPlayTime
@@ -4263,7 +4278,8 @@ subscription OnCreateUserData($owner: String) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4317,7 +4333,8 @@ subscription OnCreateUserData($owner: String) {
         id
         userDataID
         display_name
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4348,7 +4365,8 @@ subscription OnCreateUserData($owner: String) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4542,7 +4560,8 @@ subscription OnUpdateUserData($owner: String) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4596,7 +4615,8 @@ subscription OnUpdateUserData($owner: String) {
         id
         userDataID
         display_name
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4627,7 +4647,8 @@ subscription OnUpdateUserData($owner: String) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4821,7 +4842,8 @@ subscription OnDeleteUserData($owner: String) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4875,7 +4897,8 @@ subscription OnDeleteUserData($owner: String) {
         id
         userDataID
         display_name
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -4906,7 +4929,8 @@ subscription OnDeleteUserData($owner: String) {
         id
         userDataID
         displayName
-        description
+        shortDescription
+        longDescription
         audioKeyS3
         icon
         fullPlayTime
@@ -6718,7 +6742,8 @@ subscription OnCreateRoutinePrayer($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -6850,7 +6875,8 @@ subscription OnUpdateRoutinePrayer($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -6982,7 +7008,8 @@ subscription OnDeleteRoutinePrayer($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -7846,7 +7873,8 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -7980,7 +8008,8 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8114,7 +8143,8 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8248,7 +8278,8 @@ subscription OnCreateRoutineSelfLove($owner: String) {
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8379,7 +8410,8 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -8510,7 +8542,8 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9040,7 +9073,8 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9167,7 +9201,8 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9294,7 +9329,8 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9421,7 +9457,8 @@ subscription OnCreateUserPrayer($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9546,7 +9583,8 @@ subscription OnUpdateUserPrayer($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9671,7 +9709,8 @@ subscription OnDeleteUserPrayer($owner: String) {
         owner
       }
       displayName
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9796,7 +9835,8 @@ subscription OnCreateUserSelfLove($owner: String) {
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -9920,7 +9960,8 @@ subscription OnUpdateUserSelfLove($owner: String) {
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime
@@ -10044,7 +10085,8 @@ subscription OnDeleteUserSelfLove($owner: String) {
         owner
       }
       display_name
-      description
+      shortDescription
+      longDescription
       audioKeyS3
       icon
       fullPlayTime

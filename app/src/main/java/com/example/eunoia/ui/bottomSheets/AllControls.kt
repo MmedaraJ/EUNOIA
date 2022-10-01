@@ -7,6 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -18,6 +19,8 @@ import com.example.eunoia.dashboard.sound.soundScreenBorderControlColors
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.bedtimeStory.bottomSheetBedtimeStoryControlPanel
+import com.example.eunoia.ui.bottomSheets.prayer.bottomSheetPrayerControlPanel
+import com.example.eunoia.ui.bottomSheets.selfLove.bottomSheetSelfLoveControlPanel
 import com.example.eunoia.ui.bottomSheets.sound.bottomSheetSoundControlPanel
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -67,21 +70,28 @@ fun BottomSheetAllControls(
             globalViewModel,
             scope,
             state,
-            generalMediaPlayerService,
+            generalMediaPlayerService
         )
 
-        val selfLovePlaying = bottomSheetSoundControlPanel(
+        val selfLovePlaying = bottomSheetSelfLoveControlPanel(
             globalViewModel,
             scope,
             state,
-            generalMediaPlayerService,
-            soundMediaPlayerService
+            generalMediaPlayerService
+        )
+
+        val prayerPlaying = bottomSheetPrayerControlPanel(
+            globalViewModel,
+            scope,
+            state,
+            generalMediaPlayerService
         )
 
         if(
             !soundPlaying &&
             !bedtimeStoryPlaying &&
-            !selfLovePlaying
+            !selfLovePlaying &&
+            !prayerPlaying
         ){
             Card(
                 modifier = Modifier

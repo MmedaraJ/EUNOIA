@@ -14,10 +14,12 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.*
+import com.example.eunoia.backend.SelfLoveBackend
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openSelfLoveNameTakenDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -25,18 +27,25 @@ import kotlinx.coroutines.CoroutineScope
 
 var selfLoveIcon by mutableStateOf(-1)
 var selfLoveName by mutableStateOf("")
-var selfLoveDescription by mutableStateOf("")
+var selfLoveShortDescription by mutableStateOf("")
+var selfLoveLongDescription by mutableStateOf("")
 var selfLoveLyrics by mutableStateOf("")
 var selfLoveTags by mutableStateOf("")
 var selfLoveIconSelectionTitle by mutableStateOf("")
 var selfLoveNameErrorMessage by mutableStateOf("")
-var selfLoveDescriptionErrorMessage by mutableStateOf("")
+var selfLoveShortDescriptionErrorMessage by mutableStateOf("")
+var selfLoveLongDescriptionErrorMessage by mutableStateOf("")
 var selfLoveLyricsErrorMessage by mutableStateOf("")
 var selfLoveTagsErrorMessage by mutableStateOf("")
-const val MIN_SELF_LOVE_NAME = 5
-const val MIN_SELF_LOVE_DESCRIPTION = 10
-const val MIN_SELF_LOVE_TAGS = 3
-var openSelfLoveNameTakenDialogBox by mutableStateOf(false)
+private const val MIN_SELF_LOVE_NAME = 5
+private const val MIN_SELF_LOVE_SHORT_DESCRIPTION = 10
+private const val MIN_SELF_LOVE_LONG_DESCRIPTION = 10
+private const val MIN_SELF_LOVE_TAGS = 3
+private const val MAX_SELF_LOVE_NAME = 30
+private const val MAX_SELF_LOVE_SHORT_DESCRIPTION = 50
+private const val MAX_SELF_LOVE_LONG_DESCRIPTION = 200
+private const val MAX_SELF_LOVE_TAGS = 50
+private const val MAX_SELF_LOVE_LYRICS = 500
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -50,7 +59,8 @@ fun NameSelfLoveUI(
 
     SetupAlertDialogs()
     initializeSelfLoveNameError()
-    initializeSelfLoveDescriptionError()
+    initializeSelfLoveShortDescriptionError()
+    initializeSelfLoveLongDescriptionError()
     initializeSelfLoveLyricsError()
     initializeSelfLoveTagsError()
     initializeSelfLoveIconError()
@@ -64,9 +74,11 @@ fun NameSelfLoveUI(
             header,
             title,
             nameColumn,
-            name_error,
-            descriptionColumn,
-            descriptionError,
+            nameError,
+            shortDescriptionColumn,
+            shortDescriptionError,
+            longDescriptionColumn,
+            longDescriptionError,
             lyricsColumn,
             lyricsError,
             tagColumn,
@@ -76,6 +88,7 @@ fun NameSelfLoveUI(
             next,
             endSpace
         ) = createRefs()
+
         Column(
             modifier = Modifier
                 .constrainAs(header) {
@@ -122,7 +135,7 @@ fun NameSelfLoveUI(
                 }
         ) {
             selfLoveName = customizedOutlinedTextInput(
-                width = 0,
+                maxLength = MAX_SELF_LOVE_NAME,
                 height = 55,
                 color = SoftPeach,
                 focusedBorderColor = BeautyBush,
@@ -137,7 +150,7 @@ fun NameSelfLoveUI(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(name_error) {
+                .constrainAs(nameError) {
                     top.linkTo(nameColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
@@ -152,15 +165,53 @@ fun NameSelfLoveUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(descriptionColumn) {
-                    top.linkTo(name_error.bottom, margin = 16.dp)
+                .constrainAs(shortDescriptionColumn) {
+                    top.linkTo(nameError.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            selfLoveDescription = customizableBigOutlinedTextInput(
+            selfLoveShortDescription = customizedOutlinedTextInput(
+                maxLength = MAX_SELF_LOVE_SHORT_DESCRIPTION,
+                height = 55,
+                color = SoftPeach,
+                focusedBorderColor = BeautyBush,
+                unfocusedBorderColor = SoftPeach,
+                inputFontSize = 16,
+                placeholder = "Short description",
+                placeholderFontSize = 16,
+                placeholderColor = BeautyBush,
+                offset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(shortDescriptionError) {
+                    top.linkTo(shortDescriptionColumn.bottom, margin = 4.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedLightText(
+                text = selfLoveShortDescriptionErrorMessage,
+                color = Black,
+                fontSize = 10,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            modifier = Modifier
+                .constrainAs(longDescriptionColumn) {
+                    top.linkTo(shortDescriptionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ) {
+            selfLoveLongDescription = customizableBigOutlinedTextInput(
+                maxLength = MAX_SELF_LOVE_LONG_DESCRIPTION,
                 height = 100,
-                placeholder = "Description",
+                placeholder = "Long description",
                 backgroundColor = SoftPeach,
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
@@ -173,13 +224,13 @@ fun NameSelfLoveUI(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(descriptionError) {
-                    top.linkTo(descriptionColumn.bottom, margin = 4.dp)
+                .constrainAs(longDescriptionError) {
+                    top.linkTo(longDescriptionColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
             AlignedLightText(
-                text = selfLoveDescriptionErrorMessage,
+                text = selfLoveLongDescriptionErrorMessage,
                 color = Black,
                 fontSize = 10,
                 xOffset = 0,
@@ -189,12 +240,13 @@ fun NameSelfLoveUI(
         Column(
             modifier = Modifier
                 .constrainAs(lyricsColumn) {
-                    top.linkTo(descriptionError.bottom, margin = 16.dp)
+                    top.linkTo(longDescriptionError.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
             selfLoveLyrics = customizableBigOutlinedTextInput(
+                maxLength = MAX_SELF_LOVE_LYRICS,
                 height = 150,
                 placeholder = "Lyrics",
                 backgroundColor = SoftPeach,
@@ -231,7 +283,7 @@ fun NameSelfLoveUI(
                 }
         ) {
             selfLoveTags = customizedOutlinedTextInput(
-                width = 0,
+                maxLength = MAX_SELF_LOVE_TAGS,
                 height = 55,
                 color = SoftPeach,
                 focusedBorderColor = BeautyBush,
@@ -344,7 +396,8 @@ fun NameSelfLoveUI(
         ) {
             if(
                 selfLoveName.length >= MIN_SELF_LOVE_NAME &&
-                selfLoveDescription.length >= MIN_SELF_LOVE_DESCRIPTION &&
+                selfLoveShortDescription.length >= MIN_SELF_LOVE_SHORT_DESCRIPTION &&
+                selfLoveLongDescription.length >= MIN_SELF_LOVE_LONG_DESCRIPTION &&
                 selfLoveTags.length >= MIN_SELF_LOVE_TAGS &&
                 selfLoveIcon != -1
             ) {
@@ -360,10 +413,20 @@ fun NameSelfLoveUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    runOnUiThread {
-                        navigateToUploadSelfLove(
-                            navController
-                        )
+                    var otherSelfLovesWithSameName by mutableStateOf(-1)
+                    SelfLoveBackend.querySelfLoveBasedOnDisplayName(selfLoveName){
+                        otherSelfLovesWithSameName = if(it.isEmpty()) 0 else it.size
+                    }
+                    Thread.sleep(1_000)
+
+                    if (otherSelfLovesWithSameName < 1) {
+                        runOnUiThread {
+                            navigateToUploadSelfLove(
+                                navController
+                            )
+                        }
+                    }else{
+                        openSelfLoveNameTakenDialogBox = true
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -381,10 +444,20 @@ fun NameSelfLoveUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    runOnUiThread {
-                        navigateToRecordSelfLove(
-                            navController
-                        )
+                    var otherSelfLovesWithSameName by mutableStateOf(-1)
+                    SelfLoveBackend.querySelfLoveBasedOnDisplayName(selfLoveName){
+                        otherSelfLovesWithSameName = if(it.isEmpty()) 0 else it.size
+                    }
+                    Thread.sleep(1_000)
+
+                    if (otherSelfLovesWithSameName < 1) {
+                        runOnUiThread {
+                            navigateToRecordSelfLove(
+                                navController
+                            )
+                        }
+                    }else{
+                        openSelfLoveNameTakenDialogBox = true
                     }
                 }
             }
@@ -417,11 +490,21 @@ private fun initializeSelfLoveNameError() {
     }
 }
 
-private fun initializeSelfLoveDescriptionError() {
-    selfLoveDescriptionErrorMessage = if(selfLoveDescription.isEmpty()){
-        "Describe this self love"
-    } else if(selfLoveDescription.length < MIN_SELF_LOVE_DESCRIPTION){
-        "Description must be at least $MIN_SELF_LOVE_DESCRIPTION characters"
+private fun initializeSelfLoveShortDescriptionError() {
+    selfLoveShortDescriptionErrorMessage = if(selfLoveShortDescription.isEmpty()){
+        "Provide short description"
+    } else if(selfLoveShortDescription.length < MIN_SELF_LOVE_SHORT_DESCRIPTION){
+        "Short description must be at least $MIN_SELF_LOVE_SHORT_DESCRIPTION characters"
+    } else{
+        ""
+    }
+}
+
+private fun initializeSelfLoveLongDescriptionError() {
+    selfLoveLongDescriptionErrorMessage = if(selfLoveLongDescription.isEmpty()){
+        "Provide long description"
+    } else if(selfLoveLongDescription.length < MIN_SELF_LOVE_LONG_DESCRIPTION){
+        "Long description must be at least $MIN_SELF_LOVE_LONG_DESCRIPTION characters"
     } else{
         ""
     }
@@ -452,12 +535,14 @@ private fun initializeSelfLoveIconError() {
 fun resetNameSelfLoveVariables(){
     selfLoveIcon = -1
     selfLoveName = ""
-    selfLoveDescription = ""
+    selfLoveShortDescription = ""
+    selfLoveLongDescription = ""
     selfLoveLyrics = ""
     selfLoveTags = ""
     selfLoveIconSelectionTitle = ""
     selfLoveNameErrorMessage = ""
-    selfLoveDescriptionErrorMessage = ""
+    selfLoveShortDescriptionErrorMessage = ""
+    selfLoveLongDescriptionErrorMessage = ""
     selfLoveLyricsErrorMessage = ""
     selfLoveTagsErrorMessage = ""
 }

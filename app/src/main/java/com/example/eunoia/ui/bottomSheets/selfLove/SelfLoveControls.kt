@@ -1,4 +1,4 @@
-package com.example.eunoia.ui.bottomSheets.bedtimeStory
+package com.example.eunoia.ui.bottomSheets.selfLove
 
 import android.content.Intent
 import androidx.compose.foundation.BorderStroke
@@ -22,11 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
-import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
+import com.amplifyframework.datastore.generated.model.SelfLoveData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.dashboard.bedtimeStory.*
+import com.example.eunoia.dashboard.selfLove.navigateToSelfLoveScreen
+import com.example.eunoia.dashboard.selfLove.resetBothLocalAndGlobalControlButtonsAfterReset
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
@@ -39,21 +39,21 @@ import com.example.eunoia.utils.timerFormatMS
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 
-private const val TAG = "bottomSheetBedtimeStoryControl"
+private const val TAG = "bottomSheetSelfLoveControl"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun bottomSheetBedtimeStoryControlPanel(
+fun bottomSheetSelfLoveControlPanel(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService
 ): Boolean{
     var showing = false
-    if(globalViewModel.currentBedtimeStoryPlaying != null) {
+    if(globalViewModel.currentSelfLovePlaying != null) {
         showing = true
-        BottomSheetBedtimeStoryControlPanelUI(
-            bedtimeStoryInfoData = globalViewModel.currentBedtimeStoryPlaying!!,
+        BottomSheetSelfLoveControlPanelUI(
+            selfLoveData = globalViewModel.currentSelfLovePlaying!!,
             scope = scope,
             state = state,
             generalMediaPlayerService = generalMediaPlayerService
@@ -66,8 +66,8 @@ fun bottomSheetBedtimeStoryControlPanel(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BottomSheetBedtimeStoryControlPanelUI(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+fun BottomSheetSelfLoveControlPanelUI(
+    selfLoveData: SelfLoveData,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -80,9 +80,9 @@ fun BottomSheetBedtimeStoryControlPanelUI(
             .clickable {
                 if(globalViewModel_!!.navController != null){
                     closeBottomSheet(scope, state)
-                    navigateToBedtimeStoryScreen(
+                    navigateToSelfLoveScreen(
                         globalViewModel_!!.navController!!,
-                        bedtimeStoryInfoData
+                        selfLoveData
                     )
                 }
             },
@@ -118,7 +118,7 @@ fun BottomSheetBedtimeStoryControlPanelUI(
                     }
             ) {
                 NormalText(
-                    text = bedtimeStoryInfoData.displayName,
+                    text = selfLoveData.displayName,
                     color = Black,
                     fontSize = 12,
                     xOffset = 0,
@@ -134,7 +134,7 @@ fun BottomSheetBedtimeStoryControlPanelUI(
                     }
             ) {
                 LightText(
-                    text = "By: @${bedtimeStoryInfoData.bedtimeStoryOwner.username}",
+                    text = "By: @${selfLoveData.selfLoveOwner.username}",
                     color = Black,
                     fontSize = 10,
                     xOffset = 0,
@@ -149,8 +149,8 @@ fun BottomSheetBedtimeStoryControlPanelUI(
                         start.linkTo(parent.start, margin = 32.dp)
                     }
             ) {
-                BottomSheetBedtimeStoryControls(
-                    globalViewModel_!!.currentBedtimeStoryPlaying!!,
+                BottomSheetSelfLoveControls(
+                    globalViewModel_!!.currentSelfLovePlaying!!,
                     generalMediaPlayerService
                 )
             }
@@ -159,30 +159,30 @@ fun BottomSheetBedtimeStoryControlPanelUI(
 }
 
 @Composable
-fun BottomSheetBedtimeStoryControls(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+fun BottomSheetSelfLoveControls(
+    selfLoveData: SelfLoveData,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        globalViewModel_!!.bedtimeStoryScreenIcons.forEachIndexed { index, icon ->
+        globalViewModel_!!.selfLoveScreenIcons.forEachIndexed { index, icon ->
             Box(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
                     .gradientBackground(
                         listOf(
-                           globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value,
-                            globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value
+                            globalViewModel_!!.selfLoveScreenBackgroundControlColor1[index].value,
+                            globalViewModel_!!.selfLoveScreenBackgroundControlColor2[index].value
                         ),
                         angle = 45f
                     )
                     .border(
                         BorderStroke(
                             0.5.dp,
-                            globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value
+                            globalViewModel_!!.selfLoveScreenBorderControlColors[index].value
                         ),
                         RoundedCornerShape(50.dp)
                     ),
@@ -191,14 +191,14 @@ fun BottomSheetBedtimeStoryControls(
                 AnImageWithColor(
                     icon.value,
                     "icon",
-                    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value,
+                    globalViewModel_!!.selfLoveScreenBorderControlColors[index].value,
                     12.dp,
                     12.dp,
                     0,
                     0
                 ) {
                     activateControls(
-                        bedtimeStoryInfoData,
+                        selfLoveData,
                         index,
                         generalMediaPlayerService,
                     )
@@ -209,46 +209,46 @@ fun BottomSheetBedtimeStoryControls(
 }
 
 private fun activateControls(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    selfLoveData: SelfLoveData,
     index: Int,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ){
     when(index){
-        0 -> resetBedtimeStory(
+        0 -> resetSelfLove(
             generalMediaPlayerService,
-            bedtimeStoryInfoData,
+            selfLoveData,
         )
         1 -> seekBack15(
-            bedtimeStoryInfoData,
+            selfLoveData,
             generalMediaPlayerService,
         )
         2 -> {
-            pauseOrPlayBedtimeStoryAccordingly(
-                bedtimeStoryInfoData,
+            pauseOrPlayselfLoveAccordingly(
+                selfLoveData,
                 generalMediaPlayerService,
             )
         }
         3 -> seekForward15(
-            bedtimeStoryInfoData,
+            selfLoveData,
             generalMediaPlayerService,
         )
     }
 }
 
-fun resetBedtimeStory(
+fun resetSelfLove(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData
+    selfLoveData: SelfLoveData
 ){
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(globalViewModel_!!.currentSelfLovePlaying != null) {
+        if (globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
             if (generalMediaPlayerService.isMediaPlayerInitialized()) {
                 resetBothLocalAndGlobalControlButtonsAfterReset()
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle = 0f
-                globalViewModel_!!.bedtimeStoryTimer.stop()
-                globalViewModel_!!.bedtimeStoryTimeDisplay =
-                    timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
-                globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+                globalViewModel_!!.selfLoveCircularSliderClicked = false
+                globalViewModel_!!.selfLoveCircularSliderAngle = 0f
+                globalViewModel_!!.selfLoveTimer.stop()
+                globalViewModel_!!.selfLoveTimeDisplay =
+                    timerFormatMS(selfLoveData.fullPlayTime.toLong())
+                globalViewModel_!!.isCurrentSelfLovePlaying = false
                 generalMediaPlayerService.onDestroy()
             }
         }
@@ -256,25 +256,25 @@ fun resetBedtimeStory(
 }
 
 fun seekBack15(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    selfLoveData: SelfLoveData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(globalViewModel_!!.currentSelfLovePlaying != null) {
+        if (globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
             if(generalMediaPlayerService.isMediaPlayerInitialized()) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
                 if(newSeekTo < 0){
                     newSeekTo = 0
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
+                globalViewModel_!!.selfLoveCircularSliderClicked = false
+                globalViewModel_!!.selfLoveCircularSliderAngle = (
                         (generalMediaPlayerService.getMediaPlayer()!!.currentPosition).toFloat() /
-                                (bedtimeStoryInfoData.fullPlayTime).toFloat()
+                                (selfLoveData.fullPlayTime).toFloat()
                         ) * 360f
-                globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
-                    globalViewModel_!!.bedtimeStoryTimer.start()
+                globalViewModel_!!.selfLoveTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(globalViewModel_!!.isCurrentSelfLovePlaying) {
+                    globalViewModel_!!.selfLoveTimer.start()
                 }
             }
         }
@@ -282,170 +282,162 @@ fun seekBack15(
 }
 
 fun seekForward15(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    selfLoveData: SelfLoveData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(globalViewModel_!!.currentSelfLovePlaying != null) {
+        if (globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
             if(generalMediaPlayerService.isMediaPlayerInitialized()) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
                 if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
                     newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.duration - 2000
-                    activateBedtimeStoryGlobalControlButton(2)
-                    deActivateBedtimeStoryGlobalControlButton(0)
+                    activateSelfLoveGlobalControlButton(2)
+                    deActivateSelfLoveGlobalControlButton(0)
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
+                globalViewModel_!!.selfLoveCircularSliderClicked = false
+                globalViewModel_!!.selfLoveCircularSliderAngle = (
                         generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toFloat() /
-                                bedtimeStoryInfoData.fullPlayTime.toFloat()
+                                selfLoveData.fullPlayTime.toFloat()
                         ) * 360f
-                globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
-                    globalViewModel_!!.bedtimeStoryTimer.start()
+                globalViewModel_!!.selfLoveTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(globalViewModel_!!.isCurrentSelfLovePlaying) {
+                    globalViewModel_!!.selfLoveTimer.start()
                 }
             }
         }
     }
 }
 
-fun pauseOrPlayBedtimeStoryAccordingly(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+fun pauseOrPlayselfLoveAccordingly(
+    selfLoveData: SelfLoveData,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(globalViewModel_!!.currentSelfLovePlaying != null) {
+        if (globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
             if (generalMediaPlayerService.isMediaPlayerInitialized()) {
                 if (generalMediaPlayerService.isMediaPlayerPlaying()) {
-                    pauseBedtimeStory(generalMediaPlayerService)
+                    pauseSelfLove(generalMediaPlayerService)
                 }else{
-                    startBedtimeStory(
+                    startSelfLove(
                         generalMediaPlayerService,
-                        bedtimeStoryInfoData,
+                        selfLoveData,
                     )
                 }
             }else{
-                startBedtimeStory(
+                startSelfLove(
                     generalMediaPlayerService,
-                    bedtimeStoryInfoData,
+                    selfLoveData,
                 )
             }
         }else{
-            retrieveBedtimeStoryAudio(
+            retrieveSelfLoveAudio(
                 generalMediaPlayerService,
-                bedtimeStoryInfoData,
+                selfLoveData,
             )
         }
     }else{
-        retrieveBedtimeStoryAudio(
+        retrieveSelfLoveAudio(
             generalMediaPlayerService,
-            bedtimeStoryInfoData,
+            selfLoveData,
         )
     }
 }
 
-private fun pauseBedtimeStory(
+private fun pauseSelfLove(
     generalMediaPlayerService: GeneralMediaPlayerService,
 ) {
     if(generalMediaPlayerService.isMediaPlayerInitialized()) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
-            globalViewModel_!!.bedtimeStoryTimer.pause()
-            activateBedtimeStoryGlobalControlButton(2)
-            activateBedtimeStoryGlobalControlButton(2)
-            globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+            globalViewModel_!!.selfLoveTimer.pause()
+            activateSelfLoveGlobalControlButton(2)
+            activateSelfLoveGlobalControlButton(2)
+            globalViewModel_!!.isCurrentSelfLovePlaying = false
         }
     }
 }
 
-private fun startBedtimeStory(
+private fun startSelfLove(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    selfLoveData: SelfLoveData,
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlayingUri != null){
+    if(globalViewModel_!!.currentSelfLovePlayingUri != null){
         if(generalMediaPlayerService.isMediaPlayerInitialized()){
-            if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+            if(globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id){
                 generalMediaPlayerService.startMediaPlayer()
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
-                    bedtimeStoryInfoData
+                    selfLoveData
                 )
             }
         }else{
             initializeMediaPlayer(
                 generalMediaPlayerService,
-                bedtimeStoryInfoData
+                selfLoveData
             )
         }
-        globalViewModel_!!.bedtimeStoryTimer.start()
-        globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
-        deActivateBedtimeStoryGlobalControlButton(2)
-        deActivateBedtimeStoryGlobalControlButton(0)
+        globalViewModel_!!.selfLoveTimer.start()
+        globalViewModel_!!.isCurrentSelfLovePlaying = true
+        deActivateSelfLoveGlobalControlButton(2)
+        deActivateSelfLoveGlobalControlButton(0)
     }
 }
 
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData
+    selfLoveData: SelfLoveData
 ){
     generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentBedtimeStoryPlayingUri!!)
+    generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentSelfLovePlayingUri!!)
     val intent = Intent()
     intent.action = "PLAY"
     generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
-    globalViewModel_!!.bedtimeStoryTimer.setDuration(0L)
+    globalViewModel_!!.selfLoveTimer.setMaxDuration(selfLoveData.fullPlayTime.toLong())
+    globalViewModel_!!.selfLoveTimer.setDuration(0L)
     resetGlobalControlButtons()
-    resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
     //resetAll(context, soundMediaPlayerService)
 }
 
-private fun retrieveBedtimeStoryAudio(
+private fun retrieveSelfLoveAudio(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    selfLoveData: SelfLoveData,
 ) {
-    if (
-        bedtimeStoryInfoData.audioSource == BedtimeStoryAudioSource.UPLOADED
+    SoundBackend.retrieveAudio(
+        selfLoveData.audioKeyS3,
+        selfLoveData.selfLoveOwner.amplifyAuthUserId
     ) {
-        SoundBackend.retrieveAudio(
-            bedtimeStoryInfoData.audioKeyS3,
-            bedtimeStoryInfoData.bedtimeStoryOwner.amplifyAuthUserId
-        ) {
-            globalViewModel_!!.currentBedtimeStoryPlayingUri = it
-            startBedtimeStory(
-                generalMediaPlayerService,
-                bedtimeStoryInfoData,
-            )
-        }
-    } else {
-        //if recorded
-        //get chapter, get pages, get recordings from s3, play them one after the order
+        globalViewModel_!!.currentSelfLovePlayingUri = it
+        startSelfLove(
+            generalMediaPlayerService,
+            selfLoveData,
+        )
     }
 }
 
 fun resetGlobalControlButtons(){
-    deActivateBedtimeStoryGlobalControlButton(0)
-    deActivateBedtimeStoryGlobalControlButton(1)
-    activateBedtimeStoryGlobalControlButton(2)
-    deActivateBedtimeStoryGlobalControlButton(3)
-    deActivateBedtimeStoryGlobalControlButton(4)
+    deActivateSelfLoveGlobalControlButton(0)
+    deActivateSelfLoveGlobalControlButton(1)
+    activateSelfLoveGlobalControlButton(2)
+    deActivateSelfLoveGlobalControlButton(3)
+    deActivateSelfLoveGlobalControlButton(4)
 }
 
-fun activateBedtimeStoryGlobalControlButton(index: Int){
-    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value = Black
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value = SoftPeach
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value = Solitude
+fun activateSelfLoveGlobalControlButton(index: Int){
+    globalViewModel_!!.selfLoveScreenBorderControlColors[index].value = Black
+    globalViewModel_!!.selfLoveScreenBackgroundControlColor1[index].value = SoftPeach
+    globalViewModel_!!.selfLoveScreenBackgroundControlColor2[index].value = Solitude
     if(index == 2){
-        globalViewModel_!!.bedtimeStoryScreenIcons[index].value = R.drawable.play_icon
+        globalViewModel_!!.selfLoveScreenIcons[index].value = R.drawable.play_icon
     }
 }
 
-fun deActivateBedtimeStoryGlobalControlButton(index: Int){
-    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value = Bizarre
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value = White
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value = White
+fun deActivateSelfLoveGlobalControlButton(index: Int){
+    globalViewModel_!!.selfLoveScreenBorderControlColors[index].value = Bizarre
+    globalViewModel_!!.selfLoveScreenBackgroundControlColor1[index].value = White
+    globalViewModel_!!.selfLoveScreenBackgroundControlColor2[index].value = White
     if(index == 2){
-        globalViewModel_!!.bedtimeStoryScreenIcons[index].value = R.drawable.pause_icon
+        globalViewModel_!!.selfLoveScreenIcons[index].value = R.drawable.pause_icon
     }
 }

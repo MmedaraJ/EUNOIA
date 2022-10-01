@@ -56,6 +56,8 @@ import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.BedtimeStoryTimer
+import com.example.eunoia.utils.PrayerTimer
+import com.example.eunoia.utils.SelfLoveTimer
 import com.example.eunoia.utils.Timer
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -67,7 +69,9 @@ import java.lang.ref.WeakReference
 class UserDashboardActivity :
     ComponentActivity(),
     Timer.OnTimerTickListener,
-    BedtimeStoryTimer.OnBedtimeStoryTimerTickListener
+    BedtimeStoryTimer.OnBedtimeStoryTimerTickListener,
+    SelfLoveTimer.OnSelfLoveTimerTickListener,
+    PrayerTimer.OnPrayerTimerTickListener
 {
     private val _currentUser = MutableLiveData<UserData>(null)
     var currentUser: LiveData<UserData> = _currentUser
@@ -130,7 +134,7 @@ class UserDashboardActivity :
     fun selectAudioBedtimeStory(){
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "audio/aac"
-        selectAudioPrayerActivityResult.launch(intent)
+        selectAudioBedtimeStoryActivityResult.launch(intent)
     }
 
     private val selectAudioBedtimeStoryActivityResult =
@@ -293,14 +297,36 @@ class UserDashboardActivity :
     }
 
     override fun onBedtimeStoryTimerTick(durationString: String, durationMilliSeconds: Long) {
-        //if(generalMediaPlayerService_!!.isMediaPlayerInitialized()){
+        if(generalMediaPlayerService_!!.isMediaPlayerInitialized()){
             globalViewModel_!!.bedtimeStoryTimeDisplay = durationString
             globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
             globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
                     (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
                             (globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime).toFloat()
                     ) * 360f
-        //}
+        }
+    }
+
+    override fun onSelfLoveTimerTick(durationString: String, durationMilliSeconds: Long) {
+        if (generalMediaPlayerService_!!.isMediaPlayerInitialized()) {
+            globalViewModel_!!.selfLoveTimeDisplay = durationString
+            globalViewModel_!!.selfLoveCircularSliderClicked = false
+            globalViewModel_!!.selfLoveCircularSliderAngle = (
+                    (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
+                            (globalViewModel_!!.currentSelfLovePlaying!!.fullPlayTime).toFloat()
+                    ) * 360f
+        }
+    }
+
+    override fun onPrayerTimerTick(durationString: String, durationMilliSeconds: Long) {
+        if (generalMediaPlayerService_!!.isMediaPlayerInitialized()) {
+            globalViewModel_!!.prayerTimeDisplay = durationString
+            globalViewModel_!!.prayerCircularSliderClicked = false
+            globalViewModel_!!.prayerCircularSliderAngle = (
+                    (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
+                            (globalViewModel_!!.currentPrayerPlaying!!.fullPlayTime).toFloat()
+                    ) * 360f
+        }
     }
 }
 
@@ -388,13 +414,13 @@ fun UserDashboardActivityUI(
                         toSoundActivity(navController)
                     }
                     "prayer" -> {
-                        navController.navigate(Screen.NamePrayer.screen_route)
+                        toPrayerActivity(navController)
                     }
                     "bedtime\nstory" -> {
                         toBedtimeStoryActivity(navController)
                     }
                     "self-love" -> {
-                        navController.navigate(Screen.NameSelfLove.screen_route)
+                        toSelfLoveActivity(navController)
                     }
                 }
             }
@@ -462,34 +488,9 @@ fun UserDashboardActivityUI(
     }
 }
 
-@Composable
-private fun OptionsList(context: Context, navController: NavHostController){
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        OptionItem(displayName = "sleep", icon = R.drawable.sleep_icon, 71, 71, false, 0, 0, {}){ AuthBackend.signOut() }
-        OptionItem(displayName = "music", icon = R.drawable.music_icon, 71, 71, false, 0, 0, {}){}
-        OptionItem(displayName = "meditate", icon = R.drawable.meditate_icon, 71, 71, false, 0, 0, {}){something()}
-        OptionItem(displayName = "sound", icon = R.drawable.sound_icon, 71, 71, false, 0, 0, {}){toSoundActivity(navController)}
-    }
-
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        OptionItem(displayName = "self-love", icon = R.drawable.self_love_icon, 71, 71, false, 0, 0, {}){something()}
-        OptionItem(displayName = "stretch", icon = R.drawable.stretch_icon, 71, 71, false, 0, 0, {}){something()}
-        OptionItem(displayName = "slumber\nparty", icon = R.drawable.slumber_party_icon, 71, 71, false, 0, 0, {}){something()}
-        OptionItem(displayName = "bedtime\nstory", icon = R.drawable.bedtime_story_icon, 71, 71, false, 0, 0, {}){toBedtimeStoryActivity(navController)}
-    }
-}
-
 private val allElements = listOf(
     "sleep",
-    "music",
+    "prayer",
     "meditate",
     "sound",
     "self-love",
@@ -754,6 +755,14 @@ private fun toSoundActivity(navController: NavHostController){
 
 private fun toBedtimeStoryActivity(navController: NavHostController){
     navController.navigate(Screen.BedtimeStory.screen_route)
+}
+
+private fun toSelfLoveActivity(navController: NavHostController){
+    navController.navigate(Screen.SelfLove.screen_route)
+}
+
+private fun toPrayerActivity(navController: NavHostController){
+    navController.navigate(Screen.Prayer.screen_route)
 }
 
 private fun something(){

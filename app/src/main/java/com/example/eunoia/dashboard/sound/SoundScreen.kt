@@ -249,7 +249,7 @@ fun SoundScreen(
                         end.linkTo(parent.end, margin = 0.dp)
                     },
             ) {
-                val mergedPresets = mutableListOf<PresetData>()
+                val mergedPresets = mutableSetOf<PresetData>()
 
                 if(!allOriginalSoundPresets.isNullOrEmpty()) {
                     allOriginalSoundPresets?.let { mergedPresets.addAll(it) }
@@ -306,7 +306,7 @@ fun SoundScreen(
             ){
                 if(showCommentBox) {
                     newPresetName = customizedOutlinedTextInput(
-                        width = 0,
+                        maxLength = 30,
                         height = 55,
                         color = White,
                         focusedBorderColor = Black,

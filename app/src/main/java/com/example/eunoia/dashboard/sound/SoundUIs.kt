@@ -90,7 +90,7 @@ fun Mixer(
             Column(
                 modifier = Modifier
                     .constrainAs(title) {
-                        top.linkTo(parent.top, margin = 0.dp)
+                        top.linkTo(parent.top, margin = 16.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                     }
@@ -127,7 +127,15 @@ fun Mixer(
                                 end.linkTo(parent.end, margin = 16.dp)
                             }
                     ) {
-                        displayName = standardCentralizedOutlinedTextInput(sound.displayName, SoftPeach, false)
+                        NormalText(
+                            text = sound.displayName,
+                            color = Black,
+                            fontSize = 18,
+                            xOffset = 0,
+                            yOffset = 0
+                        )
+
+                        //displayName = standardCentralizedOutlinedTextInput(sound.displayName, SoftPeach, true)
                     }
                     Column(
                         modifier = Modifier
@@ -151,7 +159,7 @@ fun Mixer(
             Column(
                 modifier = Modifier
                     .constrainAs(sliders) {
-                        top.linkTo(title.bottom, margin = 0.dp)
+                        top.linkTo(title.bottom, margin = 16.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                     }
@@ -1260,7 +1268,7 @@ fun CommentsUI(
 
 @Composable
 fun PresetsUI(
-    allPresets: MutableList<PresetData>,
+    allPresets: MutableSet<PresetData>,
     soundData: SoundData,
     soundMediaPlayerService: SoundMediaPlayerService
 ){

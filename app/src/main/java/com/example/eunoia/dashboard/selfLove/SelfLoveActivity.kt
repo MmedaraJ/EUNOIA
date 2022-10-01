@@ -1,4 +1,4 @@
-package com.example.eunoia.dashboard.bedtimeStory
+package com.example.eunoia.dashboard.selfLove
 
 import android.content.Context
 import android.content.Intent
@@ -12,34 +12,37 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
-import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
+import com.amplifyframework.datastore.generated.model.SelfLoveAudioSource
+import com.amplifyframework.datastore.generated.model.SelfLoveData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserBedtimeStoryBackend
+import com.example.eunoia.backend.UserSelfLoveBackend
+import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
 import com.example.eunoia.dashboard.home.OptionItemTest
 import com.example.eunoia.dashboard.prayer.resetPrayerGlobalProperties
-import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
-import com.example.eunoia.models.BedtimeStoryObject
+import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.bedtimeStory.deActivateBedtimeStoryGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import kotlinx.coroutines.CoroutineScope
 
-private const val TAG = "Bedtime Story Activity"
-var bedtimeStoryActivityUris = mutableListOf<MutableState<Uri>?>()
-var bedtimeStoryActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
-private const val START_BEDTIME_STORY = "start"
-private const val PAUSE_BEDTIME_STORY = "pause"
-private const val WAIT_FOR_BEDTIME_STORY = "wait"
+private const val TAG = "Self Love Activity"
+var selfLoveActivityUris = mutableListOf<MutableState<Uri>?>()
+var selfLoveActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
+private const val START_SELF_LOVE = "start"
+private const val PAUSE_SELF_LOVE = "pause"
+private const val WAIT_FOR_SELF_LOVE = "wait"
 
 private val allElements = listOf(
     "pouring\nrain",
@@ -64,40 +67,39 @@ private val allIcons = listOf(
 )
 
 private val allPros = listOf(
-    false,
-    false,
     true,
     false,
     false,
     true,
+    false,
+    false,
     true,
     false,
 )
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BedtimeStoryActivityUI(
+fun SelfLoveActivityUI(
     navController: NavController,
-    context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
-    resetBedtimeStoryActivityPlayButtonTexts()
+    resetSelfLoveActivityPlayButtonTexts()
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
-    var retrievedBedtimeStories by rememberSaveable{ mutableStateOf(false) }
+    var retrievedSelfLove by rememberSaveable{ mutableStateOf(false) }
     globalViewModel_!!.currentUser?.let {
-        UserBedtimeStoryBackend.queryApprovedUserBedtimeStoryBasedOnUser(it) { userBedtimeStory ->
-            if(bedtimeStoryActivityUris.size < userBedtimeStory.size) {
-                for (i in userBedtimeStory.indices) {
-                    bedtimeStoryActivityUris.add(mutableStateOf("".toUri()))
-                    bedtimeStoryActivityPlayButtonTexts.add(mutableStateOf(START_BEDTIME_STORY))
+        UserSelfLoveBackend.queryApprovedUserSelfLoveBasedOnUser(it) { userSelfLove ->
+            if(selfLoveActivityUris.size < userSelfLove.size) {
+                for (i in userSelfLove.indices) {
+                    selfLoveActivityUris.add(mutableStateOf("".toUri()))
+                    selfLoveActivityPlayButtonTexts.add(mutableStateOf(START_SELF_LOVE))
                 }
             }
-            globalViewModel_!!.currentUsersBedtimeStories = userBedtimeStory.toMutableList()
-            retrievedBedtimeStories = true
+            globalViewModel_!!.currentUsersSelfLoves = userSelfLove.toMutableList()
+            retrievedSelfLove = true
         }
     }
 
@@ -110,8 +112,8 @@ fun BedtimeStoryActivityUI(
             header,
             introTitle,
             options,
-            favoriteBedtimeStoryTitle,
-            emptyBedtimeStoryList,
+            favoriteSelfLoveTitle,
+            emptySelfLoveList,
             articlesTitle,
             articles,
             endSpace
@@ -142,7 +144,7 @@ fun BedtimeStoryActivityUI(
                 }
         ){
             NormalText(
-                text = "Bedtime Story",
+                text = "Self Love",
                 color = Color.Black,
                 13,
                 xOffset = 6,
@@ -181,38 +183,47 @@ fun BedtimeStoryActivityUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(favoriteBedtimeStoryTitle) {
+                .constrainAs(favoriteSelfLoveTitle) {
                     top.linkTo(options.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ){
-            StarSurroundedText("Favourite Bedtime Stories")
+            StarSurroundedText("Favourite Self Loves")
         }
+        val context = LocalContext.current
         Column(
             modifier = Modifier
-                .constrainAs(emptyBedtimeStoryList) {
-                    top.linkTo(favoriteBedtimeStoryTitle.bottom, margin = 18.dp)
+                .constrainAs(emptySelfLoveList) {
+                    top.linkTo(favoriteSelfLoveTitle.bottom, margin = 18.dp)
                 }
                 .padding(bottom = 12.dp)
         ){
             if(
-                retrievedBedtimeStories &&
-                globalViewModel_!!.currentUsersBedtimeStories != null
+                retrievedSelfLove &&
+                globalViewModel_!!.currentUsersSelfLoves != null
             ){
-                if(globalViewModel_!!.currentUsersBedtimeStories!!.size > 0){
-                    for(i in globalViewModel_!!.currentUsersBedtimeStories!!.indices){
-                        setBedtimeStoryActivityPlayButtonTextsCorrectly(i)
-                        DisplayUsersBedtimeStories(
-                            globalViewModel_!!.currentUsersBedtimeStories!![i]!!.bedtimeStoryInfoData,
+                if(globalViewModel_!!.currentUsersSelfLoves!!.size > 0){
+                    for(i in globalViewModel_!!.currentUsersSelfLoves!!.indices){
+                        setSelfLoveActivityPlayButtonTextsCorrectly(i)
+                        DisplayUsersSelfLoves(
+                            globalViewModel_!!.currentUsersSelfLoves!![i]!!.selfLoveData,
                             i,
                             { index ->
                                 resetGeneralMediaPlayerServiceIfNecessary(generalMediaPlayerService, index)
                                 resetPlayButtonTextsIfNecessary(index)
-                                playOrPauseMediaPlayerAccordingly(generalMediaPlayerService, soundMediaPlayerService, index, context)
+                                playOrPauseMediaPlayerAccordingly(
+                                    generalMediaPlayerService,
+                                    soundMediaPlayerService,
+                                    index,
+                                    context
+                                )
                             },
                             { index ->
-                                navigateToBedtimeStoryScreen(navController, globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData)
+                                navigateToSelfLoveScreen(
+                                    navController,
+                                    globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData
+                                )
                             }
                         )
                     }
@@ -226,7 +237,7 @@ fun BedtimeStoryActivityUI(
         Column(
             modifier = Modifier
                 .constrainAs(articlesTitle) {
-                    top.linkTo(emptyBedtimeStoryList.bottom, margin = 0.dp)
+                    top.linkTo(emptySelfLoveList.bottom, margin = 0.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -254,22 +265,22 @@ fun BedtimeStoryActivityUI(
     }
 }
 
-private fun setBedtimeStoryActivityPlayButtonTextsCorrectly(i: Int) {
-    if (globalViewModel_!!.currentBedtimeStoryPlaying != null) {
+private fun setSelfLoveActivityPlayButtonTextsCorrectly(i: Int) {
+    if (globalViewModel_!!.currentSelfLovePlaying != null) {
         if (
-            globalViewModel_!!.currentBedtimeStoryPlaying!!.id ==
-            globalViewModel_!!.currentUsersBedtimeStories!![i]!!.bedtimeStoryInfoData.id
+            globalViewModel_!!.currentSelfLovePlaying!!.id ==
+            globalViewModel_!!.currentUsersSelfLoves!![i]!!.selfLoveData.id
         ) {
-            if(globalViewModel_!!.isCurrentBedtimeStoryPlaying){
-                bedtimeStoryActivityPlayButtonTexts[i]!!.value = PAUSE_BEDTIME_STORY
+            if(globalViewModel_!!.isCurrentSelfLovePlaying){
+                selfLoveActivityPlayButtonTexts[i]!!.value = PAUSE_SELF_LOVE
             }else{
-                bedtimeStoryActivityPlayButtonTexts[i]!!.value = START_BEDTIME_STORY
+                selfLoveActivityPlayButtonTexts[i]!!.value = START_SELF_LOVE
             }
         } else {
-            bedtimeStoryActivityPlayButtonTexts[i]!!.value = START_BEDTIME_STORY
+            selfLoveActivityPlayButtonTexts[i]!!.value = START_SELF_LOVE
         }
     } else {
-        bedtimeStoryActivityPlayButtonTexts[i]!!.value = START_BEDTIME_STORY
+        selfLoveActivityPlayButtonTexts[i]!!.value = START_SELF_LOVE
     }
 }
 
@@ -279,52 +290,51 @@ private fun playOrPauseMediaPlayerAccordingly(
     index: Int,
     context: Context
 ) {
-    if(bedtimeStoryActivityPlayButtonTexts[index]!!.value == START_BEDTIME_STORY){
-        bedtimeStoryActivityPlayButtonTexts[index]!!.value = WAIT_FOR_BEDTIME_STORY
-        if(bedtimeStoryActivityUris[index]!!.value == "".toUri()) {
-            retrieveBedtimeStoryAudio(generalMediaPlayerService, soundMediaPlayerService, index, context)
+    if(selfLoveActivityPlayButtonTexts[index]!!.value == START_SELF_LOVE){
+        selfLoveActivityPlayButtonTexts[index]!!.value = WAIT_FOR_SELF_LOVE
+        if(selfLoveActivityUris[index]!!.value == "".toUri()) {
+            retrieveSelfLoveAudio(generalMediaPlayerService, soundMediaPlayerService, index, context)
         }else{
-            startBedtimeStory(generalMediaPlayerService, soundMediaPlayerService, index, context)
+            startSelfLove(generalMediaPlayerService, soundMediaPlayerService, index, context)
         }
     }else if(
-        bedtimeStoryActivityPlayButtonTexts[index]!!.value == PAUSE_BEDTIME_STORY ||
-        bedtimeStoryActivityPlayButtonTexts[index]!!.value == WAIT_FOR_BEDTIME_STORY
+        selfLoveActivityPlayButtonTexts[index]!!.value == PAUSE_SELF_LOVE ||
+        selfLoveActivityPlayButtonTexts[index]!!.value == WAIT_FOR_SELF_LOVE
     ){
-        pauseBedtimeStory(generalMediaPlayerService, index)
+        pauseSelfLove(generalMediaPlayerService, index)
     }
 }
 
-private fun pauseBedtimeStory(
+private fun pauseSelfLove(
     generalMediaPlayerService: GeneralMediaPlayerService,
     index: Int
 ) {
     if(
         generalMediaPlayerService.isMediaPlayerInitialized() &&
-        globalViewModel_!!.currentSelfLovePlaying == null &&
-        globalViewModel_!!.currentBedtimeStoryPlaying == null
+        globalViewModel_!!.currentBedtimeStoryPlaying == null &&
+        globalViewModel_!!.currentPrayerPlaying == null
     ) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
-            bedtimeStoryActivityPlayButtonTexts[index]!!.value =
-                START_BEDTIME_STORY
-            globalViewModel_!!.bedtimeStoryTimer.pause()
-            globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
-            deActivateBedtimeStoryGlobalControlButton(2)
+            selfLoveActivityPlayButtonTexts[index]!!.value = START_SELF_LOVE
+            globalViewModel_!!.selfLoveTimer.pause()
+            globalViewModel_!!.isCurrentSelfLovePlaying = false
+            deActivateSelfLoveGlobalControlButton(2)
         }
     }
 }
 
-private fun startBedtimeStory(
+private fun startSelfLove(
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
     index: Int,
     context: Context
 ) {
-    if(bedtimeStoryActivityUris[index]!!.value != "".toUri()){
+    if(selfLoveActivityUris[index]!!.value != "".toUri()){
         if(
             generalMediaPlayerService.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentSelfLovePlaying == null &&
-            globalViewModel_!!.currentBedtimeStoryPlaying == null
+            globalViewModel_!!.currentBedtimeStoryPlaying == null &&
+            globalViewModel_!!.currentPrayerPlaying == null
         ){
             generalMediaPlayerService.startMediaPlayer()
         }else{
@@ -335,44 +345,37 @@ private fun startBedtimeStory(
                 context
             )
         }
-        globalViewModel_!!.bedtimeStoryTimer.start()
-        setGlobalPropertiesAfterPlayingBedtimeStory(index)
+        globalViewModel_!!.selfLoveTimer.start()
+        setGlobalPropertiesAfterPlayingSelfLove(index)
     }
 }
 
-private fun setGlobalPropertiesAfterPlayingBedtimeStory(index: Int){
-    globalViewModel_!!.currentBedtimeStoryPlaying = globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData
-    globalViewModel_!!.currentBedtimeStoryPlayingUri = bedtimeStoryActivityUris[index]!!.value
-    bedtimeStoryActivityPlayButtonTexts[index]!!.value = PAUSE_BEDTIME_STORY
-    globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
-    deActivateBedtimeStoryGlobalControlButton(0)
-    deActivateBedtimeStoryGlobalControlButton(2)
+private fun setGlobalPropertiesAfterPlayingSelfLove(index: Int){
+    globalViewModel_!!.currentSelfLovePlaying = globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData
+    globalViewModel_!!.currentSelfLovePlayingUri = selfLoveActivityUris[index]!!.value
+    selfLoveActivityPlayButtonTexts[index]!!.value = PAUSE_SELF_LOVE
+    globalViewModel_!!.isCurrentSelfLovePlaying = true
+    deActivateSelfLoveGlobalControlButton(0)
+    deActivateSelfLoveGlobalControlButton(2)
 }
 
-private fun retrieveBedtimeStoryAudio(
+private fun retrieveSelfLoveAudio(
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
     index: Int,
     context: Context
 ) {
-    if (
-        globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData.audioSource == BedtimeStoryAudioSource.UPLOADED
+    SoundBackend.retrieveAudio(
+        globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData.audioKeyS3,
+        globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData.selfLoveOwner.amplifyAuthUserId
     ) {
-        SoundBackend.retrieveAudio(
-            globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData.audioKeyS3,
-            globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData.bedtimeStoryOwner.amplifyAuthUserId
-        ) {
-            bedtimeStoryActivityUris[index]!!.value = it
-            startBedtimeStory(
-                generalMediaPlayerService,
-                soundMediaPlayerService,
-                index,
-                context
-            )
-        }
-    } else {
-        //if recorded
-        //get chapter, get pages, get recordings from s3, play them one after the order
+        selfLoveActivityUris[index]!!.value = it
+        startSelfLove(
+            generalMediaPlayerService,
+            soundMediaPlayerService,
+            index,
+            context
+        )
     }
 }
 
@@ -380,18 +383,18 @@ private fun resetGeneralMediaPlayerServiceIfNecessary(
     generalMediaPlayerService: GeneralMediaPlayerService,
     index: Int
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData.id != globalViewModel_!!.currentBedtimeStoryPlaying!!.id) {
+    if(globalViewModel_!!.currentSelfLovePlaying != null) {
+        if (globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData.id != globalViewModel_!!.currentSelfLovePlaying!!.id) {
             generalMediaPlayerService.onDestroy()
         }
     }
 }
 
 private fun resetPlayButtonTextsIfNecessary(index: Int) {
-    for(j in bedtimeStoryActivityPlayButtonTexts.indices){
+    for(j in selfLoveActivityPlayButtonTexts.indices){
         if(j != index){
-            if(bedtimeStoryActivityPlayButtonTexts[j]!!.value != START_BEDTIME_STORY) {
-                bedtimeStoryActivityPlayButtonTexts[j]!!.value = START_BEDTIME_STORY
+            if(selfLoveActivityPlayButtonTexts[j]!!.value != START_SELF_LOVE) {
+                selfLoveActivityPlayButtonTexts[j]!!.value = START_SELF_LOVE
             }
         }
     }
@@ -404,41 +407,28 @@ private fun initializeMediaPlayer(
     context: Context
 ){
     generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(bedtimeStoryActivityUris[index]!!.value)
+    generalMediaPlayerService.setAudioUri(selfLoveActivityUris[index]!!.value)
     val intent = Intent()
     intent.action = "PLAY"
     generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(globalViewModel_!!.currentUsersBedtimeStories!![index]!!.bedtimeStoryInfoData.fullPlayTime.toLong())
-    globalViewModel_!!.bedtimeStoryTimer.setDuration(0L)
-    resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
+    globalViewModel_!!.selfLoveTimer.setMaxDuration(globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData.fullPlayTime.toLong())
+    globalViewModel_!!.selfLoveTimer.setDuration(0L)
+    resetOtherGeneralMediaPlayerUsersExceptSelfLove()
     //resetAll(context, soundMediaPlayerService)
 }
 
-fun resetOtherGeneralMediaPlayerUsersExceptBedtimeStory(){
-    if(globalViewModel_!!.currentSelfLovePlaying != null){
-        resetSelfLoveGlobalProperties()
+fun resetOtherGeneralMediaPlayerUsersExceptSelfLove(){
+    if(globalViewModel_!!.currentBedtimeStoryPlaying != null){
+        resetBedtimeStoryGlobalProperties()
     }
     if(globalViewModel_!!.currentPrayerPlaying != null){
         resetPrayerGlobalProperties()
     }
 }
 
-fun resetBedtimeStoryActivityPlayButtonTexts() {
-    for(j in bedtimeStoryActivityPlayButtonTexts.indices){
-        bedtimeStoryActivityPlayButtonTexts[j]!!.value = START_BEDTIME_STORY
-    }
-}
-
-@Composable
-private fun UserSoundList(){
-    Column(
-    ) {
-        EmptyRoutine {
-            something()
-        }
-        SurpriseMeRoutine {
-            something()
-        }
+fun resetSelfLoveActivityPlayButtonTexts() {
+    for(j in selfLoveActivityPlayButtonTexts.indices){
+        selfLoveActivityPlayButtonTexts[j]!!.value = START_SELF_LOVE
     }
 }
 
@@ -470,8 +460,8 @@ private fun ArticlesList(){
     }
 }
 
-fun navigateToBedtimeStoryScreen(navController: NavController, bedtimeStoryInfoData: BedtimeStoryInfoData){
-    navController.navigate("${Screen.BedtimeStoryScreen.screen_route}/bedtimeStoryData=${BedtimeStoryObject.BedtimeStory.from(bedtimeStoryInfoData)}")
+fun navigateToSelfLoveScreen(navController: NavController, selfLoveData: SelfLoveData){
+    navController.navigate("${Screen.SelfLoveScreen.screen_route}/selfLoveData=${SelfLoveObject.SelfLove.from(selfLoveData)}")
 }
 
 private fun something(){

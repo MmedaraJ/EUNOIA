@@ -2011,13 +2011,9 @@
                         "description": null,
                         "args": [],
                         "type": {
-                            "kind": "NON_NULL",
-                            "name": null,
-                            "ofType": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": null
-                            }
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
                         },
                         "isDeprecated": false,
                         "deprecationReason": null
@@ -7885,17 +7881,25 @@
                         "deprecationReason": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
                         "description": null,
                         "args": [],
                         "type": {
-                            "kind": "NON_NULL",
-                            "name": null,
-                            "ofType": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": null
-                            }
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "isDeprecated": false,
+                        "deprecationReason": null
+                    },
+                    {
+                        "name": "longDescription",
+                        "description": null,
+                        "args": [],
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
                         },
                         "isDeprecated": false,
                         "deprecationReason": null
@@ -10302,17 +10306,25 @@
                         "deprecationReason": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
                         "description": null,
                         "args": [],
                         "type": {
-                            "kind": "NON_NULL",
-                            "name": null,
-                            "ofType": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": null
-                            }
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "isDeprecated": false,
+                        "deprecationReason": null
+                    },
+                    {
+                        "name": "longDescription",
+                        "description": null,
+                        "args": [],
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
                         },
                         "isDeprecated": false,
                         "deprecationReason": null
@@ -12055,17 +12067,25 @@
                         "deprecationReason": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
                         "description": null,
                         "args": [],
                         "type": {
-                            "kind": "NON_NULL",
-                            "name": null,
-                            "ofType": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": null
-                            }
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "isDeprecated": false,
+                        "deprecationReason": null
+                    },
+                    {
+                        "name": "longDescription",
+                        "description": null,
+                        "args": [],
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
                         },
                         "isDeprecated": false,
                         "deprecationReason": null
@@ -13461,7 +13481,17 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -13867,7 +13897,17 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -14141,7 +14181,17 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -17721,13 +17771,9 @@
                         "name": "short_description",
                         "description": null,
                         "type": {
-                            "kind": "NON_NULL",
-                            "name": null,
-                            "ofType": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": null
-                            }
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
                         },
                         "defaultValue": null
                     },
@@ -19828,16 +19874,22 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
                         "description": null,
                         "type": {
-                            "kind": "NON_NULL",
-                            "name": null,
-                            "ofType": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": null
-                            }
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
                         },
                         "defaultValue": null
                     },
@@ -19977,7 +20029,17 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -20150,7 +20212,17 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
                         "description": null,
                         "type": {
                             "kind": "SCALAR",
@@ -20866,16 +20938,22 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
                         "description": null,
                         "type": {
-                            "kind": "NON_NULL",
-                            "name": null,
-                            "ofType": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": null
-                            }
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
                         },
                         "defaultValue": null
                     },
@@ -21025,7 +21103,17 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -21208,7 +21296,17 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
                         "description": null,
                         "type": {
                             "kind": "SCALAR",
@@ -21390,16 +21488,22 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
                         "description": null,
                         "type": {
-                            "kind": "NON_NULL",
-                            "name": null,
-                            "ofType": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": null
-                            }
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
                         },
                         "defaultValue": null
                     },
@@ -21547,7 +21651,17 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -21720,7 +21834,17 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "description",
+                        "name": "shortDescription",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "longDescription",
                         "description": null,
                         "type": {
                             "kind": "SCALAR",

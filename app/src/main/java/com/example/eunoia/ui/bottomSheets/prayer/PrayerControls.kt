@@ -1,4 +1,4 @@
-package com.example.eunoia.ui.bottomSheets.bedtimeStory
+package com.example.eunoia.ui.bottomSheets.prayer
 
 import android.content.Intent
 import androidx.compose.foundation.BorderStroke
@@ -22,11 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
-import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
+import com.amplifyframework.datastore.generated.model.PrayerAudioSource
+import com.amplifyframework.datastore.generated.model.PrayerData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.dashboard.bedtimeStory.*
+import com.example.eunoia.dashboard.prayer.*
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
@@ -39,21 +39,21 @@ import com.example.eunoia.utils.timerFormatMS
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 
-private const val TAG = "bottomSheetBedtimeStoryControl"
+private const val TAG = "bottomSheetPrayerControl"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun bottomSheetBedtimeStoryControlPanel(
+fun bottomSheetPrayerControlPanel(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService
 ): Boolean{
     var showing = false
-    if(globalViewModel.currentBedtimeStoryPlaying != null) {
+    if(globalViewModel.currentPrayerPlaying != null) {
         showing = true
-        BottomSheetBedtimeStoryControlPanelUI(
-            bedtimeStoryInfoData = globalViewModel.currentBedtimeStoryPlaying!!,
+        BottomSheetPrayerControlPanelUI(
+            prayerData = globalViewModel.currentPrayerPlaying!!,
             scope = scope,
             state = state,
             generalMediaPlayerService = generalMediaPlayerService
@@ -66,8 +66,8 @@ fun bottomSheetBedtimeStoryControlPanel(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BottomSheetBedtimeStoryControlPanelUI(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+fun BottomSheetPrayerControlPanelUI(
+    prayerData: PrayerData,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -80,9 +80,9 @@ fun BottomSheetBedtimeStoryControlPanelUI(
             .clickable {
                 if(globalViewModel_!!.navController != null){
                     closeBottomSheet(scope, state)
-                    navigateToBedtimeStoryScreen(
+                    navigateToPrayerScreen(
                         globalViewModel_!!.navController!!,
-                        bedtimeStoryInfoData
+                        prayerData
                     )
                 }
             },
@@ -118,7 +118,7 @@ fun BottomSheetBedtimeStoryControlPanelUI(
                     }
             ) {
                 NormalText(
-                    text = bedtimeStoryInfoData.displayName,
+                    text = prayerData.displayName,
                     color = Black,
                     fontSize = 12,
                     xOffset = 0,
@@ -134,7 +134,7 @@ fun BottomSheetBedtimeStoryControlPanelUI(
                     }
             ) {
                 LightText(
-                    text = "By: @${bedtimeStoryInfoData.bedtimeStoryOwner.username}",
+                    text = "By: @${prayerData.prayerOwner.username}",
                     color = Black,
                     fontSize = 10,
                     xOffset = 0,
@@ -149,8 +149,8 @@ fun BottomSheetBedtimeStoryControlPanelUI(
                         start.linkTo(parent.start, margin = 32.dp)
                     }
             ) {
-                BottomSheetBedtimeStoryControls(
-                    globalViewModel_!!.currentBedtimeStoryPlaying!!,
+                BottomSheetPrayerControls(
+                    globalViewModel_!!.currentPrayerPlaying!!,
                     generalMediaPlayerService
                 )
             }
@@ -159,30 +159,30 @@ fun BottomSheetBedtimeStoryControlPanelUI(
 }
 
 @Composable
-fun BottomSheetBedtimeStoryControls(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+fun BottomSheetPrayerControls(
+    prayerData: PrayerData,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        globalViewModel_!!.bedtimeStoryScreenIcons.forEachIndexed { index, icon ->
+        globalViewModel_!!.prayerScreenIcons.forEachIndexed { index, icon ->
             Box(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
                     .gradientBackground(
                         listOf(
-                           globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value,
-                            globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value
+                           globalViewModel_!!.prayerScreenBackgroundControlColor1[index].value,
+                            globalViewModel_!!.prayerScreenBackgroundControlColor2[index].value
                         ),
                         angle = 45f
                     )
                     .border(
                         BorderStroke(
                             0.5.dp,
-                            globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value
+                            globalViewModel_!!.prayerScreenBorderControlColors[index].value
                         ),
                         RoundedCornerShape(50.dp)
                     ),
@@ -191,14 +191,14 @@ fun BottomSheetBedtimeStoryControls(
                 AnImageWithColor(
                     icon.value,
                     "icon",
-                    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value,
+                    globalViewModel_!!.prayerScreenBorderControlColors[index].value,
                     12.dp,
                     12.dp,
                     0,
                     0
                 ) {
                     activateControls(
-                        bedtimeStoryInfoData,
+                        prayerData,
                         index,
                         generalMediaPlayerService,
                     )
@@ -209,46 +209,46 @@ fun BottomSheetBedtimeStoryControls(
 }
 
 private fun activateControls(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    PrayerData: PrayerData,
     index: Int,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ){
     when(index){
-        0 -> resetBedtimeStory(
+        0 -> resetPrayer(
             generalMediaPlayerService,
-            bedtimeStoryInfoData,
+            PrayerData,
         )
         1 -> seekBack15(
-            bedtimeStoryInfoData,
+            PrayerData,
             generalMediaPlayerService,
         )
         2 -> {
-            pauseOrPlayBedtimeStoryAccordingly(
-                bedtimeStoryInfoData,
+            pauseOrPlayPrayerAccordingly(
+                PrayerData,
                 generalMediaPlayerService,
             )
         }
         3 -> seekForward15(
-            bedtimeStoryInfoData,
+            PrayerData,
             generalMediaPlayerService,
         )
     }
 }
 
-fun resetBedtimeStory(
+fun resetPrayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData
+    PrayerData: PrayerData
 ){
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(globalViewModel_!!.currentPrayerPlaying != null) {
+        if (globalViewModel_!!.currentPrayerPlaying!!.id == PrayerData.id) {
             if (generalMediaPlayerService.isMediaPlayerInitialized()) {
                 resetBothLocalAndGlobalControlButtonsAfterReset()
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle = 0f
-                globalViewModel_!!.bedtimeStoryTimer.stop()
-                globalViewModel_!!.bedtimeStoryTimeDisplay =
-                    timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
-                globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+                globalViewModel_!!.prayerCircularSliderClicked = false
+                globalViewModel_!!.prayerCircularSliderAngle = 0f
+                globalViewModel_!!.prayerTimer.stop()
+                globalViewModel_!!.prayerTimeDisplay =
+                    timerFormatMS(PrayerData.fullPlayTime.toLong())
+                globalViewModel_!!.isCurrentPrayerPlaying = false
                 generalMediaPlayerService.onDestroy()
             }
         }
@@ -256,25 +256,25 @@ fun resetBedtimeStory(
 }
 
 fun seekBack15(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    PrayerData: PrayerData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(globalViewModel_!!.currentPrayerPlaying != null) {
+        if (globalViewModel_!!.currentPrayerPlaying!!.id == PrayerData.id) {
             if(generalMediaPlayerService.isMediaPlayerInitialized()) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
                 if(newSeekTo < 0){
                     newSeekTo = 0
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
+                globalViewModel_!!.prayerCircularSliderClicked = false
+                globalViewModel_!!.prayerCircularSliderAngle = (
                         (generalMediaPlayerService.getMediaPlayer()!!.currentPosition).toFloat() /
-                                (bedtimeStoryInfoData.fullPlayTime).toFloat()
+                                (PrayerData.fullPlayTime).toFloat()
                         ) * 360f
-                globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
-                    globalViewModel_!!.bedtimeStoryTimer.start()
+                globalViewModel_!!.prayerTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(globalViewModel_!!.isCurrentPrayerPlaying) {
+                    globalViewModel_!!.prayerTimer.start()
                 }
             }
         }
@@ -282,140 +282,140 @@ fun seekBack15(
 }
 
 fun seekForward15(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    PrayerData: PrayerData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(globalViewModel_!!.currentPrayerPlaying != null) {
+        if (globalViewModel_!!.currentPrayerPlaying!!.id == PrayerData.id) {
             if(generalMediaPlayerService.isMediaPlayerInitialized()) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
                 if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
                     newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.duration - 2000
-                    activateBedtimeStoryGlobalControlButton(2)
-                    deActivateBedtimeStoryGlobalControlButton(0)
+                    activatePrayerGlobalControlButton(2)
+                    deActivatePrayerGlobalControlButton(0)
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
+                globalViewModel_!!.prayerCircularSliderClicked = false
+                globalViewModel_!!.prayerCircularSliderAngle = (
                         generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toFloat() /
-                                bedtimeStoryInfoData.fullPlayTime.toFloat()
+                                PrayerData.fullPlayTime.toFloat()
                         ) * 360f
-                globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
-                    globalViewModel_!!.bedtimeStoryTimer.start()
+                globalViewModel_!!.prayerTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(globalViewModel_!!.isCurrentPrayerPlaying) {
+                    globalViewModel_!!.prayerTimer.start()
                 }
             }
         }
     }
 }
 
-fun pauseOrPlayBedtimeStoryAccordingly(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+fun pauseOrPlayPrayerAccordingly(
+    PrayerData: PrayerData,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(globalViewModel_!!.currentPrayerPlaying != null) {
+        if (globalViewModel_!!.currentPrayerPlaying!!.id == PrayerData.id) {
             if (generalMediaPlayerService.isMediaPlayerInitialized()) {
                 if (generalMediaPlayerService.isMediaPlayerPlaying()) {
-                    pauseBedtimeStory(generalMediaPlayerService)
+                    pausePrayer(generalMediaPlayerService)
                 }else{
-                    startBedtimeStory(
+                    startPrayer(
                         generalMediaPlayerService,
-                        bedtimeStoryInfoData,
+                        PrayerData,
                     )
                 }
             }else{
-                startBedtimeStory(
+                startPrayer(
                     generalMediaPlayerService,
-                    bedtimeStoryInfoData,
+                    PrayerData,
                 )
             }
         }else{
-            retrieveBedtimeStoryAudio(
+            retrievePrayerAudio(
                 generalMediaPlayerService,
-                bedtimeStoryInfoData,
+                PrayerData,
             )
         }
     }else{
-        retrieveBedtimeStoryAudio(
+        retrievePrayerAudio(
             generalMediaPlayerService,
-            bedtimeStoryInfoData,
+            PrayerData,
         )
     }
 }
 
-private fun pauseBedtimeStory(
+private fun pausePrayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
 ) {
     if(generalMediaPlayerService.isMediaPlayerInitialized()) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
-            globalViewModel_!!.bedtimeStoryTimer.pause()
-            activateBedtimeStoryGlobalControlButton(2)
-            activateBedtimeStoryGlobalControlButton(2)
-            globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+            globalViewModel_!!.prayerTimer.pause()
+            activatePrayerGlobalControlButton(2)
+            activatePrayerGlobalControlButton(2)
+            globalViewModel_!!.isCurrentPrayerPlaying = false
         }
     }
 }
 
-private fun startBedtimeStory(
+private fun startPrayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    PrayerData: PrayerData,
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlayingUri != null){
+    if(globalViewModel_!!.currentPrayerPlayingUri != null){
         if(generalMediaPlayerService.isMediaPlayerInitialized()){
-            if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+            if(globalViewModel_!!.currentPrayerPlaying!!.id == PrayerData.id){
                 generalMediaPlayerService.startMediaPlayer()
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
-                    bedtimeStoryInfoData
+                    PrayerData
                 )
             }
         }else{
             initializeMediaPlayer(
                 generalMediaPlayerService,
-                bedtimeStoryInfoData
+                PrayerData
             )
         }
-        globalViewModel_!!.bedtimeStoryTimer.start()
-        globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
-        deActivateBedtimeStoryGlobalControlButton(2)
-        deActivateBedtimeStoryGlobalControlButton(0)
+        globalViewModel_!!.prayerTimer.start()
+        globalViewModel_!!.isCurrentPrayerPlaying = true
+        deActivatePrayerGlobalControlButton(2)
+        deActivatePrayerGlobalControlButton(0)
     }
 }
 
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData
+    PrayerData: PrayerData
 ){
     generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentBedtimeStoryPlayingUri!!)
+    generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentPrayerPlayingUri!!)
     val intent = Intent()
     intent.action = "PLAY"
     generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
-    globalViewModel_!!.bedtimeStoryTimer.setDuration(0L)
+    globalViewModel_!!.prayerTimer.setMaxDuration(PrayerData.fullPlayTime.toLong())
+    globalViewModel_!!.prayerTimer.setDuration(0L)
     resetGlobalControlButtons()
-    resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
+    resetOtherGeneralMediaPlayerUsersExceptPrayer()
     //resetAll(context, soundMediaPlayerService)
 }
 
-private fun retrieveBedtimeStoryAudio(
+private fun retrievePrayerAudio(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    prayerData: PrayerData,
 ) {
     if (
-        bedtimeStoryInfoData.audioSource == BedtimeStoryAudioSource.UPLOADED
+        prayerData.audioSource == PrayerAudioSource.UPLOADED
     ) {
         SoundBackend.retrieveAudio(
-            bedtimeStoryInfoData.audioKeyS3,
-            bedtimeStoryInfoData.bedtimeStoryOwner.amplifyAuthUserId
+            prayerData.audioKeyS3,
+            prayerData.prayerOwner.amplifyAuthUserId
         ) {
-            globalViewModel_!!.currentBedtimeStoryPlayingUri = it
-            startBedtimeStory(
+            globalViewModel_!!.currentPrayerPlayingUri = it
+            startPrayer(
                 generalMediaPlayerService,
-                bedtimeStoryInfoData,
+                prayerData,
             )
         }
     } else {
@@ -425,27 +425,27 @@ private fun retrieveBedtimeStoryAudio(
 }
 
 fun resetGlobalControlButtons(){
-    deActivateBedtimeStoryGlobalControlButton(0)
-    deActivateBedtimeStoryGlobalControlButton(1)
-    activateBedtimeStoryGlobalControlButton(2)
-    deActivateBedtimeStoryGlobalControlButton(3)
-    deActivateBedtimeStoryGlobalControlButton(4)
+    deActivatePrayerGlobalControlButton(0)
+    deActivatePrayerGlobalControlButton(1)
+    activatePrayerGlobalControlButton(2)
+    deActivatePrayerGlobalControlButton(3)
+    deActivatePrayerGlobalControlButton(4)
 }
 
-fun activateBedtimeStoryGlobalControlButton(index: Int){
-    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value = Black
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value = SoftPeach
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value = Solitude
+fun activatePrayerGlobalControlButton(index: Int){
+    globalViewModel_!!.prayerScreenBorderControlColors[index].value = Black
+    globalViewModel_!!.prayerScreenBackgroundControlColor1[index].value = SoftPeach
+    globalViewModel_!!.prayerScreenBackgroundControlColor2[index].value = Solitude
     if(index == 2){
-        globalViewModel_!!.bedtimeStoryScreenIcons[index].value = R.drawable.play_icon
+        globalViewModel_!!.prayerScreenIcons[index].value = R.drawable.play_icon
     }
 }
 
-fun deActivateBedtimeStoryGlobalControlButton(index: Int){
-    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value = Bizarre
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value = White
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value = White
+fun deActivatePrayerGlobalControlButton(index: Int){
+    globalViewModel_!!.prayerScreenBorderControlColors[index].value = Bizarre
+    globalViewModel_!!.prayerScreenBackgroundControlColor1[index].value = White
+    globalViewModel_!!.prayerScreenBackgroundControlColor2[index].value = White
     if(index == 2){
-        globalViewModel_!!.bedtimeStoryScreenIcons[index].value = R.drawable.pause_icon
+        globalViewModel_!!.prayerScreenIcons[index].value = R.drawable.pause_icon
     }
 }

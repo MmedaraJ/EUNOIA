@@ -21,7 +21,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
     /**
      * Sound
      */
-    object Sound: Screen("User", -1, "sound")
+    object Sound: Screen("Sound", -1, "sound")
     object SoundScreen: Screen("Sound Screen", -1, "sound_screen")
 
     /**
@@ -29,6 +29,18 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
      */
     object BedtimeStory: Screen("Bedtime Story", -1, "bedtime_story")
     object BedtimeStoryScreen: Screen("Bedtime Story Screen", -1,"bedtime_story_screen")
+
+    /**
+     * Self love
+     */
+    object SelfLove: Screen("Self Love", -1, "self_love")
+    object SelfLoveScreen: Screen("Self Love Screen", -1, "self_love_screen")
+
+    /**
+     * Prayer
+     */
+    object Prayer: Screen("Prayer", -1, "prayer")
+    object PrayerScreen: Screen("Prayer Screen", -1, "prayer_screen")
 
     /**
      * Settings
@@ -137,10 +149,22 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                 SoundScreen.screen_route -> SoundScreen
 
                 /**
+                 * Self love
+                 */
+                SelfLove.screen_route -> SelfLove
+                SelfLoveScreen.screen_route -> SelfLoveScreen
+
+                /**
                  * Bedtime story
                  */
                 BedtimeStory.screen_route -> BedtimeStory
                 BedtimeStoryScreen.screen_route -> BedtimeStoryScreen
+
+                /**
+                 * Prayer
+                 */
+                Prayer.screen_route -> Prayer
+                PrayerScreen.screen_route -> PrayerScreen
 
                 /**
                  * Routine

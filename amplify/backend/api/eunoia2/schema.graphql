@@ -12,7 +12,7 @@ type SoundData
     soundOwner: UserData! @belongsTo(fields: ["userDataID"])
     original_name: String!
     display_name: String!
-    short_description: String!
+    short_description: String
     long_description: String
     audio_key_s3: String!
     icon: Int!
@@ -128,7 +128,8 @@ type BedtimeStoryInfoData
     userDataID: ID! @index(name: "BedtimeStoriesOwnedByUser", sortKeyFields: ["displayName"])
     bedtimeStoryOwner: UserData! @belongsTo(fields: ["userDataID"])
     displayName: String!
-    description: String!
+    shortDescription: String
+    longDescription: String
     audioKeyS3: String!
     icon: Int!
     fullPlayTime: Int!
@@ -183,7 +184,8 @@ type PrayerData
     userDataID: ID! @index(name: "PrayersOwnedByUser", sortKeyFields: ["displayName"])
     prayerOwner: UserData! @belongsTo(fields: ["userDataID"])
     displayName: String!
-    description: String!
+    shortDescription: String
+    longDescription: String
     audioKeyS3: String!
     icon: Int!
     fullPlayTime: Int!
@@ -215,7 +217,8 @@ type SelfLoveData
     userDataID: ID! @index(name: "SelfLovesOwnedByUser", sortKeyFields: ["display_name"])
     selfLoveOwner: UserData! @belongsTo(fields: ["userDataID"])
     display_name: String!
-    description: String!
+    shortDescription: String
+    longDescription: String
     audioKeyS3: String!
     icon: Int!
     fullPlayTime: Int!

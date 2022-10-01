@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.PresetPublicityStatus
 import com.amplifyframework.datastore.generated.model.SoundApprovalStatus
@@ -24,6 +25,7 @@ import com.example.eunoia.backend.PresetBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserPresetBackend
 import com.example.eunoia.backend.UserSoundBackend
+import com.example.eunoia.create.createPrayer.prayerName
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.*
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -31,6 +33,8 @@ import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openPrayerNameTakenDialogBox
+import com.example.eunoia.ui.navigation.openSavedElementDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.SwansDown
@@ -43,8 +47,6 @@ var volumeErrorMessage by mutableStateOf("")
 var nameErrorMessage by mutableStateOf("")
 var fullPlayTime by mutableStateOf(0)
 var sliderVolumes = mutableListOf<MutableState<Int>?>()
-var saving by mutableStateOf(false)
-var go by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -56,10 +58,12 @@ fun CreatePresetUI(
     soundMediaPlayerService: SoundMediaPlayerService
 ){
     presetName = ""
-    go = false
+
+    SetupAlertDialogs()
+
     val scrollState = rememberScrollState()
     var showTapText by rememberSaveable{ mutableStateOf(true) }
-    var manualTopMargin by rememberSaveable{ mutableStateOf(-260) }
+    var manualTopMargin by rememberSaveable{ mutableStateOf(-32) }
     sliderVolumes.clear()
     for(index in fileUris.indices){
         Log.i(TAG, "File uris ==>> $fileUris")
@@ -115,7 +119,7 @@ fun CreatePresetUI(
         ) {
             ControlPanelManual(showTapText){
                 showTapText = !showTapText
-                manualTopMargin = if (manualTopMargin == 6) -260 else 6
+                manualTopMargin = if (manualTopMargin == -32) 0 else -32
             }
         }
         Column(
@@ -193,7 +197,7 @@ fun CreatePresetUI(
                     top.linkTo(info.bottom, margin = 16.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
-                .fillMaxWidth(0.25F)
+                .fillMaxWidth(0.3F)
         ) {
             if(
                 presetName.isNotEmpty() &&
@@ -211,8 +215,9 @@ fun CreatePresetUI(
                     textType = "morge",
                     maxWidthFraction = 1F
                 ) {
-                    saveThisPreset()
-                    navController.navigate(Screen.CreatePreset.screen_route)
+                    saveThisPreset {
+                        navController.navigate(Screen.CreatePreset.screen_route)
+                    }
                 }
             }
         }
@@ -241,10 +246,18 @@ fun CreatePresetUI(
                     textType = "morge",
                     maxWidthFraction = 1F
                 ) {
-                    saving = true
-                    saveThisPreset()
-                    saveAudioFilesToS3()
-                    createSound(navController)
+                    saveThisPreset {
+                        saveAudioFilesToS3 {
+                            createSound {
+                                openSavedElementDialogBox = true
+                                Thread.sleep(1_000)
+                                openSavedElementDialogBox = false
+                                runOnUiThread {
+                                    navigateToSoundScreen(navController, it)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -257,20 +270,19 @@ fun CreatePresetUI(
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
-    if(saving){
-        AlertDialogBox("Saving...")
-    }else{
-        if(go) {
-            resetAll()
-            navController.navigate(Screen.Create.screen_route)
-        }
+}
+
+@Composable
+private fun SetupAlertDialogs(){
+    if(openSavedElementDialogBox){
+        AlertDialogBox(text = "Sound Saved. We will send you an email when it is approved")
     }
 }
 
 fun resetAll(){
     soundIcon = -1
     soundName = ""
-    shortDescription = ""
+    soundShortDescription = ""
     iconSelectionTitle = ""
     uploadedFiles.clear()
     fileColors.clear()
@@ -284,14 +296,18 @@ fun resetAll(){
     sliderVolumes.clear()
 }
 
-fun saveAudioFilesToS3(){
+fun saveAudioFilesToS3(completed: () -> Unit){
     for(i in uploadedFiles.indices) {
         val key = "Routine/Sounds/${globalViewModel_!!.currentUser!!.username}/$soundName/${i}_${uploadedFiles[i]!!.value.name}"
-        SoundBackend.storeAudio(uploadedFiles[i]!!.value.absolutePath, key){}
+        SoundBackend.storeAudio(uploadedFiles[i]!!.value.absolutePath, key){
+            if(i == uploadedFiles.size - 1){
+                completed()
+            }
+        }
     }
 }
 
-fun createSound(navController: NavController){
+fun createSound(completed: (soundData: SoundData) -> Unit){
     val fileNameList = getFileNameList()
     val maxPlayTime = getMaxPlayTime()
     val tags = getSoundTagsList()
@@ -301,8 +317,8 @@ fun createSound(navController: NavController){
         UserObject.User.from(globalViewModel_!!.currentUser!!),
         soundName,
         soundName,
-        shortDescription,
-        shortDescription,
+        soundShortDescription,
+        soundShortDescription,
         "Routine/Sounds/${globalViewModel_!!.currentUser!!.username}/$soundName/",
         soundIcon,
         0xFFEBBA9A.toInt(),
@@ -314,8 +330,11 @@ fun createSound(navController: NavController){
     )
 
     SoundBackend.createSound(sound){
-        createUserSound(it)
-        createSoundPreset(it)
+        createUserSound(it){
+            createSoundPreset(it){
+                completed(it)
+            }
+        }
     }
 }
 
@@ -341,27 +360,33 @@ fun getSoundTagsList():List<String> {
     return soundTags.split(",")
 }
 
-private fun createUserSound(soundData: SoundData){
+private fun createUserSound(soundData: SoundData, completed: () -> Unit){
     val userSoundModel = UserSoundObject.UserSoundModel(
         UUID.randomUUID().toString(),
         SoundObject.Sound.from(soundData),
-        UserObject.signedInUser().value!!
+        UserObject.User.from(globalViewModel_!!.currentUser!!)
     )
     UserSoundBackend.createUserSound(userSoundModel){
-
+        completed()
     }
 }
 
-private fun createSoundPreset(soundData: SoundData) {
+private fun createSoundPreset(soundData: SoundData, completed: () -> Unit) {
     for(i in createSoundPresets.indices){
         createSoundPresets[i]!!.value.sound = SoundObject.Sound.from(soundData)
         PresetBackend.createPreset(createSoundPresets[i]!!.value){
-            createUserPreset(it, i)
+            createUserPreset(it, i){
+                completed()
+            }
         }
     }
 }
 
-private fun createUserPreset(presetData: PresetData, index: Int){
+private fun createUserPreset(
+    presetData: PresetData,
+    index: Int,
+    completed: () -> Unit
+){
     val userPresetModel = UserPresetObject.UserPresetModel(
         UUID.randomUUID().toString(),
         UserObject.signedInUser().value!!,
@@ -369,13 +394,12 @@ private fun createUserPreset(presetData: PresetData, index: Int){
     )
     UserPresetBackend.createUserPreset(userPresetModel){
         if(index == createSoundPresets.size - 1){
-            saving = false
-            go = true
+            completed()
         }
     }
 }
 
-fun saveThisPreset(){
+fun saveThisPreset(completed: () -> Unit){
     val volumes = mutableListOf<Int>()
     for(volume in sliderVolumes){
         volumes.add(volume!!.value)
@@ -392,6 +416,7 @@ fun saveThisPreset(){
     )
     createSoundPresets.add(preset)
     sliderVolumes.clear()
+    completed()
 }
 
 fun volumesDoNotAlreadyExist(): Boolean{

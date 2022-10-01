@@ -1,4 +1,4 @@
-package com.example.eunoia.ui.bottomSheets.bedtimeStory
+package com.example.eunoia.ui.bottomSheets.prayer
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -17,16 +17,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amplifyframework.datastore.generated.model.*
+import com.amplifyframework.datastore.generated.model.RoutineData
+import com.amplifyframework.datastore.generated.model.UserRoutine
 import com.example.eunoia.R
-import com.example.eunoia.backend.*
+import com.example.eunoia.backend.RoutineBackend
+import com.example.eunoia.backend.RoutinePrayerBackend
+import com.example.eunoia.backend.UserPrayerBackend
+import com.example.eunoia.backend.UserRoutineBackend
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
-import com.example.eunoia.ui.alertDialogs.*
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.sound.*
+import com.example.eunoia.ui.bottomSheets.sound.checkIfRoutineNameIsTaken
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.Black
@@ -36,13 +39,13 @@ import com.example.eunoia.utils.displayRoutineNameForBottomSheet
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-private const val TAG = "AddToBedtimeStoryListAndRoutineBottomSheet"
+private const val TAG = "AddToPrayerListAndRoutineBottomSheet"
 var userRoutinesSize = 0
 private const val MAX_ROUTINE_PLAYTIME = 2_700_000
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AddToBedtimeStoryListAndRoutineBottomSheet(
+fun AddToPrayerListAndRoutineBottomSheet(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -59,21 +62,21 @@ fun AddToBedtimeStoryListAndRoutineBottomSheet(
                 .background(OldLace),
         ) {
             val (
-                bedtimeStoryList,
+                prayerList,
                 divider,
                 routineItems
             ) = createRefs()
             ConstraintLayout(
                 modifier = Modifier
                     .background(OldLace)
-                    .constrainAs(bedtimeStoryList) {
+                    .constrainAs(prayerList) {
                         top.linkTo(parent.top, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         bottom.linkTo(divider.top, margin = 0.dp)
                     }
                     .clickable {
-                        addToBedtimeStoryListClicked(scope, state)
+                        addToPrayerListClicked(scope, state)
                     }
                     .fillMaxWidth()
             ) {
@@ -90,7 +93,7 @@ fun AddToBedtimeStoryListAndRoutineBottomSheet(
                         }
                 ) {
                     NormalText(
-                        text = "Add to your bedtime story list",
+                        text = "Add to your prayer list",
                         color = Black,
                         fontSize = 13,
                         xOffset = 0,
@@ -128,7 +131,7 @@ fun AddToBedtimeStoryListAndRoutineBottomSheet(
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
                     .clickable {
-                        globalViewModel_!!.bottomSheetOpenFor = "addBedtimeStoryToRoutine"
+                        globalViewModel_!!.bottomSheetOpenFor = "addPrayerToRoutine"
                         openBottomSheet(scope, state)
                     }
                     .fillMaxWidth()
@@ -187,35 +190,35 @@ private fun SetUpAlertDialogs(){
     if(openRoutineNameIsAlreadyTakenDialog){
         AlertDialogBox("Routine name already exists")
     }
-    if(openUserAlreadyHasBedtimeStoryDialogBox){
-        AlertDialogBox(text = "You already have this bedtime story")
+    if(openUserAlreadyHasPrayerDialogBox){
+        AlertDialogBox(text = "You already have this prayer")
     }
-    if(openRoutineAlreadyHasBedtimeStoryDialogBox){
-        AlertDialogBox(text = "Routine already has this bedtime story")
+    if(openRoutineAlreadyHasPrayerDialogBox){
+        AlertDialogBox(text = "Routine already has this prayer")
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-private fun addToBedtimeStoryListClicked(
+private fun addToPrayerListClicked(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    if (globalViewModel_!!.currentBedtimeStoryToBeAdded != null) {
+    if (globalViewModel_!!.currentPrayerToBeAdded != null) {
         if (globalViewModel_!!.currentUser != null) {
-            UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
+            UserPrayerBackend.queryUserPrayerBasedOnUserAndPrayer(
                 globalViewModel_!!.currentUser!!,
-                globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+                globalViewModel_!!.currentPrayerToBeAdded!!
             ){
                 if (it.isEmpty()) {
-                    UserBedtimeStoryBackend.createUserBedtimeStoryObject(
-                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+                    UserPrayerBackend.createUserPrayerObject(
+                        globalViewModel_!!.currentPrayerToBeAdded!!
                     ) {
                         closeBottomSheet(scope, state)
                         openSavedElementDialogBox = true
                     }
                 }else{
                     closeBottomSheet(scope, state)
-                    openUserAlreadyHasBedtimeStoryDialogBox = true
+                    openUserAlreadyHasPrayerDialogBox = true
                 }
             }
         }
@@ -224,7 +227,7 @@ private fun addToBedtimeStoryListClicked(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectRoutineForBedtimeStory(
+fun SelectRoutineForPrayer(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
@@ -275,7 +278,7 @@ fun SelectRoutineForBedtimeStory(
                 modifier = Modifier
                     .padding(bottom = 15.dp)
                     .clickable {
-                        globalViewModel_!!.bottomSheetOpenFor = "inputRoutineNameForBedtimeStory"
+                        globalViewModel_!!.bottomSheetOpenFor = "inputRoutineNameForPrayer"
                         openBottomSheet(scope, state)
                     }
             ) {
@@ -363,38 +366,38 @@ private fun selectRoutineClicked(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    setUpRoutineBedtimeStory(
+    setUpRoutinePrayer(
         userRoutine,
         {
             closeBottomSheet(scope, state)
-            openRoutineAlreadyHasBedtimeStoryDialogBox = true
+            openRoutineAlreadyHasPrayerDialogBox = true
         }
     ) {
-        setUpUserBedtimeStory{
+        setUpUserPrayer{
             closeBottomSheet(scope, state)
             openSavedElementDialogBox = true
         }
     }
 }
 
-fun setUpRoutineBedtimeStory(
+fun setUpRoutinePrayer(
     userRoutine: UserRoutine,
     alreadyExists: () -> Unit,
     completed: () -> Unit
 ) {
-    RoutineBedtimeStoryBackend.queryRoutineBedtimeStoryBasedOnBedtimeStoryAndRoutine(
+    RoutinePrayerBackend.queryRoutinePrayerBasedOnPrayerAndRoutine(
         userRoutine.routineData,
-        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+        globalViewModel_!!.currentPrayerToBeAdded!!
     ){
         if (it.isEmpty()) {
-            if (!userRoutine.routineData.playingOrder.contains("bedtimeStory")) {
+            if (!userRoutine.routineData.playingOrder.contains("prayer")) {
                 val playOrder = userRoutine.routineData.playingOrder
-                playOrder.add("bedtimeStory")
+                playOrder.add("prayer")
 
                 //updated play time should be <= 45'
                 var playTime = userRoutine.routineData.fullPlayTime
-                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime > playTime) {
-                    playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime > playTime) {
+                    playTime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
                     if (playTime > MAX_ROUTINE_PLAYTIME) {
                         playTime = MAX_ROUTINE_PLAYTIME
                     }
@@ -405,22 +408,22 @@ fun setUpRoutineBedtimeStory(
                 val routine = userRoutine.routineData.copyOfBuilder()
                     .numberOfSteps(numberOfSteps)
                     .fullPlayTime(playTime)
-                    .currentBedtimeStoryPlayingIndex(0)
-                    .currentBedtimeStoryContinuePlayingTime(0)
+                    .currentPrayerPlayingIndex(0)
+                    .currentPrayerContinuePlayingTime(0)
                     .playingOrder(playOrder)
                     .build()
 
                 RoutineBackend.updateRoutine(routine) { updatedRoutine ->
-                    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
-                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+                    RoutinePrayerBackend.createRoutinePrayerObject(
+                        globalViewModel_!!.currentPrayerToBeAdded!!,
                         updatedRoutine
                     ) {
                         completed()
                     }
                 }
             }else{
-                RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
-                    globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+                RoutinePrayerBackend.createRoutinePrayerObject(
+                    globalViewModel_!!.currentPrayerToBeAdded!!,
                     userRoutine.routineData
                 ) {
                     completed()
@@ -432,14 +435,14 @@ fun setUpRoutineBedtimeStory(
     }
 }
 
-fun setUpUserBedtimeStory(completed: () -> Unit) {
-    UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
+fun setUpUserPrayer(completed: () -> Unit) {
+    UserPrayerBackend.queryUserPrayerBasedOnUserAndPrayer(
         globalViewModel_!!.currentUser!!,
-        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+        globalViewModel_!!.currentPrayerToBeAdded!!
     ){
         if (it.isEmpty()) {
-            UserBedtimeStoryBackend.createUserBedtimeStoryObject(
-                globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+            UserPrayerBackend.createUserPrayerObject(
+                globalViewModel_!!.currentPrayerToBeAdded!!
             ) {
                 completed()
             }
@@ -451,7 +454,7 @@ fun setUpUserBedtimeStory(completed: () -> Unit) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun inputRoutineNameForBedtimeStory(
+fun inputRoutineNameForPrayer(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ): String {
@@ -506,7 +509,7 @@ fun inputRoutineNameForBedtimeStory(
                 if(name.isNotEmpty()){
                     checkIfRoutineNameIsTaken {
                         if (!it) {
-                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineColorForBedtimeStory"
+                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineColorForPrayer"
                             openBottomSheet(scope, state)
                         }else{
                             openRoutineNameIsAlreadyTakenDialog = true
@@ -521,7 +524,7 @@ fun inputRoutineNameForBedtimeStory(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectRoutineColorForBedtimeStory(
+fun SelectRoutineColorForPrayer(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
@@ -594,8 +597,7 @@ fun SelectRoutineColorForBedtimeStory(
                         .padding(bottom = 15.dp)
                         .clickable {
                             globalViewModel_!!.routineColorToBeAdded = color
-                            globalViewModel_!!.bottomSheetOpenFor =
-                                "selectRoutineIconForBedtimeStory"
+                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineIconForPrayer"
                             openBottomSheet(scope, state)
                         }
                 ) {
@@ -617,7 +619,7 @@ fun SelectRoutineColorForBedtimeStory(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectRoutineIconForBedtimeStory(
+fun SelectRoutineIconForPrayer(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
@@ -703,8 +705,8 @@ private fun newRoutineIconSelected(
     globalViewModel_!!.routineIconToBeAdded = icon
     //45' default playtime
     var playTime = 2700000
-    if(globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime < playTime){
-        playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+    if(globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime < playTime){
+        playTime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
     }
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
@@ -729,13 +731,13 @@ private fun newRoutineIconSelected(
         selfLovePlayTime = 600000,
         stretchTime = 600000,
         breathingTime = 600000,
-        currentBedtimeStoryPlayingIndex = 0,
-        currentBedtimeStoryContinuePlayingTime = 0,
+        currentBedtimeStoryPlayingIndex = -1,
+        currentBedtimeStoryContinuePlayingTime = -1,
         currentSelfLovePlayingIndex = -1,
         currentSelfLoveContinuePlayingTime = -1,
-        currentPrayerPlayingIndex = -1,
-        currentPrayerContinuePlayingTime = -1,
-        playingOrder = listOf("sleep", "bedtimeStory")
+        currentPrayerPlayingIndex = 0,
+        currentPrayerContinuePlayingTime = 0,
+        playingOrder = listOf("sleep", "prayer")
     )
 
     createRoutineAndOtherNecessaryData(
@@ -753,7 +755,7 @@ private fun createRoutineAndOtherNecessaryData(
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
         UserRoutineBackend.createUserRoutineObject(newRoutine) {
-            setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(newRoutine) {
+            setUpRoutineAndUserPrayerAfterMakingNewRoutine(newRoutine) {
                 closeBottomSheet(scope, state)
                 openSavedElementDialogBox = true
             }
@@ -761,15 +763,15 @@ private fun createRoutineAndOtherNecessaryData(
     }
 }
 
-fun setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(
+fun setUpRoutineAndUserPrayerAfterMakingNewRoutine(
     routineData: RoutineData,
     completed: () -> Unit
 ){
-    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
-        globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+    RoutinePrayerBackend.createRoutinePrayerObject(
+        globalViewModel_!!.currentPrayerToBeAdded!!,
         routineData
     ) {
-        setUpUserBedtimeStory {
+        setUpUserPrayer {
             completed()
         }
     }

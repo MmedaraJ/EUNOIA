@@ -182,7 +182,7 @@ fun UploadSoundsUI(
             if(
                 numberOfFiles > 0 &&
                 validateUploadedFiles() &&
-                validatFileNames() &&
+                validateFileNames() &&
                 validateFileUris()
             ) {
                 CustomizableButton(
@@ -230,7 +230,7 @@ fun validateFileUris(): Boolean{
     return true
 }
 
-fun validatFileNames(): Boolean{
+fun validateFileNames(): Boolean{
     for(name in fileNames){
         if(name!!.value == ""){
             return false

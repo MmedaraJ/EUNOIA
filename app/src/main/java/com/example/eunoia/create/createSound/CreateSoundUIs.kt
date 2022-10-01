@@ -78,7 +78,7 @@ fun SoundUploader(
             .wrapContentHeight()
     ){
         fileName = customizedOutlinedTextInput(
-            width = 0,
+            maxLength = 5,
             height = 55,
             color = SoftPeach,
             focusedBorderColor = BeautyBush,
@@ -108,7 +108,7 @@ fun SavePreset(){
             .wrapContentHeight()
     ){
         fileName = customizedOutlinedTextInput(
-            width = 0,
+            maxLength = 30,
             height = 55,
             color = SoftPeach,
             focusedBorderColor = BeautyBush,
@@ -308,7 +308,7 @@ fun CreatePresetMixer(context: Context, soundMediaPlayerService: SoundMediaPlaye
             Column(
                 modifier = Modifier
                     .constrainAs(title) {
-                        top.linkTo(parent.top, margin = 0.dp)
+                        top.linkTo(parent.top, margin = 16.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                     }
@@ -369,7 +369,7 @@ fun CreatePresetMixer(context: Context, soundMediaPlayerService: SoundMediaPlaye
             Column(
                 modifier = Modifier
                     .constrainAs(sliders) {
-                        top.linkTo(title.bottom, margin = 0.dp)
+                        top.linkTo(title.bottom, margin = 16.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                     }

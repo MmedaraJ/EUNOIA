@@ -37,14 +37,20 @@ import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.create.createSound.*
 import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryActivityUI
 import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryScreen
+import com.example.eunoia.dashboard.prayer.PrayerActivityUI
+import com.example.eunoia.dashboard.prayer.PrayerScreen
 import com.example.eunoia.dashboard.routine.RoutineScreen
+import com.example.eunoia.dashboard.selfLove.SelfLoveActivityUI
+import com.example.eunoia.dashboard.selfLove.SelfLoveScreen
 import com.example.eunoia.models.*
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.settings.eightHourCountdown.EightHourCountdownUI
 import com.example.eunoia.ui.bottomSheets.*
 import com.example.eunoia.ui.bottomSheets.bedtimeStory.*
+import com.example.eunoia.ui.bottomSheets.prayer.*
 import com.example.eunoia.ui.bottomSheets.recordAudio.RecordAudio
+import com.example.eunoia.ui.bottomSheets.selfLove.*
 import com.example.eunoia.ui.bottomSheets.sound.*
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.RecordAudioViewModel
@@ -56,13 +62,20 @@ var generalMediaPlayerService_: GeneralMediaPlayerService? = null
 
 var commentCreatedDialog by mutableStateOf(false)
 var openSavedElementDialogBox by mutableStateOf(false)
+var openSoundNameTakenDialogBox by mutableStateOf(false)
+var openPrayerNameTakenDialogBox by mutableStateOf(false)
 var openPresetAlreadyExistsDialog by mutableStateOf(false)
+var openSelfLoveNameTakenDialogBox by mutableStateOf(false)
 var openUserAlreadyHasSoundDialogBox by mutableStateOf(false)
+var openUserAlreadyHasPrayerDialogBox by mutableStateOf(false)
 var openPresetNameIsAlreadyTakenDialog by mutableStateOf(false)
 var openBedtimeStoryNameTakenDialogBox by mutableStateOf(false)
+var openUserAlreadyHasSelfLoveDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasSoundDialogBox by mutableStateOf(false)
 var openRoutineNameIsAlreadyTakenDialog by mutableStateOf(false)
+var openRoutineAlreadyHasPrayerDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasPresetDialogBox by mutableStateOf(false)
+var openRoutineAlreadyHasSelfLoveDialogBox by mutableStateOf(false)
 var openUserAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
 var openTooManyIncompleteBedtimeStoryDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
@@ -191,6 +204,54 @@ fun EunoiaApp(
                             "selectRoutineIconForBedtimeStory" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
                                 SelectRoutineIconForBedtimeStory(scope, state)
+                            }
+
+                            /**
+                             * Add self love to list or routine
+                             */
+                            "addToSelfLoveListOrRoutine" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                AddToSelfLoveListAndRoutineBottomSheet(scope, state)
+                            }
+                            "addSelfLoveToRoutine" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                SelectRoutineForSelfLove(scope, state)
+                            }
+                            "inputRoutineNameForSelfLove" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel_!!.routineNameToBeAdded = inputRoutineNameForSelfLove(scope, state)
+                            }
+                            "selectRoutineColorForSelfLove" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                SelectRoutineColorForSelfLove(scope, state)
+                            }
+                            "selectRoutineIconForSelfLove" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                SelectRoutineIconForSelfLove(scope, state)
+                            }
+
+                            /**
+                             * Add prayer to list or routine
+                             */
+                            "addToPrayerListOrRoutine" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                AddToPrayerListAndRoutineBottomSheet(scope, state)
+                            }
+                            "addPrayerToRoutine" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                SelectRoutineForPrayer(scope, state)
+                            }
+                            "inputRoutineNameForPrayer" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel_!!.routineNameToBeAdded = inputRoutineNameForPrayer(scope, state)
+                            }
+                            "selectRoutineColorForPrayer" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                SelectRoutineColorForPrayer(scope, state)
+                            }
+                            "selectRoutineIconForPrayer" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                SelectRoutineIconForPrayer(scope, state)
                             }
 
                             /**
@@ -456,6 +517,66 @@ fun DashboardTab(
                 routine.data,
                 scope,
                 state
+            )
+        }
+        composable(
+            Screen.SelfLove.screen_route
+        ) {
+            Log.i("SelfLove", "You are now on the SelfLove tab")
+            SelfLoveActivityUI(
+                navController,
+                scope,
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
+            )
+        }
+        composable(
+            "${Screen.SelfLoveScreen.screen_route}/selfLoveData={selfLoveData}",
+            arguments = listOf(
+                navArgument("selfLoveData") {
+                    type = SelfLoveObject.SelfLoveType()
+                }
+            )
+        ) { backStackEntry ->
+            val selfLoveData = backStackEntry.arguments?.getParcelable<SelfLoveObject.SelfLove>("selfLoveData")
+            Log.i("SelfLoveScreen", "You are now on the ${selfLoveData!!.displayName} tab")
+            SelfLoveScreen(
+                navController = navController,
+                selfLoveData = selfLoveData.data,
+                scope = scope,
+                state = state,
+                generalMediaPlayerService = generalMediaPlayerService
+            )
+        }
+        composable(
+            Screen.Prayer.screen_route
+        ) {
+            Log.i("Prayer", "You are now on the Prayer tab")
+            PrayerActivityUI(
+                navController,
+                scope,
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
+            )
+        }
+        composable(
+            "${Screen.PrayerScreen.screen_route}/prayerData={prayerData}",
+            arguments = listOf(
+                navArgument("prayerData") {
+                    type = PrayerObject.PrayerType()
+                }
+            )
+        ) { backStackEntry ->
+            val prayerData = backStackEntry.arguments?.getParcelable<PrayerObject.Prayer>("prayerData")
+            Log.i("PrayerScreen", "You are now on the ${prayerData!!.displayName} tab")
+            PrayerScreen(
+                navController = navController,
+                prayerData = prayerData.data,
+                scope = scope,
+                state = state,
+                generalMediaPlayerService = generalMediaPlayerService
             )
         }
     }

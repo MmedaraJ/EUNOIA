@@ -13,9 +13,10 @@ object PrayerObject {
     @Parcelize
     data class Prayer(
         val id: String,
-        val prayerOwner: @RawValue UserObject.User,
+        val prayerOwner: @RawValue UserObject.User?,
         val displayName: String,
-        val description: String,
+        val shortDescription: String?,
+        val longDescription: String?,
         val audioKeyS3: String,
         val icon: Int?,
         val fullPlayTime: Long,
@@ -32,9 +33,8 @@ object PrayerObject {
 
         val data: PrayerData
             get() = PrayerData.builder()
-                .prayerOwner(this.prayerOwner.data)
+                .prayerOwner(this.prayerOwner!!.data)
                 .displayName(this.displayName)
-                .description(this.description)
                 .audioKeyS3(this.audioKeyS3)
                 .icon(this.icon)
                 .fullPlayTime(this.fullPlayTime.toInt())
@@ -44,6 +44,8 @@ object PrayerObject {
                 .tags(this.tags)
                 .audioSource(this.audioSource)
                 .approvalStatus(this.approvalStatus)
+                .shortDescription(this.shortDescription)
+                .longDescription(this.longDescription)
                 .id(this.id)
                 .build()
 
@@ -53,7 +55,8 @@ object PrayerObject {
                     prayerData.id,
                     UserObject.User.from(prayerData.prayerOwner),
                     prayerData.displayName,
-                    prayerData.description,
+                    prayerData.shortDescription,
+                    prayerData.longDescription,
                     prayerData.audioKeyS3,
                     prayerData.icon,
                     prayerData.fullPlayTime.toLong(),

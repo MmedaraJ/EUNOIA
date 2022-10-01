@@ -1,4 +1,4 @@
-package com.example.eunoia.ui.bottomSheets.bedtimeStory
+package com.example.eunoia.ui.bottomSheets.selfLove
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -17,16 +17,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amplifyframework.datastore.generated.model.*
+import com.amplifyframework.datastore.generated.model.RoutineData
+import com.amplifyframework.datastore.generated.model.UserRoutine
 import com.example.eunoia.R
-import com.example.eunoia.backend.*
+import com.example.eunoia.backend.RoutineBackend
+import com.example.eunoia.backend.RoutineSelfLoveBackend
+import com.example.eunoia.backend.UserSelfLoveBackend
+import com.example.eunoia.backend.UserRoutineBackend
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
-import com.example.eunoia.ui.alertDialogs.*
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.sound.*
+import com.example.eunoia.ui.bottomSheets.sound.checkIfRoutineNameIsTaken
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.Black
@@ -36,13 +39,13 @@ import com.example.eunoia.utils.displayRoutineNameForBottomSheet
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-private const val TAG = "AddToBedtimeStoryListAndRoutineBottomSheet"
+private const val TAG = "AddToSelfLoveListAndRoutineBottomSheet"
 var userRoutinesSize = 0
 private const val MAX_ROUTINE_PLAYTIME = 2_700_000
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AddToBedtimeStoryListAndRoutineBottomSheet(
+fun AddToSelfLoveListAndRoutineBottomSheet(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -59,21 +62,21 @@ fun AddToBedtimeStoryListAndRoutineBottomSheet(
                 .background(OldLace),
         ) {
             val (
-                bedtimeStoryList,
+                SelfLoveList,
                 divider,
                 routineItems
             ) = createRefs()
             ConstraintLayout(
                 modifier = Modifier
                     .background(OldLace)
-                    .constrainAs(bedtimeStoryList) {
+                    .constrainAs(SelfLoveList) {
                         top.linkTo(parent.top, margin = 0.dp)
                         end.linkTo(parent.end, margin = 0.dp)
                         start.linkTo(parent.start, margin = 0.dp)
                         bottom.linkTo(divider.top, margin = 0.dp)
                     }
                     .clickable {
-                        addToBedtimeStoryListClicked(scope, state)
+                        addToSelfLoveListClicked(scope, state)
                     }
                     .fillMaxWidth()
             ) {
@@ -90,7 +93,7 @@ fun AddToBedtimeStoryListAndRoutineBottomSheet(
                         }
                 ) {
                     NormalText(
-                        text = "Add to your bedtime story list",
+                        text = "Add to your self love list",
                         color = Black,
                         fontSize = 13,
                         xOffset = 0,
@@ -128,7 +131,7 @@ fun AddToBedtimeStoryListAndRoutineBottomSheet(
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
                     .clickable {
-                        globalViewModel_!!.bottomSheetOpenFor = "addBedtimeStoryToRoutine"
+                        globalViewModel_!!.bottomSheetOpenFor = "addSelfLoveToRoutine"
                         openBottomSheet(scope, state)
                     }
                     .fillMaxWidth()
@@ -187,35 +190,35 @@ private fun SetUpAlertDialogs(){
     if(openRoutineNameIsAlreadyTakenDialog){
         AlertDialogBox("Routine name already exists")
     }
-    if(openUserAlreadyHasBedtimeStoryDialogBox){
-        AlertDialogBox(text = "You already have this bedtime story")
+    if(openUserAlreadyHasSelfLoveDialogBox){
+        AlertDialogBox(text = "You already have this self love")
     }
-    if(openRoutineAlreadyHasBedtimeStoryDialogBox){
-        AlertDialogBox(text = "Routine already has this bedtime story")
+    if(openRoutineAlreadyHasSelfLoveDialogBox){
+        AlertDialogBox(text = "Routine already has this self love")
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-private fun addToBedtimeStoryListClicked(
+private fun addToSelfLoveListClicked(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    if (globalViewModel_!!.currentBedtimeStoryToBeAdded != null) {
+    if (globalViewModel_!!.currentSelfLoveToBeAdded != null) {
         if (globalViewModel_!!.currentUser != null) {
-            UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
+            UserSelfLoveBackend.queryUserSelfLoveBasedOnUserAndSelfLove(
                 globalViewModel_!!.currentUser!!,
-                globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+                globalViewModel_!!.currentSelfLoveToBeAdded!!
             ){
                 if (it.isEmpty()) {
-                    UserBedtimeStoryBackend.createUserBedtimeStoryObject(
-                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+                    UserSelfLoveBackend.createUserSelfLoveObject(
+                        globalViewModel_!!.currentSelfLoveToBeAdded!!
                     ) {
                         closeBottomSheet(scope, state)
                         openSavedElementDialogBox = true
                     }
                 }else{
                     closeBottomSheet(scope, state)
-                    openUserAlreadyHasBedtimeStoryDialogBox = true
+                    openUserAlreadyHasSelfLoveDialogBox = true
                 }
             }
         }
@@ -224,7 +227,7 @@ private fun addToBedtimeStoryListClicked(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectRoutineForBedtimeStory(
+fun SelectRoutineForSelfLove(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
@@ -275,7 +278,7 @@ fun SelectRoutineForBedtimeStory(
                 modifier = Modifier
                     .padding(bottom = 15.dp)
                     .clickable {
-                        globalViewModel_!!.bottomSheetOpenFor = "inputRoutineNameForBedtimeStory"
+                        globalViewModel_!!.bottomSheetOpenFor = "inputRoutineNameForSelfLove"
                         openBottomSheet(scope, state)
                     }
             ) {
@@ -363,38 +366,38 @@ private fun selectRoutineClicked(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    setUpRoutineBedtimeStory(
+    setUpRoutineSelfLove(
         userRoutine,
         {
             closeBottomSheet(scope, state)
-            openRoutineAlreadyHasBedtimeStoryDialogBox = true
+            openRoutineAlreadyHasSelfLoveDialogBox = true
         }
     ) {
-        setUpUserBedtimeStory{
+        setUpUserSelfLove{
             closeBottomSheet(scope, state)
             openSavedElementDialogBox = true
         }
     }
 }
 
-fun setUpRoutineBedtimeStory(
+fun setUpRoutineSelfLove(
     userRoutine: UserRoutine,
     alreadyExists: () -> Unit,
     completed: () -> Unit
 ) {
-    RoutineBedtimeStoryBackend.queryRoutineBedtimeStoryBasedOnBedtimeStoryAndRoutine(
+    RoutineSelfLoveBackend.queryRoutineSelfLoveBasedOnSelfLoveAndRoutine(
         userRoutine.routineData,
-        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+        globalViewModel_!!.currentSelfLoveToBeAdded!!
     ){
         if (it.isEmpty()) {
-            if (!userRoutine.routineData.playingOrder.contains("bedtimeStory")) {
+            if (!userRoutine.routineData.playingOrder.contains("self-love")) {
                 val playOrder = userRoutine.routineData.playingOrder
-                playOrder.add("bedtimeStory")
+                playOrder.add("self-love")
 
                 //updated play time should be <= 45'
                 var playTime = userRoutine.routineData.fullPlayTime
-                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime > playTime) {
-                    playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime > playTime) {
+                    playTime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
                     if (playTime > MAX_ROUTINE_PLAYTIME) {
                         playTime = MAX_ROUTINE_PLAYTIME
                     }
@@ -405,22 +408,22 @@ fun setUpRoutineBedtimeStory(
                 val routine = userRoutine.routineData.copyOfBuilder()
                     .numberOfSteps(numberOfSteps)
                     .fullPlayTime(playTime)
-                    .currentBedtimeStoryPlayingIndex(0)
-                    .currentBedtimeStoryContinuePlayingTime(0)
+                    .currentSelfLovePlayingIndex(0)
+                    .currentSelfLoveContinuePlayingTime(0)
                     .playingOrder(playOrder)
                     .build()
 
                 RoutineBackend.updateRoutine(routine) { updatedRoutine ->
-                    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
-                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+                    RoutineSelfLoveBackend.createRoutineSelfLoveObject(
+                        globalViewModel_!!.currentSelfLoveToBeAdded!!,
                         updatedRoutine
                     ) {
                         completed()
                     }
                 }
             }else{
-                RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
-                    globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+                RoutineSelfLoveBackend.createRoutineSelfLoveObject(
+                    globalViewModel_!!.currentSelfLoveToBeAdded!!,
                     userRoutine.routineData
                 ) {
                     completed()
@@ -432,14 +435,14 @@ fun setUpRoutineBedtimeStory(
     }
 }
 
-fun setUpUserBedtimeStory(completed: () -> Unit) {
-    UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
+fun setUpUserSelfLove(completed: () -> Unit) {
+    UserSelfLoveBackend.queryUserSelfLoveBasedOnUserAndSelfLove(
         globalViewModel_!!.currentUser!!,
-        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+        globalViewModel_!!.currentSelfLoveToBeAdded!!
     ){
         if (it.isEmpty()) {
-            UserBedtimeStoryBackend.createUserBedtimeStoryObject(
-                globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+            UserSelfLoveBackend.createUserSelfLoveObject(
+                globalViewModel_!!.currentSelfLoveToBeAdded!!
             ) {
                 completed()
             }
@@ -451,7 +454,7 @@ fun setUpUserBedtimeStory(completed: () -> Unit) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun inputRoutineNameForBedtimeStory(
+fun inputRoutineNameForSelfLove(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ): String {
@@ -506,7 +509,7 @@ fun inputRoutineNameForBedtimeStory(
                 if(name.isNotEmpty()){
                     checkIfRoutineNameIsTaken {
                         if (!it) {
-                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineColorForBedtimeStory"
+                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineColorForSelfLove"
                             openBottomSheet(scope, state)
                         }else{
                             openRoutineNameIsAlreadyTakenDialog = true
@@ -521,7 +524,7 @@ fun inputRoutineNameForBedtimeStory(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectRoutineColorForBedtimeStory(
+fun SelectRoutineColorForSelfLove(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
@@ -594,8 +597,7 @@ fun SelectRoutineColorForBedtimeStory(
                         .padding(bottom = 15.dp)
                         .clickable {
                             globalViewModel_!!.routineColorToBeAdded = color
-                            globalViewModel_!!.bottomSheetOpenFor =
-                                "selectRoutineIconForBedtimeStory"
+                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineIconForSelfLove"
                             openBottomSheet(scope, state)
                         }
                 ) {
@@ -617,7 +619,7 @@ fun SelectRoutineColorForBedtimeStory(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectRoutineIconForBedtimeStory(
+fun SelectRoutineIconForSelfLove(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
@@ -703,8 +705,8 @@ private fun newRoutineIconSelected(
     globalViewModel_!!.routineIconToBeAdded = icon
     //45' default playtime
     var playTime = 2700000
-    if(globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime < playTime){
-        playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+    if(globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime < playTime){
+        playTime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
     }
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
@@ -729,13 +731,13 @@ private fun newRoutineIconSelected(
         selfLovePlayTime = 600000,
         stretchTime = 600000,
         breathingTime = 600000,
-        currentBedtimeStoryPlayingIndex = 0,
-        currentBedtimeStoryContinuePlayingTime = 0,
-        currentSelfLovePlayingIndex = -1,
-        currentSelfLoveContinuePlayingTime = -1,
+        currentBedtimeStoryPlayingIndex = -1,
+        currentBedtimeStoryContinuePlayingTime = -1,
+        currentSelfLovePlayingIndex = 0,
+        currentSelfLoveContinuePlayingTime = 0,
         currentPrayerPlayingIndex = -1,
         currentPrayerContinuePlayingTime = -1,
-        playingOrder = listOf("sleep", "bedtimeStory")
+        playingOrder = listOf("sleep", "selfLove")
     )
 
     createRoutineAndOtherNecessaryData(
@@ -753,7 +755,7 @@ private fun createRoutineAndOtherNecessaryData(
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
         UserRoutineBackend.createUserRoutineObject(newRoutine) {
-            setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(newRoutine) {
+            setUpRoutineAndUserSelfLoveAfterMakingNewRoutine(newRoutine) {
                 closeBottomSheet(scope, state)
                 openSavedElementDialogBox = true
             }
@@ -761,15 +763,15 @@ private fun createRoutineAndOtherNecessaryData(
     }
 }
 
-fun setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(
+fun setUpRoutineAndUserSelfLoveAfterMakingNewRoutine(
     routineData: RoutineData,
     completed: () -> Unit
 ){
-    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
-        globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+    RoutineSelfLoveBackend.createRoutineSelfLoveObject(
+        globalViewModel_!!.currentSelfLoveToBeAdded!!,
         routineData
     ) {
-        setUpUserBedtimeStory {
+        setUpUserSelfLove {
             completed()
         }
     }

@@ -1,12 +1,17 @@
-package com.example.eunoia.dashboard.bedtimeStory
+package com.example.eunoia.dashboard.prayer
 
 import android.content.res.Configuration
 import android.net.Uri
-import android.util.Log
-import androidx.compose.foundation.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,58 +25,61 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
+import com.amplifyframework.datastore.generated.model.PrayerData
 import com.example.eunoia.R
 import com.example.eunoia.dashboard.home.UserDashboardActivity
-import com.example.eunoia.dashboard.sound.*
+import com.example.eunoia.dashboard.sound.gradientBackground
+import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.generalMediaPlayerService_
+import com.example.eunoia.ui.components.BackArrowHeader
+import com.example.eunoia.ui.components.LightText
+import com.example.eunoia.ui.components.NormalText
+import com.example.eunoia.ui.components.PurpleBackgroundInfo
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
-import com.example.eunoia.utils.BedtimeStoryTimer
+import com.example.eunoia.utils.PrayerTimer
 import com.example.eunoia.utils.timerFormatMS
 import kotlinx.coroutines.CoroutineScope
 
-var bedtimeStoryUri: Uri? = null
-var bedtimeStoryScreenIcons = arrayOf(
+var prayerUri: Uri? = null
+var prayerScreenIcons = arrayOf(
     mutableStateOf(R.drawable.reset_sliders_icon),
     mutableStateOf(R.drawable.seek_back_15),
     mutableStateOf(R.drawable.play_icon),
     mutableStateOf(R.drawable.seek_forward_15),
 )
-var bedtimeStoryScreenBorderControlColors = arrayOf(
+var prayerScreenBorderControlColors = arrayOf(
     mutableStateOf(Bizarre),
     mutableStateOf(Bizarre),
     mutableStateOf(Black),
     mutableStateOf(Bizarre),
     mutableStateOf(Bizarre),
 )
-var bedtimeStoryScreenBackgroundControlColor1 = arrayOf(
+var prayerScreenBackgroundControlColor1 = arrayOf(
     mutableStateOf(White),
     mutableStateOf(White),
     mutableStateOf(SoftPeach),
     mutableStateOf(White),
     mutableStateOf(White),
 )
-var bedtimeStoryScreenBackgroundControlColor2 = arrayOf(
+var prayerScreenBackgroundControlColor2 = arrayOf(
     mutableStateOf(White),
     mutableStateOf(White),
     mutableStateOf(Solitude),
     mutableStateOf(White),
     mutableStateOf(White),
 )
-var angle = mutableStateOf(0f)
-var clicked = mutableStateOf(false)
-var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
-var bedtimeStoryTimeDisplay by mutableStateOf("00.00")
+var prayerAngle = mutableStateOf(0f)
+var prayerClicked = mutableStateOf(false)
+var prayerTimer = PrayerTimer(UserDashboardActivity.getInstanceActivity())
+var prayerTimeDisplay by mutableStateOf("00.00")
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BedtimeStoryScreen(
+fun PrayerScreen(
     navController: NavController,
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    prayerData: PrayerData,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -79,25 +87,23 @@ fun BedtimeStoryScreen(
     globalViewModel_!!.navController = navController
     var retrievedUris by rememberSaveable{ mutableStateOf(false) }
 
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(globalViewModel_!!.currentPrayerPlaying != null) {
+        if (globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id) {
             setParametersFromGlobalVariables{
                 retrievedUris = true
             }
         }else{
-            Log.d(TAG, "one 1")
-            resetBedtimeStoryControlsUI()
-            angle.value = 0f
-            clicked.value = false
-            bedtimeStoryTimeDisplay = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+            resetPrayerControlsUI()
+            prayerAngle.value = 0f
+            prayerClicked.value = false
+            prayerTimeDisplay = timerFormatMS(prayerData.fullPlayTime.toLong())
             retrievedUris = true
         }
     }else{
-        Log.d(TAG, "two 2")
-        resetBedtimeStoryControlsUI()
-        angle.value = 0f
-        clicked.value = false
-        bedtimeStoryTimeDisplay = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+        resetPrayerControlsUI()
+        prayerAngle.value = 0f
+        prayerClicked.value = false
+        prayerTimeDisplay = timerFormatMS(prayerData.fullPlayTime.toLong())
         retrievedUris = true
     }
 
@@ -144,7 +150,7 @@ fun BedtimeStoryScreen(
                     }
             ) {
                 NormalText(
-                    text = "Bedtime Story",
+                    text = "Prayer",
                     color = Black,
                     fontSize = 12,
                     xOffset = 0,
@@ -161,27 +167,27 @@ fun BedtimeStoryScreen(
                     }
                     .fillMaxWidth()
             ) {
-                CircularSlider(
+                CircularSliderPrayer(
                     thumbColor = Snuff,
                     progressColor = Black,
                     backgroundColor = PeriwinkleGray.copy(alpha = 0.5F),
                     modifier = Modifier.size(320.dp),
                 ){ appliedAngle ->
-                    if(globalViewModel_!!.currentBedtimeStoryPlaying != null){
-                        if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
-                            if(clicked.value) {
+                    if(globalViewModel_!!.currentPrayerPlaying != null){
+                        if(globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id){
+                            if(prayerClicked.value) {
                                 val newSeek = (
                                         appliedAngle /
                                                 360f
                                         ) * generalMediaPlayerService.getMediaPlayer()!!.duration
                                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeek.toInt())
-                                bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                                //globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                                bedtimeStoryTimer.start()
-                                globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
-                                if(!globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
-                                    bedtimeStoryTimer.pause()
-                                    globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
+                                prayerTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                                //globalViewModel_!!.prayerTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                                prayerTimer.start()
+                                globalViewModel_!!.prayerTimer = prayerTimer
+                                if(!globalViewModel_!!.isCurrentPrayerPlaying) {
+                                    prayerTimer.pause()
+                                    globalViewModel_!!.prayerTimer = prayerTimer
                                 }
                             }
                         }
@@ -205,14 +211,14 @@ fun BedtimeStoryScreen(
                             )
                             .border(1.dp, Black, CircleShape)
                             .clickable {
-                                pauseOrPlayBedtimeStoryAccordingly(
-                                    bedtimeStoryInfoData,
+                                pauseOrPlayPrayerAccordingly(
+                                    prayerData,
                                     generalMediaPlayerService,
                                 )
                             }
                     ) {
                         LightText(
-                            text = bedtimeStoryTimeDisplay,
+                            text = prayerTimeDisplay,
                             color = Black,
                             fontSize = 10,
                             xOffset = 0,
@@ -230,8 +236,8 @@ fun BedtimeStoryScreen(
                     }
                     .fillMaxWidth()
             ) {
-                PurpleBackgroundControls(
-                    bedtimeStoryInfoData = bedtimeStoryInfoData,
+                PurpleBackgroundPrayerControls(
+                    prayerData = prayerData,
                     generalMediaPlayerService = generalMediaPlayerService,
                     scope = scope,
                     state = state
@@ -247,8 +253,8 @@ fun BedtimeStoryScreen(
                     .fillMaxWidth()
             ) {
                 var longDescription = "Long description"
-                if(bedtimeStoryInfoData.longDescription != null){
-                    longDescription = bedtimeStoryInfoData.longDescription
+                if(prayerData.longDescription != null){
+                    longDescription = prayerData.longDescription
                 }
                 PurpleBackgroundInfo(
                     "Description",
@@ -285,58 +291,57 @@ private fun setParametersFromGlobalVariables(
     }
 }
 
-private const val TAG = "BedtimeStoryScreen"
+private const val TAG = "prayerScreen"
 
 fun setUpParameters(
     completed: () -> Unit
 ) {
-    Log.d(TAG, "setup params")
-    bedtimeStoryUri = globalViewModel_!!.currentBedtimeStoryPlayingUri!!
+    prayerUri = globalViewModel_!!.currentPrayerPlayingUri!!
 
-    for(i in bedtimeStoryScreenIcons.indices){
-        bedtimeStoryScreenIcons[i].value = globalViewModel_!!.bedtimeStoryScreenIcons[i].value
+    for(i in prayerScreenIcons.indices){
+        prayerScreenIcons[i].value = globalViewModel_!!.prayerScreenIcons[i].value
     }
-    for(i in bedtimeStoryScreenBorderControlColors.indices){
-        bedtimeStoryScreenBorderControlColors[i].value = globalViewModel_!!.bedtimeStoryScreenBorderControlColors[i].value
+    for(i in prayerScreenBorderControlColors.indices){
+        prayerScreenBorderControlColors[i].value = globalViewModel_!!.prayerScreenBorderControlColors[i].value
     }
-    for(i in bedtimeStoryScreenBackgroundControlColor1.indices){
-        bedtimeStoryScreenBackgroundControlColor1[i].value = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[i].value
+    for(i in prayerScreenBackgroundControlColor1.indices){
+        prayerScreenBackgroundControlColor1[i].value = globalViewModel_!!.prayerScreenBackgroundControlColor1[i].value
     }
-    for(i in bedtimeStoryScreenBackgroundControlColor2.indices){
-        bedtimeStoryScreenBackgroundControlColor2[i].value = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[i].value
+    for(i in prayerScreenBackgroundControlColor2.indices){
+        prayerScreenBackgroundControlColor2[i].value = globalViewModel_!!.prayerScreenBackgroundControlColor2[i].value
     }
 
-    bedtimeStoryTimeDisplay = globalViewModel_!!.bedtimeStoryTimeDisplay
-    bedtimeStoryTimer = globalViewModel_!!.bedtimeStoryTimer
-    angle.value = globalViewModel_!!.bedtimeStoryCircularSliderAngle
-    clicked.value = globalViewModel_!!.bedtimeStoryCircularSliderClicked
+    prayerTimeDisplay = globalViewModel_!!.prayerTimeDisplay
+    prayerTimer = globalViewModel_!!.prayerTimer
+    prayerAngle.value = globalViewModel_!!.prayerCircularSliderAngle
+    prayerClicked.value = globalViewModel_!!.prayerCircularSliderClicked
     completed()
 }
 
-fun resetBedtimeStoryControlsUI(){
-    bedtimeStoryScreenIcons[2].value = R.drawable.play_icon
+fun resetPrayerControlsUI(){
+    prayerScreenIcons[2].value = R.drawable.play_icon
 
-    for(i in bedtimeStoryScreenBorderControlColors.indices){
+    for(i in prayerScreenBorderControlColors.indices){
         if(i == 2){
-            bedtimeStoryScreenBorderControlColors[i].value = Black
+            prayerScreenBorderControlColors[i].value = Black
         }else{
-            bedtimeStoryScreenBorderControlColors[i].value = Bizarre
+            prayerScreenBorderControlColors[i].value = Bizarre
         }
     }
 
-    for(i in bedtimeStoryScreenBackgroundControlColor1.indices){
+    for(i in prayerScreenBackgroundControlColor1.indices){
         if(i == 2){
-            bedtimeStoryScreenBackgroundControlColor1[i].value = SoftPeach
+            prayerScreenBackgroundControlColor1[i].value = SoftPeach
         }else{
-            bedtimeStoryScreenBackgroundControlColor1[i].value = White
+            prayerScreenBackgroundControlColor1[i].value = White
         }
     }
 
-    for(i in bedtimeStoryScreenBackgroundControlColor2.indices){
+    for(i in prayerScreenBackgroundControlColor2.indices){
         if(i == 2){
-            bedtimeStoryScreenBackgroundControlColor2[i].value = Solitude
+            prayerScreenBackgroundControlColor2[i].value = Solitude
         }else{
-            bedtimeStoryScreenBackgroundControlColor2[i].value = White
+            prayerScreenBackgroundControlColor2[i].value = White
         }
     }
     Thread.sleep(1_000)
@@ -355,7 +360,7 @@ fun resetBedtimeStoryControlsUI(){
 @Composable
 fun Preview() {
     /*EUNOIATheme {
-        BedtimeStoryScreen(
+        prayerScreen(
             rememberNavController(),
             rememberCoroutineScope(),
             rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)

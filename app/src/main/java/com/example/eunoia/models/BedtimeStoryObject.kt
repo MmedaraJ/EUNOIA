@@ -15,7 +15,8 @@ object BedtimeStoryObject{
         val id: String,
         val bedtimeStoryOwner: @RawValue UserObject.User?,
         val displayName: String,
-        val description: String,
+        val shortDescription: String?,
+        val longDescription: String?,
         val audioKeyS3: String,
         val icon: Int,
         val fullPlayTime: Long,
@@ -33,7 +34,6 @@ object BedtimeStoryObject{
             get() = BedtimeStoryInfoData.builder()
                 .bedtimeStoryOwner(this.bedtimeStoryOwner!!.data)
                 .displayName(this.displayName)
-                .description(this.description)
                 .audioKeyS3(this.audioKeyS3)
                 .icon(this.icon)
                 .fullPlayTime(this.fullPlayTime.toInt())
@@ -42,6 +42,8 @@ object BedtimeStoryObject{
                 .audioSource(this.audioSource)
                 .approvalStatus(this.approvalStatus)
                 .creationStatus(this.creationStatus)
+                .shortDescription(this.shortDescription)
+                .longDescription(this.longDescription)
                 .id(this.id)
                 .build()
 
@@ -51,7 +53,8 @@ object BedtimeStoryObject{
                     bedtimeStoryData.id,
                     UserObject.User.from(bedtimeStoryData.bedtimeStoryOwner),
                     bedtimeStoryData.displayName,
-                    bedtimeStoryData.description,
+                    bedtimeStoryData.shortDescription,
+                    bedtimeStoryData.longDescription,
                     bedtimeStoryData.audioKeyS3,
                     bedtimeStoryData.icon,
                     bedtimeStoryData.fullPlayTime.toLong(),

@@ -166,7 +166,8 @@ fun createBedtimeStoryFromUpload(
                 UUID.randomUUID().toString(),
                 UserObject.User.from(globalViewModel_!!.currentUser!!),
                 bedtimeStoryName,
-                bedtimeStoryDescription,
+                bedtimeStoryShortDescription,
+                bedtimeStoryLongDescription,
                 key,
                 bedtimeStoryIcon,
                 audioFileLengthMilliSecondsBedtimeStory.value,
@@ -194,6 +195,7 @@ fun createBedtimeStoryFromUpload(
                             resetAllBedtimeStoryCreationObjects()
                             openSavedElementDialogBox = true
                             Thread.sleep(1_000)
+                            openSavedElementDialogBox = false
                             runOnUiThread {
                                /* navController.backQueue.removeIf { it.destination.route == Screen.NameBedtimeStory.screen_route }
                                 navController.backQueue.removeIf { it.destination.route == Screen.UploadBedtimeStory.screen_route }*/

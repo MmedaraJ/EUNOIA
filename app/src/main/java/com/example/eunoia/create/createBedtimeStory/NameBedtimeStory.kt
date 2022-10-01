@@ -33,15 +33,22 @@ import java.util.*
 
 var bedtimeStoryIcon by mutableStateOf(-1)
 var bedtimeStoryName by mutableStateOf("")
-var bedtimeStoryDescription by mutableStateOf("")
+var bedtimeStoryShortDescription by mutableStateOf("")
+var bedtimeStoryLongDescription by mutableStateOf("")
 var bedtimeStoryTags by mutableStateOf("")
 var bedtimeStoryIconSelectionTitle by mutableStateOf("")
 var bedtimeStoryNameErrorMessage by mutableStateOf("")
-var bedtimeStoryDescriptionErrorMessage by mutableStateOf("")
+var bedtimeStoryShortDescriptionErrorMessage by mutableStateOf("")
+var bedtimeStoryLongDescriptionErrorMessage by mutableStateOf("")
 var bedtimeStoryTagsErrorMessage by mutableStateOf("")
-const val MIN_BEDTIME_STORY_NAME = 5
-const val MIN_BEDTIME_STORY_DESCRIPTION = 10
-const val MIN_BEDTIME_STORY_TAGS = 3
+private const val MIN_BEDTIME_STORY_NAME = 5
+private const val MIN_BEDTIME_STORY_SHORT_DESCRIPTION = 10
+private const val MIN_BEDTIME_STORY_LONG_DESCRIPTION = 50
+private const val MIN_BEDTIME_STORY_TAGS = 3
+private const val MAX_BEDTIME_STORY_NAME = 30
+private const val MAX_BEDTIME_STORY_SHORT_DESCRIPTION = 50
+private const val MAX_BEDTIME_STORY_LONG_DESCRIPTION = 200
+private const val MAX_BEDTIME_STORY_TAGS = 50
 var incompleteBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?>()
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -67,7 +74,8 @@ fun NameBedtimeStoryUI(
     val scrollState = rememberScrollState()
 
     initializeBedtimeStoryNameError()
-    initializeBedtimeStoryDescriptionError()
+    initializeBedtimeStoryShortDescriptionError()
+    initializeBedtimeStoryLongDescriptionError()
     initializeBedtimeStoryTagsError()
     initializeBedtimeStoryIconError()
 
@@ -80,9 +88,11 @@ fun NameBedtimeStoryUI(
             header,
             title,
             nameColumn,
-            name_error,
-            descriptionColumn,
-            descriptionError,
+            nameError,
+            shortDescriptionColumn,
+            shortDescriptionError,
+            longDescriptionColumn,
+            longDescriptionError,
             tagColumn,
             tagError,
             iconTitle,
@@ -91,6 +101,7 @@ fun NameBedtimeStoryUI(
             next,
             endSpace
         ) = createRefs()
+
         Column(
             modifier = Modifier
                 .constrainAs(header) {
@@ -137,7 +148,7 @@ fun NameBedtimeStoryUI(
                 }
         ) {
             bedtimeStoryName = customizedOutlinedTextInput(
-                width = 0,
+                maxLength = MAX_BEDTIME_STORY_NAME,
                 height = 55,
                 color = SoftPeach,
                 focusedBorderColor = BeautyBush,
@@ -152,7 +163,7 @@ fun NameBedtimeStoryUI(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(name_error) {
+                .constrainAs(nameError) {
                     top.linkTo(nameColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
@@ -167,15 +178,53 @@ fun NameBedtimeStoryUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(descriptionColumn) {
-                    top.linkTo(name_error.bottom, margin = 16.dp)
+                .constrainAs(shortDescriptionColumn) {
+                    top.linkTo(nameError.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
-            bedtimeStoryDescription = customizableBigOutlinedTextInput(
+            bedtimeStoryShortDescription = customizedOutlinedTextInput(
+                maxLength = MAX_BEDTIME_STORY_SHORT_DESCRIPTION,
+                height = 55,
+                color = SoftPeach,
+                focusedBorderColor = BeautyBush,
+                unfocusedBorderColor = SoftPeach,
+                inputFontSize = 16,
+                placeholder = "Short description",
+                placeholderFontSize = 16,
+                placeholderColor = BeautyBush,
+                offset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(shortDescriptionError) {
+                    top.linkTo(shortDescriptionColumn.bottom, margin = 4.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedLightText(
+                text = bedtimeStoryShortDescriptionErrorMessage,
+                color = Black,
+                fontSize = 10,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            modifier = Modifier
+                .constrainAs(longDescriptionColumn) {
+                    top.linkTo(shortDescriptionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ) {
+            bedtimeStoryLongDescription = customizableBigOutlinedTextInput(
+                maxLength = MAX_BEDTIME_STORY_LONG_DESCRIPTION,
                 height = 100,
-                placeholder = "Description",
+                placeholder = "Long description",
                 backgroundColor = SoftPeach,
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
@@ -188,13 +237,13 @@ fun NameBedtimeStoryUI(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(descriptionError) {
-                    top.linkTo(descriptionColumn.bottom, margin = 4.dp)
+                .constrainAs(longDescriptionError) {
+                    top.linkTo(longDescriptionColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
             AlignedLightText(
-                text = bedtimeStoryDescriptionErrorMessage,
+                text = bedtimeStoryLongDescriptionErrorMessage,
                 color = Black,
                 fontSize = 10,
                 xOffset = 0,
@@ -204,13 +253,13 @@ fun NameBedtimeStoryUI(
         Column(
             modifier = Modifier
                 .constrainAs(tagColumn) {
-                    top.linkTo(descriptionError.bottom, margin = 16.dp)
+                    top.linkTo(longDescriptionError.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ) {
             bedtimeStoryTags = customizedOutlinedTextInput(
-                width = 0,
+                maxLength = MAX_BEDTIME_STORY_TAGS,
                 height = 55,
                 color = SoftPeach,
                 focusedBorderColor = BeautyBush,
@@ -323,7 +372,8 @@ fun NameBedtimeStoryUI(
         ) {
             if(
                 bedtimeStoryName.length >= MIN_BEDTIME_STORY_NAME &&
-                bedtimeStoryDescription.length >= MIN_BEDTIME_STORY_DESCRIPTION &&
+                bedtimeStoryShortDescription.length >= MIN_BEDTIME_STORY_SHORT_DESCRIPTION &&
+                bedtimeStoryLongDescription.length >= MIN_BEDTIME_STORY_LONG_DESCRIPTION &&
                 bedtimeStoryTags.length >= MIN_BEDTIME_STORY_TAGS &&
                 bedtimeStoryIcon != -1
             ) {
@@ -339,10 +389,20 @@ fun NameBedtimeStoryUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    runOnUiThread {
-                        navigateToUploadBedtimeStory(
-                            navController
-                        )
+                    var otherBedtimeStoriesWithSameName by mutableStateOf(-1)
+                    BedtimeStoryBackend.queryBedtimeStoryBasedOnDisplayName(bedtimeStoryName){
+                        otherBedtimeStoriesWithSameName = if(it.isEmpty()) 0 else it.size
+                    }
+                    Thread.sleep(1_000)
+
+                    if (otherBedtimeStoriesWithSameName < 1) {
+                        runOnUiThread {
+                            navigateToUploadBedtimeStory(
+                                navController
+                            )
+                        }
+                    }else{
+                        openBedtimeStoryNameTakenDialogBox = true
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -414,11 +474,21 @@ private fun initializeBedtimeStoryNameError() {
     }
 }
 
-private fun initializeBedtimeStoryDescriptionError() {
-    bedtimeStoryDescriptionErrorMessage = if(bedtimeStoryDescription.isEmpty()){
-        "Describe this bedtime story"
-    } else if(bedtimeStoryDescription.length < MIN_BEDTIME_STORY_DESCRIPTION){
-        "Description must be at least $MIN_BEDTIME_STORY_DESCRIPTION characters"
+private fun initializeBedtimeStoryShortDescriptionError() {
+    bedtimeStoryShortDescriptionErrorMessage = if(bedtimeStoryShortDescription.isEmpty()){
+        "Provide a short description"
+    } else if(bedtimeStoryShortDescription.length < MIN_BEDTIME_STORY_SHORT_DESCRIPTION){
+        "Short description must be at least $MIN_BEDTIME_STORY_SHORT_DESCRIPTION characters"
+    } else{
+        ""
+    }
+}
+
+private fun initializeBedtimeStoryLongDescriptionError() {
+    bedtimeStoryLongDescriptionErrorMessage = if(bedtimeStoryLongDescription.isEmpty()){
+        "Provide a long description"
+    } else if(bedtimeStoryLongDescription.length < MIN_BEDTIME_STORY_LONG_DESCRIPTION){
+        "Long description must be at least $MIN_BEDTIME_STORY_LONG_DESCRIPTION characters"
     } else{
         ""
     }
@@ -459,7 +529,8 @@ private fun createBedtimeStory(
                     UUID.randomUUID().toString(),
                     UserObject.User.from(globalViewModel_!!.currentUser!!),
                     bedtimeStoryName,
-                    bedtimeStoryDescription,
+                    bedtimeStoryShortDescription,
+                    bedtimeStoryLongDescription,
                     "",
                     bedtimeStoryIcon,
                     0,
@@ -512,11 +583,11 @@ fun getBedtimeStoryTagsList():List<String> {
 fun resetNameBedtimeStoryVariables(){
     bedtimeStoryIcon = -1
     bedtimeStoryName = ""
-    bedtimeStoryDescription = ""
+    bedtimeStoryShortDescription = ""
     bedtimeStoryTags = ""
     bedtimeStoryIconSelectionTitle = ""
     bedtimeStoryNameErrorMessage = ""
-    bedtimeStoryDescriptionErrorMessage = ""
+    bedtimeStoryShortDescriptionErrorMessage = ""
     bedtimeStoryTagsErrorMessage = ""
     incompleteBedtimeStories.clear()
 }

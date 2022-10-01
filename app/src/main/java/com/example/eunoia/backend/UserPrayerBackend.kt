@@ -74,4 +74,59 @@ object UserPrayerBackend {
             )
         }
     }
+
+    fun queryApprovedUserPrayerBasedOnUser(
+        userData: UserData,
+        completed: (userPrayer: List<UserPrayer?>) -> Unit
+    ) {
+        scope.launch {
+            val userPrayerList = mutableListOf<UserPrayer?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    UserPrayer::class.java,
+                    UserPrayer.USER_DATA.eq(userData.id),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (userPrayerData in response.data) {
+                            //TODO change pending to approved
+                            if(userPrayerData.prayerData.approvalStatus == PrayerApprovalStatus.PENDING) {
+                                Log.i(TAG, userPrayerData.toString())
+                                userPrayerList.add(userPrayerData)
+                            }
+                        }
+                    }
+                    completed(userPrayerList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun queryUserPrayerBasedOnUserAndPrayer(
+        userData: UserData,
+        prayerData: PrayerData,
+        completed: (userPrayer: List<UserPrayer?>) -> Unit
+    ) {
+        scope.launch {
+            val userPrayerList = mutableListOf<UserPrayer?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    UserPrayer::class.java,
+                    UserPrayer.USER_DATA.eq(userData.id)
+                        .and(UserPrayer.PRAYER_DATA.eq(prayerData.id)),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (userPrayerData in response.data) {
+                            Log.i(TAG, userPrayerData.toString())
+                            userPrayerList.add(userPrayerData)
+                        }
+                    }
+                    completed(userPrayerList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
 }

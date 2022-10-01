@@ -32,7 +32,8 @@ public final class SelfLoveData implements Model {
   public static final QueryField ID = field("SelfLoveData", "id");
   public static final QueryField SELF_LOVE_OWNER = field("SelfLoveData", "userDataID");
   public static final QueryField DISPLAY_NAME = field("SelfLoveData", "display_name");
-  public static final QueryField DESCRIPTION = field("SelfLoveData", "description");
+  public static final QueryField SHORT_DESCRIPTION = field("SelfLoveData", "shortDescription");
+  public static final QueryField LONG_DESCRIPTION = field("SelfLoveData", "longDescription");
   public static final QueryField AUDIO_KEY_S3 = field("SelfLoveData", "audioKeyS3");
   public static final QueryField ICON = field("SelfLoveData", "icon");
   public static final QueryField FULL_PLAY_TIME = field("SelfLoveData", "fullPlayTime");
@@ -44,7 +45,8 @@ public final class SelfLoveData implements Model {
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData selfLoveOwner;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
-  private final @ModelField(targetType="String", isRequired = true) String description;
+  private final @ModelField(targetType="String") String shortDescription;
+  private final @ModelField(targetType="String") String longDescription;
   private final @ModelField(targetType="String", isRequired = true) String audioKeyS3;
   private final @ModelField(targetType="Int", isRequired = true) Integer icon;
   private final @ModelField(targetType="Int", isRequired = true) Integer fullPlayTime;
@@ -69,8 +71,12 @@ public final class SelfLoveData implements Model {
       return display_name;
   }
   
-  public String getDescription() {
-      return description;
+  public String getShortDescription() {
+      return shortDescription;
+  }
+  
+  public String getLongDescription() {
+      return longDescription;
   }
   
   public String getAudioKeyS3() {
@@ -121,11 +127,12 @@ public final class SelfLoveData implements Model {
       return updatedAt;
   }
   
-  private SelfLoveData(String id, UserData selfLoveOwner, String display_name, String description, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
+  private SelfLoveData(String id, UserData selfLoveOwner, String display_name, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
     this.id = id;
     this.selfLoveOwner = selfLoveOwner;
     this.display_name = display_name;
-    this.description = description;
+    this.shortDescription = shortDescription;
+    this.longDescription = longDescription;
     this.audioKeyS3 = audioKeyS3;
     this.icon = icon;
     this.fullPlayTime = fullPlayTime;
@@ -147,7 +154,8 @@ public final class SelfLoveData implements Model {
       return ObjectsCompat.equals(getId(), selfLoveData.getId()) &&
               ObjectsCompat.equals(getSelfLoveOwner(), selfLoveData.getSelfLoveOwner()) &&
               ObjectsCompat.equals(getDisplayName(), selfLoveData.getDisplayName()) &&
-              ObjectsCompat.equals(getDescription(), selfLoveData.getDescription()) &&
+              ObjectsCompat.equals(getShortDescription(), selfLoveData.getShortDescription()) &&
+              ObjectsCompat.equals(getLongDescription(), selfLoveData.getLongDescription()) &&
               ObjectsCompat.equals(getAudioKeyS3(), selfLoveData.getAudioKeyS3()) &&
               ObjectsCompat.equals(getIcon(), selfLoveData.getIcon()) &&
               ObjectsCompat.equals(getFullPlayTime(), selfLoveData.getFullPlayTime()) &&
@@ -167,7 +175,8 @@ public final class SelfLoveData implements Model {
       .append(getId())
       .append(getSelfLoveOwner())
       .append(getDisplayName())
-      .append(getDescription())
+      .append(getShortDescription())
+      .append(getLongDescription())
       .append(getAudioKeyS3())
       .append(getIcon())
       .append(getFullPlayTime())
@@ -189,7 +198,8 @@ public final class SelfLoveData implements Model {
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("selfLoveOwner=" + String.valueOf(getSelfLoveOwner()) + ", ")
       .append("display_name=" + String.valueOf(getDisplayName()) + ", ")
-      .append("description=" + String.valueOf(getDescription()) + ", ")
+      .append("shortDescription=" + String.valueOf(getShortDescription()) + ", ")
+      .append("longDescription=" + String.valueOf(getLongDescription()) + ", ")
       .append("audioKeyS3=" + String.valueOf(getAudioKeyS3()) + ", ")
       .append("icon=" + String.valueOf(getIcon()) + ", ")
       .append("fullPlayTime=" + String.valueOf(getFullPlayTime()) + ", ")
@@ -229,6 +239,7 @@ public final class SelfLoveData implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -237,7 +248,8 @@ public final class SelfLoveData implements Model {
     return new CopyOfBuilder(id,
       selfLoveOwner,
       display_name,
-      description,
+      shortDescription,
+      longDescription,
       audioKeyS3,
       icon,
       fullPlayTime,
@@ -253,12 +265,7 @@ public final class SelfLoveData implements Model {
   
 
   public interface DisplayNameStep {
-    DescriptionStep displayName(String displayName);
-  }
-  
-
-  public interface DescriptionStep {
-    AudioKeyS3Step description(String description);
+    AudioKeyS3Step displayName(String displayName);
   }
   
 
@@ -285,6 +292,8 @@ public final class SelfLoveData implements Model {
   public interface BuildStep {
     SelfLoveData build();
     BuildStep id(String id);
+    BuildStep shortDescription(String shortDescription);
+    BuildStep longDescription(String longDescription);
     BuildStep lyrics(List<String> lyrics);
     BuildStep tags(List<String> tags);
     BuildStep audioSource(SelfLoveAudioSource audioSource);
@@ -292,15 +301,16 @@ public final class SelfLoveData implements Model {
   }
   
 
-  public static class Builder implements SelfLoveOwnerStep, DisplayNameStep, DescriptionStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, BuildStep {
+  public static class Builder implements SelfLoveOwnerStep, DisplayNameStep, AudioKeyS3Step, IconStep, FullPlayTimeStep, VisibleToOthersStep, BuildStep {
     private String id;
     private UserData selfLoveOwner;
     private String display_name;
-    private String description;
     private String audioKeyS3;
     private Integer icon;
     private Integer fullPlayTime;
     private Boolean visibleToOthers;
+    private String shortDescription;
+    private String longDescription;
     private List<String> lyrics;
     private List<String> tags;
     private SelfLoveAudioSource audioSource;
@@ -313,7 +323,8 @@ public final class SelfLoveData implements Model {
           id,
           selfLoveOwner,
           display_name,
-          description,
+          shortDescription,
+          longDescription,
           audioKeyS3,
           icon,
           fullPlayTime,
@@ -332,16 +343,9 @@ public final class SelfLoveData implements Model {
     }
     
     @Override
-     public DescriptionStep displayName(String displayName) {
+     public AudioKeyS3Step displayName(String displayName) {
         Objects.requireNonNull(displayName);
         this.display_name = displayName;
-        return this;
-    }
-    
-    @Override
-     public AudioKeyS3Step description(String description) {
-        Objects.requireNonNull(description);
-        this.description = description;
         return this;
     }
     
@@ -370,6 +374,18 @@ public final class SelfLoveData implements Model {
      public BuildStep visibleToOthers(Boolean visibleToOthers) {
         Objects.requireNonNull(visibleToOthers);
         this.visibleToOthers = visibleToOthers;
+        return this;
+    }
+    
+    @Override
+     public BuildStep shortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+        return this;
+    }
+    
+    @Override
+     public BuildStep longDescription(String longDescription) {
+        this.longDescription = longDescription;
         return this;
     }
     
@@ -409,15 +425,16 @@ public final class SelfLoveData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData selfLoveOwner, String displayName, String description, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
+    private CopyOfBuilder(String id, UserData selfLoveOwner, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
       super.id(id);
       super.selfLoveOwner(selfLoveOwner)
         .displayName(displayName)
-        .description(description)
         .audioKeyS3(audioKeyS3)
         .icon(icon)
         .fullPlayTime(fullPlayTime)
         .visibleToOthers(visibleToOthers)
+        .shortDescription(shortDescription)
+        .longDescription(longDescription)
         .lyrics(lyrics)
         .tags(tags)
         .audioSource(audioSource)
@@ -432,11 +449,6 @@ public final class SelfLoveData implements Model {
     @Override
      public CopyOfBuilder displayName(String displayName) {
       return (CopyOfBuilder) super.displayName(displayName);
-    }
-    
-    @Override
-     public CopyOfBuilder description(String description) {
-      return (CopyOfBuilder) super.description(description);
     }
     
     @Override
@@ -457,6 +469,16 @@ public final class SelfLoveData implements Model {
     @Override
      public CopyOfBuilder visibleToOthers(Boolean visibleToOthers) {
       return (CopyOfBuilder) super.visibleToOthers(visibleToOthers);
+    }
+    
+    @Override
+     public CopyOfBuilder shortDescription(String shortDescription) {
+      return (CopyOfBuilder) super.shortDescription(shortDescription);
+    }
+    
+    @Override
+     public CopyOfBuilder longDescription(String longDescription) {
+      return (CopyOfBuilder) super.longDescription(longDescription);
     }
     
     @Override

@@ -76,4 +76,31 @@ object RoutinePrayerBackend {
             )
         }
     }
+
+    fun queryRoutinePrayerBasedOnPrayerAndRoutine(
+        routineData: RoutineData,
+        prayerData: PrayerData,
+        completed: (routinePrayer: List<RoutinePrayer?>) -> Unit
+    ) {
+        scope.launch {
+            val routinePrayerList = mutableListOf<RoutinePrayer?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    RoutinePrayer::class.java,
+                    RoutinePrayer.PRAYER_DATA.eq(prayerData.id)
+                        .and(RoutinePrayer.ROUTINE_DATA.eq(routineData.id)),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (routinePrayerData in response.data) {
+                            Log.i(TAG, routinePrayerData.toString())
+                            routinePrayerList.add(routinePrayerData)
+                        }
+                    }
+                    completed(routinePrayerList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
 }

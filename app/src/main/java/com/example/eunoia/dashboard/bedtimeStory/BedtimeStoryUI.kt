@@ -25,8 +25,10 @@ import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.ui.bottomSheets.bedtimeStory.resetGlobalControlButtons
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -233,7 +235,11 @@ fun resetBedtimeStory(
 ){
     if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
         if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
-            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
+            if (
+                generalMediaPlayerService.isMediaPlayerInitialized() &&
+                globalViewModel_!!.currentSelfLovePlaying == null &&
+                globalViewModel_!!.currentPrayerPlaying == null
+            ) {
                 resetBothLocalAndGlobalControlButtonsAfterReset()
                 clicked.value = false
                 angle.value = 0f
@@ -254,7 +260,11 @@ fun seekBack15(
 ) {
     if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
         if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
-            if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+            if(
+                generalMediaPlayerService.isMediaPlayerInitialized() &&
+                globalViewModel_!!.currentSelfLovePlaying == null &&
+                globalViewModel_!!.currentPrayerPlaying == null
+            ) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
                 if(newSeekTo < 0){
                     newSeekTo = 0
@@ -284,7 +294,11 @@ fun seekForward15(
 ) {
     if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
         if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
-            if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+            if(
+                generalMediaPlayerService.isMediaPlayerInitialized() &&
+                globalViewModel_!!.currentSelfLovePlaying == null &&
+                globalViewModel_!!.currentPrayerPlaying == null
+            ) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
                 if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
                     newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.duration - 2000
@@ -318,7 +332,11 @@ fun pauseOrPlayBedtimeStoryAccordingly(
 ) {
     if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
         if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
-            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
+            if (
+                generalMediaPlayerService.isMediaPlayerInitialized() &&
+                globalViewModel_!!.currentSelfLovePlaying == null &&
+                globalViewModel_!!.currentPrayerPlaying == null
+            ) {
                 if (generalMediaPlayerService.isMediaPlayerPlaying()) {
                     pauseBedtimeStory(generalMediaPlayerService)
                 }else{
@@ -350,7 +368,11 @@ fun pauseOrPlayBedtimeStoryAccordingly(
 private fun pauseBedtimeStory(
     generalMediaPlayerService: GeneralMediaPlayerService,
 ) {
-    if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+    if(
+        generalMediaPlayerService.isMediaPlayerInitialized() &&
+        globalViewModel_!!.currentSelfLovePlaying == null &&
+        globalViewModel_!!.currentPrayerPlaying == null
+    ) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
             bedtimeStoryTimer.pause()
@@ -367,7 +389,11 @@ private fun startBedtimeStory(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
 ) {
     if(bedtimeStoryUri != null){
-        if(generalMediaPlayerService.isMediaPlayerInitialized()){
+        if(
+            generalMediaPlayerService.isMediaPlayerInitialized() &&
+            globalViewModel_!!.currentSelfLovePlaying == null &&
+            globalViewModel_!!.currentPrayerPlaying == null
+        ){
             if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
                 generalMediaPlayerService.startMediaPlayer()
             }else{
@@ -403,6 +429,7 @@ private fun initializeMediaPlayer(
     bedtimeStoryTimer.setDuration(0L)
     globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
     resetBothLocalAndGlobalControlButtons()
+    resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
     //resetAll(context, soundMediaPlayerService)
 }
 
@@ -414,6 +441,14 @@ private fun setGlobalPropertiesAfterPlayingBedtimeStory(
     globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
     deActivateGlobalBedtimeStoryControlButton(2)
     deActivateGlobalBedtimeStoryControlButton(0)
+}
+
+fun resetBedtimeStoryGlobalProperties(){
+    globalViewModel_!!.currentBedtimeStoryPlaying = null
+    globalViewModel_!!.currentBedtimeStoryPlayingUri = null
+    globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+    globalViewModel_!!.bedtimeStoryTimer.stop()
+    resetGlobalControlButtons()
 }
 
 private fun retrieveBedtimeStoryAudio(

@@ -353,7 +353,7 @@ fun SelectRoutine(
                             Spacer(modifier = Modifier.height(4.dp))
 
                             val goodDisplayName = displayRoutineNameForBottomSheet(userRoutine!!)
-                            NormalText(
+                            AlignedNormalText(
                                 text = goodDisplayName,
                                 color = MaterialTheme.colors.primary,
                                 fontSize = 9,

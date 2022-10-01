@@ -375,7 +375,7 @@ fun standardOutlinedTextInputMax30(width: Int, height: Int, placeholder: String,
 
 @Composable
 fun customizedOutlinedTextInput(
-    width: Int,
+    maxLength: Int,
     height: Int,
     color: Color,
     focusedBorderColor: Color,
@@ -387,10 +387,12 @@ fun customizedOutlinedTextInput(
     offset: Int
 ): String{
     var text by rememberSaveable{ mutableStateOf("") }
+    val context = LocalContext.current
     OutlinedTextField(
         value = text,
         onValueChange = {
-            text = it
+            if (it.length <= maxLength) text = it
+            else Toast.makeText(context, "Only $maxLength characters allowed", Toast.LENGTH_SHORT).show()
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = color,
@@ -516,6 +518,7 @@ fun bigOutlinedTextInput(
 
 @Composable
 fun customizableBigOutlinedTextInput(
+    maxLength: Int,
     height: Int,
     placeholder: String,
     backgroundColor: Color,
@@ -528,10 +531,12 @@ fun customizableBigOutlinedTextInput(
     completed: (comment: String) -> Unit
 ): String{
     var text by rememberSaveable{ mutableStateOf("") }
+    val context = LocalContext.current
     OutlinedTextField(
         value = text,
         onValueChange = {
-            text = it
+            if (it.length <= maxLength) text = it
+            else Toast.makeText(context, "Only $maxLength characters allowed", Toast.LENGTH_SHORT).show()
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = backgroundColor,
@@ -1400,8 +1405,13 @@ fun DisplayUsersBedtimeStories(
                         top.linkTo(title.bottom, margin = 2.dp)
                     }
             ) {
+                var shortDescription = "Short description"
+                if(bedtimeStoryInfoData.shortDescription != null){
+                    shortDescription = bedtimeStoryInfoData.shortDescription
+                }
+
                 ExtraLightText(
-                    text = bedtimeStoryInfoData.description,
+                    text = shortDescription,
                     color = Black,
                     fontSize = 10,
                     xOffset = 0,
