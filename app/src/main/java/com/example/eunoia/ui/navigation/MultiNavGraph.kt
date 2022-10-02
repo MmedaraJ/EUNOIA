@@ -229,6 +229,10 @@ fun EunoiaApp(
                                 globalViewModel_!!.allowBottomSheetClose = true
                                 SelectRoutineIconForSelfLove(scope, state)
                             }
+                            "showSelfLoveLyrics" -> {
+                                globalViewModel_!!.allowBottomSheetClose = true
+                                ShowSelfLoveLyricsBottomSheet(scope, state)
+                            }
 
                             /**
                              * Add prayer to list or routine

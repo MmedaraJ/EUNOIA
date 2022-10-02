@@ -419,11 +419,26 @@ fun setUpRoutineBedtimeStory(
                     }
                 }
             }else{
-                RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
-                    globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
-                    userRoutine.routineData
-                ) {
-                    completed()
+                //updated play time should be <= 45'
+                var playTime = userRoutine.routineData.fullPlayTime
+                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime > playTime) {
+                    playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+                    if (playTime > MAX_ROUTINE_PLAYTIME) {
+                        playTime = MAX_ROUTINE_PLAYTIME
+                    }
+                }
+
+                val routine = userRoutine.routineData.copyOfBuilder()
+                    .fullPlayTime(playTime)
+                    .build()
+
+                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
+                    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
+                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+                        updatedRoutine
+                    ) {
+                        completed()
+                    }
                 }
             }
         }else{

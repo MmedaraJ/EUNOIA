@@ -72,6 +72,7 @@ fun RecordBedtimeStoryUI(
         ) {
             BackArrowHeader(
                 {
+                    //TODO(reset whats necessary on back press)
                     navController.popBackStack()
                 },
                 {

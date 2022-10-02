@@ -422,11 +422,26 @@ fun setUpRoutinePrayer(
                     }
                 }
             }else{
-                RoutinePrayerBackend.createRoutinePrayerObject(
-                    globalViewModel_!!.currentPrayerToBeAdded!!,
-                    userRoutine.routineData
-                ) {
-                    completed()
+                //updated play time should be <= 45'
+                var playTime = userRoutine.routineData.fullPlayTime
+                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime > playTime) {
+                    playTime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
+                    if (playTime > MAX_ROUTINE_PLAYTIME) {
+                        playTime = MAX_ROUTINE_PLAYTIME
+                    }
+                }
+
+                val routine = userRoutine.routineData.copyOfBuilder()
+                    .fullPlayTime(playTime)
+                    .build()
+
+                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
+                    RoutinePrayerBackend.createRoutinePrayerObject(
+                        globalViewModel_!!.currentPrayerToBeAdded!!,
+                        updatedRoutine
+                    ) {
+                        completed()
+                    }
                 }
             }
         }else{

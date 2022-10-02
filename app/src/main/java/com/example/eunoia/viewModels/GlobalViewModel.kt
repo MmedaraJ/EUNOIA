@@ -170,6 +170,7 @@ class GlobalViewModel: ViewModel(){
     var selfLoveTimer = SelfLoveTimer(UserDashboardActivity.getInstanceActivity())
 
     var currentSelfLoveToBeAdded by mutableStateOf<SelfLoveData?>(null)
+    var currentSelfLoveLyricsToBeShown by mutableStateOf<SelfLoveData?>(null)
 
     val selfLoveScreenIcons = arrayOf(
         mutableStateOf(R.drawable.reset_sliders_icon),

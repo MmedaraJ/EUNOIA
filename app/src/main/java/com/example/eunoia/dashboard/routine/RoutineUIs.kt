@@ -1,5 +1,6 @@
 package com.example.eunoia.dashboard.routine
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -7,6 +8,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +33,11 @@ fun RoutineElements(
     navController: NavController,
     routineData: RoutineData
 ){
+    val borders = mutableListOf<MutableState<Boolean>>()
+    for(i in routineData.playingOrder.indices){
+        borders.add(remember { mutableStateOf(false) })
+    }
+
     ConstraintLayout{
         val (
             elements,
@@ -45,17 +54,36 @@ fun RoutineElements(
                     bottom.linkTo(parent.bottom, margin = 0.dp)
                 }
         ) {
-            routineData.playingOrder.forEach { element ->
+            routineData.playingOrder.forEachIndexed {index, element ->
+                var cardModifier = Modifier
+                    .clickable {
+                        borders.forEach { border ->
+                            border.value = false
+                        }
+                        borders[index].value = !borders[index].value
+                        //element clicked
+                        routineElementClicked(
+                            navController,
+                            element,
+                            routineData
+                        )
+                    }
+
+                if (borders[index].value) {
+                    cardModifier = cardModifier.then(
+                        Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.large)
+                    )
+                }
+
                 var text = element
-                if(element == "bedtimeStory"){
+                if(text == "bedtimeStory"){
                     text = "bedtime\nstory"
                 }
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .clickable {
-                        }
+                    modifier = cardModifier
                 ) {
                     Card(
                         modifier = Modifier
@@ -73,7 +101,6 @@ fun RoutineElements(
                                     ),
                                     angle = 180f
                                 )
-                                .clickable { }
                                 .weight(1f)
                                 .aspectRatio(1f)
                         ) {
@@ -88,6 +115,18 @@ fun RoutineElements(
                     }
                 }
             }
+        }
+    }
+}
+
+fun routineElementClicked(
+    navController: NavController,
+    element: String,
+    routineData: RoutineData
+) {
+    when(element){
+        "sound" -> {
+            //navigateToRoutinePresetsPage(navController, routineData)
         }
     }
 }

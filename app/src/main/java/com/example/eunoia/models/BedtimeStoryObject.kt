@@ -51,7 +51,7 @@ object BedtimeStoryObject{
             fun from(bedtimeStoryData: BedtimeStoryInfoData): BedtimeStory{
                 val result = BedtimeStory(
                     bedtimeStoryData.id,
-                    UserObject.User.from(bedtimeStoryData.bedtimeStoryOwner),
+                    UserObject.User.from(bedtimeStoryData.bedtimeStoryOwner!!),
                     bedtimeStoryData.displayName,
                     bedtimeStoryData.shortDescription,
                     bedtimeStoryData.longDescription,

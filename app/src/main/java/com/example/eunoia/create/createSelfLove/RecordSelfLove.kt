@@ -83,10 +83,6 @@ fun RecordSelfLoveUI(
         ) {
             BackArrowHeader(
                 {
-                    if(recordingFile != null){
-                        deleteRecordingFile(context)
-                    }
-
                     resetRecordingFileAndMediaSelfLove(context)
                     navController.popBackStack()
                 },

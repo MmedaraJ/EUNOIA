@@ -422,11 +422,25 @@ fun setUpRoutineSelfLove(
                     }
                 }
             }else{
-                RoutineSelfLoveBackend.createRoutineSelfLoveObject(
-                    globalViewModel_!!.currentSelfLoveToBeAdded!!,
-                    userRoutine.routineData
-                ) {
-                    completed()
+                var playTime = userRoutine.routineData.fullPlayTime
+                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime > playTime) {
+                    playTime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
+                    if (playTime > MAX_ROUTINE_PLAYTIME) {
+                        playTime = MAX_ROUTINE_PLAYTIME
+                    }
+                }
+
+                val routine = userRoutine.routineData.copyOfBuilder()
+                    .fullPlayTime(playTime)
+                    .build()
+
+                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
+                    RoutineSelfLoveBackend.createRoutineSelfLoveObject(
+                        globalViewModel_!!.currentSelfLoveToBeAdded!!,
+                        updatedRoutine
+                    ) {
+                        completed()
+                    }
                 }
             }
         }else{

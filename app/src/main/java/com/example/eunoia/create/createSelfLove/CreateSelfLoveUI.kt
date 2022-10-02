@@ -282,6 +282,7 @@ fun startRecordedMediaPlayer(context: Context) {
 fun resetSelfLoveUploadUI() {
     uploadedFileSelfLove.value = File("Choose a file")
     uploadedFileColorSelfLove.value = WePeep
+    resetUploadSelfLoveMediaPlayers()
     uploadedFileMediaPlayerSelfLove.value = MediaPlayer()
     uploadedFileUriSelfLove.value = "".toUri()
     uploadedAudioFileLengthMilliSecondsSelfLove.value = 0L
@@ -291,6 +292,7 @@ fun resetSelfLoveRecordUI(context: Context) {
     recordedSelfLoveAbsolutePath.value = ""
     recordedFileSelfLove.value = File("Record Self Love")
     recordedFileColorSelfLove.value = WePeep
+    resetRecordingFileAndMediaSelfLove(context)
     recordedFileMediaPlayerSelfLove.value = MediaPlayer()
     recordedFileUriSelfLove.value = "".toUri()
     recordedAudioFileLengthMilliSecondsSelfLove.value = 0L

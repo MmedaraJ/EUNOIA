@@ -17,19 +17,16 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
-import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
-import com.amplifyframework.datastore.generated.model.SelfLoveAudioSource
 import com.amplifyframework.datastore.generated.model.SelfLoveData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSelfLoveBackend
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
-import com.example.eunoia.dashboard.home.OptionItemTest
+import com.example.eunoia.dashboard.home.OptionItem
 import com.example.eunoia.dashboard.prayer.resetPrayerGlobalProperties
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
-import com.example.eunoia.ui.bottomSheets.bedtimeStory.deActivateBedtimeStoryGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.components.*
@@ -156,7 +153,7 @@ fun SelfLoveActivityUI(
                 top.linkTo(introTitle.bottom, margin = 8.dp)
             }
         ) {
-            OptionItemTest(
+            OptionItem(
                 allElements,
                 allIcons,
                 allPros

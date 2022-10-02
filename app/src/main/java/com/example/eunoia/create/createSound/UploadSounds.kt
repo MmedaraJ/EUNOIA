@@ -74,10 +74,7 @@ fun UploadSoundsUI(
         ) {
             BackArrowHeader(
                 {
-                    uploadedFiles.clear()
-                    fileColors.clear()
-                    fileUris.clear()
-                    fileMediaPlayers.clear()
+                    clearAllCreationObjects()
                     navController.popBackStack()
                 },
                 {
@@ -210,6 +207,20 @@ fun UploadSoundsUI(
             Spacer(modifier = Modifier.height(40.dp))
         }
     }
+}
+
+fun clearAllCreationObjects(){
+    uploadedFiles.clear()
+    fileColors.clear()
+    fileUris.clear()
+    for (index in 0..fileMediaPlayers.size) {
+        if(fileMediaPlayers[index]!!.value.isPlaying) {
+            fileMediaPlayers[index]!!.value.stop()
+        }
+        fileMediaPlayers[index]!!.value.reset()
+        fileMediaPlayers[index]!!.value.release()
+    }
+    fileMediaPlayers.clear()
 }
 
 fun validateUploadedFiles(): Boolean{

@@ -22,6 +22,8 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
+import com.example.eunoia.create.createPrayer.uploadedFileMediaPlayerPrayer
+import com.example.eunoia.create.createSelfLove.resetSelfLoveUploadUI
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
@@ -83,6 +85,7 @@ fun UploadBedtimeStoryUI(
         ) {
             BackArrowHeader(
                 {
+                    resetBedtimeStoryUploadUI()
                     navController.popBackStack()
                 },
                 {
@@ -148,6 +151,14 @@ fun UploadBedtimeStoryUI(
             }
         }
     }
+}
+
+fun resetUploadBedtimeStoryMediaPlayers(){
+    if(fileMediaPlayerBedtimeStory.value.isPlaying){
+        fileMediaPlayerBedtimeStory.value.stop()
+    }
+    fileMediaPlayerBedtimeStory.value.reset()
+    fileMediaPlayerBedtimeStory.value.release()
 }
 
 fun createBedtimeStoryFromUpload(

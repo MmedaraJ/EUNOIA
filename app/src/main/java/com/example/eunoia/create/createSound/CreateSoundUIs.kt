@@ -150,7 +150,6 @@ fun SwipeToResetSoundUI(
     val dismissState = rememberDismissState(
         initialValue = DismissValue.Default,
         confirmStateChange = {
-            Log.i(TAG, "Confirm state change ==>> $it")
             if(it == DismissValue.DismissedToStart){
                 resetSoundUploadUI(index)
             }
@@ -266,7 +265,6 @@ fun SwipeToResetSoundUI(
 }
 
 fun resetSoundUploadUI(index: Int) {
-    Log.i(TAG, "About to reset UI $index")
     uploadedFiles[index]!!.value = File("Choose a file")
     fileColors[index]!!.value = WePeep
     fileUris[index]!!.value = "".toUri()

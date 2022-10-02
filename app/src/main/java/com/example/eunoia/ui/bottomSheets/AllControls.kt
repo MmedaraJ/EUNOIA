@@ -40,6 +40,8 @@ fun openBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
 fun closeBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
     globalViewModel_!!.soundScreenBorderControlColors[7].value = Bizarre
     globalViewModel_!!.bedtimeStoryScreenBorderControlColors[4].value = Bizarre
+    globalViewModel_!!.selfLoveScreenBorderControlColors[4].value = Bizarre
+    globalViewModel_!!.prayerScreenBorderControlColors[4].value = Bizarre
     scope.launch{
         state.hide()
     }

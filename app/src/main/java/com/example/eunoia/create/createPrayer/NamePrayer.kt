@@ -9,6 +9,7 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -57,6 +58,7 @@ fun NamePrayerUI(
     state: ModalBottomSheetState
 ){
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     SetupAlertDialogs()
     initializePrayerNameError()
@@ -106,6 +108,7 @@ fun NamePrayerUI(
         ) {
             BackArrowHeader(
                 {
+                    resetAllPrayerCreationObjects(context)
                     navController.popBackStack()
                 },
                 {

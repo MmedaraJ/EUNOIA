@@ -1,11 +1,16 @@
 package com.example.eunoia.create
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,6 +31,12 @@ fun Elements(navController: NavController){
         "bedtime\nstory",
         "self-love",
     )
+
+    val borders = mutableListOf<MutableState<Boolean>>()
+    for(i in allElements.indices){
+        borders.add(remember { mutableStateOf(false) })
+    }
+
     ConstraintLayout{
         val (
             elements,
@@ -42,27 +53,40 @@ fun Elements(navController: NavController){
                     bottom.linkTo(parent.bottom, margin = 0.dp)
                 }
         ) {
-            allElements.forEach { element ->
+            allElements.forEachIndexed { index, element ->
+                var cardModifier = Modifier
+                    .clickable {
+                        borders.forEach { border ->
+                            border.value = false
+                        }
+                        borders[index].value = !borders[index].value
+
+                        when (element) {
+                            "sound" -> {
+                                navController.navigate(Screen.NameSound.screen_route)
+                            }
+                            "prayer" -> {
+                                navController.navigate(Screen.NamePrayer.screen_route)
+                            }
+                            "bedtime\nstory" -> {
+                                navController.navigate(Screen.NameBedtimeStory.screen_route)
+                            }
+                            "self-love" -> {
+                                navController.navigate(Screen.NameSelfLove.screen_route)
+                            }
+                        }
+                    }
+
+                if (borders[index].value) {
+                    cardModifier = cardModifier.then(
+                        Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.large)
+                    )
+                }
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .clickable {
-                            when (element) {
-                                "sound" -> {
-                                    navController.navigate(Screen.NameSound.screen_route)
-                                }
-                                "prayer" -> {
-                                    navController.navigate(Screen.NamePrayer.screen_route)
-                                }
-                                "bedtime\nstory" -> {
-                                    navController.navigate(Screen.NameBedtimeStory.screen_route)
-                                }
-                                "self-love" -> {
-                                    navController.navigate(Screen.NameSelfLove.screen_route)
-                                }
-                            }
-                        }
+                    modifier = cardModifier
                 ) {
                     Card(
                         modifier = Modifier

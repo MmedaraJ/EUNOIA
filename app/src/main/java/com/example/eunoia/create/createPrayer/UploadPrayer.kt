@@ -21,8 +21,11 @@ import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
+import com.example.eunoia.create.createSelfLove.resetSelfLoveUploadUI
+import com.example.eunoia.create.createSelfLove.uploadedFileMediaPlayerSelfLove
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.PrayerObject
+import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -82,6 +85,7 @@ fun UploadPrayerUI(
         ) {
             BackArrowHeader(
                 {
+                    resetPrayerUploadUI()
                     navController.popBackStack()
                 },
                 {
@@ -151,6 +155,14 @@ fun UploadPrayerUI(
     }
 }
 
+fun resetUploadPrayerMediaPlayers(){
+    if(uploadedFileMediaPlayerPrayer.value.isPlaying){
+        uploadedFileMediaPlayerPrayer.value.stop()
+    }
+    uploadedFileMediaPlayerPrayer.value.reset()
+    uploadedFileMediaPlayerPrayer.value.release()
+}
+
 fun createPrayerFromUpload(
     navController: NavController,
     context: Context
@@ -215,12 +227,16 @@ fun createPrayer(
                         /* navController.backQueue.removeIf { it.destination.route == Screen.NameBedtimeStory.screen_route }
                          navController.backQueue.removeIf { it.destination.route == Screen.UploadBedtimeStory.screen_route }*/
                         //TODO navigate to users list of pending prayers
-                        navController.navigate(Screen.Create.screen_route)
+                        navigateToPrayerScreen(navController, prayerData)
                     }
                 }
             }
         }
     }
+}
+
+fun navigateToPrayerScreen(navController: NavController, prayerData: PrayerData){
+    navController.navigate("${Screen.PrayerScreen.screen_route}/prayerData=${PrayerObject.Prayer.from(prayerData)}")
 }
 
 fun getPrayerTagsList():List<String> {
@@ -229,7 +245,6 @@ fun getPrayerTagsList():List<String> {
 
 fun resetAllPrayerCreationObjects(context: Context){
     resetNamePrayerVariables()
-    //resetRecordPrayerVariables()
     resetPrayerUploadUI()
     resetPrayerRecordUI(context)
 }

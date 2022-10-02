@@ -1,7 +1,6 @@
 package com.example.eunoia.dashboard.home
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.MediaMetadataRetriever
@@ -15,6 +14,9 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -404,12 +406,15 @@ fun UserDashboardActivityUI(
                 top.linkTo(introTitle.bottom, margin = 8.dp)
             }
         ) {
-            OptionItemTest(
+            OptionItem(
                 allElements,
                 allIcons,
                 allPros
             ) {
                 when (it) {
+                    "sleep" -> {
+                        AuthBackend.signOut()
+                    }
                     "sound" -> {
                         toSoundActivity(navController)
                     }
@@ -522,12 +527,17 @@ private val allPros = listOf(
 )
 
 @Composable
-fun OptionItemTest(
+fun OptionItem(
     allElements: List<String>,
     allIcons: List<Int>,
     allPros: List<Boolean>,
     elementClicked: (element: String) -> Unit,
 ){
+    val borders = mutableListOf<MutableState<Boolean>>()
+    for(i in allElements.indices){
+        borders.add(remember { mutableStateOf(false) })
+    }
+
     ConstraintLayout{
         val (
             elements,
@@ -545,17 +555,29 @@ fun OptionItemTest(
                 }
         ) {
             allElements.forEachIndexed { index, element ->
+                var cardModifier = Modifier
+                    .clickable {
+                        borders.forEach { border ->
+                            border.value = false
+                        }
+                        borders[index].value = !borders[index].value
+                        elementClicked(element)
+                    }
+                    .fillMaxWidth(0.222F)
+
+                if (borders[index].value) {
+                    cardModifier = cardModifier.then(
+                        Modifier.border(BorderStroke(1.dp, Black), MaterialTheme.shapes.small)
+                    )
+                }
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .clickable {
-                            elementClicked(element)
-                        }
+                    //modifier = cardModifier
                 ) {
                     Card(
-                        modifier = Modifier
-                            .fillMaxWidth(0.222F),
+                        modifier = cardModifier,
                         shape = MaterialTheme.shapes.small,
                         elevation = 8.dp
                     ) {
@@ -623,87 +645,6 @@ fun OptionItemTest(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun OptionItem(
-    displayName: String,
-    icon: Int,
-    width: Int,
-    height: Int,
-    pro: Boolean,
-    xOffset: Int,
-    yOffset: Int,
-    start: (displayName: String) -> Unit,
-    lambda: (displayName: String) -> Unit
-){
-    start(displayName)
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(bottom = 15.dp)
-            .fillMaxWidth(0.225F)
-            .clickable { lambda(displayName) }
-    ){
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .aspectRatio(1f)
-        ){
-            Card(
-                modifier = Modifier,
-                    //.size(width.dp, height.dp)
-                    //.fillMaxWidth(0.2F),
-                    //.fillMaxWidth(),
-                shape = MaterialTheme.shapes.small,
-                backgroundColor = White,
-                elevation = 8.dp
-            ) {
-                Image(
-                    painter = painterResource(id = icon),
-                    contentDescription = "$displayName icon",
-                    modifier = Modifier
-                        .size(width = 25.64.dp, height = 25.64.dp)
-                        .padding(20.dp)
-                )
-            }
-            if(pro) {
-                Card(
-                    modifier = Modifier
-                        .size(45.dp, 22.dp)
-                        .offset(xOffset.dp, yOffset.dp),
-                    shape = MaterialTheme.shapes.small,
-                    backgroundColor = Color.Black,
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        MorgeNormalText(
-                            text = "PRO",
-                            color = Color.White,
-                            fontSize = 12,
-                            xOffset = 0,
-                            yOffset = 0
-                        )
-                    }
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-        ){
-            AlignedNormalText(
-                text = displayName,
-                color = MaterialTheme.colors.primary,
-                fontSize = 9,
-                xOffset = 0,
-                yOffset = 0
-            )
         }
     }
 }

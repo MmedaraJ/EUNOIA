@@ -112,6 +112,7 @@ fun NameBedtimeStoryUI(
         ) {
             BackArrowHeader(
                 {
+                    resetAllBedtimeStoryCreationObjects()
                     navController.popBackStack()
                 },
                 {

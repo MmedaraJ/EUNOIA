@@ -84,6 +84,7 @@ fun NameSoundUI(
         ) {
             BackArrowHeader(
                 {
+                    //TODO(reset necessary data)
                     navController.popBackStack()
                 },
                 {

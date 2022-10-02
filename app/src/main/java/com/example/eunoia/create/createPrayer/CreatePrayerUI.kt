@@ -282,6 +282,7 @@ fun startRecordedMediaPlayer(context: Context) {
 fun resetPrayerUploadUI() {
     uploadedFilePrayer.value = File("Choose a file")
     uploadedFileColorPrayer.value = WePeep
+    resetUploadPrayerMediaPlayers()
     uploadedFileMediaPlayerPrayer.value = MediaPlayer()
     uploadedFileUriPrayer.value = "".toUri()
     uploadedAudioFileLengthMilliSecondsPrayer.value = 0L
@@ -291,6 +292,7 @@ fun resetPrayerRecordUI(context: Context) {
     recordedPrayerAbsolutePath.value = ""
     recordedFilePrayer.value = File("Record Prayer")
     recordedFileColorPrayer.value = WePeep
+    resetRecordingFileAndMediaPlayer(context)
     recordedFileMediaPlayerPrayer.value = MediaPlayer()
     recordedFileUriPrayer.value = "".toUri()
     recordedAudioFileLengthMilliSecondsPrayer.value = 0L

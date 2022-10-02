@@ -21,7 +21,7 @@ import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
-import com.example.eunoia.dashboard.home.OptionItemTest
+import com.example.eunoia.dashboard.home.OptionItem
 import com.example.eunoia.dashboard.prayer.resetPrayerGlobalProperties
 import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
 import com.example.eunoia.models.BedtimeStoryObject
@@ -154,7 +154,7 @@ fun BedtimeStoryActivityUI(
                 top.linkTo(introTitle.bottom, margin = 8.dp)
             }
         ) {
-            OptionItemTest(
+            OptionItem(
                 allElements,
                 allIcons,
                 allPros

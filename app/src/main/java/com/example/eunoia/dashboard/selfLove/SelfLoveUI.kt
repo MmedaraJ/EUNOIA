@@ -13,6 +13,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -246,6 +247,11 @@ fun PurpleBackgroundSelfLoveControls(
     }
 }
 
+var selfLoveLyricsIcon = R.drawable.comment_icon
+var selfLoveLyricsBackgroundColor1 = mutableStateOf(White)
+var selfLoveLyricsBackgroundColor2 = mutableStateOf(White)
+var selfLoveLyricsBorderColor = mutableStateOf(Bizarre)
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetSelfLoveControls(
@@ -259,6 +265,43 @@ fun BottomSheetSelfLoveControls(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .clip(CircleShape)
+                .gradientBackground(
+                    listOf(
+                        selfLoveLyricsBackgroundColor1.value,
+                        selfLoveLyricsBackgroundColor2.value
+                    ),
+                    angle = 45f
+                )
+                .border(
+                    BorderStroke(
+                        0.5.dp,
+                        selfLoveLyricsBorderColor.value
+                    ),
+                    RoundedCornerShape(50.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            AnImageWithColor(
+                selfLoveLyricsIcon,
+                "icon",
+                selfLoveLyricsBorderColor.value,
+                12.dp,
+                12.dp,
+                0,
+                0
+            ) {
+                showSelfLoveBottomSheet(
+                    selfLoveData,
+                    scope,
+                    state
+                )
+            }
+        }
+
         selfLoveScreenIcons.forEachIndexed { index, icon ->
             Box(
                 modifier = Modifier
@@ -297,6 +340,7 @@ fun BottomSheetSelfLoveControls(
                 }
             }
         }
+
         if(showAddIcon) {
             Box(
                 modifier = Modifier
@@ -322,6 +366,30 @@ fun BottomSheetSelfLoveControls(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+fun showSelfLoveBottomSheet(
+    selfLoveData: SelfLoveData,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState
+) {
+    //activateSelfLoveLyricsButton()
+    globalViewModel_!!.currentSelfLoveLyricsToBeShown = selfLoveData
+    globalViewModel_!!.bottomSheetOpenFor = "showSelfLoveLyrics"
+    openBottomSheet(scope, state)
+}
+
+private fun activateSelfLoveLyricsButton(){
+    selfLoveLyricsBorderColor.value = Black
+    selfLoveLyricsBackgroundColor1.value = SoftPeach
+    selfLoveLyricsBackgroundColor2.value = Solitude
+}
+
+private fun deActivateSelfLoveLyricsButton(){
+    selfLoveLyricsBorderColor.value = Bizarre
+    selfLoveLyricsBackgroundColor1.value = White
+    selfLoveLyricsBackgroundColor2.value = White
 }
 
 private fun activateControls(

@@ -232,6 +232,7 @@ fun SwipeToResetBedtimeStoryUI(
 fun resetBedtimeStoryUploadUI() {
     uploadedFileBedtimeStory.value = File("Choose a file")
     fileColorBedtimeStory.value = WePeep
+    resetUploadBedtimeStoryMediaPlayers()
     fileMediaPlayerBedtimeStory.value = MediaPlayer()
     fileUriBedtimeStory.value = "".toUri()
     audioFileLengthMilliSecondsBedtimeStory.value = 0L

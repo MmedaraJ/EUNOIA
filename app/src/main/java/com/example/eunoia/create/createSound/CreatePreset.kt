@@ -250,9 +250,11 @@ fun CreatePresetUI(
                         saveAudioFilesToS3 {
                             createSound {
                                 openSavedElementDialogBox = true
+                                clearAllCreationObjects()
                                 Thread.sleep(1_000)
                                 openSavedElementDialogBox = false
                                 runOnUiThread {
+                                    //TODO(user page not created) navigate to user pending sounds page
                                     navigateToSoundScreen(navController, it)
                                 }
                             }

@@ -9,6 +9,7 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -43,9 +44,9 @@ private const val MIN_SELF_LOVE_LONG_DESCRIPTION = 10
 private const val MIN_SELF_LOVE_TAGS = 3
 private const val MAX_SELF_LOVE_NAME = 30
 private const val MAX_SELF_LOVE_SHORT_DESCRIPTION = 50
-private const val MAX_SELF_LOVE_LONG_DESCRIPTION = 200
+private const val MAX_SELF_LOVE_LONG_DESCRIPTION = 500
 private const val MAX_SELF_LOVE_TAGS = 50
-private const val MAX_SELF_LOVE_LYRICS = 500
+private const val MAX_SELF_LOVE_LYRICS = 2000
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -56,6 +57,7 @@ fun NameSelfLoveUI(
     state: ModalBottomSheetState
 ){
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     SetupAlertDialogs()
     initializeSelfLoveNameError()
@@ -99,6 +101,7 @@ fun NameSelfLoveUI(
         ) {
             BackArrowHeader(
                 {
+                    resetAllSelfLoveCreationObjects(context)
                     navController.popBackStack()
                 },
                 {

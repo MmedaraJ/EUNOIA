@@ -3,7 +3,6 @@ package com.example.eunoia.dashboard.sound
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -158,7 +157,7 @@ fun SoundActivityUI(
                 top.linkTo(introTitle.bottom, margin = 8.dp)
             }
         ) {
-            OptionItemTest(
+            OptionItem(
                 allElements,
                 allIcons,
                 allPros
@@ -445,64 +444,6 @@ private fun pauseSound(
             com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(3)
             globalViewModel_!!.isCurrentSoundPlaying = false
         }
-    }
-}
-
-@Composable
-private fun OptionsList(navController: NavController, context: Context){
-    var sound by remember{ mutableStateOf<SoundData?>(null) }
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        OptionItem(
-            displayName = "pouring\nrain",
-            icon = R.drawable.pouring_rain_icon,
-            71,
-            71,
-            false,
-            0,
-            0,
-            { displayName ->
-                Log.i(TAG, "About to get pouring rain again")
-                if(globalViewModel_!!.currentSoundPlaying == null) {
-                    SoundBackend.querySoundBasedOnDisplayName("pouring rain") {
-                        if (it.isNotEmpty()) {
-                            sound = it[0]
-                        }
-                    }
-                }else{
-                    if (globalViewModel_!!.currentSoundPlaying!!.displayName != "pouring rain") {
-                        SoundBackend.querySoundBasedOnDisplayName("pouring rain") {
-                            if (it.isNotEmpty()) {
-                                sound = it[0]
-                            }
-                        }
-                    }
-                }
-            }
-        ){
-            if (sound != null) {
-                navigateToSoundScreen(navController, sound!!)
-            }else{
-                navigateToSoundScreen(navController, globalViewModel_!!.currentSoundPlaying!!)
-            }
-        }
-        OptionItem(displayName = "coffee\nhouse", icon = R.drawable.coffee_house_icon, 71, 71, true, 35, -10, {}){ something() }
-        OptionItem(displayName = "library", icon = R.drawable.library_icon, 71, 71, false, 0, 0, {}){ something() }
-        OptionItem(displayName = "baking", icon = R.drawable.baking_icon, 71, 71, false, 0, 0, {}){ something() }
-    }
-
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        OptionItem(displayName = "beach\nwaves", icon = R.drawable.beach_waves_icon, 71, 71, false, 0, 0, {}){ something() }
-        OptionItem(displayName = "next door", icon = R.drawable.next_door_icon, 71, 71, false, 0, 0, {}){ something() }
-        OptionItem(displayName = "keyboard", icon = R.drawable.keyboard_icon, 71, 71, true, 35, -10, {}){ something() }
-        OptionItem(displayName = "train\ntrack", icon = R.drawable.train_track_icon, 71, 71, true, 35, -10, {}){ something() }
     }
 }
 

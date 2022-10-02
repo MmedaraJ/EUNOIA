@@ -22,7 +22,7 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserPrayerBackend
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
-import com.example.eunoia.dashboard.home.OptionItemTest
+import com.example.eunoia.dashboard.home.OptionItem
 import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
 import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -153,7 +153,7 @@ fun PrayerActivityUI(
                 top.linkTo(introTitle.bottom, margin = 8.dp)
             }
         ) {
-            OptionItemTest(
+            OptionItem(
                 allElements,
                 allIcons,
                 allPros

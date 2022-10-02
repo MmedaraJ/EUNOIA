@@ -22,6 +22,7 @@ import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
 import com.example.eunoia.dashboard.home.UserDashboardActivity
+import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
@@ -82,6 +83,7 @@ fun UploadSelfLoveUI(
         ) {
             BackArrowHeader(
                 {
+                    resetSelfLoveUploadUI()
                     navController.popBackStack()
                 },
                 {
@@ -151,6 +153,14 @@ fun UploadSelfLoveUI(
     }
 }
 
+fun resetUploadSelfLoveMediaPlayers(){
+    if(uploadedFileMediaPlayerSelfLove.value.isPlaying){
+        uploadedFileMediaPlayerSelfLove.value.stop()
+    }
+    uploadedFileMediaPlayerSelfLove.value.reset()
+    uploadedFileMediaPlayerSelfLove.value.release()
+}
+
 fun createSelfLoveFromUpload(
     navController: NavController,
     context: Context
@@ -214,12 +224,16 @@ fun createSelfLove(
                         /* navController.backQueue.removeIf { it.destination.route == Screen.NameBedtimeStory.screen_route }
                          navController.backQueue.removeIf { it.destination.route == Screen.UploadBedtimeStory.screen_route }*/
                         //TODO navigate to users list of pending SelfLoves
-                        navController.navigate(Screen.Create.screen_route)
+                        navigateToSelfLoveScreen(navController, selfLoveData)
                     }
                 }
             }
         }
     }
+}
+
+fun navigateToSelfLoveScreen(navController: NavController, selfLoveData: SelfLoveData){
+    navController.navigate("${Screen.SelfLoveScreen.screen_route}/selfLoveData=${SelfLoveObject.SelfLove.from(selfLoveData)}")
 }
 
 fun getSelfLoveTagsList():List<String> {
