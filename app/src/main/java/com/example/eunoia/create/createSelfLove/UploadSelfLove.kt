@@ -203,29 +203,14 @@ fun createSelfLove(
     navController: NavController
 ){
     SelfLoveBackend.createSelfLove(SelfLove) { selfLoveData ->
-        if (globalViewModel_!!.currentUser != null) {
-            var userAlreadyHasSelfLove = false
-            for (userSelfLove in globalViewModel_!!.currentUser!!.selfLoves) {
-                if (
-                    userSelfLove.selfLoveData.id == selfLoveData.id &&
-                    userSelfLove.userData.id == globalViewModel_!!.currentUser!!.id
-                ) {
-                    userAlreadyHasSelfLove = true
-                }
-            }
-            if (!userAlreadyHasSelfLove) {
-                UserSelfLoveBackend.createUserSelfLoveObject(
-                    selfLoveData
-                ) {
-                    resetAllSelfLoveCreationObjects(context)
-                    openSavedElementDialogBox = true
-                    Thread.sleep(1_000)
-                    ThreadUtils.runOnUiThread {
-                        /* navController.backQueue.removeIf { it.destination.route == Screen.NameBedtimeStory.screen_route }
-                         navController.backQueue.removeIf { it.destination.route == Screen.UploadBedtimeStory.screen_route }*/
-                        //TODO navigate to users list of pending SelfLoves
-                        navigateToSelfLoveScreen(navController, selfLoveData)
-                    }
+        UserSelfLoveRelationshipBackend.createUserSelfLoveRelationshipObject(selfLoveData) {
+            UserSelfLoveBackend.createUserSelfLoveObject(selfLoveData) {
+                resetAllSelfLoveCreationObjects(context)
+                openSavedElementDialogBox = true
+                Thread.sleep(1_000)
+                ThreadUtils.runOnUiThread {
+                    //TODO navigate to users list of pending SelfLoves
+                    navigateToSelfLoveScreen(navController, selfLoveData)
                 }
             }
         }

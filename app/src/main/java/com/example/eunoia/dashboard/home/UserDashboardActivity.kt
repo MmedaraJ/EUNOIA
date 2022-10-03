@@ -379,8 +379,8 @@ fun UserDashboardActivityUI(
         ){
             ProfilePictureHeader(
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "recordAudio"
-                    openBottomSheet(scope, state)},
+                   /* globalViewModel_!!.bottomSheetOpenFor = "recordAudio"
+                    openBottomSheet(scope, state)},*/
                 {
                     globalViewModel_!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)

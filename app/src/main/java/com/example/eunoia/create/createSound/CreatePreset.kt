@@ -21,10 +21,7 @@ import com.amplifyframework.datastore.generated.model.PresetData
 import com.amplifyframework.datastore.generated.model.PresetPublicityStatus
 import com.amplifyframework.datastore.generated.model.SoundApprovalStatus
 import com.amplifyframework.datastore.generated.model.SoundData
-import com.example.eunoia.backend.PresetBackend
-import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserPresetBackend
-import com.example.eunoia.backend.UserSoundBackend
+import com.example.eunoia.backend.*
 import com.example.eunoia.create.createPrayer.prayerName
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.*
@@ -333,9 +330,11 @@ fun createSound(completed: (soundData: SoundData) -> Unit){
     )
 
     SoundBackend.createSound(sound){
-        createUserSound(it){
-            createSoundPreset(it){
-                completed(it)
+        createUserSoundRelationship(it) {
+            createUserSound(it) {
+                createSoundPreset(it) {
+                    completed(it)
+                }
             }
         }
     }
@@ -374,12 +373,20 @@ private fun createUserSound(soundData: SoundData, completed: () -> Unit){
     }
 }
 
+private fun createUserSoundRelationship(soundData: SoundData, completed: () -> Unit){
+    UserSoundRelationshipBackend.createUserSoundRelationshipObject(soundData){
+        completed()
+    }
+}
+
 private fun createSoundPreset(soundData: SoundData, completed: () -> Unit) {
     for(i in createSoundPresets.indices){
         createSoundPresets[i]!!.value.sound = SoundObject.Sound.from(soundData)
         PresetBackend.createPreset(createSoundPresets[i]!!.value){
-            createUserPreset(it, i){
-                completed()
+            createUserPresetRelationship(it, i) {
+                createUserPreset(it, i) {
+                    completed()
+                }
             }
         }
     }
@@ -396,6 +403,18 @@ private fun createUserPreset(
         PresetObject.Preset.from(presetData),
     )
     UserPresetBackend.createUserPreset(userPresetModel){
+        if(index == createSoundPresets.size - 1){
+            completed()
+        }
+    }
+}
+
+private fun createUserPresetRelationship(
+    presetData: PresetData,
+    index: Int,
+    completed: () -> Unit
+){
+    UserPresetRelationshipBackend.createUserPresetRelationshipObject(presetData){
         if(index == createSoundPresets.size - 1){
             completed()
         }

@@ -43,7 +43,10 @@ object UserBedtimeStoryInfoRelationshipBackend {
         }
     }
 
-    fun createUserBedtimeStoryInfoRelationshipObject(bedtimeStoryInfo: BedtimeStoryInfoData, completed: (userBedtimeStoryInfoRelationship: UserBedtimeStoryInfoRelationship) -> Unit){
+    fun createUserBedtimeStoryInfoRelationshipObject(
+        bedtimeStoryInfo: BedtimeStoryInfoData,
+        completed: (userBedtimeStoryInfoRelationship: UserBedtimeStoryInfoRelationship) -> Unit
+    ){
         val userBedtimeStoryInfoRelationshipModel = UserBedtimeStoryInfoRelationshipObject.UserBedtimeStoryInfoRelationshipModel(
             UUID.randomUUID().toString(),
             UserObject.User.from(globalViewModel_!!.currentUser!!),

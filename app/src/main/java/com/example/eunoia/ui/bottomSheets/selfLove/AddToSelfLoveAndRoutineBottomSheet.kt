@@ -20,15 +20,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.UserRoutine
 import com.example.eunoia.R
-import com.example.eunoia.backend.RoutineBackend
-import com.example.eunoia.backend.RoutineSelfLoveBackend
-import com.example.eunoia.backend.UserSelfLoveBackend
-import com.example.eunoia.backend.UserRoutineBackend
+import com.example.eunoia.backend.*
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.ui.bottomSheets.prayer.setUpUserPrayerRelationship
 import com.example.eunoia.ui.bottomSheets.sound.checkIfRoutineNameIsTaken
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
@@ -210,11 +208,15 @@ private fun addToSelfLoveListClicked(
                 globalViewModel_!!.currentSelfLoveToBeAdded!!
             ){
                 if (it.isEmpty()) {
-                    UserSelfLoveBackend.createUserSelfLoveObject(
+                    UserSelfLoveRelationshipBackend.createUserSelfLoveRelationshipObject(
                         globalViewModel_!!.currentSelfLoveToBeAdded!!
                     ) {
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
+                        UserSelfLoveBackend.createUserSelfLoveObject(
+                            globalViewModel_!!.currentSelfLoveToBeAdded!!
+                        ) {
+                            closeBottomSheet(scope, state)
+                            openSavedElementDialogBox = true
+                        }
                     }
                 }else{
                     closeBottomSheet(scope, state)
@@ -373,9 +375,11 @@ private fun selectRoutineClicked(
             openRoutineAlreadyHasSelfLoveDialogBox = true
         }
     ) {
-        setUpUserSelfLove{
-            closeBottomSheet(scope, state)
-            openSavedElementDialogBox = true
+        setUpUserSelfLoveRelationship {
+            setUpUserSelfLove {
+                closeBottomSheet(scope, state)
+                openSavedElementDialogBox = true
+            }
         }
     }
 }
@@ -456,6 +460,23 @@ fun setUpUserSelfLove(completed: () -> Unit) {
     ){
         if (it.isEmpty()) {
             UserSelfLoveBackend.createUserSelfLoveObject(
+                globalViewModel_!!.currentSelfLoveToBeAdded!!
+            ) {
+                completed()
+            }
+        }else{
+            completed()
+        }
+    }
+}
+
+fun setUpUserSelfLoveRelationship(completed: () -> Unit) {
+    UserSelfLoveRelationshipBackend.queryUserSelfLoveRelationshipBasedOnUserAndSelfLove(
+        globalViewModel_!!.currentUser!!,
+        globalViewModel_!!.currentSelfLoveToBeAdded!!
+    ){
+        if (it.isEmpty()) {
+            UserSelfLoveRelationshipBackend.createUserSelfLoveRelationshipObject(
                 globalViewModel_!!.currentSelfLoveToBeAdded!!
             ) {
                 completed()
@@ -768,10 +789,12 @@ private fun createRoutineAndOtherNecessaryData(
     state: ModalBottomSheetState
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
-        UserRoutineBackend.createUserRoutineObject(newRoutine) {
-            setUpRoutineAndUserSelfLoveAfterMakingNewRoutine(newRoutine) {
-                closeBottomSheet(scope, state)
-                openSavedElementDialogBox = true
+        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) {
+            UserRoutineBackend.createUserRoutineObject(newRoutine) {
+                setUpRoutineAndUserSelfLoveAfterMakingNewRoutine(newRoutine) {
+                    closeBottomSheet(scope, state)
+                    openSavedElementDialogBox = true
+                }
             }
         }
     }
@@ -785,8 +808,10 @@ fun setUpRoutineAndUserSelfLoveAfterMakingNewRoutine(
         globalViewModel_!!.currentSelfLoveToBeAdded!!,
         routineData
     ) {
-        setUpUserSelfLove {
-            completed()
+        setUpUserSelfLoveRelationship {
+            setUpUserSelfLove {
+                completed()
+            }
         }
     }
 }

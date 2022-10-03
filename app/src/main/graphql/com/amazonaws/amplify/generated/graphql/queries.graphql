@@ -34,6 +34,9 @@ query GetSoundData($id: ID!) {
       userRoutineRelationshipsOwnedByUser {
         nextToken
       }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -266,6 +269,9 @@ query GetUserSoundRelationship($id: ID!) {
       userRoutineRelationshipsOwnedByUser {
         nextToken
       }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -445,885 +451,6 @@ query ListUserSoundRelationships(
     nextToken
   }
 }
-query GetUserBedtimeStoryInfoRelationship($id: ID!) {
-  getUserBedtimeStoryInfoRelationship(id: $id) {
-    id
-    userBedtimeStoryInfoRelationshipUserDataID
-    userBedtimeStoryInfoRelationshipOwner {
-      id
-      username
-      amplifyAuthUserId
-      givenName
-      familyName
-      middleName
-      email
-      profile_picture_key
-      address
-      birthdate
-      gender
-      nickname
-      phoneNumber
-      authenticated
-      subscription
-      userSoundRelationshipsOwnedByUser {
-        nextToken
-      }
-      userBedtimeStoryInfoRelationshipsOwnedByUser {
-        nextToken
-      }
-      userPrayerRelationshipsOwnedByUser {
-        nextToken
-      }
-      userSelfLoveRelationshipsOwnedByUser {
-        nextToken
-      }
-      userRoutineRelationshipsOwnedByUser {
-        nextToken
-      }
-      soundsOwnedByUser {
-        nextToken
-      }
-      sounds {
-        nextToken
-      }
-      presetsOwnedByUser {
-        nextToken
-      }
-      presets {
-        nextToken
-      }
-      commentsOwnedByUser {
-        nextToken
-      }
-      routinesOwnedByUser {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      stretchesOwnedByUser {
-        nextToken
-      }
-      stretches {
-        nextToken
-      }
-      prayersOwnedByUser {
-        nextToken
-      }
-      prayers {
-        nextToken
-      }
-      breathingsOwnedByUser {
-        nextToken
-      }
-      breathings {
-        nextToken
-      }
-      selfLovesOwnedByUser {
-        nextToken
-      }
-      selfLoves {
-        nextToken
-      }
-      bedtimeStoriesOwnedByUser {
-        nextToken
-      }
-      bedtimeStories {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
-    userBedtimeStoryInfoRelationshipBedtimeStoryInfo {
-      id
-      bedtimeStoryUserDataID
-      bedtimeStoryOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      displayName
-      shortDescription
-      longDescription
-      audioKeyS3
-      icon
-      fullPlayTime
-      visibleToOthers
-      tags
-      audioSource
-      approvalStatus
-      creationStatus
-      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      users {
-        nextToken
-      }
-      chapters {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    numberOfTimesPlayed
-    totalPlayTime
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListUserBedtimeStoryInfoRelationships(
-  $filter: ModelUserBedtimeStoryInfoRelationshipFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listUserBedtimeStoryInfoRelationships(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      userBedtimeStoryInfoRelationshipUserDataID
-      userBedtimeStoryInfoRelationshipOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
-      userBedtimeStoryInfoRelationshipBedtimeStoryInfo {
-        id
-        bedtimeStoryUserDataID
-        displayName
-        shortDescription
-        longDescription
-        audioKeyS3
-        icon
-        fullPlayTime
-        visibleToOthers
-        tags
-        audioSource
-        approvalStatus
-        creationStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      numberOfTimesPlayed
-      totalPlayTime
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-query GetUserPrayerRelationship($id: ID!) {
-  getUserPrayerRelationship(id: $id) {
-    id
-    userPrayerRelationshipUserDataID
-    userPrayerRelationshipOwner {
-      id
-      username
-      amplifyAuthUserId
-      givenName
-      familyName
-      middleName
-      email
-      profile_picture_key
-      address
-      birthdate
-      gender
-      nickname
-      phoneNumber
-      authenticated
-      subscription
-      userSoundRelationshipsOwnedByUser {
-        nextToken
-      }
-      userBedtimeStoryInfoRelationshipsOwnedByUser {
-        nextToken
-      }
-      userPrayerRelationshipsOwnedByUser {
-        nextToken
-      }
-      userSelfLoveRelationshipsOwnedByUser {
-        nextToken
-      }
-      userRoutineRelationshipsOwnedByUser {
-        nextToken
-      }
-      soundsOwnedByUser {
-        nextToken
-      }
-      sounds {
-        nextToken
-      }
-      presetsOwnedByUser {
-        nextToken
-      }
-      presets {
-        nextToken
-      }
-      commentsOwnedByUser {
-        nextToken
-      }
-      routinesOwnedByUser {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      stretchesOwnedByUser {
-        nextToken
-      }
-      stretches {
-        nextToken
-      }
-      prayersOwnedByUser {
-        nextToken
-      }
-      prayers {
-        nextToken
-      }
-      breathingsOwnedByUser {
-        nextToken
-      }
-      breathings {
-        nextToken
-      }
-      selfLovesOwnedByUser {
-        nextToken
-      }
-      selfLoves {
-        nextToken
-      }
-      bedtimeStoriesOwnedByUser {
-        nextToken
-      }
-      bedtimeStories {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    userPrayerRelationshipPrayerDataID
-    userPrayerRelationshipPrayer {
-      id
-      userDataID
-      prayerOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      displayName
-      shortDescription
-      longDescription
-      audioKeyS3
-      icon
-      fullPlayTime
-      visibleToOthers
-      religion
-      country
-      tags
-      audioSource
-      approvalStatus
-      userPrayerRelationshipsOwnedByPrayer {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      users {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    numberOfTimesPlayed
-    totalPlayTime
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListUserPrayerRelationships(
-  $filter: ModelUserPrayerRelationshipFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listUserPrayerRelationships(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      userPrayerRelationshipUserDataID
-      userPrayerRelationshipOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      userPrayerRelationshipPrayerDataID
-      userPrayerRelationshipPrayer {
-        id
-        userDataID
-        displayName
-        shortDescription
-        longDescription
-        audioKeyS3
-        icon
-        fullPlayTime
-        visibleToOthers
-        religion
-        country
-        tags
-        audioSource
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      numberOfTimesPlayed
-      totalPlayTime
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-query GetUserSelfLoveRelationship($id: ID!) {
-  getUserSelfLoveRelationship(id: $id) {
-    id
-    userSelfLoveRelationshipUserDataID
-    userSelfLoveRelationshipOwner {
-      id
-      username
-      amplifyAuthUserId
-      givenName
-      familyName
-      middleName
-      email
-      profile_picture_key
-      address
-      birthdate
-      gender
-      nickname
-      phoneNumber
-      authenticated
-      subscription
-      userSoundRelationshipsOwnedByUser {
-        nextToken
-      }
-      userBedtimeStoryInfoRelationshipsOwnedByUser {
-        nextToken
-      }
-      userPrayerRelationshipsOwnedByUser {
-        nextToken
-      }
-      userSelfLoveRelationshipsOwnedByUser {
-        nextToken
-      }
-      userRoutineRelationshipsOwnedByUser {
-        nextToken
-      }
-      soundsOwnedByUser {
-        nextToken
-      }
-      sounds {
-        nextToken
-      }
-      presetsOwnedByUser {
-        nextToken
-      }
-      presets {
-        nextToken
-      }
-      commentsOwnedByUser {
-        nextToken
-      }
-      routinesOwnedByUser {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      stretchesOwnedByUser {
-        nextToken
-      }
-      stretches {
-        nextToken
-      }
-      prayersOwnedByUser {
-        nextToken
-      }
-      prayers {
-        nextToken
-      }
-      breathingsOwnedByUser {
-        nextToken
-      }
-      breathings {
-        nextToken
-      }
-      selfLovesOwnedByUser {
-        nextToken
-      }
-      selfLoves {
-        nextToken
-      }
-      bedtimeStoriesOwnedByUser {
-        nextToken
-      }
-      bedtimeStories {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    userSelfLoveRelationshipSelfLoveDataID
-    userSelfLoveRelationshipSelfLove {
-      id
-      userDataID
-      selfLoveOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      display_name
-      shortDescription
-      longDescription
-      audioKeyS3
-      icon
-      fullPlayTime
-      visibleToOthers
-      lyrics
-      tags
-      audioSource
-      approvalStatus
-      userSelfLoveRelationshipsOwnedBySelfLove {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      users {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    numberOfTimesPlayed
-    totalPlayTime
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListUserSelfLoveRelationships(
-  $filter: ModelUserSelfLoveRelationshipFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listUserSelfLoveRelationships(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      userSelfLoveRelationshipUserDataID
-      userSelfLoveRelationshipOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      userSelfLoveRelationshipSelfLoveDataID
-      userSelfLoveRelationshipSelfLove {
-        id
-        userDataID
-        display_name
-        shortDescription
-        longDescription
-        audioKeyS3
-        icon
-        fullPlayTime
-        visibleToOthers
-        lyrics
-        tags
-        audioSource
-        approvalStatus
-        createdAt
-        updatedAt
-        owner
-      }
-      numberOfTimesPlayed
-      totalPlayTime
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-query GetUserRoutineRelationship($id: ID!) {
-  getUserRoutineRelationship(id: $id) {
-    id
-    userRoutineRelationshipUserDataID
-    userRoutineRelationshipOwner {
-      id
-      username
-      amplifyAuthUserId
-      givenName
-      familyName
-      middleName
-      email
-      profile_picture_key
-      address
-      birthdate
-      gender
-      nickname
-      phoneNumber
-      authenticated
-      subscription
-      userSoundRelationshipsOwnedByUser {
-        nextToken
-      }
-      userBedtimeStoryInfoRelationshipsOwnedByUser {
-        nextToken
-      }
-      userPrayerRelationshipsOwnedByUser {
-        nextToken
-      }
-      userSelfLoveRelationshipsOwnedByUser {
-        nextToken
-      }
-      userRoutineRelationshipsOwnedByUser {
-        nextToken
-      }
-      soundsOwnedByUser {
-        nextToken
-      }
-      sounds {
-        nextToken
-      }
-      presetsOwnedByUser {
-        nextToken
-      }
-      presets {
-        nextToken
-      }
-      commentsOwnedByUser {
-        nextToken
-      }
-      routinesOwnedByUser {
-        nextToken
-      }
-      routines {
-        nextToken
-      }
-      stretchesOwnedByUser {
-        nextToken
-      }
-      stretches {
-        nextToken
-      }
-      prayersOwnedByUser {
-        nextToken
-      }
-      prayers {
-        nextToken
-      }
-      breathingsOwnedByUser {
-        nextToken
-      }
-      breathings {
-        nextToken
-      }
-      selfLovesOwnedByUser {
-        nextToken
-      }
-      selfLoves {
-        nextToken
-      }
-      bedtimeStoriesOwnedByUser {
-        nextToken
-      }
-      bedtimeStories {
-        nextToken
-      }
-      createdAt
-      updatedAt
-      owner
-    }
-    userRoutineRelationshipRoutineDataID
-    userRoutineRelationshipRoutine {
-      id
-      userDataID
-      routineOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      originalName
-      displayName
-      numberOfSteps
-      numberOfTimesUsed
-      fullPlayTime
-      icon
-      visibleToOthers
-      colorHEX
-      playSoundDuringStretch
-      playSoundDuringPrayer
-      playSoundDuringBreathing
-      playSoundDuringSelfLove
-      playSoundDuringBedtimeStory
-      playSoundDuringSleep
-      eachSoundPlayTime
-      prayerPlayTime
-      bedtimeStoryPlayTime
-      selfLovePlayTime
-      stretchTime
-      breathingTime
-      currentBedtimeStoryPlayingIndex
-      currentBedtimeStoryContinuePlayingTime
-      currentSelfLovePlayingIndex
-      currentSelfLoveContinuePlayingTime
-      currentPrayerPlayingIndex
-      currentPrayerContinuePlayingTime
-      userRoutineRelationshipsOwnedByRoutine {
-        nextToken
-      }
-      sounds {
-        nextToken
-      }
-      presets {
-        nextToken
-      }
-      prayers {
-        nextToken
-      }
-      stretches {
-        nextToken
-      }
-      breathing {
-        nextToken
-      }
-      bedtimeStories {
-        nextToken
-      }
-      selfLoves {
-        nextToken
-      }
-      users {
-        nextToken
-      }
-      playingOrder
-      createdAt
-      updatedAt
-      owner
-    }
-    numberOfTimesPlayed
-    totalPlayTime
-    createdAt
-    updatedAt
-    owner
-  }
-}
-query ListUserRoutineRelationships(
-  $filter: ModelUserRoutineRelationshipFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listUserRoutineRelationships(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      userRoutineRelationshipUserDataID
-      userRoutineRelationshipOwner {
-        id
-        username
-        amplifyAuthUserId
-        givenName
-        familyName
-        middleName
-        email
-        profile_picture_key
-        address
-        birthdate
-        gender
-        nickname
-        phoneNumber
-        authenticated
-        subscription
-        createdAt
-        updatedAt
-        owner
-      }
-      userRoutineRelationshipRoutineDataID
-      userRoutineRelationshipRoutine {
-        id
-        userDataID
-        originalName
-        displayName
-        numberOfSteps
-        numberOfTimesUsed
-        fullPlayTime
-        icon
-        visibleToOthers
-        colorHEX
-        playSoundDuringStretch
-        playSoundDuringPrayer
-        playSoundDuringBreathing
-        playSoundDuringSelfLove
-        playSoundDuringBedtimeStory
-        playSoundDuringSleep
-        eachSoundPlayTime
-        prayerPlayTime
-        bedtimeStoryPlayTime
-        selfLovePlayTime
-        stretchTime
-        breathingTime
-        currentBedtimeStoryPlayingIndex
-        currentBedtimeStoryContinuePlayingTime
-        currentSelfLovePlayingIndex
-        currentSelfLoveContinuePlayingTime
-        currentPrayerPlayingIndex
-        currentPrayerContinuePlayingTime
-        playingOrder
-        createdAt
-        updatedAt
-        owner
-      }
-      numberOfTimesPlayed
-      totalPlayTime
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
 query GetCommentData($id: ID!) {
   getCommentData(id: $id) {
     id
@@ -1357,6 +484,9 @@ query GetCommentData($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -1520,6 +650,9 @@ query GetCommentData($id: ID!) {
       commentsOwnedByPreset {
         nextToken
       }
+      userPresetRelationshipsOwnedByPreset {
+        nextToken
+      }
       users {
         nextToken
       }
@@ -1637,6 +770,9 @@ query GetPresetData($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -1765,6 +901,19 @@ query GetPresetData($id: ID!) {
       }
       nextToken
     }
+    userPresetRelationshipsOwnedByPreset {
+      items {
+        id
+        userPresetRelationshipUserDataID
+        userPresetRelationshipPresetDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     users {
       items {
         id
@@ -1847,12 +996,232 @@ query ListPresetDatas(
       commentsOwnedByPreset {
         nextToken
       }
+      userPresetRelationshipsOwnedByPreset {
+        nextToken
+      }
       users {
         nextToken
       }
       routines {
         nextToken
       }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserPresetRelationship($id: ID!) {
+  getUserPresetRelationship(id: $id) {
+    id
+    userPresetRelationshipUserDataID
+    userPresetRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userPresetRelationshipPresetDataID
+    userPresetRelationshipPreset {
+      id
+      presetUserDataID
+      presetOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      key
+      volumes
+      soundID
+      sound {
+        id
+        soundUserDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      publicityStatus
+      commentsOwnedByPreset {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByPreset {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserPresetRelationships(
+  $filter: ModelUserPresetRelationshipFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserPresetRelationships(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      userPresetRelationshipUserDataID
+      userPresetRelationshipOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      userPresetRelationshipPresetDataID
+      userPresetRelationshipPreset {
+        id
+        presetUserDataID
+        key
+        volumes
+        soundID
+        publicityStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      numberOfTimesPlayed
+      totalPlayTime
       createdAt
       updatedAt
       owner
@@ -1893,6 +1262,9 @@ query GetRoutineData($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -2173,6 +1545,265 @@ query ListRoutineDatas(
     nextToken
   }
 }
+query GetUserRoutineRelationship($id: ID!) {
+  getUserRoutineRelationship(id: $id) {
+    id
+    userRoutineRelationshipUserDataID
+    userRoutineRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userRoutineRelationshipRoutineDataID
+    userRoutineRelationshipRoutine {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserRoutineRelationships(
+  $filter: ModelUserRoutineRelationshipFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserRoutineRelationships(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      userRoutineRelationshipUserDataID
+      userRoutineRelationshipOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      userRoutineRelationshipRoutineDataID
+      userRoutineRelationshipRoutine {
+        id
+        userDataID
+        originalName
+        displayName
+        numberOfSteps
+        numberOfTimesUsed
+        fullPlayTime
+        icon
+        visibleToOthers
+        colorHEX
+        playSoundDuringStretch
+        playSoundDuringPrayer
+        playSoundDuringBreathing
+        playSoundDuringSelfLove
+        playSoundDuringBedtimeStory
+        playSoundDuringSleep
+        eachSoundPlayTime
+        prayerPlayTime
+        bedtimeStoryPlayTime
+        selfLovePlayTime
+        stretchTime
+        breathingTime
+        currentBedtimeStoryPlayingIndex
+        currentBedtimeStoryContinuePlayingTime
+        currentSelfLovePlayingIndex
+        currentSelfLoveContinuePlayingTime
+        currentPrayerPlayingIndex
+        currentPrayerContinuePlayingTime
+        playingOrder
+        createdAt
+        updatedAt
+        owner
+      }
+      numberOfTimesPlayed
+      totalPlayTime
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
 query GetBedtimeStoryInfoData($id: ID!) {
   getBedtimeStoryInfoData(id: $id) {
     id
@@ -2206,6 +1837,9 @@ query GetBedtimeStoryInfoData($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -2382,6 +2016,218 @@ query ListBedtimeStoryInfoDatas(
       chapters {
         nextToken
       }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserBedtimeStoryInfoRelationship($id: ID!) {
+  getUserBedtimeStoryInfoRelationship(id: $id) {
+    id
+    userBedtimeStoryInfoRelationshipUserDataID
+    userBedtimeStoryInfoRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfo {
+      id
+      bedtimeStoryUserDataID
+      bedtimeStoryOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      tags
+      audioSource
+      approvalStatus
+      creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserBedtimeStoryInfoRelationships(
+  $filter: ModelUserBedtimeStoryInfoRelationshipFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserBedtimeStoryInfoRelationships(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      userBedtimeStoryInfoRelationshipUserDataID
+      userBedtimeStoryInfoRelationshipOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+      userBedtimeStoryInfoRelationshipBedtimeStoryInfo {
+        id
+        bedtimeStoryUserDataID
+        displayName
+        shortDescription
+        longDescription
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        tags
+        audioSource
+        approvalStatus
+        creationStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      numberOfTimesPlayed
+      totalPlayTime
       createdAt
       updatedAt
       owner
@@ -2614,6 +2460,9 @@ query GetPrayerData($id: ID!) {
       userRoutineRelationshipsOwnedByUser {
         nextToken
       }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2778,6 +2627,217 @@ query ListPrayerDatas(
     nextToken
   }
 }
+query GetUserPrayerRelationship($id: ID!) {
+  getUserPrayerRelationship(id: $id) {
+    id
+    userPrayerRelationshipUserDataID
+    userPrayerRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userPrayerRelationshipPrayerDataID
+    userPrayerRelationshipPrayer {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserPrayerRelationships(
+  $filter: ModelUserPrayerRelationshipFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserPrayerRelationships(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      userPrayerRelationshipUserDataID
+      userPrayerRelationshipOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      userPrayerRelationshipPrayerDataID
+      userPrayerRelationshipPrayer {
+        id
+        userDataID
+        displayName
+        shortDescription
+        longDescription
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        religion
+        country
+        tags
+        audioSource
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      numberOfTimesPlayed
+      totalPlayTime
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
 query GetSelfLoveData($id: ID!) {
   getSelfLoveData(id: $id) {
     id
@@ -2811,6 +2871,9 @@ query GetSelfLoveData($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -2975,6 +3038,215 @@ query ListSelfLoveDatas(
     nextToken
   }
 }
+query GetUserSelfLoveRelationship($id: ID!) {
+  getUserSelfLoveRelationship(id: $id) {
+    id
+    userSelfLoveRelationshipUserDataID
+    userSelfLoveRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSelfLoveRelationshipSelfLoveDataID
+    userSelfLoveRelationshipSelfLove {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserSelfLoveRelationships(
+  $filter: ModelUserSelfLoveRelationshipFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserSelfLoveRelationships(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      userSelfLoveRelationshipUserDataID
+      userSelfLoveRelationshipOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      userSelfLoveRelationshipSelfLoveDataID
+      userSelfLoveRelationshipSelfLove {
+        id
+        userDataID
+        display_name
+        shortDescription
+        longDescription
+        audioKeyS3
+        icon
+        fullPlayTime
+        visibleToOthers
+        lyrics
+        tags
+        audioSource
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      numberOfTimesPlayed
+      totalPlayTime
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
 query GetStretchData($id: ID!) {
   getStretchData(id: $id) {
     id
@@ -3008,6 +3280,9 @@ query GetStretchData($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -3169,6 +3444,9 @@ query GetBreathingData($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -3371,6 +3649,19 @@ query GetUserData($id: ID!) {
         id
         userRoutineRelationshipUserDataID
         userRoutineRelationshipRoutineDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userPresetRelationshipsOwnedByUser {
+      items {
+        id
+        userPresetRelationshipUserDataID
+        userPresetRelationshipPresetDataID
         numberOfTimesPlayed
         totalPlayTime
         createdAt
@@ -3681,6 +3972,9 @@ query ListUserDatas(
       userRoutineRelationshipsOwnedByUser {
         nextToken
       }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3827,6 +4121,9 @@ query GetUserSound($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -4214,6 +4511,9 @@ query GetUserPreset($id: ID!) {
       commentsOwnedByPreset {
         nextToken
       }
+      userPresetRelationshipsOwnedByPreset {
+        nextToken
+      }
       users {
         nextToken
       }
@@ -4253,6 +4553,9 @@ query GetUserPreset($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -4415,6 +4718,9 @@ query GetRoutinePreset($id: ID!) {
       }
       publicityStatus
       commentsOwnedByPreset {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByPreset {
         nextToken
       }
       users {
@@ -5690,6 +5996,9 @@ query GetUserRoutine($id: ID!) {
       userRoutineRelationshipsOwnedByUser {
         nextToken
       }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5907,6 +6216,9 @@ query GetUserBedtimeStoryInfo($id: ID!) {
       userRoutineRelationshipsOwnedByUser {
         nextToken
       }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6110,6 +6422,9 @@ query GetUserPrayer($id: ID!) {
       userRoutineRelationshipsOwnedByUser {
         nextToken
       }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6309,6 +6624,9 @@ query GetUserSelfLove($id: ID!) {
       userRoutineRelationshipsOwnedByUser {
         nextToken
       }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6494,6 +6812,9 @@ query GetUserStretch($id: ID!) {
       userRoutineRelationshipsOwnedByUser {
         nextToken
       }
+      userPresetRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6667,6 +6988,9 @@ query GetUserBreathing($id: ID!) {
         nextToken
       }
       userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPresetRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {

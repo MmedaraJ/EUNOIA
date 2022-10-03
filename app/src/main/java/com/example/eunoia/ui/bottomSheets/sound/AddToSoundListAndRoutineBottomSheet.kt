@@ -195,11 +195,11 @@ private fun addToSoundListClicked(
                 globalViewModel_!!.currentSoundToBeAdded!!
             ){
                 if(it.isEmpty()){
-                    UserSoundBackend.createUserSoundObject(
-                        globalViewModel_!!.currentSoundToBeAdded!!
-                    ) {
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
+                    UserSoundRelationshipBackend.createUserSoundRelationshipObject(globalViewModel_!!.currentSoundToBeAdded!!) {
+                        UserSoundBackend.createUserSoundObject(globalViewModel_!!.currentSoundToBeAdded!!) {
+                            closeBottomSheet(scope, state)
+                            openSavedElementDialogBox = true
+                        }
                     }
                 }else{
                     closeBottomSheet(scope, state)
@@ -377,9 +377,11 @@ private fun selectRoutineClicked(
         makePrivatePresetObject{
             setUpRoutinePreset(userRoutine, {}){
                 setUpRoutineSound(userRoutine) {
-                    setUpUserSound {
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
+                    setUpUserSoundRelationship {
+                        setUpUserSound {
+                            closeBottomSheet(scope, state)
+                            openSavedElementDialogBox = true
+                        }
                     }
                 }
             }
@@ -393,10 +395,14 @@ private fun selectRoutineClicked(
             }
         ){
             setUpRoutineSound(userRoutine) {
-                setUpUserSound {
-                    setUpUserPreset {
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
+                setUpUserSoundRelationship {
+                    setUpUserSound {
+                        setUpUserPresetRelationship {
+                            setUpUserPreset {
+                                closeBottomSheet(scope, state)
+                                openSavedElementDialogBox = true
+                            }
+                        }
                     }
                 }
             }
@@ -482,6 +488,23 @@ fun setUpUserSound(completed: () -> Unit){
     }
 }
 
+fun setUpUserSoundRelationship(completed: () -> Unit){
+    UserSoundRelationshipBackend.queryUserSoundRelationshipBasedOnUserAndSound(
+        globalViewModel_!!.currentUser!!,
+        globalViewModel_!!.currentSoundToBeAdded!!
+    ){
+        if(it.isEmpty()){
+            UserSoundRelationshipBackend.createUserSoundRelationshipObject(
+                globalViewModel_!!.currentSoundToBeAdded!!
+            ) {
+                completed()
+            }
+        }else{
+            completed()
+        }
+    }
+}
+
 fun setUpRoutineAndUserPresetAfterMakingNewRoutine(
     routineData: RoutineData,
     completed: () -> Unit
@@ -490,8 +513,10 @@ fun setUpRoutineAndUserPresetAfterMakingNewRoutine(
         globalViewModel_!!.currentPresetToBeAdded!!,
         routineData
     ) {
-        setUpUserPreset{
-            completed()
+        setUpUserPresetRelationship {
+            setUpUserPreset {
+                completed()
+            }
         }
     }
 }
@@ -504,8 +529,10 @@ fun setUpRoutineAndUserSoundAfterMakingNewRoutine(
         globalViewModel_!!.currentSoundToBeAdded!!,
         routineData
     ) {
-        setUpUserSound{
-            completed()
+        setUpUserSoundRelationship {
+            setUpUserSound {
+                completed()
+            }
         }
     }
 }
@@ -529,6 +556,25 @@ fun setUpUserPreset(
     }
 }
 
+fun setUpUserPresetRelationship(
+    completed: () -> Unit
+){
+    UserPresetRelationshipBackend.queryUserPresetRelationshipBasedOnUserAndPreset(
+        globalViewModel_!!.currentUser!!,
+        globalViewModel_!!.currentPresetToBeAdded!!
+    ){
+        if(it.isEmpty()){
+            UserPresetRelationshipBackend.createUserPresetRelationshipObject(
+                globalViewModel_!!.currentPresetToBeAdded!!
+            ) {
+                completed()
+            }
+        }else{
+            completed()
+        }
+    }
+}
+
 private fun makePrivatePresetObject(
     completed: (presetData: PresetData) -> Unit
 ){
@@ -542,14 +588,16 @@ private fun makePrivatePresetObject(
     )
 
     PresetBackend.createPreset(preset) { presetData ->
-        UserPresetBackend.createUserPresetObject(presetData) {
-            globalViewModel_!!.currentPresetToBeAdded = presetData
-            if(globalViewModel_!!.currentAllUserSoundPreset == null) {
-                globalViewModel_!!.currentAllUserSoundPreset = mutableListOf()
+        UserPresetRelationshipBackend.createUserPresetRelationshipObject(presetData) {
+            UserPresetBackend.createUserPresetObject(presetData) {
+                globalViewModel_!!.currentPresetToBeAdded = presetData
+                if (globalViewModel_!!.currentAllUserSoundPreset == null) {
+                    globalViewModel_!!.currentAllUserSoundPreset = mutableListOf()
+                }
+                globalViewModel_!!.currentAllUserSoundPreset!!.add(presetData)
+                allUserSoundPresets!!.add(presetData)
+                completed(presetData)
             }
-            globalViewModel_!!.currentAllUserSoundPreset!!.add(presetData)
-            allUserSoundPresets!!.add(presetData)
-            completed(presetData)
         }
     }
 }
@@ -951,19 +999,21 @@ private fun createRoutineAndOtherNecessaryData(
     state: ModalBottomSheetState
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
-        UserRoutineBackend.createUserRoutineObject(newRoutine) {
-            setUpRoutineAndUserSoundAfterMakingNewRoutine(newRoutine){
-                if (globalViewModel_!!.currentPresetToBeAdded == null) {
-                    makePrivatePresetObject {
-                        setUpRoutineAndUserPresetAfterMakingNewRoutine(newRoutine){
+        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) {
+            UserRoutineBackend.createUserRoutineObject(newRoutine) {
+                setUpRoutineAndUserSoundAfterMakingNewRoutine(newRoutine) {
+                    if (globalViewModel_!!.currentPresetToBeAdded == null) {
+                        makePrivatePresetObject {
+                            //setUpRoutineAndUserPresetAfterMakingNewRoutine(newRoutine) {
+                                closeBottomSheet(scope, state)
+                                openSavedElementDialogBox = true
+                            //}
+                        }
+                    } else {
+                        setUpRoutineAndUserPresetAfterMakingNewRoutine(newRoutine) {
                             closeBottomSheet(scope, state)
                             openSavedElementDialogBox = true
                         }
-                    }
-                } else{
-                    setUpRoutineAndUserPresetAfterMakingNewRoutine(newRoutine){
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
                     }
                 }
             }

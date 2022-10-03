@@ -205,30 +205,15 @@ fun createPrayer(
     navController: NavController
 ){
     PrayerBackend.createPrayer(prayer) { prayerData ->
-        if (globalViewModel_!!.currentUser != null) {
-            var userAlreadyHasPrayer = false
-            for (userPrayer in globalViewModel_!!.currentUser!!.prayers) {
-                if (
-                    userPrayer.prayerData.id == prayerData.id &&
-                    userPrayer.userData.id == globalViewModel_!!.currentUser!!.id
-                ) {
-                    userAlreadyHasPrayer = true
-                }
-            }
-            if (!userAlreadyHasPrayer) {
-                UserPrayerBackend.createUserPrayerObject(
-                    prayerData
-                ) {
-                    resetAllPrayerCreationObjects(context)
-                    openSavedElementDialogBox = true
-                    Thread.sleep(1_000)
-                    //resetRecordingFileAndMediaPlayer(context)
-                    ThreadUtils.runOnUiThread {
-                        /* navController.backQueue.removeIf { it.destination.route == Screen.NameBedtimeStory.screen_route }
-                         navController.backQueue.removeIf { it.destination.route == Screen.UploadBedtimeStory.screen_route }*/
-                        //TODO navigate to users list of pending prayers
-                        navigateToPrayerScreen(navController, prayerData)
-                    }
+        UserPrayerRelationshipBackend.createUserPrayerRelationshipObject(prayerData) {
+            UserPrayerBackend.createUserPrayerObject(prayerData) {
+                resetAllPrayerCreationObjects(context)
+                openSavedElementDialogBox = true
+                Thread.sleep(1_000)
+                //resetRecordingFileAndMediaPlayer(context)
+                ThreadUtils.runOnUiThread {
+                    //TODO navigate to users list of pending prayers
+                    navigateToPrayerScreen(navController, prayerData)
                 }
             }
         }

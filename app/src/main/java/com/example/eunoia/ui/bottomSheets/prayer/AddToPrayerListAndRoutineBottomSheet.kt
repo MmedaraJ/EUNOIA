@@ -20,13 +20,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.UserRoutine
 import com.example.eunoia.R
-import com.example.eunoia.backend.RoutineBackend
-import com.example.eunoia.backend.RoutinePrayerBackend
-import com.example.eunoia.backend.UserPrayerBackend
-import com.example.eunoia.backend.UserRoutineBackend
+import com.example.eunoia.backend.*
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
+import com.example.eunoia.ui.bottomSheets.bedtimeStory.setUpUserBedtimeStoryInfoRelationship
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.sound.checkIfRoutineNameIsTaken
@@ -210,11 +208,11 @@ private fun addToPrayerListClicked(
                 globalViewModel_!!.currentPrayerToBeAdded!!
             ){
                 if (it.isEmpty()) {
-                    UserPrayerBackend.createUserPrayerObject(
-                        globalViewModel_!!.currentPrayerToBeAdded!!
-                    ) {
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
+                    UserPrayerRelationshipBackend.createUserPrayerRelationshipObject(globalViewModel_!!.currentPrayerToBeAdded!!) {
+                        UserPrayerBackend.createUserPrayerObject(globalViewModel_!!.currentPrayerToBeAdded!!) {
+                            closeBottomSheet(scope, state)
+                            openSavedElementDialogBox = true
+                        }
                     }
                 }else{
                     closeBottomSheet(scope, state)
@@ -373,9 +371,11 @@ private fun selectRoutineClicked(
             openRoutineAlreadyHasPrayerDialogBox = true
         }
     ) {
-        setUpUserPrayer{
-            closeBottomSheet(scope, state)
-            openSavedElementDialogBox = true
+        setUpUserPrayerRelationship {
+            setUpUserPrayer {
+                closeBottomSheet(scope, state)
+                openSavedElementDialogBox = true
+            }
         }
     }
 }
@@ -457,6 +457,23 @@ fun setUpUserPrayer(completed: () -> Unit) {
     ){
         if (it.isEmpty()) {
             UserPrayerBackend.createUserPrayerObject(
+                globalViewModel_!!.currentPrayerToBeAdded!!
+            ) {
+                completed()
+            }
+        }else{
+            completed()
+        }
+    }
+}
+
+fun setUpUserPrayerRelationship(completed: () -> Unit) {
+    UserPrayerRelationshipBackend.queryUserPrayerRelationshipBasedOnUserAndPrayer(
+        globalViewModel_!!.currentUser!!,
+        globalViewModel_!!.currentPrayerToBeAdded!!
+    ){
+        if (it.isEmpty()) {
+            UserPrayerRelationshipBackend.createUserPrayerRelationshipObject(
                 globalViewModel_!!.currentPrayerToBeAdded!!
             ) {
                 completed()
@@ -769,10 +786,12 @@ private fun createRoutineAndOtherNecessaryData(
     state: ModalBottomSheetState
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
-        UserRoutineBackend.createUserRoutineObject(newRoutine) {
-            setUpRoutineAndUserPrayerAfterMakingNewRoutine(newRoutine) {
-                closeBottomSheet(scope, state)
-                openSavedElementDialogBox = true
+        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) {
+            UserRoutineBackend.createUserRoutineObject(newRoutine) {
+                setUpRoutineAndUserPrayerAfterMakingNewRoutine(newRoutine) {
+                    closeBottomSheet(scope, state)
+                    openSavedElementDialogBox = true
+                }
             }
         }
     }
@@ -786,8 +805,10 @@ fun setUpRoutineAndUserPrayerAfterMakingNewRoutine(
         globalViewModel_!!.currentPrayerToBeAdded!!,
         routineData
     ) {
-        setUpUserPrayer {
-            completed()
+        setUpUserPrayerRelationship {
+            setUpUserPrayer {
+                completed()
+            }
         }
     }
 }

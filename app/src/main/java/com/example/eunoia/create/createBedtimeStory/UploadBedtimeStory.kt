@@ -22,6 +22,7 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
+import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
 import com.example.eunoia.create.createPrayer.uploadedFileMediaPlayerPrayer
 import com.example.eunoia.create.createSelfLove.resetSelfLoveUploadUI
 import com.example.eunoia.dashboard.home.UserDashboardActivity
@@ -189,30 +190,15 @@ fun createBedtimeStoryFromUpload(
                 BedtimeStoryCreationStatus.COMPLETED
             )
             BedtimeStoryBackend.createBedtimeStory(bedtimeStory) { bedtimeStoryData ->
-                if (globalViewModel_!!.currentUser != null) {
-                    var userAlreadyHasBedtimeStory = false
-                    for (userBedtimeStory in globalViewModel_!!.currentUser!!.bedtimeStories) {
-                        if (
-                            userBedtimeStory.bedtimeStoryInfoData.id == bedtimeStoryData.id &&
-                            userBedtimeStory.userData.id == globalViewModel_!!.currentUser!!.id
-                        ) {
-                            userAlreadyHasBedtimeStory = true
-                        }
-                    }
-                    if (!userAlreadyHasBedtimeStory) {
-                        UserBedtimeStoryBackend.createUserBedtimeStoryObject(
-                            bedtimeStoryData
-                        ) {
-                            resetAllBedtimeStoryCreationObjects()
-                            openSavedElementDialogBox = true
-                            Thread.sleep(1_000)
-                            openSavedElementDialogBox = false
-                            runOnUiThread {
-                               /* navController.backQueue.removeIf { it.destination.route == Screen.NameBedtimeStory.screen_route }
-                                navController.backQueue.removeIf { it.destination.route == Screen.UploadBedtimeStory.screen_route }*/
-                                //TODO navigate to users list of pending bedtime stories
-                                navigateToBedtimeStoryScreen(navController, bedtimeStoryData)
-                            }
+                UserBedtimeStoryInfoRelationshipBackend.createUserBedtimeStoryInfoRelationshipObject(bedtimeStoryData) {
+                    UserBedtimeStoryBackend.createUserBedtimeStoryObject(bedtimeStoryData) {
+                        resetAllBedtimeStoryCreationObjects()
+                        openSavedElementDialogBox = true
+                        Thread.sleep(1_000)
+                        openSavedElementDialogBox = false
+                        runOnUiThread {
+                            //TODO navigate to users list of pending bedtime stories
+                            navigateToBedtimeStoryScreen(navController, bedtimeStoryData)
                         }
                     }
                 }

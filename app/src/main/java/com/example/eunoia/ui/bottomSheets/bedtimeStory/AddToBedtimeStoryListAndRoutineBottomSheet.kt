@@ -207,11 +207,11 @@ private fun addToBedtimeStoryListClicked(
                 globalViewModel_!!.currentBedtimeStoryToBeAdded!!
             ){
                 if (it.isEmpty()) {
-                    UserBedtimeStoryBackend.createUserBedtimeStoryObject(
-                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
-                    ) {
-                        closeBottomSheet(scope, state)
-                        openSavedElementDialogBox = true
+                    UserBedtimeStoryInfoRelationshipBackend.createUserBedtimeStoryInfoRelationshipObject(globalViewModel_!!.currentBedtimeStoryToBeAdded!!) {
+                        UserBedtimeStoryBackend.createUserBedtimeStoryObject(globalViewModel_!!.currentBedtimeStoryToBeAdded!!) {
+                            closeBottomSheet(scope, state)
+                            openSavedElementDialogBox = true
+                        }
                     }
                 }else{
                     closeBottomSheet(scope, state)
@@ -370,9 +370,11 @@ private fun selectRoutineClicked(
             openRoutineAlreadyHasBedtimeStoryDialogBox = true
         }
     ) {
-        setUpUserBedtimeStory{
-            closeBottomSheet(scope, state)
-            openSavedElementDialogBox = true
+        setUpUserBedtimeStoryInfoRelationship {
+            setUpUserBedtimeStory {
+                closeBottomSheet(scope, state)
+                openSavedElementDialogBox = true
+            }
         }
     }
 }
@@ -454,6 +456,23 @@ fun setUpUserBedtimeStory(completed: () -> Unit) {
     ){
         if (it.isEmpty()) {
             UserBedtimeStoryBackend.createUserBedtimeStoryObject(
+                globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+            ) {
+                completed()
+            }
+        }else{
+            completed()
+        }
+    }
+}
+
+fun setUpUserBedtimeStoryInfoRelationship(completed: () -> Unit) {
+    UserBedtimeStoryInfoRelationshipBackend.queryUserBedtimeStoryInfoRelationshipBasedOnUserAndBedtimeStoryInfo(
+        globalViewModel_!!.currentUser!!,
+        globalViewModel_!!.currentBedtimeStoryToBeAdded!!
+    ){
+        if (it.isEmpty()) {
+            UserBedtimeStoryInfoRelationshipBackend.createUserBedtimeStoryInfoRelationshipObject(
                 globalViewModel_!!.currentBedtimeStoryToBeAdded!!
             ) {
                 completed()
@@ -767,10 +786,12 @@ private fun createRoutineAndOtherNecessaryData(
     state: ModalBottomSheetState
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
-        UserRoutineBackend.createUserRoutineObject(newRoutine) {
-            setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(newRoutine) {
-                closeBottomSheet(scope, state)
-                openSavedElementDialogBox = true
+        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) {
+            UserRoutineBackend.createUserRoutineObject(newRoutine) {
+                setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(newRoutine) {
+                    closeBottomSheet(scope, state)
+                    openSavedElementDialogBox = true
+                }
             }
         }
     }
@@ -784,8 +805,10 @@ fun setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(
         globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
         routineData
     ) {
-        setUpUserBedtimeStory {
-            completed()
+        setUpUserBedtimeStoryInfoRelationship {
+            setUpUserBedtimeStory {
+                completed()
+            }
         }
     }
 }
