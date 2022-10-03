@@ -28,11 +28,11 @@ object UserBedtimeStoryObject {
                 .build()
 
         companion object{
-            fun from(UserBedtimeStory: UserBedtimeStoryInfo): UserBedtimeStoryModel{
+            fun from(userBedtimeStory: UserBedtimeStoryInfo): UserBedtimeStoryModel{
                 val result = UserBedtimeStoryModel(
-                    UserBedtimeStory.id,
-                    UserObject.User.from(UserBedtimeStory.userData),
-                    BedtimeStoryObject.BedtimeStory.from(UserBedtimeStory.bedtimeStoryInfoData),
+                    userBedtimeStory.id,
+                    UserObject.User.from(userBedtimeStory.userData),
+                    BedtimeStoryObject.BedtimeStory.from(userBedtimeStory.bedtimeStoryInfoData),
                 )
                 return result
             }

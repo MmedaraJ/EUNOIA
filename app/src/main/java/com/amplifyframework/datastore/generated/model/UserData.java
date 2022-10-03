@@ -57,6 +57,11 @@ public final class UserData implements Model {
   private final @ModelField(targetType="String", isRequired = true) String phoneNumber;
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean authenticated;
   private final @ModelField(targetType="String", isRequired = true) String subscription;
+  private final @ModelField(targetType="UserSoundRelationship") @HasMany(associatedWith = "userSoundRelationshipOwner", type = UserSoundRelationship.class) List<UserSoundRelationship> userSoundRelationshipsOwnedByUser = null;
+  private final @ModelField(targetType="UserBedtimeStoryInfoRelationship") @HasMany(associatedWith = "userBedtimeStoryInfoRelationshipOwner", type = UserBedtimeStoryInfoRelationship.class) List<UserBedtimeStoryInfoRelationship> userBedtimeStoryInfoRelationshipsOwnedByUser = null;
+  private final @ModelField(targetType="UserPrayerRelationship") @HasMany(associatedWith = "userPrayerRelationshipOwner", type = UserPrayerRelationship.class) List<UserPrayerRelationship> userPrayerRelationshipsOwnedByUser = null;
+  private final @ModelField(targetType="UserSelfLoveRelationship") @HasMany(associatedWith = "userSelfLoveRelationshipOwner", type = UserSelfLoveRelationship.class) List<UserSelfLoveRelationship> userSelfLoveRelationshipsOwnedByUser = null;
+  private final @ModelField(targetType="UserRoutineRelationship") @HasMany(associatedWith = "userRoutineRelationshipOwner", type = UserRoutineRelationship.class) List<UserRoutineRelationship> userRoutineRelationshipsOwnedByUser = null;
   private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "soundOwner", type = SoundData.class) List<SoundData> soundsOwnedByUser = null;
   private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "userData", type = UserSound.class) List<UserSound> sounds = null;
   private final @ModelField(targetType="PresetData") @HasMany(associatedWith = "presetOwner", type = PresetData.class) List<PresetData> presetsOwnedByUser = null;
@@ -134,6 +139,26 @@ public final class UserData implements Model {
   
   public String getSubscription() {
       return subscription;
+  }
+  
+  public List<UserSoundRelationship> getUserSoundRelationshipsOwnedByUser() {
+      return userSoundRelationshipsOwnedByUser;
+  }
+  
+  public List<UserBedtimeStoryInfoRelationship> getUserBedtimeStoryInfoRelationshipsOwnedByUser() {
+      return userBedtimeStoryInfoRelationshipsOwnedByUser;
+  }
+  
+  public List<UserPrayerRelationship> getUserPrayerRelationshipsOwnedByUser() {
+      return userPrayerRelationshipsOwnedByUser;
+  }
+  
+  public List<UserSelfLoveRelationship> getUserSelfLoveRelationshipsOwnedByUser() {
+      return userSelfLoveRelationshipsOwnedByUser;
+  }
+  
+  public List<UserRoutineRelationship> getUserRoutineRelationshipsOwnedByUser() {
+      return userRoutineRelationshipsOwnedByUser;
   }
   
   public List<SoundData> getSoundsOwnedByUser() {

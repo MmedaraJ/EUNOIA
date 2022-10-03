@@ -55,6 +55,7 @@ public final class SelfLoveData implements Model {
   private final @ModelField(targetType="String") List<String> tags;
   private final @ModelField(targetType="SelfLoveAudioSource") SelfLoveAudioSource audioSource;
   private final @ModelField(targetType="SelfLoveApprovalStatus") SelfLoveApprovalStatus approvalStatus;
+  private final @ModelField(targetType="UserSelfLoveRelationship") @HasMany(associatedWith = "userSelfLoveRelationshipSelfLove", type = UserSelfLoveRelationship.class) List<UserSelfLoveRelationship> userSelfLoveRelationshipsOwnedBySelfLove = null;
   private final @ModelField(targetType="RoutineSelfLove") @HasMany(associatedWith = "selfLoveData", type = RoutineSelfLove.class) List<RoutineSelfLove> routines = null;
   private final @ModelField(targetType="UserSelfLove") @HasMany(associatedWith = "selfLoveData", type = UserSelfLove.class) List<UserSelfLove> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
@@ -109,6 +110,10 @@ public final class SelfLoveData implements Model {
   
   public SelfLoveApprovalStatus getApprovalStatus() {
       return approvalStatus;
+  }
+  
+  public List<UserSelfLoveRelationship> getUserSelfLoveRelationshipsOwnedBySelfLove() {
+      return userSelfLoveRelationshipsOwnedBySelfLove;
   }
   
   public List<RoutineSelfLove> getRoutines() {

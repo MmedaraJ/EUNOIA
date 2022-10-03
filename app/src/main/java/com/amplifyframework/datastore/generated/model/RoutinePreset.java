@@ -20,27 +20,27 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 /** This is an auto generated class representing the RoutinePreset type in your schema. */
 @SuppressWarnings("all")
 @ModelConfig(pluralName = "RoutinePresets")
-@Index(name = "byPresetData", fields = {"presetDataID"})
 @Index(name = "byRoutineData", fields = {"routineDataID"})
+@Index(name = "byPresetData", fields = {"presetDataID"})
 public final class RoutinePreset implements Model {
   public static final QueryField ID = field("RoutinePreset", "id");
-  public static final QueryField PRESET_DATA = field("RoutinePreset", "presetDataID");
   public static final QueryField ROUTINE_DATA = field("RoutinePreset", "routineDataID");
+  public static final QueryField PRESET_DATA = field("RoutinePreset", "presetDataID");
   private final @ModelField(targetType="ID", isRequired = true) String id;
-  private final @ModelField(targetType="PresetData", isRequired = true) @BelongsTo(targetName = "presetDataID", type = PresetData.class) PresetData presetData;
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "routineDataID", type = RoutineData.class) RoutineData routineData;
+  private final @ModelField(targetType="PresetData", isRequired = true) @BelongsTo(targetName = "presetDataID", type = PresetData.class) PresetData presetData;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
       return id;
   }
   
-  public PresetData getPresetData() {
-      return presetData;
-  }
-  
   public RoutineData getRoutineData() {
       return routineData;
+  }
+  
+  public PresetData getPresetData() {
+      return presetData;
   }
   
   public Temporal.DateTime getCreatedAt() {
@@ -51,10 +51,10 @@ public final class RoutinePreset implements Model {
       return updatedAt;
   }
   
-  private RoutinePreset(String id, PresetData presetData, RoutineData routineData) {
+  private RoutinePreset(String id, RoutineData routineData, PresetData presetData) {
     this.id = id;
-    this.presetData = presetData;
     this.routineData = routineData;
+    this.presetData = presetData;
   }
   
   @Override
@@ -66,8 +66,8 @@ public final class RoutinePreset implements Model {
       } else {
       RoutinePreset routinePreset = (RoutinePreset) obj;
       return ObjectsCompat.equals(getId(), routinePreset.getId()) &&
-              ObjectsCompat.equals(getPresetData(), routinePreset.getPresetData()) &&
               ObjectsCompat.equals(getRoutineData(), routinePreset.getRoutineData()) &&
+              ObjectsCompat.equals(getPresetData(), routinePreset.getPresetData()) &&
               ObjectsCompat.equals(getCreatedAt(), routinePreset.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), routinePreset.getUpdatedAt());
       }
@@ -77,8 +77,8 @@ public final class RoutinePreset implements Model {
    public int hashCode() {
     return new StringBuilder()
       .append(getId())
-      .append(getPresetData())
       .append(getRoutineData())
+      .append(getPresetData())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -90,15 +90,15 @@ public final class RoutinePreset implements Model {
     return new StringBuilder()
       .append("RoutinePreset {")
       .append("id=" + String.valueOf(getId()) + ", ")
-      .append("presetData=" + String.valueOf(getPresetData()) + ", ")
       .append("routineData=" + String.valueOf(getRoutineData()) + ", ")
+      .append("presetData=" + String.valueOf(getPresetData()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
       .toString();
   }
   
-  public static PresetDataStep builder() {
+  public static RoutineDataStep builder() {
       return new Builder();
   }
   
@@ -120,16 +120,16 @@ public final class RoutinePreset implements Model {
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      presetData,
-      routineData);
+      routineData,
+      presetData);
   }
-  public interface PresetDataStep {
-    RoutineDataStep presetData(PresetData presetData);
+  public interface RoutineDataStep {
+    PresetDataStep routineData(RoutineData routineData);
   }
   
 
-  public interface RoutineDataStep {
-    BuildStep routineData(RoutineData routineData);
+  public interface PresetDataStep {
+    BuildStep presetData(PresetData presetData);
   }
   
 
@@ -139,31 +139,31 @@ public final class RoutinePreset implements Model {
   }
   
 
-  public static class Builder implements PresetDataStep, RoutineDataStep, BuildStep {
+  public static class Builder implements RoutineDataStep, PresetDataStep, BuildStep {
     private String id;
-    private PresetData presetData;
     private RoutineData routineData;
+    private PresetData presetData;
     @Override
      public RoutinePreset build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
         return new RoutinePreset(
           id,
-          presetData,
-          routineData);
+          routineData,
+          presetData);
     }
     
     @Override
-     public RoutineDataStep presetData(PresetData presetData) {
-        Objects.requireNonNull(presetData);
-        this.presetData = presetData;
+     public PresetDataStep routineData(RoutineData routineData) {
+        Objects.requireNonNull(routineData);
+        this.routineData = routineData;
         return this;
     }
     
     @Override
-     public BuildStep routineData(RoutineData routineData) {
-        Objects.requireNonNull(routineData);
-        this.routineData = routineData;
+     public BuildStep presetData(PresetData presetData) {
+        Objects.requireNonNull(presetData);
+        this.presetData = presetData;
         return this;
     }
     
@@ -179,20 +179,20 @@ public final class RoutinePreset implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, PresetData presetData, RoutineData routineData) {
+    private CopyOfBuilder(String id, RoutineData routineData, PresetData presetData) {
       super.id(id);
-      super.presetData(presetData)
-        .routineData(routineData);
-    }
-    
-    @Override
-     public CopyOfBuilder presetData(PresetData presetData) {
-      return (CopyOfBuilder) super.presetData(presetData);
+      super.routineData(routineData)
+        .presetData(presetData);
     }
     
     @Override
      public CopyOfBuilder routineData(RoutineData routineData) {
       return (CopyOfBuilder) super.routineData(routineData);
+    }
+    
+    @Override
+     public CopyOfBuilder presetData(PresetData presetData) {
+      return (CopyOfBuilder) super.presetData(presetData);
     }
   }
   

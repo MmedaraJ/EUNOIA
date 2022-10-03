@@ -41,54 +41,6 @@ type UserSoundRelationship
     totalPlayTime: Int
 }
 
-type UserBedtimeStoryInfoRelationship
-@model (queries: { get: "getUserBedtimeStoryInfoRelationship", list: "listUserBedtimeStoryInfoRelationships" })
-@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
-    id: ID!
-    userBedtimeStoryInfoRelationshipUserDataID: ID! @index(name: "UserBedtimeStoryInfoRelationshipsOwnedByUser", sortKeyFields: ["id"])
-    userBedtimeStoryInfoRelationshipOwner: UserData! @belongsTo(fields: ["userBedtimeStoryInfoRelationshipUserDataID"])
-    userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID: ID! @index(name: "UserBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo", sortKeyFields: ["id"])
-    userBedtimeStoryInfoRelationshipBedtimeStoryInfo: BedtimeStoryInfoData! @belongsTo(fields: ["userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID"])
-    numberOfTimesPlayed: Int
-    totalPlayTime: Int
-}
-
-type UserPrayerRelationship
-@model (queries: { get: "getUserPrayerRelationship", list: "listUserPrayerRelationships" })
-@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
-    id: ID!
-    userPrayerRelationshipUserDataID: ID! @index(name: "UserPrayerRelationshipsOwnedByUser", sortKeyFields: ["id"])
-    userPrayerRelationshipOwner: UserData! @belongsTo(fields: ["userPrayerRelationshipUserDataID"])
-    userPrayerRelationshipPrayerDataID: ID! @index(name: "UserPrayerRelationshipsOwnedByPrayer", sortKeyFields: ["id"])
-    userPrayerRelationshipPrayer: PrayerData! @belongsTo(fields: ["userPrayerRelationshipPrayerDataID"])
-    numberOfTimesPlayed: Int
-    totalPlayTime: Int
-}
-
-type UserSelfLoveRelationship
-@model (queries: { get: "getUserSelfLoveRelationship", list: "listUserSelfLoveRelationships" })
-@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
-    id: ID!
-    userSelfLoveRelationshipUserDataID: ID! @index(name: "UserSelfLoveRelationshipsOwnedByUser", sortKeyFields: ["id"])
-    userSelfLoveRelationshipOwner: UserData! @belongsTo(fields: ["userSelfLoveRelationshipUserDataID"])
-    userSelfLoveRelationshipSelfLoveDataID: ID! @index(name: "UserSelfLoveRelationshipsOwnedBySelfLove", sortKeyFields: ["id"])
-    userSelfLoveRelationshipSelfLove: SelfLoveData! @belongsTo(fields: ["userSelfLoveRelationshipSelfLoveDataID"])
-    numberOfTimesPlayed: Int
-    totalPlayTime: Int
-}
-
-type UserRoutineRelationship
-@model (queries: { get: "getUserRoutineRelationship", list: "listUserRoutineRelationships" })
-@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
-    id: ID!
-    userRoutineRelationshipUserDataID: ID! @index(name: "UserRoutineRelationshipsOwnedByUser", sortKeyFields: ["id"])
-    userRoutineRelationshipOwner: UserData! @belongsTo(fields: ["userRoutineRelationshipUserDataID"])
-    userRoutineRelationshipRoutineDataID: ID! @index(name: "UserRoutineRelationshipsOwnedByRoutine", sortKeyFields: ["id"])
-    userRoutineRelationshipRoutine: RoutineData! @belongsTo(fields: ["userRoutineRelationshipRoutineDataID"])
-    numberOfTimesPlayed: Int
-    totalPlayTime: Int
-}
-
 type CommentData
 @model (queries: {get: "getCommentData", list: "listCommentDatas" })
 @auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
@@ -167,6 +119,18 @@ type RoutineData
     playingOrder: [String!]
 }
 
+type UserRoutineRelationship
+@model (queries: { get: "getUserRoutineRelationship", list: "listUserRoutineRelationships" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userRoutineRelationshipUserDataID: ID! @index(name: "UserRoutineRelationshipsOwnedByUser", sortKeyFields: ["id"])
+    userRoutineRelationshipOwner: UserData! @belongsTo(fields: ["userRoutineRelationshipUserDataID"])
+    userRoutineRelationshipRoutineDataID: ID! @index(name: "UserRoutineRelationshipsOwnedByRoutine", sortKeyFields: ["id"])
+    userRoutineRelationshipRoutine: RoutineData! @belongsTo(fields: ["userRoutineRelationshipRoutineDataID"])
+    numberOfTimesPlayed: Int
+    totalPlayTime: Int
+}
+
 enum BedtimeStoryAudioSource{
     UPLOADED
     RECORDED
@@ -204,6 +168,18 @@ type BedtimeStoryInfoData
     routines: [RoutineData!] @manyToMany(relationName: "RoutineBedtimeStoryInfo")
     users: [UserData!] @manyToMany(relationName: "UserBedtimeStoryInfo")
     chapters: [BedtimeStoryInfoChapterData!] @hasMany(indexName: "BedtimeStoryInfoChapters", fields: ["id"])
+}
+
+type UserBedtimeStoryInfoRelationship
+@model (queries: { get: "getUserBedtimeStoryInfoRelationship", list: "listUserBedtimeStoryInfoRelationships" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userBedtimeStoryInfoRelationshipUserDataID: ID! @index(name: "UserBedtimeStoryInfoRelationshipsOwnedByUser", sortKeyFields: ["id"])
+    userBedtimeStoryInfoRelationshipOwner: UserData! @belongsTo(fields: ["userBedtimeStoryInfoRelationshipUserDataID"])
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID: ID! @index(name: "UserBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo", sortKeyFields: ["id"])
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfo: BedtimeStoryInfoData! @belongsTo(fields: ["userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID"])
+    numberOfTimesPlayed: Int
+    totalPlayTime: Int
 }
 
 type BedtimeStoryInfoChapterData
@@ -263,6 +239,18 @@ type PrayerData
     users: [UserData!] @manyToMany(relationName: "UserPrayer")
 }
 
+type UserPrayerRelationship
+@model (queries: { get: "getUserPrayerRelationship", list: "listUserPrayerRelationships" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userPrayerRelationshipUserDataID: ID! @index(name: "UserPrayerRelationshipsOwnedByUser", sortKeyFields: ["id"])
+    userPrayerRelationshipOwner: UserData! @belongsTo(fields: ["userPrayerRelationshipUserDataID"])
+    userPrayerRelationshipPrayerDataID: ID! @index(name: "UserPrayerRelationshipsOwnedByPrayer", sortKeyFields: ["id"])
+    userPrayerRelationshipPrayer: PrayerData! @belongsTo(fields: ["userPrayerRelationshipPrayerDataID"])
+    numberOfTimesPlayed: Int
+    totalPlayTime: Int
+}
+
 enum SelfLoveAudioSource{
     UPLOADED
     RECORDED
@@ -294,6 +282,18 @@ type SelfLoveData
     userSelfLoveRelationshipsOwnedBySelfLove: [UserSelfLoveRelationship!] @hasMany(indexName: "UserSelfLoveRelationshipsOwnedBySelfLove", fields: ["id"])
     routines: [RoutineData!] @manyToMany(relationName: "RoutineSelfLove")
     users: [UserData!] @manyToMany(relationName: "UserSelfLove")
+}
+
+type UserSelfLoveRelationship
+@model (queries: { get: "getUserSelfLoveRelationship", list: "listUserSelfLoveRelationships" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userSelfLoveRelationshipUserDataID: ID! @index(name: "UserSelfLoveRelationshipsOwnedByUser", sortKeyFields: ["id"])
+    userSelfLoveRelationshipOwner: UserData! @belongsTo(fields: ["userSelfLoveRelationshipUserDataID"])
+    userSelfLoveRelationshipSelfLoveDataID: ID! @index(name: "UserSelfLoveRelationshipsOwnedBySelfLove", sortKeyFields: ["id"])
+    userSelfLoveRelationshipSelfLove: SelfLoveData! @belongsTo(fields: ["userSelfLoveRelationshipSelfLoveDataID"])
+    numberOfTimesPlayed: Int
+    totalPlayTime: Int
 }
 
 type StretchData

@@ -10,8 +10,6 @@ import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
-private const val TAG = "SoundObject"
-
 object SoundObject {
     @Parcelize
     data class Sound(
@@ -54,8 +52,6 @@ object SoundObject {
 
         companion object{
             fun from(soundData: SoundData): Sound{
-                Log.i(TAG, "from sound data is $soundData")
-                Log.i(TAG, "from sound data owner is ${soundData.soundOwner}")
                 val result = Sound(
                     soundData.id,
                     UserObject.User.from(soundData.soundOwner),

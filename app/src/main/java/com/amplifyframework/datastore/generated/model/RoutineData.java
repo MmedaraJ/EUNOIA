@@ -86,6 +86,7 @@ public final class RoutineData implements Model {
   private final @ModelField(targetType="Int") Integer currentSelfLoveContinuePlayingTime;
   private final @ModelField(targetType="Int") Integer currentPrayerPlayingIndex;
   private final @ModelField(targetType="Int") Integer currentPrayerContinuePlayingTime;
+  private final @ModelField(targetType="UserRoutineRelationship") @HasMany(associatedWith = "userRoutineRelationshipRoutine", type = UserRoutineRelationship.class) List<UserRoutineRelationship> userRoutineRelationshipsOwnedByRoutine = null;
   private final @ModelField(targetType="RoutineSound") @HasMany(associatedWith = "routineData", type = RoutineSound.class) List<RoutineSound> sounds = null;
   private final @ModelField(targetType="RoutinePreset") @HasMany(associatedWith = "routineData", type = RoutinePreset.class) List<RoutinePreset> presets = null;
   private final @ModelField(targetType="RoutinePrayer") @HasMany(associatedWith = "routineData", type = RoutinePrayer.class) List<RoutinePrayer> prayers = null;
@@ -207,6 +208,10 @@ public final class RoutineData implements Model {
   
   public Integer getCurrentPrayerContinuePlayingTime() {
       return currentPrayerContinuePlayingTime;
+  }
+  
+  public List<UserRoutineRelationship> getUserRoutineRelationshipsOwnedByRoutine() {
+      return userRoutineRelationshipsOwnedByRoutine;
   }
   
   public List<RoutineSound> getSounds() {

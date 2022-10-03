@@ -22,6 +22,18 @@ subscription OnCreateSoundData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -177,6 +189,18 @@ subscription OnUpdateSoundData($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -336,6 +360,18 @@ subscription OnDeleteSoundData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -493,6 +529,18 @@ subscription OnCreateUserSoundRelationship($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -631,6 +679,18 @@ subscription OnUpdateUserSoundRelationship($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -773,6 +833,18 @@ subscription OnDeleteUserSoundRelationship($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -890,6 +962,1860 @@ subscription OnDeleteUserSoundRelationship($owner: String) {
     owner
   }
 }
+subscription OnCreateUserBedtimeStoryInfoRelationship($owner: String) {
+  onCreateUserBedtimeStoryInfoRelationship(owner: $owner) {
+    id
+    userBedtimeStoryInfoRelationshipUserDataID
+    userBedtimeStoryInfoRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfo {
+      id
+      bedtimeStoryUserDataID
+      bedtimeStoryOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      tags
+      audioSource
+      approvalStatus
+      creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserBedtimeStoryInfoRelationship($owner: String) {
+  onUpdateUserBedtimeStoryInfoRelationship(owner: $owner) {
+    id
+    userBedtimeStoryInfoRelationshipUserDataID
+    userBedtimeStoryInfoRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfo {
+      id
+      bedtimeStoryUserDataID
+      bedtimeStoryOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      tags
+      audioSource
+      approvalStatus
+      creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserBedtimeStoryInfoRelationship($owner: String) {
+  onDeleteUserBedtimeStoryInfoRelationship(owner: $owner) {
+    id
+    userBedtimeStoryInfoRelationshipUserDataID
+    userBedtimeStoryInfoRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+    userBedtimeStoryInfoRelationshipBedtimeStoryInfo {
+      id
+      bedtimeStoryUserDataID
+      bedtimeStoryOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      tags
+      audioSource
+      approvalStatus
+      creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      chapters {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserPrayerRelationship($owner: String) {
+  onCreateUserPrayerRelationship(owner: $owner) {
+    id
+    userPrayerRelationshipUserDataID
+    userPrayerRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userPrayerRelationshipPrayerDataID
+    userPrayerRelationshipPrayer {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserPrayerRelationship($owner: String) {
+  onUpdateUserPrayerRelationship(owner: $owner) {
+    id
+    userPrayerRelationshipUserDataID
+    userPrayerRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userPrayerRelationshipPrayerDataID
+    userPrayerRelationshipPrayer {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserPrayerRelationship($owner: String) {
+  onDeleteUserPrayerRelationship(owner: $owner) {
+    id
+    userPrayerRelationshipUserDataID
+    userPrayerRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userPrayerRelationshipPrayerDataID
+    userPrayerRelationshipPrayer {
+      id
+      userDataID
+      prayerOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      displayName
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      religion
+      country
+      tags
+      audioSource
+      approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserSelfLoveRelationship($owner: String) {
+  onCreateUserSelfLoveRelationship(owner: $owner) {
+    id
+    userSelfLoveRelationshipUserDataID
+    userSelfLoveRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSelfLoveRelationshipSelfLoveDataID
+    userSelfLoveRelationshipSelfLove {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserSelfLoveRelationship($owner: String) {
+  onUpdateUserSelfLoveRelationship(owner: $owner) {
+    id
+    userSelfLoveRelationshipUserDataID
+    userSelfLoveRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSelfLoveRelationshipSelfLoveDataID
+    userSelfLoveRelationshipSelfLove {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserSelfLoveRelationship($owner: String) {
+  onDeleteUserSelfLoveRelationship(owner: $owner) {
+    id
+    userSelfLoveRelationshipUserDataID
+    userSelfLoveRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSelfLoveRelationshipSelfLoveDataID
+    userSelfLoveRelationshipSelfLove {
+      id
+      userDataID
+      selfLoveOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      display_name
+      shortDescription
+      longDescription
+      audioKeyS3
+      icon
+      fullPlayTime
+      visibleToOthers
+      lyrics
+      tags
+      audioSource
+      approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnCreateUserRoutineRelationship($owner: String) {
+  onCreateUserRoutineRelationship(owner: $owner) {
+    id
+    userRoutineRelationshipUserDataID
+    userRoutineRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userRoutineRelationshipRoutineDataID
+    userRoutineRelationshipRoutine {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserRoutineRelationship($owner: String) {
+  onUpdateUserRoutineRelationship(owner: $owner) {
+    id
+    userRoutineRelationshipUserDataID
+    userRoutineRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userRoutineRelationshipRoutineDataID
+    userRoutineRelationshipRoutine {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserRoutineRelationship($owner: String) {
+  onDeleteUserRoutineRelationship(owner: $owner) {
+    id
+    userRoutineRelationshipUserDataID
+    userRoutineRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userRoutineRelationshipRoutineDataID
+    userRoutineRelationshipRoutine {
+      id
+      userDataID
+      routineOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      originalName
+      displayName
+      numberOfSteps
+      numberOfTimesUsed
+      fullPlayTime
+      icon
+      visibleToOthers
+      colorHEX
+      playSoundDuringStretch
+      playSoundDuringPrayer
+      playSoundDuringBreathing
+      playSoundDuringSelfLove
+      playSoundDuringBedtimeStory
+      playSoundDuringSleep
+      eachSoundPlayTime
+      prayerPlayTime
+      bedtimeStoryPlayTime
+      selfLovePlayTime
+      stretchTime
+      breathingTime
+      currentBedtimeStoryPlayingIndex
+      currentBedtimeStoryContinuePlayingTime
+      currentSelfLovePlayingIndex
+      currentSelfLoveContinuePlayingTime
+      currentPrayerPlayingIndex
+      currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      breathing {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      playingOrder
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
 subscription OnCreateCommentData($owner: String) {
   onCreateCommentData(owner: $owner) {
     id
@@ -911,6 +2837,18 @@ subscription OnCreateCommentData($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -1112,6 +3050,18 @@ subscription OnUpdateCommentData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1309,6 +3259,18 @@ subscription OnDeleteCommentData($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -1510,6 +3472,18 @@ subscription OnCreatePresetData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1684,6 +3658,18 @@ subscription OnUpdatePresetData($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -1862,6 +3848,18 @@ subscription OnDeletePresetData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2038,6 +4036,18 @@ subscription OnCreateRoutineData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2119,6 +4129,19 @@ subscription OnCreateRoutineData($owner: String) {
     currentSelfLoveContinuePlayingTime
     currentPrayerPlayingIndex
     currentPrayerContinuePlayingTime
+    userRoutineRelationshipsOwnedByRoutine {
+      items {
+        id
+        userRoutineRelationshipUserDataID
+        userRoutineRelationshipRoutineDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     sounds {
       items {
         id
@@ -2236,6 +4259,18 @@ subscription OnUpdateRoutineData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2317,6 +4352,19 @@ subscription OnUpdateRoutineData($owner: String) {
     currentSelfLoveContinuePlayingTime
     currentPrayerPlayingIndex
     currentPrayerContinuePlayingTime
+    userRoutineRelationshipsOwnedByRoutine {
+      items {
+        id
+        userRoutineRelationshipUserDataID
+        userRoutineRelationshipRoutineDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     sounds {
       items {
         id
@@ -2434,6 +4482,18 @@ subscription OnDeleteRoutineData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2515,6 +4575,19 @@ subscription OnDeleteRoutineData($owner: String) {
     currentSelfLoveContinuePlayingTime
     currentPrayerPlayingIndex
     currentPrayerContinuePlayingTime
+    userRoutineRelationshipsOwnedByRoutine {
+      items {
+        id
+        userRoutineRelationshipUserDataID
+        userRoutineRelationshipRoutineDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     sounds {
       items {
         id
@@ -2632,6 +4705,18 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2698,6 +4783,19 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
     audioSource
     approvalStatus
     creationStatus
+    userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+      items {
+        id
+        userBedtimeStoryInfoRelationshipUserDataID
+        userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -2760,6 +4858,18 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2826,6 +4936,19 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
     audioSource
     approvalStatus
     creationStatus
+    userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+      items {
+        id
+        userBedtimeStoryInfoRelationshipUserDataID
+        userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -2888,6 +5011,18 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2954,6 +5089,19 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
     audioSource
     approvalStatus
     creationStatus
+    userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+      items {
+        id
+        userBedtimeStoryInfoRelationshipUserDataID
+        userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -3033,6 +5181,9 @@ subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
       audioSource
       approvalStatus
       creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -3105,6 +5256,9 @@ subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
       audioSource
       approvalStatus
       creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -3177,6 +5331,9 @@ subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
       audioSource
       approvalStatus
       creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -3361,6 +5518,18 @@ subscription OnCreatePrayerData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3428,6 +5597,19 @@ subscription OnCreatePrayerData($owner: String) {
     tags
     audioSource
     approvalStatus
+    userPrayerRelationshipsOwnedByPrayer {
+      items {
+        id
+        userPrayerRelationshipUserDataID
+        userPrayerRelationshipPrayerDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -3478,6 +5660,18 @@ subscription OnUpdatePrayerData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3545,6 +5739,19 @@ subscription OnUpdatePrayerData($owner: String) {
     tags
     audioSource
     approvalStatus
+    userPrayerRelationshipsOwnedByPrayer {
+      items {
+        id
+        userPrayerRelationshipUserDataID
+        userPrayerRelationshipPrayerDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -3595,6 +5802,18 @@ subscription OnDeletePrayerData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3662,6 +5881,19 @@ subscription OnDeletePrayerData($owner: String) {
     tags
     audioSource
     approvalStatus
+    userPrayerRelationshipsOwnedByPrayer {
+      items {
+        id
+        userPrayerRelationshipUserDataID
+        userPrayerRelationshipPrayerDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -3712,6 +5944,18 @@ subscription OnCreateSelfLoveData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3778,6 +6022,19 @@ subscription OnCreateSelfLoveData($owner: String) {
     tags
     audioSource
     approvalStatus
+    userSelfLoveRelationshipsOwnedBySelfLove {
+      items {
+        id
+        userSelfLoveRelationshipUserDataID
+        userSelfLoveRelationshipSelfLoveDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -3828,6 +6085,18 @@ subscription OnUpdateSelfLoveData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3894,6 +6163,19 @@ subscription OnUpdateSelfLoveData($owner: String) {
     tags
     audioSource
     approvalStatus
+    userSelfLoveRelationshipsOwnedBySelfLove {
+      items {
+        id
+        userSelfLoveRelationshipUserDataID
+        userSelfLoveRelationshipSelfLoveDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -3944,6 +6226,18 @@ subscription OnDeleteSelfLoveData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4010,6 +6304,19 @@ subscription OnDeleteSelfLoveData($owner: String) {
     tags
     audioSource
     approvalStatus
+    userSelfLoveRelationshipsOwnedBySelfLove {
+      items {
+        id
+        userSelfLoveRelationshipUserDataID
+        userSelfLoveRelationshipSelfLoveDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     routines {
       items {
         id
@@ -4058,6 +6365,18 @@ subscription OnCreateStretchData($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -4166,6 +6485,18 @@ subscription OnUpdateStretchData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4270,6 +6601,18 @@ subscription OnDeleteStretchData($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -4378,6 +6721,18 @@ subscription OnCreateBreathingData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4482,6 +6837,18 @@ subscription OnUpdateBreathingData($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -4590,6 +6957,18 @@ subscription OnDeleteBreathingData($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4695,6 +7074,58 @@ subscription OnCreateUserData($owner: String) {
         id
         userSoundRelationshipUserDataID
         userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userBedtimeStoryInfoRelationshipsOwnedByUser {
+      items {
+        id
+        userBedtimeStoryInfoRelationshipUserDataID
+        userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userPrayerRelationshipsOwnedByUser {
+      items {
+        id
+        userPrayerRelationshipUserDataID
+        userPrayerRelationshipPrayerDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userSelfLoveRelationshipsOwnedByUser {
+      items {
+        id
+        userSelfLoveRelationshipUserDataID
+        userSelfLoveRelationshipSelfLoveDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userRoutineRelationshipsOwnedByUser {
+      items {
+        id
+        userRoutineRelationshipUserDataID
+        userRoutineRelationshipRoutineDataID
         numberOfTimesPlayed
         totalPlayTime
         createdAt
@@ -4998,6 +7429,58 @@ subscription OnUpdateUserData($owner: String) {
       }
       nextToken
     }
+    userBedtimeStoryInfoRelationshipsOwnedByUser {
+      items {
+        id
+        userBedtimeStoryInfoRelationshipUserDataID
+        userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userPrayerRelationshipsOwnedByUser {
+      items {
+        id
+        userPrayerRelationshipUserDataID
+        userPrayerRelationshipPrayerDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userSelfLoveRelationshipsOwnedByUser {
+      items {
+        id
+        userSelfLoveRelationshipUserDataID
+        userSelfLoveRelationshipSelfLoveDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userRoutineRelationshipsOwnedByUser {
+      items {
+        id
+        userRoutineRelationshipUserDataID
+        userRoutineRelationshipRoutineDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     soundsOwnedByUser {
       items {
         id
@@ -5285,6 +7768,58 @@ subscription OnDeleteUserData($owner: String) {
         id
         userSoundRelationshipUserDataID
         userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userBedtimeStoryInfoRelationshipsOwnedByUser {
+      items {
+        id
+        userBedtimeStoryInfoRelationshipUserDataID
+        userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userPrayerRelationshipsOwnedByUser {
+      items {
+        id
+        userPrayerRelationshipUserDataID
+        userPrayerRelationshipPrayerDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userSelfLoveRelationshipsOwnedByUser {
+      items {
+        id
+        userSelfLoveRelationshipUserDataID
+        userSelfLoveRelationshipSelfLoveDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+    userRoutineRelationshipsOwnedByUser {
+      items {
+        id
+        userRoutineRelationshipUserDataID
+        userRoutineRelationshipRoutineDataID
         numberOfTimesPlayed
         totalPlayTime
         createdAt
@@ -5636,6 +8171,18 @@ subscription OnCreateUserSound($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5774,6 +8321,18 @@ subscription OnUpdateUserSound($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5910,6 +8469,18 @@ subscription OnDeleteUserSound($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -6080,6 +8651,9 @@ subscription OnCreateRoutineSound($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -6222,6 +8796,9 @@ subscription OnUpdateRoutineSound($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -6364,6 +8941,9 @@ subscription OnDeleteRoutineSound($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -6479,6 +9059,18 @@ subscription OnCreateUserPreset($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -6624,6 +9216,18 @@ subscription OnUpdateUserPreset($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6765,6 +9369,18 @@ subscription OnDeleteUserPreset($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -6940,6 +9556,9 @@ subscription OnCreateRoutinePreset($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -7087,6 +9706,9 @@ subscription OnUpdateRoutinePreset($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -7234,6 +9856,9 @@ subscription OnDeleteRoutinePreset($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -7322,6 +9947,9 @@ subscription OnCreateRoutinePrayer($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -7386,6 +10014,9 @@ subscription OnCreateRoutinePrayer($owner: String) {
       tags
       audioSource
       approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -7455,6 +10086,9 @@ subscription OnUpdateRoutinePrayer($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -7519,6 +10153,9 @@ subscription OnUpdateRoutinePrayer($owner: String) {
       tags
       audioSource
       approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -7588,6 +10225,9 @@ subscription OnDeleteRoutinePrayer($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -7652,6 +10292,9 @@ subscription OnDeleteRoutinePrayer($owner: String) {
       tags
       audioSource
       approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -7721,6 +10364,9 @@ subscription OnCreateRoutineStretch($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -7843,6 +10489,9 @@ subscription OnUpdateRoutineStretch($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -7965,6 +10614,9 @@ subscription OnDeleteRoutineStretch($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -8087,6 +10739,9 @@ subscription OnCreateRoutineBreathing($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -8209,6 +10864,9 @@ subscription OnUpdateRoutineBreathing($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -8331,6 +10989,9 @@ subscription OnDeleteRoutineBreathing($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -8453,6 +11114,9 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -8516,6 +11180,9 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
       audioSource
       approvalStatus
       creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -8588,6 +11255,9 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -8651,6 +11321,9 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
       audioSource
       approvalStatus
       creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -8723,6 +11396,9 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -8786,6 +11462,9 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
       audioSource
       approvalStatus
       creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -8858,6 +11537,9 @@ subscription OnCreateRoutineSelfLove($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -8921,6 +11603,9 @@ subscription OnCreateRoutineSelfLove($owner: String) {
       tags
       audioSource
       approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -8990,6 +11675,9 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -9053,6 +11741,9 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
       tags
       audioSource
       approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -9122,6 +11813,9 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -9185,6 +11879,9 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
       tags
       audioSource
       approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -9254,6 +11951,9 @@ subscription OnCreateUserRoutine($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -9300,6 +12000,18 @@ subscription OnCreateUserRoutine($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -9416,6 +12128,9 @@ subscription OnUpdateUserRoutine($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -9462,6 +12177,18 @@ subscription OnUpdateUserRoutine($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -9578,6 +12305,9 @@ subscription OnDeleteUserRoutine($owner: String) {
       currentSelfLoveContinuePlayingTime
       currentPrayerPlayingIndex
       currentPrayerContinuePlayingTime
+      userRoutineRelationshipsOwnedByRoutine {
+        nextToken
+      }
       sounds {
         nextToken
       }
@@ -9624,6 +12354,18 @@ subscription OnDeleteUserRoutine($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -9725,6 +12467,9 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
       audioSource
       approvalStatus
       creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -9755,6 +12500,18 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -9856,6 +12613,9 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
       audioSource
       approvalStatus
       creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -9886,6 +12646,18 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -9987,6 +12759,9 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
       audioSource
       approvalStatus
       creationStatus
+      userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -10017,6 +12792,18 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -10119,6 +12906,9 @@ subscription OnCreateUserPrayer($owner: String) {
       tags
       audioSource
       approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -10146,6 +12936,18 @@ subscription OnCreateUserPrayer($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -10248,6 +13050,9 @@ subscription OnUpdateUserPrayer($owner: String) {
       tags
       audioSource
       approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -10275,6 +13080,18 @@ subscription OnUpdateUserPrayer($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -10377,6 +13194,9 @@ subscription OnDeleteUserPrayer($owner: String) {
       tags
       audioSource
       approvalStatus
+      userPrayerRelationshipsOwnedByPrayer {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -10404,6 +13224,18 @@ subscription OnDeleteUserPrayer($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -10505,6 +13337,9 @@ subscription OnCreateUserSelfLove($owner: String) {
       tags
       audioSource
       approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -10532,6 +13367,18 @@ subscription OnCreateUserSelfLove($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -10633,6 +13480,9 @@ subscription OnUpdateUserSelfLove($owner: String) {
       tags
       audioSource
       approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -10660,6 +13510,18 @@ subscription OnUpdateUserSelfLove($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -10761,6 +13623,9 @@ subscription OnDeleteUserSelfLove($owner: String) {
       tags
       audioSource
       approvalStatus
+      userSelfLoveRelationshipsOwnedBySelfLove {
+        nextToken
+      }
       routines {
         nextToken
       }
@@ -10788,6 +13653,18 @@ subscription OnDeleteUserSelfLove($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -10908,6 +13785,18 @@ subscription OnCreateUserStretch($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -11024,6 +13913,18 @@ subscription OnUpdateUserStretch($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -11144,6 +14045,18 @@ subscription OnDeleteUserStretch($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -11260,6 +14173,18 @@ subscription OnCreateUserBreathing($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {
@@ -11380,6 +14305,18 @@ subscription OnUpdateUserBreathing($owner: String) {
       userSoundRelationshipsOwnedByUser {
         nextToken
       }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -11496,6 +14433,18 @@ subscription OnDeleteUserBreathing($owner: String) {
       authenticated
       subscription
       userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      userBedtimeStoryInfoRelationshipsOwnedByUser {
+        nextToken
+      }
+      userPrayerRelationshipsOwnedByUser {
+        nextToken
+      }
+      userSelfLoveRelationshipsOwnedByUser {
+        nextToken
+      }
+      userRoutineRelationshipsOwnedByUser {
         nextToken
       }
       soundsOwnedByUser {

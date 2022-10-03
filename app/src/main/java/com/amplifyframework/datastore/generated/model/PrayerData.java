@@ -57,6 +57,7 @@ public final class PrayerData implements Model {
   private final @ModelField(targetType="String") List<String> tags;
   private final @ModelField(targetType="PrayerAudioSource") PrayerAudioSource audioSource;
   private final @ModelField(targetType="PrayerApprovalStatus") PrayerApprovalStatus approvalStatus;
+  private final @ModelField(targetType="UserPrayerRelationship") @HasMany(associatedWith = "userPrayerRelationshipPrayer", type = UserPrayerRelationship.class) List<UserPrayerRelationship> userPrayerRelationshipsOwnedByPrayer = null;
   private final @ModelField(targetType="RoutinePrayer") @HasMany(associatedWith = "prayerData", type = RoutinePrayer.class) List<RoutinePrayer> routines = null;
   private final @ModelField(targetType="UserPrayer") @HasMany(associatedWith = "prayerData", type = UserPrayer.class) List<UserPrayer> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
@@ -115,6 +116,10 @@ public final class PrayerData implements Model {
   
   public PrayerApprovalStatus getApprovalStatus() {
       return approvalStatus;
+  }
+  
+  public List<UserPrayerRelationship> getUserPrayerRelationshipsOwnedByPrayer() {
+      return userPrayerRelationshipsOwnedByPrayer;
   }
   
   public List<RoutinePrayer> getRoutines() {
