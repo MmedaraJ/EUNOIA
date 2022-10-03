@@ -39,6 +39,7 @@ import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryActivityUI
 import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryScreen
 import com.example.eunoia.dashboard.prayer.PrayerActivityUI
 import com.example.eunoia.dashboard.prayer.PrayerScreen
+import com.example.eunoia.dashboard.routine.RoutinePresetScreen
 import com.example.eunoia.dashboard.routine.RoutineScreen
 import com.example.eunoia.dashboard.selfLove.SelfLoveActivityUI
 import com.example.eunoia.dashboard.selfLove.SelfLoveScreen
@@ -149,7 +150,7 @@ fun EunoiaApp(
                                     scope,
                                     state,
                                     generalMediaPlayerService,
-                                    soundMediaPlayerService
+                                    soundMediaPlayerService,
                                 )
                                 globalViewModel_!!.allowBottomSheetClose = true
                             }
@@ -583,6 +584,24 @@ fun DashboardTab(
                 generalMediaPlayerService = generalMediaPlayerService
             )
         }
+        composable(
+            "${Screen.RoutinePresetScreen.screen_route}/routineData={routineData}",
+            arguments = listOf(
+                navArgument("routineData") {
+                    type = RoutineObject.RoutineType()
+                }
+            )
+        ) { backStackEntry ->
+            val routineData = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routineData")
+            Log.i("Routine Preset Screen", "You are now on ${routineData!!.displayName}'s sound tab")
+            RoutinePresetScreen(
+                navController,
+                LocalContext.current,
+                routineData.data,
+                scope,
+                state
+            )
+        }
     }
 }
 
@@ -833,6 +852,42 @@ fun CreateTab(
                 globalViewModel = globalViewModel,
                 scope = scope,
                 state = state
+            )
+        }
+        composable(
+            "${Screen.PrayerScreen.screen_route}/prayerData={prayerData}",
+            arguments = listOf(
+                navArgument("prayerData") {
+                    type = PrayerObject.PrayerType()
+                }
+            )
+        ) { backStackEntry ->
+            val prayerData = backStackEntry.arguments?.getParcelable<PrayerObject.Prayer>("prayerData")
+            Log.i("PrayerScreen", "You are now on the ${prayerData!!.displayName} tab")
+            PrayerScreen(
+                navController = navController,
+                prayerData = prayerData.data,
+                scope = scope,
+                state = state,
+                generalMediaPlayerService = generalMediaPlayerService
+            )
+        }
+        composable(
+            "${Screen.SelfLoveScreen.screen_route}/selfLoveData={selfLoveData}",
+            arguments = listOf(
+                navArgument("selfLoveData") {
+                    type = SelfLoveObject.SelfLoveType()
+                }
+            )
+        ) { backStackEntry ->
+            val selfLoveData = backStackEntry.arguments?.getParcelable<SelfLoveObject.SelfLove>("selfLoveData")
+            Log.i("SelfLoveScreen", "You are now on the ${selfLoveData!!.displayName} tab")
+            SelfLoveScreen(
+                navController = navController,
+                selfLoveData = selfLoveData.data,
+                scope = scope,
+                state = state,
+                generalMediaPlayerService = generalMediaPlayerService
             )
         }
     }

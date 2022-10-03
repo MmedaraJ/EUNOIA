@@ -51,8 +51,10 @@ object SelfLoveBackend {
                     Log.i(TAG, "Response: $response")
                     if(response.hasData()) {
                         for (selfLoveData in response.data) {
-                            Log.i(TAG, selfLoveData.toString())
-                            selfLoveList.add(selfLoveData)
+                            if(selfLoveData != null) {
+                                Log.i(TAG, selfLoveData.toString())
+                                selfLoveList.add(selfLoveData)
+                            }
                         }
                     }
                     completed(selfLoveList)

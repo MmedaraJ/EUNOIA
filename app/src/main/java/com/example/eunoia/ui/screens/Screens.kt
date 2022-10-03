@@ -93,6 +93,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
      * Routine
      */
     object RoutineScreen: Screen("Routine Screen", -1, "routine_screen")
+    object RoutinePresetScreen: Screen("Routine Preset Screen", -1, "routine_preset_screen")
 
     fun saveState(): Bundle {
         return bundleOf(KEY_SCREEN to screen_route)
@@ -170,6 +171,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                  * Routine
                  */
                 RoutineScreen.screen_route -> RoutineScreen
+                RoutinePresetScreen.screen_route -> RoutinePresetScreen
 
                 /**
                  * Settings

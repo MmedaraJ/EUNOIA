@@ -66,8 +66,10 @@ object RoutineSoundBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routineSoundData in response.data) {
-                            Log.i(TAG, routineSoundData.toString())
-                            routineSoundList.add(routineSoundData)
+                            if(routineSoundData != null) {
+                                Log.i(TAG, routineSoundData.toString())
+                                routineSoundList.add(routineSoundData)
+                            }
                         }
                     }
                     completed(routineSoundList)
@@ -93,8 +95,10 @@ object RoutineSoundBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routineSoundData in response.data) {
-                            Log.i(TAG, routineSoundData.toString())
-                            routineSoundList.add(routineSoundData)
+                            if(routineSoundData != null) {
+                                Log.i(TAG, routineSoundData.toString())
+                                routineSoundList.add(routineSoundData)
+                            }
                         }
                     }
                     completed(routineSoundList)

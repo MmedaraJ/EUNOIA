@@ -2,7 +2,7 @@
 subscription OnCreateSoundData($owner: String) {
   onCreateSoundData(owner: $owner) {
     id
-    userDataID
+    soundUserDataID
     soundOwner {
       id
       username
@@ -19,6 +19,9 @@ subscription OnCreateSoundData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -86,6 +89,19 @@ subscription OnCreateSoundData($owner: String) {
     tags
     audio_names
     approvalStatus
+    userSoundRelationshipsOwnedBySound {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     commentsOwnedBySound {
       items {
         id
@@ -102,7 +118,7 @@ subscription OnCreateSoundData($owner: String) {
     presetsOwnedBySound {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -143,7 +159,7 @@ subscription OnCreateSoundData($owner: String) {
 subscription OnUpdateSoundData($owner: String) {
   onUpdateSoundData(owner: $owner) {
     id
-    userDataID
+    soundUserDataID
     soundOwner {
       id
       username
@@ -160,6 +176,9 @@ subscription OnUpdateSoundData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -227,6 +246,19 @@ subscription OnUpdateSoundData($owner: String) {
     tags
     audio_names
     approvalStatus
+    userSoundRelationshipsOwnedBySound {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     commentsOwnedBySound {
       items {
         id
@@ -243,7 +275,7 @@ subscription OnUpdateSoundData($owner: String) {
     presetsOwnedBySound {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -284,7 +316,7 @@ subscription OnUpdateSoundData($owner: String) {
 subscription OnDeleteSoundData($owner: String) {
   onDeleteSoundData(owner: $owner) {
     id
-    userDataID
+    soundUserDataID
     soundOwner {
       id
       username
@@ -301,6 +333,9 @@ subscription OnDeleteSoundData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -368,6 +403,19 @@ subscription OnDeleteSoundData($owner: String) {
     tags
     audio_names
     approvalStatus
+    userSoundRelationshipsOwnedBySound {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     commentsOwnedBySound {
       items {
         id
@@ -384,7 +432,7 @@ subscription OnDeleteSoundData($owner: String) {
     presetsOwnedBySound {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -422,6 +470,426 @@ subscription OnDeleteSoundData($owner: String) {
     owner
   }
 }
+subscription OnCreateUserSoundRelationship($owner: String) {
+  onCreateUserSoundRelationship(owner: $owner) {
+    id
+    userSoundRelationshipUserDataID
+    userSoundRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSoundRelationshipSoundDataID
+    userSoundRelationshipSound {
+      id
+      soundUserDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnUpdateUserSoundRelationship($owner: String) {
+  onUpdateUserSoundRelationship(owner: $owner) {
+    id
+    userSoundRelationshipUserDataID
+    userSoundRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSoundRelationshipSoundDataID
+    userSoundRelationshipSound {
+      id
+      soundUserDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+subscription OnDeleteUserSoundRelationship($owner: String) {
+  onDeleteUserSoundRelationship(owner: $owner) {
+    id
+    userSoundRelationshipUserDataID
+    userSoundRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSoundRelationshipSoundDataID
+    userSoundRelationshipSound {
+      id
+      soundUserDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
 subscription OnCreateCommentData($owner: String) {
   onCreateCommentData(owner: $owner) {
     id
@@ -442,6 +910,9 @@ subscription OnCreateCommentData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -501,7 +972,7 @@ subscription OnCreateCommentData($owner: String) {
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -534,6 +1005,9 @@ subscription OnCreateCommentData($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -553,7 +1027,7 @@ subscription OnCreateCommentData($owner: String) {
     presetID
     preset {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -579,7 +1053,7 @@ subscription OnCreateCommentData($owner: String) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -635,6 +1109,9 @@ subscription OnUpdateCommentData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -694,7 +1171,7 @@ subscription OnUpdateCommentData($owner: String) {
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -727,6 +1204,9 @@ subscription OnUpdateCommentData($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -746,7 +1226,7 @@ subscription OnUpdateCommentData($owner: String) {
     presetID
     preset {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -772,7 +1252,7 @@ subscription OnUpdateCommentData($owner: String) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -828,6 +1308,9 @@ subscription OnDeleteCommentData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -887,7 +1370,7 @@ subscription OnDeleteCommentData($owner: String) {
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -920,6 +1403,9 @@ subscription OnDeleteCommentData($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -939,7 +1425,7 @@ subscription OnDeleteCommentData($owner: String) {
     presetID
     preset {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -965,7 +1451,7 @@ subscription OnDeleteCommentData($owner: String) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -1004,7 +1490,7 @@ subscription OnDeleteCommentData($owner: String) {
 subscription OnCreatePresetData($owner: String) {
   onCreatePresetData(owner: $owner) {
     id
-    userDataID
+    presetUserDataID
     presetOwner {
       id
       username
@@ -1021,6 +1507,9 @@ subscription OnCreatePresetData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1081,7 +1570,7 @@ subscription OnCreatePresetData($owner: String) {
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -1114,6 +1603,9 @@ subscription OnCreatePresetData($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -1174,7 +1666,7 @@ subscription OnCreatePresetData($owner: String) {
 subscription OnUpdatePresetData($owner: String) {
   onUpdatePresetData(owner: $owner) {
     id
-    userDataID
+    presetUserDataID
     presetOwner {
       id
       username
@@ -1191,6 +1683,9 @@ subscription OnUpdatePresetData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1251,7 +1746,7 @@ subscription OnUpdatePresetData($owner: String) {
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -1284,6 +1779,9 @@ subscription OnUpdatePresetData($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -1344,7 +1842,7 @@ subscription OnUpdatePresetData($owner: String) {
 subscription OnDeletePresetData($owner: String) {
   onDeletePresetData(owner: $owner) {
     id
-    userDataID
+    presetUserDataID
     presetOwner {
       id
       username
@@ -1361,6 +1859,9 @@ subscription OnDeletePresetData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1421,7 +1922,7 @@ subscription OnDeletePresetData($owner: String) {
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -1454,6 +1955,9 @@ subscription OnDeletePresetData($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -1531,6 +2035,9 @@ subscription OnCreateRoutineData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1726,6 +2233,9 @@ subscription OnUpdateRoutineData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1921,6 +2431,9 @@ subscription OnDeleteRoutineData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2099,7 +2612,7 @@ subscription OnDeleteRoutineData($owner: String) {
 subscription OnCreateBedtimeStoryInfoData($owner: String) {
   onCreateBedtimeStoryInfoData(owner: $owner) {
     id
-    userDataID
+    bedtimeStoryUserDataID
     bedtimeStoryOwner {
       id
       username
@@ -2116,6 +2629,9 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2224,7 +2740,7 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
 subscription OnUpdateBedtimeStoryInfoData($owner: String) {
   onUpdateBedtimeStoryInfoData(owner: $owner) {
     id
-    userDataID
+    bedtimeStoryUserDataID
     bedtimeStoryOwner {
       id
       username
@@ -2241,6 +2757,9 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2349,7 +2868,7 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
 subscription OnDeleteBedtimeStoryInfoData($owner: String) {
   onDeleteBedtimeStoryInfoData(owner: $owner) {
     id
-    userDataID
+    bedtimeStoryUserDataID
     bedtimeStoryOwner {
       id
       username
@@ -2366,6 +2885,9 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2479,7 +3001,7 @@ subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
     bedtimeStoryInfoDataID
     bedtimeStoryInfo {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -2551,7 +3073,7 @@ subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
     bedtimeStoryInfoDataID
     bedtimeStoryInfo {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -2623,7 +3145,7 @@ subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
     bedtimeStoryInfoDataID
     bedtimeStoryInfo {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -2702,7 +3224,7 @@ subscription OnCreateChapterPageData($owner: String) {
       bedtimeStoryInfoDataID
       bedtimeStoryInfo {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -2745,7 +3267,7 @@ subscription OnUpdateChapterPageData($owner: String) {
       bedtimeStoryInfoDataID
       bedtimeStoryInfo {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -2788,7 +3310,7 @@ subscription OnDeleteChapterPageData($owner: String) {
       bedtimeStoryInfoDataID
       bedtimeStoryInfo {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -2836,6 +3358,9 @@ subscription OnCreatePrayerData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2950,6 +3475,9 @@ subscription OnUpdatePrayerData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3064,6 +3592,9 @@ subscription OnDeletePrayerData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3178,6 +3709,9 @@ subscription OnCreateSelfLoveData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3291,6 +3825,9 @@ subscription OnUpdateSelfLoveData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3404,6 +3941,9 @@ subscription OnDeleteSelfLoveData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3517,6 +4057,9 @@ subscription OnCreateStretchData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3620,6 +4163,9 @@ subscription OnUpdateStretchData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3723,6 +4269,9 @@ subscription OnDeleteStretchData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3826,6 +4375,9 @@ subscription OnCreateBreathingData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3929,6 +4481,9 @@ subscription OnUpdateBreathingData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4032,6 +4587,9 @@ subscription OnDeleteBreathingData($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4132,10 +4690,23 @@ subscription OnCreateUserData($owner: String) {
     phoneNumber
     authenticated
     subscription
+    userSoundRelationshipsOwnedByUser {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     soundsOwnedByUser {
       items {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -4168,7 +4739,7 @@ subscription OnCreateUserData($owner: String) {
     presetsOwnedByUser {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -4363,7 +4934,7 @@ subscription OnCreateUserData($owner: String) {
     bedtimeStoriesOwnedByUser {
       items {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -4414,10 +4985,23 @@ subscription OnUpdateUserData($owner: String) {
     phoneNumber
     authenticated
     subscription
+    userSoundRelationshipsOwnedByUser {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     soundsOwnedByUser {
       items {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -4450,7 +5034,7 @@ subscription OnUpdateUserData($owner: String) {
     presetsOwnedByUser {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -4645,7 +5229,7 @@ subscription OnUpdateUserData($owner: String) {
     bedtimeStoriesOwnedByUser {
       items {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -4696,10 +5280,23 @@ subscription OnDeleteUserData($owner: String) {
     phoneNumber
     authenticated
     subscription
+    userSoundRelationshipsOwnedByUser {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     soundsOwnedByUser {
       items {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -4732,7 +5329,7 @@ subscription OnDeleteUserData($owner: String) {
     presetsOwnedByUser {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -4927,7 +5524,7 @@ subscription OnDeleteUserData($owner: String) {
     bedtimeStoriesOwnedByUser {
       items {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -4968,7 +5565,7 @@ subscription OnCreateUserSound($owner: String) {
     userDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5001,6 +5598,9 @@ subscription OnCreateUserSound($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5033,6 +5633,9 @@ subscription OnCreateUserSound($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5100,7 +5703,7 @@ subscription OnUpdateUserSound($owner: String) {
     userDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5133,6 +5736,9 @@ subscription OnUpdateUserSound($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5165,6 +5771,9 @@ subscription OnUpdateUserSound($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5232,7 +5841,7 @@ subscription OnDeleteUserSound($owner: String) {
     userDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5265,6 +5874,9 @@ subscription OnDeleteUserSound($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5297,6 +5909,9 @@ subscription OnDeleteUserSound($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5364,7 +5979,7 @@ subscription OnCreateRoutineSound($owner: String) {
     routineDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5397,6 +6012,9 @@ subscription OnCreateRoutineSound($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5503,7 +6121,7 @@ subscription OnUpdateRoutineSound($owner: String) {
     routineDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5536,6 +6154,9 @@ subscription OnUpdateRoutineSound($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5642,7 +6263,7 @@ subscription OnDeleteRoutineSound($owner: String) {
     routineDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5675,6 +6296,9 @@ subscription OnDeleteRoutineSound($owner: String) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5781,7 +6405,7 @@ subscription OnCreateUserPreset($owner: String) {
     userDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -5807,7 +6431,7 @@ subscription OnCreateUserPreset($owner: String) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -5854,6 +6478,9 @@ subscription OnCreateUserPreset($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5921,7 +6548,7 @@ subscription OnUpdateUserPreset($owner: String) {
     userDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -5947,7 +6574,7 @@ subscription OnUpdateUserPreset($owner: String) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -5994,6 +6621,9 @@ subscription OnUpdateUserPreset($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6061,7 +6691,7 @@ subscription OnDeleteUserPreset($owner: String) {
     userDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -6087,7 +6717,7 @@ subscription OnDeleteUserPreset($owner: String) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -6134,6 +6764,9 @@ subscription OnDeleteUserPreset($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6201,7 +6834,7 @@ subscription OnCreateRoutinePreset($owner: String) {
     routineDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -6227,7 +6860,7 @@ subscription OnCreateRoutinePreset($owner: String) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -6348,7 +6981,7 @@ subscription OnUpdateRoutinePreset($owner: String) {
     routineDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -6374,7 +7007,7 @@ subscription OnUpdateRoutinePreset($owner: String) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -6495,7 +7128,7 @@ subscription OnDeleteRoutinePreset($owner: String) {
     routineDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -6521,7 +7154,7 @@ subscription OnDeleteRoutinePreset($owner: String) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -7851,7 +8484,7 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
     }
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -7986,7 +8619,7 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
     }
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -8121,7 +8754,7 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
     }
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -8666,6 +9299,9 @@ subscription OnCreateUserRoutine($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -8825,6 +9461,9 @@ subscription OnUpdateUserRoutine($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -8984,6 +9623,9 @@ subscription OnDeleteUserRoutine($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9051,7 +9693,7 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
     userDataID
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -9112,6 +9754,9 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9179,7 +9824,7 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
     userDataID
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -9240,6 +9885,9 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9307,7 +9955,7 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
     userDataID
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -9368,6 +10016,9 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9494,6 +10145,9 @@ subscription OnCreateUserPrayer($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9620,6 +10274,9 @@ subscription OnUpdateUserPrayer($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9746,6 +10403,9 @@ subscription OnDeleteUserPrayer($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9871,6 +10531,9 @@ subscription OnCreateUserSelfLove($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9996,6 +10659,9 @@ subscription OnUpdateUserSelfLove($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10121,6 +10787,9 @@ subscription OnDeleteUserSelfLove($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10236,6 +10905,9 @@ subscription OnCreateUserStretch($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10351,6 +11023,9 @@ subscription OnUpdateUserStretch($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10466,6 +11141,9 @@ subscription OnDeleteUserStretch($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10581,6 +11259,9 @@ subscription OnCreateUserBreathing($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10696,6 +11377,9 @@ subscription OnUpdateUserBreathing($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10811,6 +11495,9 @@ subscription OnDeleteUserBreathing($owner: String) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }

@@ -5,7 +5,7 @@ mutation CreateSoundData(
 ) {
   createSoundData(input: $input, condition: $condition) {
     id
-    userDataID
+    soundUserDataID
     soundOwner {
       id
       username
@@ -22,6 +22,9 @@ mutation CreateSoundData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -89,6 +92,19 @@ mutation CreateSoundData(
     tags
     audio_names
     approvalStatus
+    userSoundRelationshipsOwnedBySound {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     commentsOwnedBySound {
       items {
         id
@@ -105,7 +121,7 @@ mutation CreateSoundData(
     presetsOwnedBySound {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -149,7 +165,7 @@ mutation UpdateSoundData(
 ) {
   updateSoundData(input: $input, condition: $condition) {
     id
-    userDataID
+    soundUserDataID
     soundOwner {
       id
       username
@@ -166,6 +182,9 @@ mutation UpdateSoundData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -233,6 +252,19 @@ mutation UpdateSoundData(
     tags
     audio_names
     approvalStatus
+    userSoundRelationshipsOwnedBySound {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     commentsOwnedBySound {
       items {
         id
@@ -249,7 +281,7 @@ mutation UpdateSoundData(
     presetsOwnedBySound {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -293,7 +325,7 @@ mutation DeleteSoundData(
 ) {
   deleteSoundData(input: $input, condition: $condition) {
     id
-    userDataID
+    soundUserDataID
     soundOwner {
       id
       username
@@ -310,6 +342,9 @@ mutation DeleteSoundData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -377,6 +412,19 @@ mutation DeleteSoundData(
     tags
     audio_names
     approvalStatus
+    userSoundRelationshipsOwnedBySound {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     commentsOwnedBySound {
       items {
         id
@@ -393,7 +441,7 @@ mutation DeleteSoundData(
     presetsOwnedBySound {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -431,6 +479,435 @@ mutation DeleteSoundData(
     owner
   }
 }
+mutation CreateUserSoundRelationship(
+  $input: CreateUserSoundRelationshipInput!
+  $condition: ModelUserSoundRelationshipConditionInput
+) {
+  createUserSoundRelationship(input: $input, condition: $condition) {
+    id
+    userSoundRelationshipUserDataID
+    userSoundRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSoundRelationshipSoundDataID
+    userSoundRelationshipSound {
+      id
+      soundUserDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation UpdateUserSoundRelationship(
+  $input: UpdateUserSoundRelationshipInput!
+  $condition: ModelUserSoundRelationshipConditionInput
+) {
+  updateUserSoundRelationship(input: $input, condition: $condition) {
+    id
+    userSoundRelationshipUserDataID
+    userSoundRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSoundRelationshipSoundDataID
+    userSoundRelationshipSound {
+      id
+      soundUserDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+mutation DeleteUserSoundRelationship(
+  $input: DeleteUserSoundRelationshipInput!
+  $condition: ModelUserSoundRelationshipConditionInput
+) {
+  deleteUserSoundRelationship(input: $input, condition: $condition) {
+    id
+    userSoundRelationshipUserDataID
+    userSoundRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSoundRelationshipSoundDataID
+    userSoundRelationshipSound {
+      id
+      soundUserDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
 mutation CreateCommentData(
   $input: CreateCommentDataInput!
   $condition: ModelCommentDataConditionInput
@@ -454,6 +931,9 @@ mutation CreateCommentData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -513,7 +993,7 @@ mutation CreateCommentData(
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -546,6 +1026,9 @@ mutation CreateCommentData(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -565,7 +1048,7 @@ mutation CreateCommentData(
     presetID
     preset {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -591,7 +1074,7 @@ mutation CreateCommentData(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -650,6 +1133,9 @@ mutation UpdateCommentData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -709,7 +1195,7 @@ mutation UpdateCommentData(
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -742,6 +1228,9 @@ mutation UpdateCommentData(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -761,7 +1250,7 @@ mutation UpdateCommentData(
     presetID
     preset {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -787,7 +1276,7 @@ mutation UpdateCommentData(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -846,6 +1335,9 @@ mutation DeleteCommentData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -905,7 +1397,7 @@ mutation DeleteCommentData(
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -938,6 +1430,9 @@ mutation DeleteCommentData(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -957,7 +1452,7 @@ mutation DeleteCommentData(
     presetID
     preset {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -983,7 +1478,7 @@ mutation DeleteCommentData(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -1025,7 +1520,7 @@ mutation CreatePresetData(
 ) {
   createPresetData(input: $input, condition: $condition) {
     id
-    userDataID
+    presetUserDataID
     presetOwner {
       id
       username
@@ -1042,6 +1537,9 @@ mutation CreatePresetData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1102,7 +1600,7 @@ mutation CreatePresetData(
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -1135,6 +1633,9 @@ mutation CreatePresetData(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -1198,7 +1699,7 @@ mutation UpdatePresetData(
 ) {
   updatePresetData(input: $input, condition: $condition) {
     id
-    userDataID
+    presetUserDataID
     presetOwner {
       id
       username
@@ -1215,6 +1716,9 @@ mutation UpdatePresetData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1275,7 +1779,7 @@ mutation UpdatePresetData(
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -1308,6 +1812,9 @@ mutation UpdatePresetData(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -1371,7 +1878,7 @@ mutation DeletePresetData(
 ) {
   deletePresetData(input: $input, condition: $condition) {
     id
-    userDataID
+    presetUserDataID
     presetOwner {
       id
       username
@@ -1388,6 +1895,9 @@ mutation DeletePresetData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1448,7 +1958,7 @@ mutation DeletePresetData(
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -1481,6 +1991,9 @@ mutation DeletePresetData(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -1561,6 +2074,9 @@ mutation CreateRoutineData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1759,6 +2275,9 @@ mutation UpdateRoutineData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1957,6 +2476,9 @@ mutation DeleteRoutineData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2138,7 +2660,7 @@ mutation CreateBedtimeStoryInfoData(
 ) {
   createBedtimeStoryInfoData(input: $input, condition: $condition) {
     id
-    userDataID
+    bedtimeStoryUserDataID
     bedtimeStoryOwner {
       id
       username
@@ -2155,6 +2677,9 @@ mutation CreateBedtimeStoryInfoData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2266,7 +2791,7 @@ mutation UpdateBedtimeStoryInfoData(
 ) {
   updateBedtimeStoryInfoData(input: $input, condition: $condition) {
     id
-    userDataID
+    bedtimeStoryUserDataID
     bedtimeStoryOwner {
       id
       username
@@ -2283,6 +2808,9 @@ mutation UpdateBedtimeStoryInfoData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2394,7 +2922,7 @@ mutation DeleteBedtimeStoryInfoData(
 ) {
   deleteBedtimeStoryInfoData(input: $input, condition: $condition) {
     id
-    userDataID
+    bedtimeStoryUserDataID
     bedtimeStoryOwner {
       id
       username
@@ -2411,6 +2939,9 @@ mutation DeleteBedtimeStoryInfoData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2527,7 +3058,7 @@ mutation CreateBedtimeStoryInfoChapterData(
     bedtimeStoryInfoDataID
     bedtimeStoryInfo {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -2602,7 +3133,7 @@ mutation UpdateBedtimeStoryInfoChapterData(
     bedtimeStoryInfoDataID
     bedtimeStoryInfo {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -2677,7 +3208,7 @@ mutation DeleteBedtimeStoryInfoChapterData(
     bedtimeStoryInfoDataID
     bedtimeStoryInfo {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -2759,7 +3290,7 @@ mutation CreateChapterPageData(
       bedtimeStoryInfoDataID
       bedtimeStoryInfo {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -2805,7 +3336,7 @@ mutation UpdateChapterPageData(
       bedtimeStoryInfoDataID
       bedtimeStoryInfo {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -2851,7 +3382,7 @@ mutation DeleteChapterPageData(
       bedtimeStoryInfoDataID
       bedtimeStoryInfo {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -2902,6 +3433,9 @@ mutation CreatePrayerData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3019,6 +3553,9 @@ mutation UpdatePrayerData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3136,6 +3673,9 @@ mutation DeletePrayerData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3253,6 +3793,9 @@ mutation CreateSelfLoveData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3369,6 +3912,9 @@ mutation UpdateSelfLoveData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3485,6 +4031,9 @@ mutation DeleteSelfLoveData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3601,6 +4150,9 @@ mutation CreateStretchData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3707,6 +4259,9 @@ mutation UpdateStretchData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3813,6 +4368,9 @@ mutation DeleteStretchData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -3919,6 +4477,9 @@ mutation CreateBreathingData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4025,6 +4586,9 @@ mutation UpdateBreathingData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4131,6 +4695,9 @@ mutation DeleteBreathingData(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4234,10 +4801,23 @@ mutation CreateUserData(
     phoneNumber
     authenticated
     subscription
+    userSoundRelationshipsOwnedByUser {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     soundsOwnedByUser {
       items {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -4270,7 +4850,7 @@ mutation CreateUserData(
     presetsOwnedByUser {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -4465,7 +5045,7 @@ mutation CreateUserData(
     bedtimeStoriesOwnedByUser {
       items {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -4519,10 +5099,23 @@ mutation UpdateUserData(
     phoneNumber
     authenticated
     subscription
+    userSoundRelationshipsOwnedByUser {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     soundsOwnedByUser {
       items {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -4555,7 +5148,7 @@ mutation UpdateUserData(
     presetsOwnedByUser {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -4750,7 +5343,7 @@ mutation UpdateUserData(
     bedtimeStoriesOwnedByUser {
       items {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -4804,10 +5397,23 @@ mutation DeleteUserData(
     phoneNumber
     authenticated
     subscription
+    userSoundRelationshipsOwnedByUser {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     soundsOwnedByUser {
       items {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -4840,7 +5446,7 @@ mutation DeleteUserData(
     presetsOwnedByUser {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -5035,7 +5641,7 @@ mutation DeleteUserData(
     bedtimeStoriesOwnedByUser {
       items {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -5079,7 +5685,7 @@ mutation CreateUserSound(
     userDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5112,6 +5718,9 @@ mutation CreateUserSound(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5144,6 +5753,9 @@ mutation CreateUserSound(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5214,7 +5826,7 @@ mutation UpdateUserSound(
     userDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5247,6 +5859,9 @@ mutation UpdateUserSound(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5279,6 +5894,9 @@ mutation UpdateUserSound(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5349,7 +5967,7 @@ mutation DeleteUserSound(
     userDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5382,6 +6000,9 @@ mutation DeleteUserSound(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5414,6 +6035,9 @@ mutation DeleteUserSound(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5484,7 +6108,7 @@ mutation CreateRoutineSound(
     routineDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5517,6 +6141,9 @@ mutation CreateRoutineSound(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5626,7 +6253,7 @@ mutation UpdateRoutineSound(
     routineDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5659,6 +6286,9 @@ mutation UpdateRoutineSound(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5768,7 +6398,7 @@ mutation DeleteRoutineSound(
     routineDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -5801,6 +6431,9 @@ mutation DeleteRoutineSound(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -5910,7 +6543,7 @@ mutation CreateUserPreset(
     userDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -5936,7 +6569,7 @@ mutation CreateUserPreset(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -5983,6 +6616,9 @@ mutation CreateUserPreset(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6053,7 +6689,7 @@ mutation UpdateUserPreset(
     userDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -6079,7 +6715,7 @@ mutation UpdateUserPreset(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -6126,6 +6762,9 @@ mutation UpdateUserPreset(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6196,7 +6835,7 @@ mutation DeleteUserPreset(
     userDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -6222,7 +6861,7 @@ mutation DeleteUserPreset(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -6269,6 +6908,9 @@ mutation DeleteUserPreset(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -6339,7 +6981,7 @@ mutation CreateRoutinePreset(
     routineDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -6365,7 +7007,7 @@ mutation CreateRoutinePreset(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -6489,7 +7131,7 @@ mutation UpdateRoutinePreset(
     routineDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -6515,7 +7157,7 @@ mutation UpdateRoutinePreset(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -6639,7 +7281,7 @@ mutation DeleteRoutinePreset(
     routineDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -6665,7 +7307,7 @@ mutation DeleteRoutinePreset(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -8025,7 +8667,7 @@ mutation CreateRoutineBedtimeStoryInfo(
     }
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -8163,7 +8805,7 @@ mutation UpdateRoutineBedtimeStoryInfo(
     }
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -8301,7 +8943,7 @@ mutation DeleteRoutineBedtimeStoryInfo(
     }
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -8858,6 +9500,9 @@ mutation CreateUserRoutine(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9020,6 +9665,9 @@ mutation UpdateUserRoutine(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9182,6 +9830,9 @@ mutation DeleteUserRoutine(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9252,7 +9903,7 @@ mutation CreateUserBedtimeStoryInfo(
     userDataID
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -9313,6 +9964,9 @@ mutation CreateUserBedtimeStoryInfo(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9383,7 +10037,7 @@ mutation UpdateUserBedtimeStoryInfo(
     userDataID
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -9444,6 +10098,9 @@ mutation UpdateUserBedtimeStoryInfo(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9514,7 +10171,7 @@ mutation DeleteUserBedtimeStoryInfo(
     userDataID
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -9575,6 +10232,9 @@ mutation DeleteUserBedtimeStoryInfo(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9704,6 +10364,9 @@ mutation CreateUserPrayer(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9833,6 +10496,9 @@ mutation UpdateUserPrayer(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -9962,6 +10628,9 @@ mutation DeleteUserPrayer(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10090,6 +10759,9 @@ mutation CreateUserSelfLove(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10218,6 +10890,9 @@ mutation UpdateUserSelfLove(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10346,6 +11021,9 @@ mutation DeleteUserSelfLove(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10464,6 +11142,9 @@ mutation CreateUserStretch(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10582,6 +11263,9 @@ mutation UpdateUserStretch(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10700,6 +11384,9 @@ mutation DeleteUserStretch(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10818,6 +11505,9 @@ mutation CreateUserBreathing(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -10936,6 +11626,9 @@ mutation UpdateUserBreathing(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -11054,6 +11747,9 @@ mutation DeleteUserBreathing(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }

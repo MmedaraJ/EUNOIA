@@ -54,8 +54,10 @@ object BedtimeStoryChapterBackend {
                     else{
                         if(response.hasData()) {
                             for (bedtimeStory in response.data) {
-                                Log.i(TAG, bedtimeStory.toString())
-                                result.add(bedtimeStory)
+                                if(bedtimeStory != null) {
+                                    Log.i(TAG, bedtimeStory.toString())
+                                    result.add(bedtimeStory)
+                                }
                             }
                             completed(result)
                         }

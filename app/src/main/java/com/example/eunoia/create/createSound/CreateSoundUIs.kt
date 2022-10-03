@@ -870,121 +870,12 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                 instruction2,
                 tap
             ) = createRefs()
-            Column(
-                modifier = Modifier
-                    .constrainAs(title) {
-                        top.linkTo(parent.top, margin = 0.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                    }
-            ) {
-                if(!showTapColumn){
-                    NormalText(
-                        text = "[how to generate Noise Control panel]",
-                        color = Black,
-                        fontSize = 16,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }else{
-                    NormalText(
-                        text = "[how to generate Noise Control panel]",
-                        color = BeautyBush,
-                        fontSize = 16,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(short_desc) {
-                        top.linkTo(title.bottom, margin = 2.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                    }
-            ) {
-                if(!showTapColumn){
-                    ExtraLightText(
-                        text = "Noise Control panel allows you to create your own white noise and adjust " +
-                                "selected white noise to your taste.",
-                        color = Black,
-                        fontSize = 10,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }else{
-                    ExtraLightText(
-                        text = "Noise Control panel allows you to create your own white noise and adjust " +
-                                "selected white noise to your taste.",
-                        color = BeautyBush,
-                        fontSize = 10,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(instruction1) {
-                        top.linkTo(short_desc.bottom, margin = 8.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                    }
-            ) {
-                if(!showTapColumn){
-                    AlignedLightText(
-                        text = "Each slider controls a particular frequency band, from the lowest to the" +
-                                " highest frequency. Adjust sliders to taste.",
-                        color = Black,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }else{
-                    AlignedLightText(
-                        text = "Each slider controls a particular frequency band, from the lowest to the" +
-                                " highest frequency. Adjust sliders to taste.",
-                        color = BeautyBush,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(instruction2) {
-                        top.linkTo(instruction1.bottom, margin = 16.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                    }
-            ) {
-                if(!showTapColumn){
-                    AlignedLightText(
-                        text = "To mask undesirable noises, focus on bands sharing the same tone as the " +
-                                "noise you want to cover. Doing so achieves a higher efficiency, and quieter " +
-                                "masking noise levels.",
-                        color = Black,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }else{
-                    AlignedLightText(
-                        text = "To mask undesirable noises, focus on bands sharing the same tone as the " +
-                                "noise you want to cover. Doing so achieves a higher efficiency, and quieter " +
-                                "masking noise levels.",
-                        color = BeautyBush,
-                        fontSize = 13,
-                        xOffset = 0,
-                        yOffset = 0
-                    )
-                }
-            }
+
             if(showTapColumn){
                 Column(
                     modifier = Modifier
                         .constrainAs(tap) {
-                            top.linkTo(instruction2.bottom, margin = 0.dp)
+                            top.linkTo(parent.top, margin = 0.dp)
                             start.linkTo(parent.start, margin = 0.dp)
                             end.linkTo(parent.end, margin = 0.dp)
                             bottom.linkTo(parent.bottom, margin = 0.dp)
@@ -1035,6 +926,73 @@ fun ControlPanelManual(showTap: Boolean, lambda: () -> Unit){
                             }
                         }
                     }
+                }
+            } else{
+                Column(
+                    modifier = Modifier
+                        .constrainAs(title) {
+                            top.linkTo(parent.top, margin = 0.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                        }
+                ) {
+                    NormalText(
+                        text = "[how to generate Noise Control panel]",
+                        color = Black,
+                        fontSize = 16,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .constrainAs(short_desc) {
+                            top.linkTo(title.bottom, margin = 2.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                        }
+                ) {
+                    ExtraLightText(
+                        text = "Noise Control panel allows you to create your own white noise and adjust " +
+                                "selected white noise to your taste.",
+                        color = Black,
+                        fontSize = 10,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .constrainAs(instruction1) {
+                            top.linkTo(short_desc.bottom, margin = 8.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                            end.linkTo(parent.end, margin = 0.dp)
+                        }
+                ) {
+                    AlignedLightText(
+                        text = "Each slider controls a particular frequency band, from the lowest to the" +
+                                " highest frequency. Adjust sliders to taste.",
+                        color = Black,
+                        fontSize = 13,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .constrainAs(instruction2) {
+                            top.linkTo(instruction1.bottom, margin = 16.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                            end.linkTo(parent.end, margin = 0.dp)
+                        }
+                ) {
+                    AlignedLightText(
+                        text = "To mask undesirable noises, focus on bands sharing the same tone as the " +
+                                "noise you want to cover. Doing so achieves a higher efficiency, and quieter " +
+                                "masking noise levels.",
+                        color = Black,
+                        fontSize = 13,
+                        xOffset = 0,
+                        yOffset = 0
+                    )
                 }
             }
         }

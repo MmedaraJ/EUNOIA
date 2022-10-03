@@ -66,9 +66,11 @@ object UserSelfLoveBackend {
                     if(response.hasData()) {
                         for (userSelfLoveData in response.data) {
                             //TODO change pending to approved
-                            if(userSelfLoveData.selfLoveData.approvalStatus == SelfLoveApprovalStatus.PENDING) {
-                                Log.i(TAG, userSelfLoveData.toString())
-                                userSelfLoveList.add(userSelfLoveData)
+                            if(userSelfLoveData != null) {
+                                if(userSelfLoveData.selfLoveData.approvalStatus == SelfLoveApprovalStatus.PENDING) {
+                                    Log.i(TAG, userSelfLoveData.toString())
+                                    userSelfLoveList.add(userSelfLoveData)
+                                }
                             }
                         }
                     }
@@ -95,8 +97,10 @@ object UserSelfLoveBackend {
                 { response ->
                     if(response.hasData()) {
                         for (userSelfLoveData in response.data) {
-                            Log.i(TAG, userSelfLoveData.toString())
-                            userSelfLoveList.add(userSelfLoveData)
+                            if(userSelfLoveData != null) {
+                                Log.i(TAG, userSelfLoveData.toString())
+                                userSelfLoveList.add(userSelfLoveData)
+                            }
                         }
                     }
                     completed(userSelfLoveList)

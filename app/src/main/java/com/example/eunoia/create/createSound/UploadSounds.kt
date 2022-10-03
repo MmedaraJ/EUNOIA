@@ -213,7 +213,7 @@ fun clearAllCreationObjects(){
     uploadedFiles.clear()
     fileColors.clear()
     fileUris.clear()
-    for (index in 0..fileMediaPlayers.size) {
+    for (index in fileMediaPlayers.indices) {
         if(fileMediaPlayers[index]!!.value.isPlaying) {
             fileMediaPlayers[index]!!.value.stop()
         }

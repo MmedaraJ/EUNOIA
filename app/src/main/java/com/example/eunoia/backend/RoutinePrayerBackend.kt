@@ -66,8 +66,10 @@ object RoutinePrayerBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routinePrayerData in response.data) {
-                            Log.i(TAG, routinePrayerData.toString())
-                            routinePrayerList.add(routinePrayerData)
+                            if(routinePrayerData != null) {
+                                Log.i(TAG, routinePrayerData.toString())
+                                routinePrayerList.add(routinePrayerData)
+                            }
                         }
                     }
                     completed(routinePrayerList)
@@ -93,8 +95,10 @@ object RoutinePrayerBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routinePrayerData in response.data) {
-                            Log.i(TAG, routinePrayerData.toString())
-                            routinePrayerList.add(routinePrayerData)
+                            if(routinePrayerData != null) {
+                                Log.i(TAG, routinePrayerData.toString())
+                                routinePrayerList.add(routinePrayerData)
+                            }
                         }
                     }
                     completed(routinePrayerList)

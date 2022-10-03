@@ -68,8 +68,10 @@ object RoutineBackend {
                     else{
                         if(response.hasData()) {
                             for (routineData in response.data) {
-                                Log.i(TAG, routineData.toString())
-                                routineList.add(routineData)
+                                if(routineData != null) {
+                                    Log.i(TAG, routineData.toString())
+                                    routineList.add(routineData)
+                                }
                             }
                         }
                         completed(routineList)

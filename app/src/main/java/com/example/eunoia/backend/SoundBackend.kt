@@ -51,8 +51,10 @@ object SoundBackend{
                 { response ->
                     if(response.hasData()) {
                         for (soundData in response.data) {
-                            Log.i(TAG, soundData.toString())
-                            soundList.add(soundData)
+                            if(soundData != null) {
+                                Log.i(TAG, soundData.toString())
+                                soundList.add(soundData)
+                            }
                         }
                     }
                     completed(soundList)
@@ -75,8 +77,10 @@ object SoundBackend{
                 { response ->
                     if(response.hasData()) {
                         for (soundData in response.data) {
-                            Log.i(TAG, soundData.toString())
-                            sounds.add(soundData)
+                            if(soundData != null) {
+                                Log.i(TAG, soundData.toString())
+                                sounds.add(soundData)
+                            }
                         }
                         completed(sounds)
                     }
@@ -101,8 +105,10 @@ object SoundBackend{
                 { response ->
                     if(response.hasData()) {
                         for (soundData in response.data) {
-                            Log.i(TAG, soundData.toString())
-                            sounds.add(soundData)
+                            if(soundData != null) {
+                                Log.i(TAG, soundData.toString())
+                                sounds.add(soundData)
+                            }
                         }
                         completed(sounds)
                     }
@@ -130,8 +136,10 @@ object SoundBackend{
                     Log.i(TAG, "Response: $response")
                     if(response.hasData()) {
                         for (soundData in response.data) {
-                            Log.i(TAG, soundData.toString())
-                            soundList.add(soundData)
+                            if(soundData != null) {
+                                Log.i(TAG, soundData.toString())
+                                soundList.add(soundData)
+                            }
                         }
                     }
                     completed(soundList)
@@ -150,7 +158,9 @@ object SoundBackend{
                     Log.i(TAG, "Queried $response")
                     if(response.hasData()) {
                         for (soundData in response.data) {
-                            Log.i(TAG, soundData.toString())
+                            if(soundData != null) {
+                                Log.i(TAG, soundData.toString())
+                            }
                         }
                     }
                 },

@@ -56,8 +56,10 @@ object PresetBackend {
                     else{
                         if(response.hasData()) {
                             for (presetData in response.data) {
-                                Log.i(TAG, presetData.toString())
-                                presetList.add(presetData)
+                                if(presetData != null) {
+                                    Log.i(TAG, presetData.toString())
+                                    presetList.add(presetData)
+                                }
                             }
                         }
                         completed(presetList)
@@ -89,8 +91,10 @@ object PresetBackend {
                     else{
                         if(response.hasData()) {
                             for (presetData in response.data) {
-                                Log.i(TAG, presetData.toString())
-                                presetList.add(presetData)
+                                if(presetData != null) {
+                                    Log.i(TAG, presetData.toString())
+                                    presetList.add(presetData)
+                                }
                             }
                         }
                         completed(presetList)
@@ -121,8 +125,10 @@ object PresetBackend {
                     else{
                         if(response.hasData()) {
                             for (presetData in response.data) {
-                                Log.i(TAG, "Preset received $presetData")
-                                presetList.add(presetData)
+                                if(presetData != null) {
+                                    Log.i(TAG, "Preset received $presetData")
+                                    presetList.add(presetData)
+                                }
                             }
                         }
                         completed(presetList)

@@ -27,10 +27,10 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "SoundsOwnedByUser", fields = {"userDataID","display_name"})
+@Index(name = "SoundsOwnedByUser", fields = {"soundUserDataID","display_name"})
 public final class SoundData implements Model {
   public static final QueryField ID = field("SoundData", "id");
-  public static final QueryField SOUND_OWNER = field("SoundData", "userDataID");
+  public static final QueryField SOUND_OWNER = field("SoundData", "soundUserDataID");
   public static final QueryField ORIGINAL_NAME = field("SoundData", "original_name");
   public static final QueryField DISPLAY_NAME = field("SoundData", "display_name");
   public static final QueryField SHORT_DESCRIPTION = field("SoundData", "short_description");
@@ -44,7 +44,7 @@ public final class SoundData implements Model {
   public static final QueryField AUDIO_NAMES = field("SoundData", "audio_names");
   public static final QueryField APPROVAL_STATUS = field("SoundData", "approvalStatus");
   private final @ModelField(targetType="ID", isRequired = true) String id;
-  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData soundOwner;
+  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "soundUserDataID", type = UserData.class) UserData soundOwner;
   private final @ModelField(targetType="String", isRequired = true) String original_name;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="String") String short_description;
@@ -57,6 +57,7 @@ public final class SoundData implements Model {
   private final @ModelField(targetType="String", isRequired = true) List<String> tags;
   private final @ModelField(targetType="String", isRequired = true) List<String> audio_names;
   private final @ModelField(targetType="SoundApprovalStatus") SoundApprovalStatus approvalStatus;
+  private final @ModelField(targetType="UserSoundRelationship") @HasMany(associatedWith = "userSoundRelationshipSound", type = UserSoundRelationship.class) List<UserSoundRelationship> userSoundRelationshipsOwnedBySound = null;
   private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "sound", type = CommentData.class) List<CommentData> commentsOwnedBySound = null;
   private final @ModelField(targetType="PresetData") @HasMany(associatedWith = "sound", type = PresetData.class) List<PresetData> presetsOwnedBySound = null;
   private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "soundData", type = UserSound.class) List<UserSound> users = null;
@@ -117,6 +118,10 @@ public final class SoundData implements Model {
   
   public SoundApprovalStatus getApprovalStatus() {
       return approvalStatus;
+  }
+  
+  public List<UserSoundRelationship> getUserSoundRelationshipsOwnedBySound() {
+      return userSoundRelationshipsOwnedBySound;
   }
   
   public List<CommentData> getCommentsOwnedBySound() {

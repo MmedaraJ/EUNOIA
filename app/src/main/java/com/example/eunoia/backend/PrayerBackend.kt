@@ -51,8 +51,10 @@ object PrayerBackend {
                     Log.i(TAG, "Response: $response")
                     if(response.hasData()) {
                         for (prayerData in response.data) {
-                            Log.i(TAG, prayerData.toString())
-                            prayerList.add(prayerData)
+                            if(prayerData != null) {
+                                Log.i(TAG, prayerData.toString())
+                                prayerList.add(prayerData)
+                            }
                         }
                     }
                     completed(prayerList)

@@ -2,7 +2,7 @@
 query GetSoundData($id: ID!) {
   getSoundData(id: $id) {
     id
-    userDataID
+    soundUserDataID
     soundOwner {
       id
       username
@@ -19,6 +19,9 @@ query GetSoundData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -86,6 +89,19 @@ query GetSoundData($id: ID!) {
     tags
     audio_names
     approvalStatus
+    userSoundRelationshipsOwnedBySound {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     commentsOwnedBySound {
       items {
         id
@@ -102,7 +118,7 @@ query GetSoundData($id: ID!) {
     presetsOwnedBySound {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -148,7 +164,7 @@ query ListSoundDatas(
   listSoundDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -181,6 +197,9 @@ query ListSoundDatas(
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -193,6 +212,208 @@ query ListSoundDatas(
       routines {
         nextToken
       }
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+query GetUserSoundRelationship($id: ID!) {
+  getUserSoundRelationship(id: $id) {
+    id
+    userSoundRelationshipUserDataID
+    userSoundRelationshipOwner {
+      id
+      username
+      amplifyAuthUserId
+      givenName
+      familyName
+      middleName
+      email
+      profile_picture_key
+      address
+      birthdate
+      gender
+      nickname
+      phoneNumber
+      authenticated
+      subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
+      soundsOwnedByUser {
+        nextToken
+      }
+      sounds {
+        nextToken
+      }
+      presetsOwnedByUser {
+        nextToken
+      }
+      presets {
+        nextToken
+      }
+      commentsOwnedByUser {
+        nextToken
+      }
+      routinesOwnedByUser {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      stretchesOwnedByUser {
+        nextToken
+      }
+      stretches {
+        nextToken
+      }
+      prayersOwnedByUser {
+        nextToken
+      }
+      prayers {
+        nextToken
+      }
+      breathingsOwnedByUser {
+        nextToken
+      }
+      breathings {
+        nextToken
+      }
+      selfLovesOwnedByUser {
+        nextToken
+      }
+      selfLoves {
+        nextToken
+      }
+      bedtimeStoriesOwnedByUser {
+        nextToken
+      }
+      bedtimeStories {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    userSoundRelationshipSoundDataID
+    userSoundRelationshipSound {
+      id
+      soundUserDataID
+      soundOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      original_name
+      display_name
+      short_description
+      long_description
+      audio_key_s3
+      icon
+      colorHEX
+      fullPlayTime
+      visible_to_others
+      tags
+      audio_names
+      approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
+      commentsOwnedBySound {
+        nextToken
+      }
+      presetsOwnedBySound {
+        nextToken
+      }
+      users {
+        nextToken
+      }
+      routines {
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+    numberOfTimesPlayed
+    totalPlayTime
+    createdAt
+    updatedAt
+    owner
+  }
+}
+query ListUserSoundRelationships(
+  $filter: ModelUserSoundRelationshipFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserSoundRelationships(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      userSoundRelationshipUserDataID
+      userSoundRelationshipOwner {
+        id
+        username
+        amplifyAuthUserId
+        givenName
+        familyName
+        middleName
+        email
+        profile_picture_key
+        address
+        birthdate
+        gender
+        nickname
+        phoneNumber
+        authenticated
+        subscription
+        createdAt
+        updatedAt
+        owner
+      }
+      userSoundRelationshipSoundDataID
+      userSoundRelationshipSound {
+        id
+        soundUserDataID
+        original_name
+        display_name
+        short_description
+        long_description
+        audio_key_s3
+        icon
+        colorHEX
+        fullPlayTime
+        visible_to_others
+        tags
+        audio_names
+        approvalStatus
+        createdAt
+        updatedAt
+        owner
+      }
+      numberOfTimesPlayed
+      totalPlayTime
       createdAt
       updatedAt
       owner
@@ -220,6 +441,9 @@ query GetCommentData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -279,7 +503,7 @@ query GetCommentData($id: ID!) {
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -312,6 +536,9 @@ query GetCommentData($id: ID!) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -331,7 +558,7 @@ query GetCommentData($id: ID!) {
     presetID
     preset {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -357,7 +584,7 @@ query GetCommentData($id: ID!) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -426,7 +653,7 @@ query ListCommentDatas(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -446,7 +673,7 @@ query ListCommentDatas(
       presetID
       preset {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -465,7 +692,7 @@ query ListCommentDatas(
 query GetPresetData($id: ID!) {
   getPresetData(id: $id) {
     id
-    userDataID
+    presetUserDataID
     presetOwner {
       id
       username
@@ -482,6 +709,9 @@ query GetPresetData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -542,7 +772,7 @@ query GetPresetData($id: ID!) {
     soundID
     sound {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -575,6 +805,9 @@ query GetPresetData($id: ID!) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -640,7 +873,7 @@ query ListPresetDatas(
   listPresetDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -666,7 +899,7 @@ query ListPresetDatas(
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -720,6 +953,9 @@ query GetRoutineData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -985,7 +1221,7 @@ query ListRoutineDatas(
 query GetBedtimeStoryInfoData($id: ID!) {
   getBedtimeStoryInfoData(id: $id) {
     id
-    userDataID
+    bedtimeStoryUserDataID
     bedtimeStoryOwner {
       id
       username
@@ -1002,6 +1238,9 @@ query GetBedtimeStoryInfoData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1119,7 +1358,7 @@ query ListBedtimeStoryInfoDatas(
   ) {
     items {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -1175,7 +1414,7 @@ query GetBedtimeStoryInfoChapterData($id: ID!) {
     bedtimeStoryInfoDataID
     bedtimeStoryInfo {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -1256,7 +1495,7 @@ query ListBedtimeStoryInfoChapterDatas(
       bedtimeStoryInfoDataID
       bedtimeStoryInfo {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -1297,7 +1536,7 @@ query GetChapterPageData($id: ID!) {
       bedtimeStoryInfoDataID
       bedtimeStoryInfo {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -1374,6 +1613,9 @@ query GetPrayerData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1542,6 +1784,9 @@ query GetSelfLoveData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1708,6 +1953,9 @@ query GetStretchData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1854,6 +2102,9 @@ query GetBreathingData($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -1997,10 +2248,23 @@ query GetUserData($id: ID!) {
     phoneNumber
     authenticated
     subscription
+    userSoundRelationshipsOwnedByUser {
+      items {
+        id
+        userSoundRelationshipUserDataID
+        userSoundRelationshipSoundDataID
+        numberOfTimesPlayed
+        totalPlayTime
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
     soundsOwnedByUser {
       items {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -2033,7 +2297,7 @@ query GetUserData($id: ID!) {
     presetsOwnedByUser {
       items {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -2228,7 +2492,7 @@ query GetUserData($id: ID!) {
     bedtimeStoriesOwnedByUser {
       items {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -2284,6 +2548,9 @@ query ListUserDatas(
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2349,7 +2616,7 @@ query GetUserSound($id: ID!) {
     userDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -2382,6 +2649,9 @@ query GetUserSound($id: ID!) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -2414,6 +2684,9 @@ query GetUserSound($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2486,7 +2759,7 @@ query ListUserSounds(
       userDataID
       soundData {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -2537,7 +2810,7 @@ query GetRoutineSound($id: ID!) {
     routineDataID
     soundData {
       id
-      userDataID
+      soundUserDataID
       soundOwner {
         id
         username
@@ -2570,6 +2843,9 @@ query GetRoutineSound($id: ID!) {
       tags
       audio_names
       approvalStatus
+      userSoundRelationshipsOwnedBySound {
+        nextToken
+      }
       commentsOwnedBySound {
         nextToken
       }
@@ -2681,7 +2957,7 @@ query ListRoutineSounds(
       routineDataID
       soundData {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -2746,7 +3022,7 @@ query GetUserPreset($id: ID!) {
     userDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -2772,7 +3048,7 @@ query GetUserPreset($id: ID!) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -2819,6 +3095,9 @@ query GetUserPreset($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -2891,7 +3170,7 @@ query ListUserPresets(
       userDataID
       presetData {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -2934,7 +3213,7 @@ query GetRoutinePreset($id: ID!) {
     routineDataID
     presetData {
       id
-      userDataID
+      presetUserDataID
       presetOwner {
         id
         username
@@ -2960,7 +3239,7 @@ query GetRoutinePreset($id: ID!) {
       soundID
       sound {
         id
-        userDataID
+        soundUserDataID
         original_name
         display_name
         short_description
@@ -3086,7 +3365,7 @@ query ListRoutinePresets(
       routineDataID
       presetData {
         id
-        userDataID
+        presetUserDataID
         key
         volumes
         soundID
@@ -3786,7 +4065,7 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
     }
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -3886,7 +4165,7 @@ query ListRoutineBedtimeStoryInfos(
       }
       bedtimeStoryInfoData {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -4209,6 +4488,9 @@ query GetUserRoutine($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4347,7 +4629,7 @@ query GetUserBedtimeStoryInfo($id: ID!) {
     userDataID
     bedtimeStoryInfoData {
       id
-      userDataID
+      bedtimeStoryUserDataID
       bedtimeStoryOwner {
         id
         username
@@ -4408,6 +4690,9 @@ query GetUserBedtimeStoryInfo($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4484,7 +4769,7 @@ query ListUserBedtimeStoryInfos(
       userDataID
       bedtimeStoryInfoData {
         id
-        userDataID
+        bedtimeStoryUserDataID
         displayName
         shortDescription
         longDescription
@@ -4593,6 +4878,9 @@ query GetUserPrayer($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4774,6 +5062,9 @@ query GetUserSelfLove($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -4944,6 +5235,9 @@ query GetUserStretch($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }
@@ -5104,6 +5398,9 @@ query GetUserBreathing($id: ID!) {
       phoneNumber
       authenticated
       subscription
+      userSoundRelationshipsOwnedByUser {
+        nextToken
+      }
       soundsOwnedByUser {
         nextToken
       }

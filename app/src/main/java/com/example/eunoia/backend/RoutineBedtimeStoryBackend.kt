@@ -68,8 +68,10 @@ object RoutineBedtimeStoryBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routineBedtimeStoryData in response.data) {
-                            Log.i(TAG, routineBedtimeStoryData.toString())
-                            routineBedtimeStoryList.add(routineBedtimeStoryData)
+                            if(routineBedtimeStoryData != null) {
+                                Log.i(TAG, routineBedtimeStoryData.toString())
+                                routineBedtimeStoryList.add(routineBedtimeStoryData)
+                            }
                         }
                     }
                     completed(routineBedtimeStoryList)
@@ -93,8 +95,10 @@ object RoutineBedtimeStoryBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routineBedtimeStoryData in response.data) {
-                            Log.i(TAG, routineBedtimeStoryData.toString())
-                            routineBedtimeStoryList.add(routineBedtimeStoryData)
+                            if(routineBedtimeStoryData != null) {
+                                Log.i(TAG, routineBedtimeStoryData.toString())
+                                routineBedtimeStoryList.add(routineBedtimeStoryData)
+                            }
                         }
                     }
                     completed(routineBedtimeStoryList)
@@ -120,8 +124,10 @@ object RoutineBedtimeStoryBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routineBedtimeStoryData in response.data) {
-                            Log.i(TAG, routineBedtimeStoryData.toString())
-                            routineBedtimeStoryList.add(routineBedtimeStoryData)
+                            if(routineBedtimeStoryData != null) {
+                                Log.i(TAG, routineBedtimeStoryData.toString())
+                                routineBedtimeStoryList.add(routineBedtimeStoryData)
+                            }
                         }
                     }
                     completed(routineBedtimeStoryList)

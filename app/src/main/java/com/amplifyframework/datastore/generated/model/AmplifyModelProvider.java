@@ -13,7 +13,7 @@ import java.util.Set;
  */
 
 public final class AmplifyModelProvider implements ModelProvider {
-  private static final String AMPLIFY_MODEL_VERSION = "7bd45a55dec59e243dbd7ca4b2a03b6c";
+  private static final String AMPLIFY_MODEL_VERSION = "d4cc841360262359481d09dae33dce24";
   private static AmplifyModelProvider amplifyGeneratedModelInstance;
   private AmplifyModelProvider() {
     
@@ -34,7 +34,7 @@ public final class AmplifyModelProvider implements ModelProvider {
   @Override
    public Set<Class<? extends Model>> models() {
     final Set<Class<? extends Model>> modifiableSet = new HashSet<>(
-          Arrays.<Class<? extends Model>>asList(SoundData.class, UserData.class, PresetData.class, CommentData.class, RoutineData.class, PrayerData.class, StretchData.class, BreathingData.class, BedtimeStoryInfoData.class, BedtimeStoryInfoChapterData.class, ChapterPageData.class, SelfLoveData.class, UserSound.class, RoutineSound.class, UserPreset.class, UserRoutine.class, UserStretch.class, UserPrayer.class, UserBreathing.class, UserSelfLove.class, UserBedtimeStoryInfo.class, RoutinePreset.class, RoutinePrayer.class, RoutineStretch.class, RoutineBreathing.class, RoutineBedtimeStoryInfo.class, RoutineSelfLove.class)
+          Arrays.<Class<? extends Model>>asList(SoundData.class, UserData.class, UserSoundRelationship.class, UserBedtimeStoryInfoRelationship.class, BedtimeStoryInfoData.class, RoutineData.class, UserRoutineRelationship.class, PresetData.class, CommentData.class, PrayerData.class, UserPrayerRelationship.class, StretchData.class, BreathingData.class, SelfLoveData.class, UserSelfLoveRelationship.class, BedtimeStoryInfoChapterData.class, ChapterPageData.class, UserSound.class, RoutineSound.class, UserPreset.class, UserRoutine.class, UserStretch.class, UserPrayer.class, UserBreathing.class, UserSelfLove.class, UserBedtimeStoryInfo.class, RoutineBedtimeStoryInfo.class, RoutinePreset.class, RoutinePrayer.class, RoutineStretch.class, RoutineBreathing.class, RoutineSelfLove.class)
         );
     
         return Immutable.of(modifiableSet);

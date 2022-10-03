@@ -67,8 +67,10 @@ object UserPresetBackend {
                 { response ->
                     if(response.hasData()) {
                         for (userPresetData in response.data) {
-                            Log.i(TAG, userPresetData.toString())
-                            userPresetList.add(userPresetData)
+                            if(userPresetData != null) {
+                                Log.i(TAG, userPresetData.toString())
+                                userPresetList.add(userPresetData)
+                            }
                         }
                     }
                     completed(userPresetList)

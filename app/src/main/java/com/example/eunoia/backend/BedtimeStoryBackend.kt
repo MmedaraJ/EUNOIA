@@ -51,8 +51,10 @@ object BedtimeStoryBackend {
                     Log.i(TAG, "Response: $response")
                     if(response.hasData()) {
                         for (bedtimeStoryData in response.data) {
-                            Log.i(TAG, bedtimeStoryData.toString())
-                            bedtimeStoryList.add(bedtimeStoryData)
+                            if(bedtimeStoryData != null) {
+                                Log.i(TAG, bedtimeStoryData.toString())
+                                bedtimeStoryList.add(bedtimeStoryData)
+                            }
                         }
                     }
                     completed(bedtimeStoryList)
@@ -80,8 +82,10 @@ object BedtimeStoryBackend {
                     Log.i(TAG, "Response: $response")
                     if(response.hasData()) {
                         for (bedtimeStoryData in response.data) {
-                            Log.i(TAG, bedtimeStoryData.toString())
-                            bedtimeStoryList.add(bedtimeStoryData)
+                            if(bedtimeStoryData != null) {
+                                Log.i(TAG, bedtimeStoryData.toString())
+                                bedtimeStoryList.add(bedtimeStoryData)
+                            }
                         }
                     }
                     completed(bedtimeStoryList)
@@ -110,8 +114,10 @@ object BedtimeStoryBackend {
                     Log.i(TAG, "Response: $response")
                     if(response.hasData()) {
                         for (bedtimeStoryData in response.data) {
-                            Log.i(TAG, bedtimeStoryData.toString())
-                            bedtimeStoryList.add(bedtimeStoryData)
+                            if(bedtimeStoryData != null) {
+                                Log.i(TAG, bedtimeStoryData.toString())
+                                bedtimeStoryList.add(bedtimeStoryData)
+                            }
                         }
                     }
                     completed(bedtimeStoryList)

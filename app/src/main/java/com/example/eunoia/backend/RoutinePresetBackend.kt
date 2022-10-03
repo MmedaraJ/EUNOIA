@@ -70,8 +70,10 @@ object RoutinePresetBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routinePresetData in response.data) {
-                            Log.i(TAG, routinePresetData.toString())
-                            routinePresetList.add(routinePresetData)
+                            if(routinePresetData != null) {
+                                Log.i(TAG, routinePresetData.toString())
+                                routinePresetList.add(routinePresetData)
+                            }
                         }
                     }
                     completed(routinePresetList)
@@ -97,8 +99,10 @@ object RoutinePresetBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routinePresetData in response.data) {
-                            Log.i(TAG, routinePresetData.toString())
-                            routinePresetList.add(routinePresetData)
+                            if(routinePresetData != null) {
+                                Log.i(TAG, routinePresetData.toString())
+                                routinePresetList.add(routinePresetData)
+                            }
                         }
                     }
                     completed(routinePresetList)

@@ -65,8 +65,10 @@ object UserRoutineBackend {
                     Log.i(TAG, "2233 $response")
                     if(response.hasData()) {
                         for (userRoutineData in response.data) {
-                            Log.i(TAG, userRoutineData.toString())
-                            userRoutineList.add(userRoutineData)
+                            if(userRoutineData != null) {
+                                Log.i(TAG, userRoutineData.toString())
+                                userRoutineList.add(userRoutineData)
+                            }
                         }
                     }
                     completed(userRoutineList)

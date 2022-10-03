@@ -1,41 +1,43 @@
-package com.example.eunoia.create
+package com.example.eunoia.dashboard.routine
 
-import android.content.res.Configuration
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.amplifyframework.datastore.generated.model.RoutineData
+import com.amplifyframework.datastore.generated.model.RoutinePreset
+import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.*
+import com.example.eunoia.ui.components.AlignedNormalText
+import com.example.eunoia.ui.components.BackArrowHeader
+import com.example.eunoia.ui.components.WrappedPurpleBackgroundStart
+import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.Black
-import com.example.eunoia.ui.theme.EUNOIATheme
-import com.example.eunoia.viewModels.CreateSoundViewModel
-import com.example.eunoia.viewModels.GlobalViewModel
+import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
 
-var createSoundViewModel: CreateSoundViewModel? = null
+var routinePresetList by mutableStateOf<MutableList<RoutinePreset?>?>(null)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CreateUI(
+fun RoutinePresetScreen(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
+    context: Context,
+    routineData: RoutineData,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    globalViewModel_!!.navController = navController
-    createSoundViewModel =  viewModel()
-    openSavedElementDialogBox = false
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -44,10 +46,9 @@ fun CreateUI(
     ) {
         val (
             header,
-            title,
-            intro,
-            elements,
-            endSpace
+            routineName,
+            categoryTitle,
+            elements
         ) = createRefs()
         Column(
             modifier = Modifier
@@ -56,28 +57,31 @@ fun CreateUI(
                 }
                 .fillMaxWidth()
         ) {
-            ProfilePictureHeader(
-                {},
+            BackArrowHeader(
+                {
+                    navigateBack(navController)
+                },
                 {
                     globalViewModel_!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
-
                 },
                 {
-                    //navController.navigate(Screen.Settings.screen_route)
                 }
             )
         }
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(title) {
+                .constrainAs(routineName) {
                     top.linkTo(header.bottom, margin = 40.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                     end.linkTo(parent.end, margin = 16.dp)
                 }
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
-            NormalText(
-                text = "Create your own element",
+            AlignedNormalText(
+                text = "[${routineData.displayName}]",
                 color = Black,
                 fontSize = 16,
                 xOffset = 0,
@@ -85,56 +89,37 @@ fun CreateUI(
             )
         }
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(intro) {
-                    top.linkTo(title.bottom, margin = 16.dp)
+                .constrainAs(categoryTitle) {
+                    top.linkTo(routineName.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                     end.linkTo(parent.end, margin = 16.dp)
                 }
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
-            AlignedLightText(
-                text = "Add to a routine or share with others if you want. " +
-                        "The more people use your element, the more money you earn.",
-                color = Black,
-                fontSize = 13,
-                xOffset = 0,
-                yOffset = 0
-            )
+            if(routinePresetList != null) {
+                AlignedNormalText(
+                    text = "${routinePresetList!!.size} Sounds",
+                    color = Black,
+                    fontSize = 13,
+                    xOffset = 0,
+                    yOffset = 0
+                )
+            }
         }
         Column(
             modifier = Modifier
                 .constrainAs(elements) {
-                    top.linkTo(intro.bottom, margin = 24.dp)
+                    top.linkTo(categoryTitle.bottom, margin = 24.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                     end.linkTo(parent.end, margin = 16.dp)
                 }
-                .wrapContentHeight()
+                //.wrapContentHeight()
         ) {
-            Elements(navController)
+            RoutinePresetElements(navController, routineData)
             Spacer(modifier = Modifier.height(40.dp))
         }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Preview(
-    showBackground = true,
-    name = "Light mode"
-)
-@Preview(
-    showBackground = true,
-    name = "Dark mode",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-fun CreatePreview() {
-    val globalViewModel: GlobalViewModel = viewModel()
-    EUNOIATheme {
-        CreateUI(
-            rememberNavController(),
-            globalViewModel,
-            rememberCoroutineScope(),
-            rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-        )
     }
 }

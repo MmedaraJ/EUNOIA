@@ -66,8 +66,10 @@ object RoutineSelfLoveBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routineSelfLoveData in response.data) {
-                            Log.i(TAG, routineSelfLoveData.toString())
-                            routineSelfLoveList.add(routineSelfLoveData)
+                            if(routineSelfLoveData != null) {
+                                Log.i(TAG, routineSelfLoveData.toString())
+                                routineSelfLoveList.add(routineSelfLoveData)
+                            }
                         }
                     }
                     completed(routineSelfLoveList)
@@ -93,8 +95,10 @@ object RoutineSelfLoveBackend {
                 { response ->
                     if(response.hasData()) {
                         for (routineSelfLoveData in response.data) {
-                            Log.i(TAG, routineSelfLoveData.toString())
-                            routineSelfLoveList.add(routineSelfLoveData)
+                            if(routineSelfLoveData != null) {
+                                Log.i(TAG, routineSelfLoveData.toString())
+                                routineSelfLoveList.add(routineSelfLoveData)
+                            }
                         }
                     }
                     completed(routineSelfLoveList)

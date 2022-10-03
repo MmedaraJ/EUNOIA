@@ -55,8 +55,10 @@ object CommentBackend {
                     else{
                         if(response.hasData()) {
                             for (commentData in response.data) {
-                                Log.i(TAG, "Retrieved comments: $commentData")
-                                commentList.add(commentData)
+                                if(commentData != null) {
+                                    Log.i(TAG, "Retrieved comments: $commentData")
+                                    commentList.add(commentData)
+                                }
                             }
                         }
                     }
@@ -85,9 +87,11 @@ object CommentBackend {
                     else{
                         if(response.hasData()) {
                             for (commentData in response.data) {
-                                Log.i(TAG, commentData.toString())
-                                completed(commentData)
-                                break
+                                if(commentData != null) {
+                                    Log.i(TAG, commentData.toString())
+                                    completed(commentData)
+                                    break
+                                }
                             }
                         }
                     }

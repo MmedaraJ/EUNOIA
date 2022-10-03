@@ -78,8 +78,10 @@ object ChapterPageBackend {
                     else{
                         if(response.hasData()) {
                             for (page in response.data) {
-                                Log.i(TAG, page.toString())
-                                result.add(page)
+                                if(page != null) {
+                                    Log.i(TAG, page.toString())
+                                    result.add(page)
+                                }
                             }
                             completed(result)
                         }

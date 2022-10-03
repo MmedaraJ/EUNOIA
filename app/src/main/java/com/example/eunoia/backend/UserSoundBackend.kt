@@ -69,12 +69,14 @@ object UserSoundBackend {
                     if(response.hasData()) {
                         for (userSoundData in response.data) {
                             //TODO pending is temporary
-                            if(
-                                userSoundData.soundData.approvalStatus == SoundApprovalStatus.APPROVED ||
-                                userSoundData.soundData.approvalStatus == SoundApprovalStatus.PENDING
-                            ){
-                                Log.i(TAG, userSoundData.toString())
-                                userSoundList.add(userSoundData)
+                            if(userSoundData != null) {
+                                if (
+                                    userSoundData.soundData.approvalStatus == SoundApprovalStatus.APPROVED ||
+                                    userSoundData.soundData.approvalStatus == SoundApprovalStatus.PENDING
+                                ) {
+                                    Log.i(TAG, userSoundData.toString())
+                                    userSoundList.add(userSoundData)
+                                }
                             }
                         }
                     }
@@ -101,10 +103,12 @@ object UserSoundBackend {
                 { response ->
                     if(response.hasData()) {
                         for (userSoundData in response.data) {
-                            //if(userSoundData.soundData.approvalStatus == SoundApprovalStatus.APPROVED){
+                            if(userSoundData != null) {
+                                //if(userSoundData.soundData.approvalStatus == SoundApprovalStatus.APPROVED){
                                 Log.i(TAG, userSoundData.toString())
                                 userSoundList.add(userSoundData)
-                            //}
+                                //}
+                            }
                         }
                     }
                     completed(userSoundList)
@@ -128,8 +132,10 @@ object UserSoundBackend {
                 { response ->
                     if(response.hasData()) {
                         for (userSoundData in response.data) {
-                            Log.i(TAG, userSoundData.toString())
-                            userSoundList.add(userSoundData)
+                            if(userSoundData != null) {
+                                Log.i(TAG, userSoundData.toString())
+                                userSoundList.add(userSoundData)
+                            }
                         }
                     }
                     completed(userSoundList)

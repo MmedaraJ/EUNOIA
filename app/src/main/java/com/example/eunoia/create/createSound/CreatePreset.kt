@@ -64,13 +64,14 @@ fun CreatePresetUI(
     val scrollState = rememberScrollState()
     var showTapText by rememberSaveable{ mutableStateOf(true) }
     var manualTopMargin by rememberSaveable{ mutableStateOf(-32) }
+
     sliderVolumes.clear()
-    for(index in fileUris.indices){
-        Log.i(TAG, "File uris ==>> $fileUris")
+    for (index in fileUris.indices) {
         sliderVolumes.add(remember {
             mutableStateOf(5)
         })
     }
+
     setUpMediaPlayers(context)
     ConstraintLayout(
         modifier = Modifier
@@ -250,13 +251,13 @@ fun CreatePresetUI(
                         saveAudioFilesToS3 {
                             createSound {
                                 openSavedElementDialogBox = true
-                                clearAllCreationObjects()
                                 Thread.sleep(1_000)
                                 openSavedElementDialogBox = false
                                 runOnUiThread {
                                     //TODO(user page not created) navigate to user pending sounds page
                                     navigateToSoundScreen(navController, it)
                                 }
+                                //clearAllCreationObjects()
                             }
                         }
                     }
@@ -426,8 +427,12 @@ fun volumesDoNotAlreadyExist(): Boolean{
         val volumes = createSoundPresets[i]!!.value.volumes
         var count = 0
         for(j in volumes.indices) {
-            if (sliderVolumes[j]!!.value == volumes[j]){
-                count++
+            Log.i(TAG, "ppp slider volumes $sliderVolumes")
+            Log.i(TAG, "ppp volumes $volumes")
+            if(sliderVolumes.isNotEmpty() && volumes.isNotEmpty()) {
+                if (sliderVolumes[j]!!.value == volumes[j]) {
+                    count++
+                }
             }
         }
         if(count == volumes.size){

@@ -27,17 +27,17 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "PresetsOwnedByUser", fields = {"userDataID","key"})
-@Index(name = "PresetsOwnedBySound", fields = {"soundID","key"})
+@Index(name = "PresetsOwnedByUser", fields = {"presetUserDataID","id"})
+@Index(name = "PresetsOwnedBySound", fields = {"soundID","id"})
 public final class PresetData implements Model {
   public static final QueryField ID = field("PresetData", "id");
-  public static final QueryField PRESET_OWNER = field("PresetData", "userDataID");
+  public static final QueryField PRESET_OWNER = field("PresetData", "presetUserDataID");
   public static final QueryField KEY = field("PresetData", "key");
   public static final QueryField VOLUMES = field("PresetData", "volumes");
   public static final QueryField SOUND = field("PresetData", "soundID");
   public static final QueryField PUBLICITY_STATUS = field("PresetData", "publicityStatus");
   private final @ModelField(targetType="ID", isRequired = true) String id;
-  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData presetOwner;
+  private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "presetUserDataID", type = UserData.class) UserData presetOwner;
   private final @ModelField(targetType="String", isRequired = true) String key;
   private final @ModelField(targetType="Int", isRequired = true) List<Integer> volumes;
   private final @ModelField(targetType="SoundData", isRequired = true) @BelongsTo(targetName = "soundID", type = SoundData.class) SoundData sound;

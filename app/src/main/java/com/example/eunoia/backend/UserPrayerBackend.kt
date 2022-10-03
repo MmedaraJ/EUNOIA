@@ -64,8 +64,10 @@ object UserPrayerBackend {
                 { response ->
                     if(response.hasData()) {
                         for (userPrayerData in response.data) {
-                            Log.i(TAG, userPrayerData.toString())
-                            userPrayerList.add(userPrayerData)
+                            if(userPrayerData != null) {
+                                Log.i(TAG, userPrayerData.toString())
+                                userPrayerList.add(userPrayerData)
+                            }
                         }
                     }
                     completed(userPrayerList)
@@ -90,9 +92,11 @@ object UserPrayerBackend {
                     if(response.hasData()) {
                         for (userPrayerData in response.data) {
                             //TODO change pending to approved
-                            if(userPrayerData.prayerData.approvalStatus == PrayerApprovalStatus.PENDING) {
-                                Log.i(TAG, userPrayerData.toString())
-                                userPrayerList.add(userPrayerData)
+                            if(userPrayerData != null) {
+                                if(userPrayerData.prayerData.approvalStatus == PrayerApprovalStatus.PENDING) {
+                                    Log.i(TAG, userPrayerData.toString())
+                                    userPrayerList.add(userPrayerData)
+                                }
                             }
                         }
                     }
@@ -119,8 +123,10 @@ object UserPrayerBackend {
                 { response ->
                     if(response.hasData()) {
                         for (userPrayerData in response.data) {
-                            Log.i(TAG, userPrayerData.toString())
-                            userPrayerList.add(userPrayerData)
+                            if(userPrayerData != null) {
+                                Log.i(TAG, userPrayerData.toString())
+                                userPrayerList.add(userPrayerData)
+                            }
                         }
                     }
                     completed(userPrayerList)

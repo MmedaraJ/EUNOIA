@@ -3,11 +3,14 @@ package com.example.eunoia.models
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import androidx.navigation.NavType
 import com.amplifyframework.datastore.generated.model.*
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
+
+private const val TAG = "SoundObject"
 
 object SoundObject {
     @Parcelize
@@ -51,6 +54,8 @@ object SoundObject {
 
         companion object{
             fun from(soundData: SoundData): Sound{
+                Log.i(TAG, "from sound data is $soundData")
+                Log.i(TAG, "from sound data owner is ${soundData.soundOwner}")
                 val result = Sound(
                     soundData.id,
                     UserObject.User.from(soundData.soundOwner),

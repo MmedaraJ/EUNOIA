@@ -26,7 +26,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "ChapterPages", fields = {"bedtimeStoryInfoChapterDataID","pageNumber"})
+@Index(name = "ChapterPages", fields = {"bedtimeStoryInfoChapterDataID","id"})
 public final class ChapterPageData implements Model {
   public static final QueryField ID = field("ChapterPageData", "id");
   public static final QueryField DISPLAY_NAME = field("ChapterPageData", "display_name");

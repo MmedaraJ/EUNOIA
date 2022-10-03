@@ -65,9 +65,11 @@ object UserBedtimeStoryBackend {
                     if(response.hasData()) {
                         for (userBedtimeStoryData in response.data) {
                             //TODO change pending to approved
-                            if(userBedtimeStoryData.bedtimeStoryInfoData.approvalStatus == BedtimeStoryApprovalStatus.PENDING) {
-                                Log.i(TAG, userBedtimeStoryData.toString())
-                                userBedtimeStoryList.add(userBedtimeStoryData)
+                            if(userBedtimeStoryData != null) {
+                                if (userBedtimeStoryData.bedtimeStoryInfoData.approvalStatus == BedtimeStoryApprovalStatus.PENDING) {
+                                    Log.i(TAG, userBedtimeStoryData.toString())
+                                    userBedtimeStoryList.add(userBedtimeStoryData)
+                                }
                             }
                         }
                     }
@@ -94,8 +96,10 @@ object UserBedtimeStoryBackend {
                 { response ->
                     if(response.hasData()) {
                         for (userBedtimeStoryData in response.data) {
-                            Log.i(TAG, userBedtimeStoryData.toString())
-                            userBedtimeStoryList.add(userBedtimeStoryData)
+                            if(userBedtimeStoryData != null) {
+                                Log.i(TAG, userBedtimeStoryData.toString())
+                                userBedtimeStoryList.add(userBedtimeStoryData)
+                            }
                         }
                     }
                     completed(userBedtimeStoryList)
