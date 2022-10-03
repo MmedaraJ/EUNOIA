@@ -43,6 +43,7 @@ public final class PresetData implements Model {
   private final @ModelField(targetType="SoundData", isRequired = true) @BelongsTo(targetName = "soundID", type = SoundData.class) SoundData sound;
   private final @ModelField(targetType="PresetPublicityStatus") PresetPublicityStatus publicityStatus;
   private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "preset", type = CommentData.class) List<CommentData> commentsOwnedByPreset = null;
+  private final @ModelField(targetType="UserPresetRelationship") @HasMany(associatedWith = "userPresetRelationshipPreset", type = UserPresetRelationship.class) List<UserPresetRelationship> userPresetRelationshipsOwnedByPreset = null;
   private final @ModelField(targetType="UserPreset") @HasMany(associatedWith = "presetData", type = UserPreset.class) List<UserPreset> users = null;
   private final @ModelField(targetType="RoutinePreset") @HasMany(associatedWith = "presetData", type = RoutinePreset.class) List<RoutinePreset> routines = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
@@ -73,6 +74,10 @@ public final class PresetData implements Model {
   
   public List<CommentData> getCommentsOwnedByPreset() {
       return commentsOwnedByPreset;
+  }
+  
+  public List<UserPresetRelationship> getUserPresetRelationshipsOwnedByPreset() {
+      return userPresetRelationshipsOwnedByPreset;
   }
   
   public List<UserPreset> getUsers() {

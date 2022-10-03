@@ -13,7 +13,7 @@ import java.util.Set;
  */
 
 public final class AmplifyModelProvider implements ModelProvider {
-  private static final String AMPLIFY_MODEL_VERSION = "d4cc841360262359481d09dae33dce24";
+  private static final String AMPLIFY_MODEL_VERSION = "e50792a7a8ee850cbbca02422d2d6f13";
   private static AmplifyModelProvider amplifyGeneratedModelInstance;
   private AmplifyModelProvider() {
     
@@ -34,7 +34,7 @@ public final class AmplifyModelProvider implements ModelProvider {
   @Override
    public Set<Class<? extends Model>> models() {
     final Set<Class<? extends Model>> modifiableSet = new HashSet<>(
-          Arrays.<Class<? extends Model>>asList(SoundData.class, UserData.class, UserSoundRelationship.class, UserBedtimeStoryInfoRelationship.class, BedtimeStoryInfoData.class, RoutineData.class, UserRoutineRelationship.class, PresetData.class, CommentData.class, PrayerData.class, UserPrayerRelationship.class, StretchData.class, BreathingData.class, SelfLoveData.class, UserSelfLoveRelationship.class, BedtimeStoryInfoChapterData.class, ChapterPageData.class, UserSound.class, RoutineSound.class, UserPreset.class, UserRoutine.class, UserStretch.class, UserPrayer.class, UserBreathing.class, UserSelfLove.class, UserBedtimeStoryInfo.class, RoutineBedtimeStoryInfo.class, RoutinePreset.class, RoutinePrayer.class, RoutineStretch.class, RoutineBreathing.class, RoutineSelfLove.class)
+          Arrays.<Class<? extends Model>>asList(SoundData.class, UserData.class, UserSoundRelationship.class, UserBedtimeStoryInfoRelationship.class, BedtimeStoryInfoData.class, RoutineData.class, UserRoutineRelationship.class, PresetData.class, CommentData.class, UserPresetRelationship.class, PrayerData.class, UserPrayerRelationship.class, StretchData.class, BreathingData.class, SelfLoveData.class, UserSelfLoveRelationship.class, BedtimeStoryInfoChapterData.class, ChapterPageData.class, UserSound.class, RoutineSound.class, UserPreset.class, UserRoutine.class, UserStretch.class, UserPrayer.class, UserBreathing.class, UserSelfLove.class, UserBedtimeStoryInfo.class, RoutineBedtimeStoryInfo.class, RoutinePreset.class, RoutinePrayer.class, RoutineStretch.class, RoutineBreathing.class, RoutineSelfLove.class)
         );
     
         return Immutable.of(modifiableSet);

@@ -71,8 +71,21 @@ type PresetData
     sound: SoundData! @belongsTo(fields: ["soundID"])
     publicityStatus: PresetPublicityStatus
     commentsOwnedByPreset: [CommentData!] @hasMany(indexName: "CommentsOwnedByPreset", fields: ["id"])
+    userPresetRelationshipsOwnedByPreset: [UserPresetRelationship!] @hasMany(indexName: "UserPresetRelationshipsOwnedByPreset", fields: ["id"])
     users: [UserData!] @manyToMany(relationName: "UserPreset")
     routines: [RoutineData!] @manyToMany(relationName: "RoutinePreset")
+}
+
+type UserPresetRelationship
+@model (queries: { get: "getUserPresetRelationship", list: "listUserPresetRelationships" })
+@auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
+    id: ID!
+    userPresetRelationshipUserDataID: ID! @index(name: "UserPresetRelationshipsOwnedByUser", sortKeyFields: ["id"])
+    userPresetRelationshipOwner: UserData! @belongsTo(fields: ["userPresetRelationshipUserDataID"])
+    userPresetRelationshipPresetDataID: ID! @index(name: "UserPresetRelationshipsOwnedByPreset", sortKeyFields: ["id"])
+    userPresetRelationshipPreset: PresetData! @belongsTo(fields: ["userPresetRelationshipPresetDataID"])
+    numberOfTimesPlayed: Int
+    totalPlayTime: Int
 }
 
 type RoutineData
@@ -341,6 +354,7 @@ type UserData
     userPrayerRelationshipsOwnedByUser: [UserPrayerRelationship!] @hasMany(indexName: "UserPrayerRelationshipsOwnedByUser", fields: ["id"])
     userSelfLoveRelationshipsOwnedByUser: [UserSelfLoveRelationship!] @hasMany(indexName: "UserSelfLoveRelationshipsOwnedByUser", fields: ["id"])
     userRoutineRelationshipsOwnedByUser: [UserRoutineRelationship!] @hasMany(indexName: "UserRoutineRelationshipsOwnedByUser", fields: ["id"])
+    userPresetRelationshipsOwnedByUser: [UserPresetRelationship!] @hasMany(indexName: "UserPresetRelationshipsOwnedByUser", fields: ["id"])
     soundsOwnedByUser: [SoundData!] @hasMany(indexName: "SoundsOwnedByUser", fields: ["id"])
     sounds: [SoundData!] @manyToMany(relationName: "UserSound")
     presetsOwnedByUser: [PresetData!] @hasMany(indexName: "PresetsOwnedByUser", fields: ["id"])

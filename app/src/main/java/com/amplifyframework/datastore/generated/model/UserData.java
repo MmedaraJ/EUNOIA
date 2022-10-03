@@ -62,6 +62,7 @@ public final class UserData implements Model {
   private final @ModelField(targetType="UserPrayerRelationship") @HasMany(associatedWith = "userPrayerRelationshipOwner", type = UserPrayerRelationship.class) List<UserPrayerRelationship> userPrayerRelationshipsOwnedByUser = null;
   private final @ModelField(targetType="UserSelfLoveRelationship") @HasMany(associatedWith = "userSelfLoveRelationshipOwner", type = UserSelfLoveRelationship.class) List<UserSelfLoveRelationship> userSelfLoveRelationshipsOwnedByUser = null;
   private final @ModelField(targetType="UserRoutineRelationship") @HasMany(associatedWith = "userRoutineRelationshipOwner", type = UserRoutineRelationship.class) List<UserRoutineRelationship> userRoutineRelationshipsOwnedByUser = null;
+  private final @ModelField(targetType="UserPresetRelationship") @HasMany(associatedWith = "userPresetRelationshipOwner", type = UserPresetRelationship.class) List<UserPresetRelationship> userPresetRelationshipsOwnedByUser = null;
   private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "soundOwner", type = SoundData.class) List<SoundData> soundsOwnedByUser = null;
   private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "userData", type = UserSound.class) List<UserSound> sounds = null;
   private final @ModelField(targetType="PresetData") @HasMany(associatedWith = "presetOwner", type = PresetData.class) List<PresetData> presetsOwnedByUser = null;
@@ -159,6 +160,10 @@ public final class UserData implements Model {
   
   public List<UserRoutineRelationship> getUserRoutineRelationshipsOwnedByUser() {
       return userRoutineRelationshipsOwnedByUser;
+  }
+  
+  public List<UserPresetRelationship> getUserPresetRelationshipsOwnedByUser() {
+      return userPresetRelationshipsOwnedByUser;
   }
   
   public List<SoundData> getSoundsOwnedByUser() {

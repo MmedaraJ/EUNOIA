@@ -307,6 +307,8 @@ class UserDashboardActivity :
                             (globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime).toFloat()
                     ) * 360f
         }
+        //TODO if current position of media player == duration of media player, stop media player,
+        // set controls to represent pause mode
     }
 
     override fun onSelfLoveTimerTick(durationString: String, durationMilliSeconds: Long) {
