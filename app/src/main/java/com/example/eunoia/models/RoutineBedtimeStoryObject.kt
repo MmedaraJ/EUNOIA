@@ -22,8 +22,8 @@ object RoutineBedtimeStoryObject {
 
         val data: RoutineBedtimeStoryInfo
             get() = RoutineBedtimeStoryInfo.builder()
-                .routineData(this.routine.data)
                 .bedtimeStoryInfoData(this.bedtimeStory.data)
+                .routineData(this.routine.data)
                 .id(this.id)
                 .build()
 

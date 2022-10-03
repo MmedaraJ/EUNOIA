@@ -22,8 +22,8 @@ object RoutinePresetObject {
 
         val data: RoutinePreset
             get() = RoutinePreset.builder()
-                .presetData(this.preset.data)
                 .routineData(this.routine.data)
+                .presetData(this.preset.data)
                 .id(this.id)
                 .build()
 
