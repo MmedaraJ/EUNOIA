@@ -45,10 +45,32 @@ object UserSoundRelationshipBackend {
             UserObject.User.from(globalViewModel_!!.currentUser!!),
             SoundObject.Sound.from(sound),
             0,
-            0
+            0,
+            listOf(),
+            listOf()
         )
         createUserSoundRelationship(userSoundRelationshipModel){
             completed(it)
+        }
+    }
+
+    fun updateUserSoundRelationship(
+        userSoundRelationship: UserSoundRelationship,
+        completed: (userSoundRelationship: UserSoundRelationship) -> Unit
+    ){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.update(userSoundRelationship),
+                { response ->
+                    if(response.hasData()) {
+                        Log.i(TAG, "Successfully updated userSoundRelationship: ${response.data}")
+                        completed(response.data)
+                    }
+                },
+                {
+                    Log.i(TAG, "Error while updating userSoundRelationship: ", it)
+                }
+            )
         }
     }
 

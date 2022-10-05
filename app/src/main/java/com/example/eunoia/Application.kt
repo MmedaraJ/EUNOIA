@@ -8,7 +8,7 @@ class Eunoia : Application() {
     override fun onCreate() {
         super.onCreate()
         // initialize Amplify when application is starting
-        AuthBackend.initialize(applicationContext)
+        AuthBackend.initialize(applicationContext, this)
         /*AndroidAudioConverter.load(this, object : ILoadCallback{
             override fun onSuccess() {
                 Log.i(TAG, "Great")

@@ -39,6 +39,8 @@ type UserSoundRelationship
     userSoundRelationshipSound: SoundData! @belongsTo(fields: ["userSoundRelationshipSoundDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    usageTimestamps: [AWSDateTime!]
+    usagePlayTimes: [Int!]
 }
 
 type CommentData

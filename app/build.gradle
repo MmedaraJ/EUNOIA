@@ -70,6 +70,8 @@ dependencies {
     implementation 'com.amplifyframework:aws-api:1.37.3'
     implementation 'com.amplifyframework:aws-auth-cognito:1.37.3'
     implementation 'com.amplifyframework:aws-storage-s3:1.37.3'
+    implementation 'com.amplifyframework:aws-analytics-pinpoint:1.37.5'
+    implementation 'com.amplifyframework:aws-auth-cognito:1.37.5'
     //For AWSMobileClient only:
     implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.49.0'
     //For the drop-in UI also:

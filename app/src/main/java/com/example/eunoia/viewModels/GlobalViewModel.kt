@@ -14,6 +14,7 @@ import com.example.eunoia.R
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.BedtimeStoryTimer
+import com.example.eunoia.utils.GeneralPlaytimeTimer
 import com.example.eunoia.utils.PrayerTimer
 import com.example.eunoia.utils.SelfLoveTimer
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,17 +24,20 @@ class GlobalViewModel: ViewModel(){
     var currentSoundPlaying by mutableStateOf<SoundData?>(null)
     var isCurrentSoundPlaying by mutableStateOf(false)
     var currentSoundPlayingPreset by mutableStateOf<PresetData?>(null)
-    var currentAllOriginalSoundPreset by mutableStateOf<MutableList<PresetData>?>(null)
-    var currentAllUserSoundPreset by mutableStateOf<MutableList<PresetData>?>(null)
+    var currentAllOriginalSoundPreset by mutableStateOf<MutableSet<PresetData>?>(null)
+    var currentAllUserSoundPreset by mutableStateOf<MutableSet<PresetData>?>(null)
     var currentSoundPlayingContext by mutableStateOf<Context?>(null)
     var currentSoundPlayingSliderPositions = mutableListOf<MutableState<Float>?>()
     var currentSoundPlayingUris: MutableList<Uri?>? = null
     var currentUsersSounds by mutableStateOf<MutableList<UserSound?>?>(null)
+    var currentUsersSoundRelationships by mutableStateOf<MutableList<UserSoundRelationship?>?>(null)
     var soundTimerTime by mutableStateOf(0L)
     var soundMeditationBellInterval by mutableStateOf(0)
     var soundCountDownTimer: CountDownTimer? = null
+    var soundPlayTimeTimer: CountDownTimer? = null
     var soundSliderVolumes: MutableList<Int>? = null
     var soundMeditationBellMediaPlayer: MediaPlayer? = null
+    var previouslyPlayedUserSoundRelationship: UserSoundRelationship? = null
 
     //adding sound
     var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)
@@ -111,6 +115,10 @@ class GlobalViewModel: ViewModel(){
 
     var allowBottomSheetClose by mutableStateOf(true)
 
+    /**
+     * General playtime timer
+     */
+    var generalPlaytimeTimer = GeneralPlaytimeTimer(UserDashboardActivity.getInstanceActivity())
 
     /**
      * bedtime story

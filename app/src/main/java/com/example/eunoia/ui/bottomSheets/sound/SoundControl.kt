@@ -474,6 +474,7 @@ private fun startSoundScreenSounds(
         }
         deActivateGlobalControlButton(3)
         deActivateGlobalControlButton(1)
+        globalViewModel_!!.generalPlaytimeTimer.start()
         globalViewModel_!!.isCurrentSoundPlaying = true
     }
 }
@@ -509,6 +510,7 @@ private fun pauseSoundScreenSounds(
 ) {
     if(soundMediaPlayerService.areMediaPlayersInitialized()) {
         if(soundMediaPlayerService.areMediaPlayersPlaying()) {
+            globalViewModel_!!.generalPlaytimeTimer.pause()
             soundMediaPlayerService.pauseMediaPlayers()
             activateGlobalControlButton(3)
             globalViewModel_!!.isCurrentSoundPlaying = false

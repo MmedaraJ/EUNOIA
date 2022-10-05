@@ -25,6 +25,7 @@ import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
@@ -52,10 +53,14 @@ fun UploadSelfLoveUI(
     navController: NavController,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService
 ){
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    generalMediaPlayerService.onDestroy()
+    globalViewModel_!!.currentBedtimeStoryPlaying = null
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Self Love Saved")

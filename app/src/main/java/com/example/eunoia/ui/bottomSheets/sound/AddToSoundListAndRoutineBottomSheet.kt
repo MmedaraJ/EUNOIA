@@ -592,7 +592,7 @@ private fun makePrivatePresetObject(
             UserPresetBackend.createUserPresetObject(presetData) {
                 globalViewModel_!!.currentPresetToBeAdded = presetData
                 if (globalViewModel_!!.currentAllUserSoundPreset == null) {
-                    globalViewModel_!!.currentAllUserSoundPreset = mutableListOf()
+                    globalViewModel_!!.currentAllUserSoundPreset = mutableSetOf()
                 }
                 globalViewModel_!!.currentAllUserSoundPreset!!.add(presetData)
                 allUserSoundPresets!!.add(presetData)

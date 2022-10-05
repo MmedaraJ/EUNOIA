@@ -1,0 +1,21 @@
+{
+    "appName": "eunoiaPinpoint",
+    "roleName": "pinpointLambdaRoled4e357c3",
+    "cloudformationPolicyName": "cloudformationPolicyd4e357c3",
+    "cloudWatchPolicyName": "cloudWatchPolicyd4e357c3",
+    "pinpointPolicyName": "pinpointPolicyd4e357c3",
+    "authPolicyName": "pinpoint_amplify_d4e357c3",
+    "unauthPolicyName": "pinpoint_amplify_d4e357c3",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}

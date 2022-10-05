@@ -1,11 +1,13 @@
 package com.example.eunoia.backend
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.AmplifyException
+import com.amplifyframework.analytics.pinpoint.AWSPinpointAnalyticsPlugin
 import com.amplifyframework.api.aws.AWSApiPlugin
 import com.amplifyframework.auth.AuthChannelEventName
 import com.amplifyframework.auth.AuthUserAttribute
@@ -50,11 +52,12 @@ object AuthBackend {
     val confirmResetPasswordError = mutableStateOf("")
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
-    fun initialize(applicationContext: Context) : AuthBackend {
+    fun initialize(applicationContext: Context, application: Application) : AuthBackend {
         try {
             Amplify.addPlugin(AWSCognitoAuthPlugin())
             Amplify.addPlugin(AWSApiPlugin())
             Amplify.addPlugin(AWSS3StoragePlugin())
+            Amplify.addPlugin(AWSPinpointAnalyticsPlugin(application))
 
             Amplify.configure(applicationContext)
             Log.i(TAG, "Initialized Amplify")

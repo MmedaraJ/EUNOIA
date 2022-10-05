@@ -23,5 +23,12 @@ export type AmplifyDependentResourcesAttributes = {
             "BucketName": "string",
             "Region": "string"
         }
+    },
+    "analytics": {
+        "eunoiaPinpoint": {
+            "Region": "string",
+            "Id": "string",
+            "appName": "string"
+        }
     }
 }

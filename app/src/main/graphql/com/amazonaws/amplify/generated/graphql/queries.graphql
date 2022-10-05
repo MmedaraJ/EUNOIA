@@ -111,6 +111,8 @@ query GetSoundData($id: ID!) {
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -384,6 +386,8 @@ query GetUserSoundRelationship($id: ID!) {
     }
     numberOfTimesPlayed
     totalPlayTime
+    usageTimestamps
+    usagePlayTimes
     createdAt
     updatedAt
     owner
@@ -444,6 +448,8 @@ query ListUserSoundRelationships(
       }
       numberOfTimesPlayed
       totalPlayTime
+      usageTimestamps
+      usagePlayTimes
       createdAt
       updatedAt
       owner
@@ -3599,6 +3605,8 @@ query GetUserData($id: ID!) {
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner

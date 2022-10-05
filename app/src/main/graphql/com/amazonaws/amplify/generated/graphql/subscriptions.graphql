@@ -111,6 +111,8 @@ subscription OnCreateSoundData($owner: String) {
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -283,6 +285,8 @@ subscription OnUpdateSoundData($owner: String) {
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -455,6 +459,8 @@ subscription OnDeleteSoundData($owner: String) {
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -665,6 +671,8 @@ subscription OnCreateUserSoundRelationship($owner: String) {
     }
     numberOfTimesPlayed
     totalPlayTime
+    usageTimestamps
+    usagePlayTimes
     createdAt
     updatedAt
     owner
@@ -820,6 +828,8 @@ subscription OnUpdateUserSoundRelationship($owner: String) {
     }
     numberOfTimesPlayed
     totalPlayTime
+    usageTimestamps
+    usagePlayTimes
     createdAt
     updatedAt
     owner
@@ -975,6 +985,8 @@ subscription OnDeleteUserSoundRelationship($owner: String) {
     }
     numberOfTimesPlayed
     totalPlayTime
+    usageTimestamps
+    usagePlayTimes
     createdAt
     updatedAt
     owner
@@ -7739,6 +7751,8 @@ subscription OnCreateUserData($owner: String) {
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -8099,6 +8113,8 @@ subscription OnUpdateUserData($owner: String) {
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -8459,6 +8475,8 @@ subscription OnDeleteUserData($owner: String) {
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner

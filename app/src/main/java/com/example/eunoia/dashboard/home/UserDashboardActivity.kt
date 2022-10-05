@@ -57,10 +57,7 @@ import com.example.eunoia.ui.navigation.generalMediaPlayerService_
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
-import com.example.eunoia.utils.BedtimeStoryTimer
-import com.example.eunoia.utils.PrayerTimer
-import com.example.eunoia.utils.SelfLoveTimer
-import com.example.eunoia.utils.Timer
+import com.example.eunoia.utils.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
@@ -73,7 +70,8 @@ class UserDashboardActivity :
     Timer.OnTimerTickListener,
     BedtimeStoryTimer.OnBedtimeStoryTimerTickListener,
     SelfLoveTimer.OnSelfLoveTimerTickListener,
-    PrayerTimer.OnPrayerTimerTickListener
+    PrayerTimer.OnPrayerTimerTickListener,
+    GeneralPlaytimeTimer.OnGeneralPlaytimeTimerTickListener
 {
     private val _currentUser = MutableLiveData<UserData>(null)
     var currentUser: LiveData<UserData> = _currentUser
@@ -331,6 +329,10 @@ class UserDashboardActivity :
                             (globalViewModel_!!.currentPrayerPlaying!!.fullPlayTime).toFloat()
                     ) * 360f
         }
+    }
+
+    override fun onGeneralPlaytimeTimerTick(durationString: String, durationMilliSeconds: Long) {
+        Log.i(TAG, "duration: $durationString")
     }
 }
 

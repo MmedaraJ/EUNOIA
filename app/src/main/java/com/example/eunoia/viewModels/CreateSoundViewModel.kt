@@ -7,7 +7,7 @@ import com.example.eunoia.ui.theme.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 class CreateSoundViewModel: ViewModel() {
-    val icons = arrayOf(
+    var icons = arrayOf(
         mutableStateOf(R.drawable.replay_sound_icon),
         mutableStateOf(R.drawable.reset_sliders_icon),
         mutableStateOf(R.drawable.sound_timer_icon),
@@ -56,4 +56,44 @@ class CreateSoundViewModel: ViewModel() {
         DoveGray,
         Neptune,
     )
+
+    fun resetViewModel(){
+        icons = arrayOf(
+            mutableStateOf(R.drawable.replay_sound_icon),
+            mutableStateOf(R.drawable.reset_sliders_icon),
+            mutableStateOf(R.drawable.sound_timer_icon),
+            mutableStateOf(R.drawable.play_icon),
+            mutableStateOf(R.drawable.increase_levels_icon),
+            mutableStateOf(R.drawable.decrease_levels_icon),
+            mutableStateOf(R.drawable.meditation_bell_icon),
+        )
+        borderControlColors = arrayOf(
+            mutableStateOf(Bizarre),
+            mutableStateOf(Bizarre),
+            mutableStateOf(Bizarre),
+            mutableStateOf(Black),
+            mutableStateOf(Bizarre),
+            mutableStateOf(Bizarre),
+            mutableStateOf(Bizarre),
+            mutableStateOf(Bizarre),
+        )
+        backgroundControlColor1 = arrayOf(
+            mutableStateOf(White),
+            mutableStateOf(White),
+            mutableStateOf(White),
+            mutableStateOf(SoftPeach),
+            mutableStateOf(White),
+            mutableStateOf(White),
+            mutableStateOf(White),
+        )
+        backgroundControlColor2 = arrayOf(
+            mutableStateOf(White),
+            mutableStateOf(White),
+            mutableStateOf(White),
+            mutableStateOf(Solitude),
+            mutableStateOf(White),
+            mutableStateOf(White),
+            mutableStateOf(White),
+        )
+    }
 }

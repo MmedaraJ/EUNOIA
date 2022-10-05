@@ -18,16 +18,17 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
+import com.amplifyframework.analytics.AnalyticsEvent
+import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
-import com.example.eunoia.create.createPrayer.uploadedFileMediaPlayerPrayer
-import com.example.eunoia.create.createSelfLove.resetSelfLoveUploadUI
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
@@ -55,10 +56,14 @@ fun UploadBedtimeStoryUI(
     navController: NavController,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService
 ){
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    generalMediaPlayerService.onDestroy()
+    globalViewModel_!!.currentBedtimeStoryPlaying = null
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Bedtime Story Saved. We will send you an email when it is approved")
@@ -196,6 +201,7 @@ fun createBedtimeStoryFromUpload(
                         openSavedElementDialogBox = true
                         Thread.sleep(1_000)
                         openSavedElementDialogBox = false
+                        recordBedtimeStoryCreatedViaUploadPinpointEvent(bedtimeStoryData)
                         runOnUiThread {
                             //TODO navigate to users list of pending bedtime stories
                             navigateToBedtimeStoryScreen(navController, bedtimeStoryData)
@@ -207,6 +213,18 @@ fun createBedtimeStoryFromUpload(
     }else{
         openBedtimeStoryNameTakenDialogBox = true
     }
+}
+
+fun recordBedtimeStoryCreatedViaUploadPinpointEvent(bedtimeStoryData: BedtimeStoryInfoData) {
+    val event = AnalyticsEvent.builder()
+        .name("BedtimeStoryCreatedViaUpload")
+        .addProperty("UserName", bedtimeStoryData.bedtimeStoryOwner.username)
+        .addProperty("Successful", true)
+        .addProperty("ProcessDuration", 18000)
+        .addProperty("BedtimeStoryName", bedtimeStoryData.displayName)
+        .build()
+
+    Amplify.Analytics.recordEvent(event)
 }
 
 fun resetAllBedtimeStoryCreationObjects(){

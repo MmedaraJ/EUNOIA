@@ -126,8 +126,10 @@ class WelcomeActivity : ComponentActivity() {
 
     private fun setSignedInUser(completed: (userData: com.amplifyframework.datastore.generated.model.UserData?) -> Unit){
         UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){
-            globalViewModel_!!.currentUser = it!!
-            Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel_!!.currentUser}")
+            if(it!= null) {
+                globalViewModel_!!.currentUser = it
+                Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel_!!.currentUser}")
+            }
             completed(it)
         }
     }

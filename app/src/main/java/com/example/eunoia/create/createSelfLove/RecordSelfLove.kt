@@ -23,6 +23,7 @@ import com.example.eunoia.backend.SelfLoveBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.recordAudio.deleteRecordingFile
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -52,10 +53,14 @@ fun RecordSelfLoveUI(
     navController: NavController,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService
 ){
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    generalMediaPlayerService.onDestroy()
+    globalViewModel_!!.currentBedtimeStoryPlaying = null
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Self Love Saved")

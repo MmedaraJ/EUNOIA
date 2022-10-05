@@ -52,8 +52,8 @@ var comment_icon_value by mutableStateOf(R.drawable.comment_icon)
 var soundPreset: PresetData? = null
 var sliderPositions: MutableList<MutableState<Float>?>? = null
 var sliderVolumes: MutableList<Int>? = null
-var allOriginalSoundPresets: MutableList<PresetData>? = null
-var allUserSoundPresets: MutableList<PresetData>? = null
+var allOriginalSoundPresets: MutableSet<PresetData>? = null
+var allUserSoundPresets: MutableSet<PresetData>? = null
 var otherPresetsThatOriginatedFromThisSound: MutableList<PresetData>? = null
 var commentsForThisSound = mutableListOf<CommentData>()
 var soundUris = mutableListOf<Uri?>()
@@ -98,6 +98,7 @@ var soundScreenBackgroundControlColor2 = arrayOf(
 )
 
 var associatedPreset: PresetData? = null
+var currentUserSoundRelationship: UserSoundRelationship? = null
 
 
 @Composable
@@ -462,38 +463,28 @@ fun setUpParameters(completed: () -> Unit) {
 }
 
 fun setAllUserSoundPresets(completed: () -> Unit) {
-    if(globalViewModel_!!.currentAllUserSoundPreset != null){
-        allUserSoundPresets = globalViewModel_!!.currentAllUserSoundPreset!!
-        completed()
-    }else{
-        allUserSoundPresets = mutableListOf()
-        getUserSoundPresets(
-            globalViewModel_!!.currentSoundPlaying!!,
-            globalViewModel_!!.currentUser!!
-        ) { presetList ->
-            if(presetList.isNotEmpty()) {
-                allUserSoundPresets!!.addAll(presetList)
-            }
-            completed()
+    allUserSoundPresets = mutableSetOf()
+    getUserSoundPresets(
+        globalViewModel_!!.currentSoundPlaying!!,
+        globalViewModel_!!.currentUser!!
+    ) { presetList ->
+        if(presetList.isNotEmpty()) {
+            allUserSoundPresets!!.addAll(presetList)
         }
+        completed()
     }
 }
 
 fun setAllOriginalSoundPresets(completed: () -> Unit) {
-    if(globalViewModel_!!.currentAllOriginalSoundPreset != null){
-        allOriginalSoundPresets = globalViewModel_!!.currentAllOriginalSoundPreset!!
-        completed()
-    }else{
-        allOriginalSoundPresets = mutableListOf()
-        getUserSoundPresets(
-            globalViewModel_!!.currentSoundPlaying!!,
-            globalViewModel_!!.currentSoundPlaying!!.soundOwner
-        ) {
-            if(it.isNotEmpty()) {
-                allOriginalSoundPresets!!.addAll(it)
-            }
-            completed()
+    allOriginalSoundPresets = mutableSetOf()
+    getUserSoundPresets(
+        globalViewModel_!!.currentSoundPlaying!!,
+        globalViewModel_!!.currentSoundPlaying!!.soundOwner
+    ) {
+        if(it.isNotEmpty()) {
+            allOriginalSoundPresets!!.addAll(it)
         }
+        completed()
     }
 }
 
@@ -534,8 +525,8 @@ private fun getNecessaryPresets(soundData: SoundData, completed: () -> Unit){
         sliderPositions = mutableListOf()
         sliderVolumes = mutableListOf()
         defaultVolumes = mutableListOf()
-        allOriginalSoundPresets = mutableListOf()
-        allUserSoundPresets = mutableListOf()
+        allOriginalSoundPresets = mutableSetOf()
+        allUserSoundPresets = mutableSetOf()
         otherPresetsThatOriginatedFromThisSound = mutableListOf()
         soundPreset = presets[0]
         associatedPreset = soundPreset

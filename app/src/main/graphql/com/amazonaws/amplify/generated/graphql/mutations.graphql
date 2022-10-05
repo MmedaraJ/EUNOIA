@@ -114,6 +114,8 @@ mutation CreateSoundData(
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -289,6 +291,8 @@ mutation UpdateSoundData(
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -464,6 +468,8 @@ mutation DeleteSoundData(
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -677,6 +683,8 @@ mutation CreateUserSoundRelationship(
     }
     numberOfTimesPlayed
     totalPlayTime
+    usageTimestamps
+    usagePlayTimes
     createdAt
     updatedAt
     owner
@@ -835,6 +843,8 @@ mutation UpdateUserSoundRelationship(
     }
     numberOfTimesPlayed
     totalPlayTime
+    usageTimestamps
+    usagePlayTimes
     createdAt
     updatedAt
     owner
@@ -993,6 +1003,8 @@ mutation DeleteUserSoundRelationship(
     }
     numberOfTimesPlayed
     totalPlayTime
+    usageTimestamps
+    usagePlayTimes
     createdAt
     updatedAt
     owner
@@ -7895,6 +7907,8 @@ mutation CreateUserData(
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -8258,6 +8272,8 @@ mutation UpdateUserData(
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner
@@ -8621,6 +8637,8 @@ mutation DeleteUserData(
         userSoundRelationshipSoundDataID
         numberOfTimesPlayed
         totalPlayTime
+        usageTimestamps
+        usagePlayTimes
         createdAt
         updatedAt
         owner

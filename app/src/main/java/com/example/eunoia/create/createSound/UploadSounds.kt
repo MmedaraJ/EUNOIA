@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -18,7 +19,10 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
+import com.example.eunoia.dashboard.sound.updatePreviousUserSoundRelationship
 import com.example.eunoia.models.PresetObject
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -47,8 +51,15 @@ fun UploadSoundsUI(
     navController: NavController,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService
 ){
+    val context = LocalContext.current
+
+    //updatePreviousUserSoundRelationship {}
+    soundMediaPlayerService.onDestroy()
+    com.example.eunoia.dashboard.sound.resetAll(context, soundMediaPlayerService)
+
     var numberOfFiles by rememberSaveable{ mutableStateOf(0) }
     val scrollState = rememberScrollState()
     ConstraintLayout(
@@ -262,7 +273,7 @@ fun validateFileNames(): Boolean{
 )
 @Composable
 fun UploadSoundsPreview() {
-    val globalViewModel: GlobalViewModel = viewModel()
+    /*val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
         UploadSoundsUI(
             rememberNavController(),
@@ -270,5 +281,5 @@ fun UploadSoundsPreview() {
             rememberCoroutineScope(),
             rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
         )
-    }
+    }*/
 }

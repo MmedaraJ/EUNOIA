@@ -19,6 +19,7 @@ import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.backend.BedtimeStoryChapterBackend
 import com.example.eunoia.models.BedtimeStoryChapterObject
 import com.example.eunoia.models.BedtimeStoryObject
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -40,8 +41,12 @@ fun RecordBedtimeStoryUI(
     bedtimeStoryData: BedtimeStoryInfoData,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService
 ){
+    generalMediaPlayerService.onDestroy()
+    globalViewModel_!!.currentBedtimeStoryPlaying = null
+
     var numberOfChapters by rememberSaveable { mutableStateOf(bedtimeStoryChapters.size) }
     BedtimeStoryChapterBackend.queryBedtimeStoryChapterBasedOnBedtimeStory(bedtimeStoryData) {
         for (i in bedtimeStoryChapters.size until it.size) {

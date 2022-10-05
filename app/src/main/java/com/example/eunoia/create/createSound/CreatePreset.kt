@@ -23,6 +23,7 @@ import com.amplifyframework.datastore.generated.model.SoundApprovalStatus
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.backend.*
 import com.example.eunoia.create.createPrayer.prayerName
+import com.example.eunoia.create.createSoundViewModel
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.*
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -57,6 +58,7 @@ fun CreatePresetUI(
     presetName = ""
 
     SetupAlertDialogs()
+    createSoundViewModel!!.resetViewModel()
 
     val scrollState = rememberScrollState()
     var showTapText by rememberSaveable{ mutableStateOf(true) }

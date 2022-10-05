@@ -33,9 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
+import com.amazonaws.util.DateUtils
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.UserSoundRelationshipBackend
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -44,6 +48,7 @@ import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
 import java.lang.Math.*
+import java.util.*
 import kotlin.concurrent.fixedRateTimer
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -639,7 +644,9 @@ fun startCountDownTimer(
             Log.i(TAG, "Timer has been going for $millisUntilFinished")
         }
         override fun onFinish() {
-            soundMediaPlayerService.onDestroy()
+            if(soundMediaPlayerService.areMediaPlayersInitialized()) {
+                soundMediaPlayerService.onDestroy()
+            }
             meditationBellInterval.value = 0
             globalViewModel_!!.soundMeditationBellInterval = 0
             resetBothLocalAndGlobalControlButtons()
@@ -650,6 +657,7 @@ fun startCountDownTimer(
             globalViewModel_!!.soundTimerTime = 0
         }
     }
+
     globalViewModel_!!.soundCountDownTimer = countDownTimer
 
     countDownTimer!!.start()
@@ -828,7 +836,6 @@ private fun startSoundScreenSounds(
                 )
             }
         }else{
-            Log.i(TAG, "Uri SIZEEE 02 is ${soundUris.size} /.")
             initializeMediaPlayers(
                 soundMediaPlayerService,
                 context,
@@ -837,9 +844,9 @@ private fun startSoundScreenSounds(
         }
         deActivateLocalControlButton(3)
         deActivateLocalControlButton(1)
+        globalViewModel_!!.previouslyPlayedUserSoundRelationship = currentUserSoundRelationship
+        globalViewModel_!!.generalPlaytimeTimer.start()
         setGlobalPropertiesAfterPlayingSound(soundData, context)
-    }else {
-        Log.i(TAG, "Testing play after reset 7")
     }
 }
 
@@ -848,6 +855,11 @@ private fun initializeMediaPlayers(
     context: Context,
     soundData: SoundData
 ){
+    /*updatePreviousUserSoundRelationship {
+        createOrUpdateUserSoundRelationship(soundData) {}
+        globalViewModel_!!.previouslyPlayedUserSoundRelationship = null
+    }*/
+
     soundMediaPlayerService.onDestroy()
     soundMediaPlayerService.setAudioUris(soundUris)
     soundMediaPlayerService.setVolumes(sliderVolumes!!)
@@ -871,13 +883,60 @@ private fun initializeMediaPlayers(
     }
 
     createMeditationBellMediaPlayer(context)
+
+}
+
+fun createOrUpdateUserSoundRelationship(soundData: SoundData, completed: () -> Unit) {
+    UserSoundRelationshipBackend.queryUserSoundRelationshipBasedOnUserAndSound(
+        globalViewModel_!!.currentUser!!,
+        soundData
+    ){
+        if(it.isEmpty()){
+            UserSoundRelationshipBackend.createUserSoundRelationshipObject(soundData){ userSoundRelationship ->
+                currentUserSoundRelationship = userSoundRelationship
+                updateUserSoundRelationshipUsageTimeStamp(currentUserSoundRelationship!!){
+                    completed()
+                }
+            }
+        }else{
+            currentUserSoundRelationship = it[0]
+            updateUserSoundRelationshipUsageTimeStamp(currentUserSoundRelationship!!){
+                completed()
+            }
+        }
+    }
+}
+
+fun updateUserSoundRelationshipUsageTimeStamp(
+    userSoundRelationship: UserSoundRelationship,
+    completed: () -> Unit
+) {
+    var usageTimeStamp = userSoundRelationship.usageTimestamps
+    val currentDateTime = DateUtils.formatISO8601Date(Date())
+
+    if(usageTimeStamp != null) {
+        usageTimeStamp.add(Temporal.DateTime(currentDateTime))
+    }else{
+        usageTimeStamp = listOf(Temporal.DateTime(currentDateTime))
+    }
+
+    val numberOfTimesPlayed = userSoundRelationship.numberOfTimesPlayed + 1
+
+    val updatedUserSoundRelationship = userSoundRelationship.copyOfBuilder()
+        .numberOfTimesPlayed(numberOfTimesPlayed)
+        .usageTimestamps(usageTimeStamp)
+        .build()
+
+    UserSoundRelationshipBackend.updateUserSoundRelationship(updatedUserSoundRelationship){
+        completed()
+    }
 }
 
 private fun setGlobalPropertiesAfterPlayingSound(soundData: SoundData, context: Context) {
     globalViewModel_!!.currentSoundPlaying = soundData
     globalViewModel_!!.currentSoundPlayingPreset = soundPreset
-    globalViewModel_!!.currentAllOriginalSoundPreset = allOriginalSoundPresets
-    globalViewModel_!!.currentAllUserSoundPreset = allUserSoundPresets
+    /*globalViewModel_!!.currentAllOriginalSoundPreset = allOriginalSoundPresets
+    globalViewModel_!!.currentAllUserSoundPreset = allUserSoundPresets*/
     globalViewModel_!!.soundSliderVolumes = sliderVolumes
     globalViewModel_!!.currentSoundPlayingUris = soundUris
     globalViewModel_!!.currentSoundPlayingContext = context
@@ -891,6 +950,7 @@ private fun pauseSoundScreenSounds(
 ) {
     if(soundMediaPlayerService.areMediaPlayersInitialized()) {
         if(soundMediaPlayerService.areMediaPlayersPlaying()) {
+            globalViewModel_!!.generalPlaytimeTimer.pause()
             soundMediaPlayerService.pauseMediaPlayers()
             activateLocalControlButton(3)
             activateGlobalControlButton(3)
@@ -1354,18 +1414,10 @@ fun changePreset(
     sliderVolumes = preset.volumes
     globalViewModel_!!.soundSliderVolumes = preset.volumes
     defaultVolumes = preset.volumes
-    //sliderPositions = mutableListOf()
-    //globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-    /*for(volume in sliderVolumes!!){
-        if(sliderPositions!!.size < sliderVolumes!!.size) {
-            sliderPositions!!.add(mutableStateOf(volume.toFloat()))
-            globalViewModel_!!.currentSoundPlayingSliderPositions.add(mutableStateOf(volume.toFloat()))
-        }
-    }*/
     soundPreset = preset
     globalViewModel_!!.currentSoundPlayingPreset = preset
-    globalViewModel_!!.currentAllOriginalSoundPreset = allOriginalSoundPresets
-    globalViewModel_!!.currentAllUserSoundPreset = allUserSoundPresets
+    /*globalViewModel_!!.currentAllOriginalSoundPreset = allOriginalSoundPresets
+    globalViewModel_!!.currentAllUserSoundPreset = allUserSoundPresets*/
 
     soundMediaPlayerService.setVolumes(sliderVolumes!!)
     soundMediaPlayerService.adjustMediaPlayerVolumes()
@@ -1406,11 +1458,8 @@ fun getAssociatedPresetWithSameVolume(
     if(!foundSimilarVolumes){
         showAssociatedSoundWithSameVolume.value = false
         associatedPreset = null
-        //TODO get original preset with same volume
     }
 }
-
-//TODO get original preset with same volume
 
 @Composable
 fun AssociatedPresetWithSameVolume(
@@ -1418,24 +1467,11 @@ fun AssociatedPresetWithSameVolume(
     presetData: PresetData,
     soundMediaPlayerService: SoundMediaPlayerService,
 ){
-    var clicked by rememberSaveable{ mutableStateOf(false) }
+    val clicked by rememberSaveable{ mutableStateOf(false) }
     var cardModifier = Modifier
         .padding(bottom = 16.dp)
         .wrapContentHeight()
-        .clickable {
-            /*if(globalViewModel_!!.currentSoundPlaying != null) {
-                if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
-                    clicked = !clicked
-                    changePreset(
-                        presetData,
-                        soundMediaPlayerService
-                    ) {
-                        //associatedPreset = null
-                        //showAssociatedSoundWithSameVolume.value = false
-                    }
-                }
-            }*/
-        }
+        .clickable {}
         .wrapContentWidth()
 
     if(clicked){

@@ -679,7 +679,8 @@ fun CreateTab(
                 navController = navController,
                 globalViewModel = globalViewModel,
                 scope = scope,
-                state = state
+                state = state,
+                soundMediaPlayerService
             )
         }
         composable(Screen.CreatePreset.screen_route) {
@@ -717,7 +718,8 @@ fun CreateTab(
                 bedtimeStory.data,
                 globalViewModel = globalViewModel,
                 scope = scope,
-                state = state
+                state = state,
+                generalMediaPlayerService
             )
         }
         composable(Screen.UploadBedtimeStory.screen_route) {
@@ -726,7 +728,8 @@ fun CreateTab(
                 navController = navController,
                 globalViewModel = globalViewModel,
                 scope = scope,
-                state = state
+                state = state,
+                generalMediaPlayerService
             )
         }
         composable(
@@ -815,7 +818,8 @@ fun CreateTab(
                 navController = navController,
                 globalViewModel = globalViewModel,
                 scope = scope,
-                state = state
+                state = state,
+                generalMediaPlayerService
             )
         }
         composable(Screen.RecordPrayer.screen_route) {
@@ -824,7 +828,8 @@ fun CreateTab(
                 navController = navController,
                 globalViewModel = globalViewModel,
                 scope = scope,
-                state = state
+                state = state,
+                generalMediaPlayerService
             )
         }
         composable(Screen.NameSelfLove.screen_route) {
@@ -842,7 +847,8 @@ fun CreateTab(
                 navController = navController,
                 globalViewModel = globalViewModel,
                 scope = scope,
-                state = state
+                state = state,
+                generalMediaPlayerService
             )
         }
         composable(Screen.RecordSelfLove.screen_route) {
@@ -851,7 +857,8 @@ fun CreateTab(
                 navController = navController,
                 globalViewModel = globalViewModel,
                 scope = scope,
-                state = state
+                state = state,
+                generalMediaPlayerService
             )
         }
         composable(

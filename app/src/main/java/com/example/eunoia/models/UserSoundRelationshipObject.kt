@@ -4,10 +4,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.UserSoundRelationship
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
+import java.time.LocalDateTime
 
 object UserSoundRelationshipObject {
     @Parcelize
@@ -17,6 +19,8 @@ object UserSoundRelationshipObject {
         val userSoundRelationshipSound: @RawValue SoundObject.Sound,
         val numberOfTimesPlayed: Int,
         val totalPlayTime: Long,
+        val usageTimeStamp: @RawValue List<Temporal.DateTime>?,
+        val usagePlayTimes: @RawValue List<Int>?,
     ): Parcelable {
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -28,6 +32,8 @@ object UserSoundRelationshipObject {
                 .userSoundRelationshipSound(this.userSoundRelationshipSound.data)
                 .numberOfTimesPlayed(this.numberOfTimesPlayed)
                 .totalPlayTime(this.totalPlayTime.toInt())
+                .usageTimestamps(this.usageTimeStamp)
+                .usagePlayTimes(this.usagePlayTimes)
                 .id(this.id)
                 .build()
 
@@ -38,7 +44,9 @@ object UserSoundRelationshipObject {
                     UserObject.User.from(userSoundRelationship.userSoundRelationshipOwner),
                     SoundObject.Sound.from(userSoundRelationship.userSoundRelationshipSound),
                     userSoundRelationship.numberOfTimesPlayed,
-                    userSoundRelationship.totalPlayTime.toLong()
+                    userSoundRelationship.totalPlayTime.toLong(),
+                    userSoundRelationship.usageTimestamps,
+                    userSoundRelationship.usagePlayTimes
                 )
                 return result
             }
