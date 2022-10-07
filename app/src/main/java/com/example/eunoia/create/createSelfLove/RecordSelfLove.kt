@@ -188,6 +188,7 @@ fun createSelfLoveFromRecord(
             val selfLove = SelfLoveObject.SelfLove(
                 UUID.randomUUID().toString(),
                 UserObject.User.from(globalViewModel_!!.currentUser!!),
+                globalViewModel_!!.currentUser!!.id,
                 selfLoveName,
                 selfLoveShortDescription,
                 selfLoveLongDescription,

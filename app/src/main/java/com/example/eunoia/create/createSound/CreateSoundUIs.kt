@@ -420,10 +420,10 @@ fun Sliders(){
                     val interactionSource = remember { MutableInteractionSource() }
                     if (volume != null) {
                         Slider(
-                            value = volume.value.toFloat(),
+                            value = sliderVolumes[index]!!.value.toFloat(),
                             valueRange = 0f..10f,
                             onValueChange = {
-                                volume.value = it.toInt()
+                                sliderVolumes[index]!!.value = it.toInt()
                                 adjustMediaPlayerVolumes(index, fileMediaPlayers[index]!!)
                             },
                             steps = 10,

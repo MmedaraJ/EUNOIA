@@ -13,10 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
-import com.amplifyframework.datastore.generated.model.ChapterPageData
-import com.example.eunoia.backend.ChapterPageBackend
-import com.example.eunoia.models.BedtimeStoryChapterObject
-import com.example.eunoia.models.ChapterPageObject
+import com.amplifyframework.datastore.generated.model.PageData
+import com.example.eunoia.backend.PageBackend
+import com.example.eunoia.models.PageObject
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -28,7 +27,7 @@ import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-var chapterPages = mutableListOf<MutableList<MutableState<ChapterPageData>?>>()
+var chapterPages = mutableListOf<MutableList<MutableState<PageData>?>>()
 private var TAG = "Chapter Pages"
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -47,7 +46,7 @@ fun BedtimeStoryChapterScreenUI(
         }
     }
     var numberOfPages by rememberSaveable { mutableStateOf(chapterPages[chapterIndex].size) }
-    ChapterPageBackend.queryChapterPageBasedOnChapter(bedtimeStoryChapterData) {
+    PageBackend.queryPageBasedOnChapter(bedtimeStoryChapterData) {
         for (i in chapterPages[chapterIndex].size until it.size) {
             chapterPages[chapterIndex].add(mutableStateOf(it[i]))
         }
@@ -149,19 +148,19 @@ fun BedtimeStoryChapterScreenUI(
                 textType = "morge",
                 maxWidthFraction = 1F
             ) {
-                Log.i(TAG, "Chapter ==>> $bedtimeStoryChapterData")
-                val page = ChapterPageObject.ChapterPage(
+                Log.i(TAG, "Chapter id isz ${bedtimeStoryChapterData.id}")
+                val page = PageObject.Page(
                     UUID.randomUUID().toString(),
                     "Page ${chapterPages[chapterIndex].size + 1}",
                     chapterPages[chapterIndex].size + 1,
                     listOf(),
                     listOf(),
-                    BedtimeStoryChapterObject.BedtimeStoryChapter.from(bedtimeStoryChapterData),
+                    //BedtimeStoryChapterObject.BedtimeStoryChapter.from(bedtimeStoryChapterData),
+                    bedtimeStoryChapterData.id
                 )
-                ChapterPageBackend.createChapterPage(page){
+                PageBackend.createPage(page){
                     chapterPages[chapterIndex].add(mutableStateOf(it))
                     numberOfPages ++
-                    Log.i(TAG, "Owner bts username ==>> ${it.bedtimeStoryInfoChapter.bedtimeStoryInfo.bedtimeStoryOwner}")
                 }
                 Thread.sleep(1_000)
             }
@@ -210,10 +209,10 @@ fun BedtimeStoryChapterScreenUI(
     }
 }
 
-fun clearChapterPagesList(){
+fun clearPagesList(){
     chapterPages.clear()
 }
 
-fun navigateToChapterPageScreen(navController: NavController, chapterPageData: ChapterPageData, pageIndex: Int){
-    navController.navigate("${Screen.ChapterPageScreen.screen_route}/chapterPage=${ChapterPageObject.ChapterPage.from(chapterPageData)}/$pageIndex")
+fun navigateToPageScreen(navController: NavController, pageData: PageData, pageIndex: Int){
+    navController.navigate("${Screen.PageScreen.screen_route}/chapterPage=${PageObject.Page.from(pageData)}/$pageIndex")
 }

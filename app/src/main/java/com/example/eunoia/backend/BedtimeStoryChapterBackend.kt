@@ -67,4 +67,36 @@ object BedtimeStoryChapterBackend {
             )
         }
     }
+
+    fun queryBedtimeStoryChapterBasedOnId(
+        bedtimeStoryDataId: String,
+        completed: (bedtimeStoryChapters: List<BedtimeStoryInfoChapterData>) -> Unit
+    ) {
+        val result = mutableListOf<BedtimeStoryInfoChapterData>()
+        scope.launch {
+            Amplify.API.query(
+                ModelQuery.list(
+                    BedtimeStoryInfoChapterData::class.java,
+                    BedtimeStoryInfoChapterData.ID.eq(bedtimeStoryDataId)
+                ),
+                { response ->
+                    if(response.hasErrors()){
+                        Log.e(TAG, response.errors.first().message)
+                    }
+                    else{
+                        if(response.hasData()) {
+                            for (bedtimeStory in response.data) {
+                                if(bedtimeStory != null) {
+                                    Log.i(TAG, bedtimeStory.toString())
+                                    result.add(bedtimeStory)
+                                }
+                            }
+                            completed(result)
+                        }
+                    }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
 }

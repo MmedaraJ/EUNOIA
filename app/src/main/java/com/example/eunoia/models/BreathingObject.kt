@@ -14,6 +14,7 @@ object BreathingObject{
     data class Breathing(
         val id: String,
         val breathingOwner: @RawValue UserObject.User,
+        val breathingOwnerId: String?,
         val displayName: String,
     ): Parcelable {
         override fun toString(): String {
@@ -24,6 +25,7 @@ object BreathingObject{
             get() = BreathingData.builder()
                 .breathingOwner(this.breathingOwner.data)
                 .displayName(this.displayName)
+                .breathingOwnerId(this.breathingOwnerId)
                 .id(this.id)
                 .build()
 
@@ -32,6 +34,7 @@ object BreathingObject{
                 val result = Breathing(
                     breathingData.id,
                     UserObject.User.from(breathingData.breathingOwner),
+                    breathingData.breathingOwnerId,
                     breathingData.displayName
                 )
                 return result

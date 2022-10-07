@@ -120,6 +120,14 @@ class SoundMediaPlayerService:
         mediaPlayersAreLooping = !mediaPlayersAreLooping
     }
 
+    fun loopMediaPlayers(){
+        for(mediaPlayer in mediaPlayers) {
+            mediaPlayer!!.isLooping = true
+
+        }
+        mediaPlayersAreLooping = true
+    }
+
     fun setAudioUris(uris: MutableList<Uri?>){
         audioUris.clear()
         for(audioUri in uris){

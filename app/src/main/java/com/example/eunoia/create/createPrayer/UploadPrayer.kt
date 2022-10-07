@@ -184,6 +184,7 @@ fun createPrayerFromUpload(
             val prayer = PrayerObject.Prayer(
                 UUID.randomUUID().toString(),
                 UserObject.User.from(globalViewModel_!!.currentUser!!),
+                globalViewModel_!!.currentUser!!.id,
                 prayerName,
                 prayerShortDescription,
                 prayerLongDescription,

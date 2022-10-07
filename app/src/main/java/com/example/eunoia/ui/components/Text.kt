@@ -1,6 +1,8 @@
 package com.example.eunoia.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.material.MaterialTheme
@@ -54,6 +56,7 @@ fun NormalText(text: String, color: Color, fontSize: Int, xOffset: Int, yOffset:
             fontSize = fontSize.sp,
             modifier = Modifier
                 .offset(x = xOffset.dp, y = yOffset.dp)
+                //.widthIn(min = fontSize.dp)
         )
     }
 }

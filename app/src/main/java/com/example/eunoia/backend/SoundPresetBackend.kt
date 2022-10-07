@@ -4,21 +4,18 @@ import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
-import com.amplifyframework.datastore.generated.model.PresetData
-import com.amplifyframework.datastore.generated.model.PresetPublicityStatus
-import com.amplifyframework.datastore.generated.model.SoundData
-import com.amplifyframework.datastore.generated.model.UserData
-import com.example.eunoia.models.PresetObject
+import com.amplifyframework.datastore.generated.model.*
+import com.example.eunoia.models.SoundPresetObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-object PresetBackend {
-    private const val TAG = "PresetBackend"
+object SoundPresetBackend {
+    private const val TAG = "SoundPresetBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
-    fun createPreset(preset: PresetObject.Preset, completed: (presetData: PresetData) -> Unit){
+    fun createSoundPreset(preset: SoundPresetObject.SoundPreset, completed: (presetData: SoundPresetData) -> Unit){
         scope.launch{
             Amplify.API.mutate(
                 ModelMutation.create(preset.data),
@@ -36,18 +33,18 @@ object PresetBackend {
         }
     }
 
-    fun queryPresetsWithCommentsBasedOnSound(
+    fun querySoundPresetsWithCommentsBasedOnSound(
         sound: SoundData,
-        completed: (presets: MutableList<PresetData>) -> Unit
+        completed: (presets: MutableList<SoundPresetData>) -> Unit
     ) {
         scope.launch {
-            val presetList = mutableListOf<PresetData>()
+            val presetList = mutableListOf<SoundPresetData>()
             Amplify.API.query(
                 ModelQuery.list(
-                    PresetData::class.java,
-                    PresetData.SOUND.eq(sound.id)
-                        //.and(PresetData.PRESET_OWNER.ne(globalViewModel_!!.currentUser!!.id))
-                        .and(PresetData.PUBLICITY_STATUS.eq(PresetPublicityStatus.PUBLIC))
+                    SoundPresetData::class.java,
+                    SoundPresetData.SOUND_ID.eq(sound.id)
+                        //.and(SoundPresetData.PRESET_OWNER.ne(globalViewModel_!!.currentUser!!.id))
+                        .and(SoundPresetData.PUBLICITY_STATUS.eq(SoundPresetPublicityStatus.PUBLIC))
                 ),
                 { response ->
                     if(response.hasErrors()){
@@ -70,19 +67,19 @@ object PresetBackend {
         }
     }
 
-    fun queryPublicPresetsBasedOnDisplayNameAndSound(
+    fun queryPublicSoundPresetsBasedOnDisplayNameAndSound(
         presetName: String,
         soundData: SoundData,
-        completed: (presets: MutableList<PresetData>) -> Unit
+        completed: (presets: MutableList<SoundPresetData>) -> Unit
     ) {
         scope.launch {
-            val presetList = mutableListOf<PresetData>()
+            val presetList = mutableListOf<SoundPresetData>()
             Amplify.API.query(
                 ModelQuery.list(
-                    PresetData::class.java,
-                    PresetData.KEY.eq(presetName)
-                        .and(PresetData.SOUND.eq(soundData.id))
-                        .and(PresetData.PUBLICITY_STATUS.eq(PresetPublicityStatus.PUBLIC))
+                    SoundPresetData::class.java,
+                    SoundPresetData.KEY.eq(presetName)
+                        .and(SoundPresetData.SOUND_ID.eq(soundData.id))
+                        .and(SoundPresetData.PUBLICITY_STATUS.eq(SoundPresetPublicityStatus.PUBLIC))
                 ),
                 { response ->
                     if(response.hasErrors()){
@@ -105,18 +102,18 @@ object PresetBackend {
         }
     }
 
-    fun queryUserPresetsBasedOnSound(
+    fun queryUserSoundPresetsBasedOnSound(
         sound: SoundData,
         user: UserData,
-        completed: (presets: MutableList<PresetData>) -> Unit
+        completed: (presets: MutableList<SoundPresetData>) -> Unit
     ) {
         scope.launch {
-            val presetList = mutableListOf<PresetData>()
+            val presetList = mutableListOf<SoundPresetData>()
             Amplify.API.query(
                 ModelQuery.list(
-                    PresetData::class.java,
-                    PresetData.SOUND.eq(sound.id)
-                        .and(PresetData.PRESET_OWNER.eq(user.id))
+                    SoundPresetData::class.java,
+                    SoundPresetData.SOUND_ID.eq(sound.id)
+                        .and(SoundPresetData.PRESET_OWNER.eq(user.id))
                 ),
                 { response ->
                     if(response.hasErrors()){
@@ -139,13 +136,13 @@ object PresetBackend {
         }
     }
 
-    fun getPresetWithID(id: String, completed: (preset: PresetData) -> Unit){
+    fun getSoundPresetWithID(id: String, completed: (preset: SoundPresetData) -> Unit){
         scope.launch {
             Amplify.API.query(
-                ModelQuery.get(PresetData::class.java, id),
+                ModelQuery.get(SoundPresetData::class.java, id),
                 { response ->
                     if(response.hasData()) {
-                        Log.i(TAG, "Query results = ${(response.data as PresetData).id}")
+                        Log.i(TAG, "Query results = ${(response.data as SoundPresetData).id}")
                         completed(response.data)
                     }
                 },

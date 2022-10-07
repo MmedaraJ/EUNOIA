@@ -62,7 +62,7 @@ var displayName = ""
 fun Mixer(
     sound: SoundData,
     context: Context,
-    preset: PresetData,
+    preset: SoundPresetData,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     soundMediaPlayerService: SoundMediaPlayerService,
@@ -334,7 +334,7 @@ fun Sliders(
 @Composable
 fun Controls(
     sound: SoundData,
-    preset: PresetData,
+    preset: SoundPresetData,
     applicationContext: Context,
     showAddIcon: Boolean,
     scope: CoroutineScope,
@@ -1328,7 +1328,7 @@ fun CommentsUI(
 
 @Composable
 fun PresetsUI(
-    allPresets: MutableSet<PresetData>,
+    allPresets: MutableSet<SoundPresetData>,
     soundData: SoundData,
     soundMediaPlayerService: SoundMediaPlayerService
 ){
@@ -1407,7 +1407,7 @@ fun PresetsUI(
 }
 
 fun changePreset(
-    preset: PresetData,
+    preset: SoundPresetData,
     soundMediaPlayerService: SoundMediaPlayerService,
     completed: () -> Unit
 ){
@@ -1427,10 +1427,10 @@ fun changePreset(
 }
 
 fun getAssociatedPresetWithSameVolume(
-    otherPresetsThatOriginatedFromThisSound: MutableList<PresetData>,
+    otherPresetsThatOriginatedFromThisSound: MutableList<SoundPresetData>,
 ){
     var foundSimilarVolumes by mutableStateOf(false)
-    var presetData:  PresetData? = null
+    var presetData:  SoundPresetData? = null
     for(preset in otherPresetsThatOriginatedFromThisSound){
         var sameVolume = 0
         for (i in sliderVolumes!!.indices){
@@ -1464,7 +1464,7 @@ fun getAssociatedPresetWithSameVolume(
 @Composable
 fun AssociatedPresetWithSameVolume(
     soundData: SoundData,
-    presetData: PresetData,
+    presetData: SoundPresetData,
     soundMediaPlayerService: SoundMediaPlayerService,
 ){
     val clicked by rememberSaveable{ mutableStateOf(false) }

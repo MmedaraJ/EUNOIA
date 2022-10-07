@@ -2,7 +2,7 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "eunoia26cecbc6e_identitypool_6cecbc6e",
-    "allowUnauthenticatedIdentities": true,
+    "allowUnauthenticatedIdentities": false,
     "resourceNameTruncated": "eunoia6cecbc6e",
     "userPoolName": "eunoia26cecbc6e_userpool_6cecbc6e",
     "autoVerifiedAttributes": [
@@ -36,12 +36,8 @@
     "sharedId": "6cecbc6e",
     "resourceName": "eunoia26cecbc6e",
     "authSelections": "identityPoolAndUserPool",
-    "useDefault": "defaultSocial",
-    "hostedUI": true,
-    "hostedUIDomainName": "eunoia26cecbc6e-6cecbc6e",
-    "authProvidersUserPool": [],
-    "hostedUIProviderMeta": "[]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"eunoia://\"],\"LogoutURLs\":[\"eunoia://\"]}",
+    "useDefault": "default",
+    "hostedUI": false,
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
@@ -59,6 +55,7 @@
       ]
     },
     "breakCircularDependency": true,
-    "dependsOn": []
+    "dependsOn": [],
+    "authProviders": []
   }
 }

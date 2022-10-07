@@ -4,8 +4,8 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.CountDownTimer
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
@@ -17,15 +17,23 @@ import com.example.eunoia.utils.BedtimeStoryTimer
 import com.example.eunoia.utils.GeneralPlaytimeTimer
 import com.example.eunoia.utils.PrayerTimer
 import com.example.eunoia.utils.SelfLoveTimer
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 class GlobalViewModel: ViewModel(){
+    //general media player
+    private val _generalMediaPlayerIsCompleted = MutableLiveData(false)
+    var generalMediaPlayerIsCompleted: LiveData<Boolean> = _generalMediaPlayerIsCompleted
+
+    fun setGeneralMediaPlayerIsCompleted(newValue : Boolean) {
+        _generalMediaPlayerIsCompleted.postValue(newValue)
+    }
+
     //sound
     var currentSoundPlaying by mutableStateOf<SoundData?>(null)
+    //var currentSoundPlaying: MutableLiveData<SoundData?> = MutableLiveData(null)
     var isCurrentSoundPlaying by mutableStateOf(false)
-    var currentSoundPlayingPreset by mutableStateOf<PresetData?>(null)
-    var currentAllOriginalSoundPreset by mutableStateOf<MutableSet<PresetData>?>(null)
-    var currentAllUserSoundPreset by mutableStateOf<MutableSet<PresetData>?>(null)
+    var currentSoundPlayingPreset by mutableStateOf<SoundPresetData?>(null)
+    var currentAllOriginalSoundPreset by mutableStateOf<MutableSet<SoundPresetData>?>(null)
+    var currentAllUserSoundPreset by mutableStateOf<MutableSet<SoundPresetData>?>(null)
     var currentSoundPlayingContext by mutableStateOf<Context?>(null)
     var currentSoundPlayingSliderPositions = mutableListOf<MutableState<Float>?>()
     var currentSoundPlayingUris: MutableList<Uri?>? = null
@@ -34,24 +42,33 @@ class GlobalViewModel: ViewModel(){
     var soundTimerTime by mutableStateOf(0L)
     var soundMeditationBellInterval by mutableStateOf(0)
     var soundCountDownTimer: CountDownTimer? = null
-    var soundPlayTimeTimer: CountDownTimer? = null
     var soundSliderVolumes: MutableList<Int>? = null
     var soundMeditationBellMediaPlayer: MediaPlayer? = null
     var previouslyPlayedUserSoundRelationship: UserSoundRelationship? = null
 
     //adding sound
     var currentSoundToBeAdded by mutableStateOf<SoundData?>(null)
-    var currentPresetToBeAdded by mutableStateOf<PresetData?>(null)
+    var currentPresetToBeAdded by mutableStateOf<SoundPresetData?>(null)
     var presetNameToBeCreated by mutableStateOf("")
 
-    //routine
-    var currentRoutinePlaying by mutableStateOf("")
+    /**
+     * routine
+     */
+    var currentRoutinePlaying by mutableStateOf<RoutineData?>(null)
+    var isCurrentRoutinePlaying by mutableStateOf(false)
     var routineNameToBeAdded by mutableStateOf("")
     var routineColorToBeAdded by mutableStateOf<Long?>(null)
     var routineIconToBeAdded by mutableStateOf<Int?>(null)
     var currentUsersRoutines by mutableStateOf<MutableList<UserRoutine?>?>(null)
+    var currentRoutinePlayingOrderIndex by mutableStateOf<Int?>(0)
+    var currentRoutinePlayingOrder by mutableStateOf<MutableList<String?>?>(null)
+    var currentRoutinePlayingRoutinePresets by mutableStateOf<MutableList<RoutineSoundPreset?>?>(null)
+    var currentRoutinePlayingRoutinePresetsIndex by mutableStateOf<Int?>(0)
+    var currentRoutinePlayingRoutinePrayers by mutableStateOf<MutableList<RoutinePrayer?>?>(null)
+    var currentRoutinePlayingRoutinePrayersIndex by mutableStateOf<Int?>(0)
+    var currentRoutinePlayingSoundCountDownTimer: CountDownTimer? = null
+    var currentRoutinePlayingPrayerCountDownTimer: CountDownTimer? = null
 
-    var isCurrentRoutinePlaying by mutableStateOf(false)
 
     var bottomSheetOpenFor by mutableStateOf("")
 

@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amplifyframework.datastore.generated.model.PresetData
+import com.amplifyframework.datastore.generated.model.SoundPresetData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
@@ -155,7 +155,7 @@ fun bottomSheetSoundControlPanel(
 @Composable
 fun BottomSheetSoundControls(
     sound: SoundData,
-    preset: PresetData,
+    preset: SoundPresetData,
     applicationContext: Context,
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,

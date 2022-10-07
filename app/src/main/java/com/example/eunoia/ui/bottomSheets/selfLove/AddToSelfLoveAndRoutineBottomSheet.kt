@@ -746,6 +746,7 @@ private fun newRoutineIconSelected(
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
         routineOwner = UserObject.signedInUser().value!!,
+        routineOwnerId = UserObject.signedInUser().value!!.id,
         originalName = globalViewModel_!!.routineNameToBeAdded,
         displayName = globalViewModel_!!.routineNameToBeAdded,
         numberOfSteps = 2,

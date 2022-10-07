@@ -10,6 +10,7 @@ type SoundData
     id: ID!
     soundUserDataID: ID! @index(name: "SoundsOwnedByUser", sortKeyFields: ["display_name"])
     soundOwner: UserData! @belongsTo(fields: ["soundUserDataID"])
+    soundOwnerId: String
     original_name: String!
     display_name: String!
     short_description: String
@@ -24,7 +25,6 @@ type SoundData
     approvalStatus: SoundApprovalStatus
     userSoundRelationshipsOwnedBySound: [UserSoundRelationship!] @hasMany(indexName: "UserSoundRelationshipsOwnedBySound", fields: ["id"])
     commentsOwnedBySound: [CommentData!] @hasMany(indexName: "CommentsOwnedBySound", fields: ["id"])
-    presetsOwnedBySound: [PresetData!] @hasMany(indexName: "PresetsOwnedBySound", fields: ["id"])
     users: [UserData!] @manyToMany(relationName: "UserSound")
     routines: [RoutineData!] @manyToMany(relationName: "RoutineSound")
 }
@@ -49,43 +49,46 @@ type CommentData
     id: ID!
     userDataID: ID! @index(name: "CommentsOwnedByUser", sortKeyFields: ["comment"])
     commentOwner: UserData! @belongsTo(fields: ["userDataID"])
+    commentOwnerId: String
     comment: String!
     soundID: ID! @index(name: "CommentsOwnedBySound", sortKeyFields: ["comment"])
     sound: SoundData! @belongsTo(fields: ["soundID"])
-    presetID: ID! @index(name: "CommentsOwnedByPreset", sortKeyFields: ["comment"])
-    preset: PresetData! @belongsTo(fields: ["presetID"])
+    soundId: String
+    presetID: ID! @index(name: "CommentsOwnedBySoundPreset", sortKeyFields: ["comment"])
+    preset: SoundPresetData! @belongsTo(fields: ["presetID"])
+    presetId: String
 }
 
-enum PresetPublicityStatus{
+enum SoundPresetPublicityStatus{
     PUBLIC
     PRIVATE
 }
 
-type PresetData
-@model (queries: {get: "getPresetData", list: "listPresetDatas" })
+type SoundPresetData
+@model (queries: {get: "getSoundPresetData", list: "listSoundPresetDatas" })
 @auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
     id: ID!
-    presetUserDataID: ID! @index(name: "PresetsOwnedByUser", sortKeyFields: ["id"])
+    presetUserDataID: ID! @index(name: "SoundPresetsOwnedByUser", sortKeyFields: ["id"])
     presetOwner: UserData! @belongsTo(fields: ["presetUserDataID"])
+    presetOwnerId: String
     key: String!
     volumes: [Int!]!
-    soundID: ID! @index(name: "PresetsOwnedBySound", sortKeyFields: ["id"])
-    sound: SoundData! @belongsTo(fields: ["soundID"])
-    publicityStatus: PresetPublicityStatus
-    commentsOwnedByPreset: [CommentData!] @hasMany(indexName: "CommentsOwnedByPreset", fields: ["id"])
-    userPresetRelationshipsOwnedByPreset: [UserPresetRelationship!] @hasMany(indexName: "UserPresetRelationshipsOwnedByPreset", fields: ["id"])
-    users: [UserData!] @manyToMany(relationName: "UserPreset")
-    routines: [RoutineData!] @manyToMany(relationName: "RoutinePreset")
+    soundId: String
+    publicityStatus: SoundPresetPublicityStatus
+    commentsOwnedBySoundPreset: [CommentData!] @hasMany(indexName: "CommentsOwnedBySoundPreset", fields: ["id"])
+    userSoundPresetRelationshipsOwnedBySoundPreset: [UserSoundPresetRelationship!] @hasMany(indexName: "UserSoundPresetRelationshipsOwnedBySoundPreset", fields: ["id"])
+    users: [UserData!] @manyToMany(relationName: "UserSoundPreset")
+    routines: [RoutineData!] @manyToMany(relationName: "RoutineSoundPreset")
 }
 
-type UserPresetRelationship
-@model (queries: { get: "getUserPresetRelationship", list: "listUserPresetRelationships" })
+type UserSoundPresetRelationship
+@model (queries: { get: "getUserSoundPresetRelationship", list: "listUserSoundPresetRelationships" })
 @auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
     id: ID!
-    userPresetRelationshipUserDataID: ID! @index(name: "UserPresetRelationshipsOwnedByUser", sortKeyFields: ["id"])
-    userPresetRelationshipOwner: UserData! @belongsTo(fields: ["userPresetRelationshipUserDataID"])
-    userPresetRelationshipPresetDataID: ID! @index(name: "UserPresetRelationshipsOwnedByPreset", sortKeyFields: ["id"])
-    userPresetRelationshipPreset: PresetData! @belongsTo(fields: ["userPresetRelationshipPresetDataID"])
+    userSoundPresetRelationshipUserDataID: ID! @index(name: "UserSoundPresetRelationshipsOwnedByUser", sortKeyFields: ["id"])
+    userSoundPresetRelationshipOwner: UserData! @belongsTo(fields: ["userSoundPresetRelationshipUserDataID"])
+    userSoundPresetRelationshipSoundSoundPresetDataID: ID! @index(name: "UserSoundPresetRelationshipsOwnedBySoundPreset", sortKeyFields: ["id"])
+    userSoundPresetRelationshipSoundPreset: SoundPresetData! @belongsTo(fields: ["userSoundPresetRelationshipSoundSoundPresetDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
 }
@@ -96,6 +99,7 @@ type RoutineData
     id: ID!
     userDataID: ID! @index(name: "RoutinesOwnedByUser", sortKeyFields: ["displayName"])
     routineOwner: UserData! @belongsTo(fields: ["userDataID"])
+    routineOwnerId: String
     originalName: String
     displayName: String
     numberOfSteps: Int
@@ -124,7 +128,7 @@ type RoutineData
     currentPrayerContinuePlayingTime: Int
     userRoutineRelationshipsOwnedByRoutine: [UserRoutineRelationship!] @hasMany(indexName: "UserRoutineRelationshipsOwnedByRoutine", fields: ["id"])
     sounds: [SoundData!] @manyToMany(relationName: "RoutineSound")
-    presets: [PresetData!] @manyToMany(relationName: "RoutinePreset")
+    presets: [SoundPresetData!] @manyToMany(relationName: "RoutineSoundPreset")
     prayers: [PrayerData!] @manyToMany(relationName: "RoutinePrayer")
     stretches: [StretchData!] @manyToMany(relationName: "RoutineStretch")
     breathing: [BreathingData!] @manyToMany(relationName: "RoutineBreathing")
@@ -168,6 +172,7 @@ type BedtimeStoryInfoData
     id: ID!
     bedtimeStoryUserDataID: ID! @index(name: "BedtimeStoriesOwnedByUser", sortKeyFields: ["displayName"])
     bedtimeStoryOwner: UserData! @belongsTo(fields: ["bedtimeStoryUserDataID"])
+    bedtimeStoryOwnerId: String
     displayName: String!
     shortDescription: String
     longDescription: String
@@ -205,19 +210,18 @@ type BedtimeStoryInfoChapterData
     chapterNumber: Int!
     bedtimeStoryInfoDataID: ID! @index(name: "BedtimeStoryInfoChapters", sortKeyFields: ["id"])
     bedtimeStoryInfo: BedtimeStoryInfoData! @belongsTo(fields: ["bedtimeStoryInfoDataID"])
-    pages: [ChapterPageData!] @hasMany(indexName: "ChapterPages", fields: ["id"])
+    bedtimeStoryInfoId: String
 }
 
-type ChapterPageData
-@model (queries: { get: "getChapterPageData", list: "listChapterPageDatas" })
+type PageData
+@model (queries: { get: "getPageData", list: "listPageDatas" })
 @auth(rules:[{ allow: private, operations: [read]}, { allow: owner }]){
     id: ID!
     display_name: String!
     pageNumber: Int!
     audioKeysS3: [String!]!
     audioNames: [String!]!
-    bedtimeStoryInfoChapterDataID: ID! @index(name: "ChapterPages", sortKeyFields: ["id"])
-    bedtimeStoryInfoChapter: BedtimeStoryInfoChapterData! @belongsTo(fields: ["bedtimeStoryInfoChapterDataID"])
+    bedtimeStoryInfoChapterId: String
 }
 
 enum PrayerAudioSource{
@@ -237,6 +241,7 @@ type PrayerData
     id: ID!
     userDataID: ID! @index(name: "PrayersOwnedByUser", sortKeyFields: ["displayName"])
     prayerOwner: UserData! @belongsTo(fields: ["userDataID"])
+    prayerOwnerId: String
     displayName: String!
     shortDescription: String
     longDescription: String
@@ -283,6 +288,7 @@ type SelfLoveData
     id: ID!
     userDataID: ID! @index(name: "SelfLovesOwnedByUser", sortKeyFields: ["display_name"])
     selfLoveOwner: UserData! @belongsTo(fields: ["userDataID"])
+    selfLoveOwnerId: String
     display_name: String!
     shortDescription: String
     longDescription: String
@@ -317,6 +323,7 @@ type StretchData
     id: ID!
     userDataID: ID! @index(name: "StretchesOwnedByUser", sortKeyFields: ["display_name"])
     stretchOwner: UserData! @belongsTo(fields: ["userDataID"])
+    stretchOwnerId: String
     display_name: String!
     routines: [RoutineData!] @manyToMany(relationName: "RoutineStretch")
     users: [UserData!] @manyToMany(relationName: "UserStretch")
@@ -328,6 +335,7 @@ type BreathingData
     id: ID!
     userDataID: ID! @index(name: "BreathingsOwnedByUser", sortKeyFields: ["display_name"])
     breathingOwner: UserData! @belongsTo(fields: ["userDataID"])
+    breathingOwnerId: String
     display_name: String!
     routines: [RoutineData!] @manyToMany(relationName: "RoutineBreathing")
     users: [UserData!] @manyToMany(relationName: "UserBreathing")
@@ -356,11 +364,11 @@ type UserData
     userPrayerRelationshipsOwnedByUser: [UserPrayerRelationship!] @hasMany(indexName: "UserPrayerRelationshipsOwnedByUser", fields: ["id"])
     userSelfLoveRelationshipsOwnedByUser: [UserSelfLoveRelationship!] @hasMany(indexName: "UserSelfLoveRelationshipsOwnedByUser", fields: ["id"])
     userRoutineRelationshipsOwnedByUser: [UserRoutineRelationship!] @hasMany(indexName: "UserRoutineRelationshipsOwnedByUser", fields: ["id"])
-    userPresetRelationshipsOwnedByUser: [UserPresetRelationship!] @hasMany(indexName: "UserPresetRelationshipsOwnedByUser", fields: ["id"])
+    userSoundPresetRelationshipsOwnedByUser: [UserSoundPresetRelationship!] @hasMany(indexName: "UserSoundPresetRelationshipsOwnedByUser", fields: ["id"])
     soundsOwnedByUser: [SoundData!] @hasMany(indexName: "SoundsOwnedByUser", fields: ["id"])
     sounds: [SoundData!] @manyToMany(relationName: "UserSound")
-    presetsOwnedByUser: [PresetData!] @hasMany(indexName: "PresetsOwnedByUser", fields: ["id"])
-    presets: [PresetData!] @manyToMany(relationName: "UserPreset")
+    presetsOwnedByUser: [SoundPresetData!] @hasMany(indexName: "SoundPresetsOwnedByUser", fields: ["id"])
+    presets: [SoundPresetData!] @manyToMany(relationName: "UserSoundPreset")
     commentsOwnedByUser: [CommentData!] @hasMany(indexName: "CommentsOwnedByUser", fields: ["id"])
     routinesOwnedByUser: [RoutineData!] @hasMany(indexName: "RoutinesOwnedByUser", fields: ["id"])
     routines: [RoutineData!] @manyToMany(relationName: "UserRoutine")

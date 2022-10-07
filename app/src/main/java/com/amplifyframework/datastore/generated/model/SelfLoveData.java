@@ -31,6 +31,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class SelfLoveData implements Model {
   public static final QueryField ID = field("SelfLoveData", "id");
   public static final QueryField SELF_LOVE_OWNER = field("SelfLoveData", "userDataID");
+  public static final QueryField SELF_LOVE_OWNER_ID = field("SelfLoveData", "selfLoveOwnerId");
   public static final QueryField DISPLAY_NAME = field("SelfLoveData", "display_name");
   public static final QueryField SHORT_DESCRIPTION = field("SelfLoveData", "shortDescription");
   public static final QueryField LONG_DESCRIPTION = field("SelfLoveData", "longDescription");
@@ -44,6 +45,7 @@ public final class SelfLoveData implements Model {
   public static final QueryField APPROVAL_STATUS = field("SelfLoveData", "approvalStatus");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData selfLoveOwner;
+  private final @ModelField(targetType="String") String selfLoveOwnerId;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="String") String shortDescription;
   private final @ModelField(targetType="String") String longDescription;
@@ -66,6 +68,10 @@ public final class SelfLoveData implements Model {
   
   public UserData getSelfLoveOwner() {
       return selfLoveOwner;
+  }
+  
+  public String getSelfLoveOwnerId() {
+      return selfLoveOwnerId;
   }
   
   public String getDisplayName() {
@@ -132,9 +138,10 @@ public final class SelfLoveData implements Model {
       return updatedAt;
   }
   
-  private SelfLoveData(String id, UserData selfLoveOwner, String display_name, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
+  private SelfLoveData(String id, UserData selfLoveOwner, String selfLoveOwnerId, String display_name, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
     this.id = id;
     this.selfLoveOwner = selfLoveOwner;
+    this.selfLoveOwnerId = selfLoveOwnerId;
     this.display_name = display_name;
     this.shortDescription = shortDescription;
     this.longDescription = longDescription;
@@ -158,6 +165,7 @@ public final class SelfLoveData implements Model {
       SelfLoveData selfLoveData = (SelfLoveData) obj;
       return ObjectsCompat.equals(getId(), selfLoveData.getId()) &&
               ObjectsCompat.equals(getSelfLoveOwner(), selfLoveData.getSelfLoveOwner()) &&
+              ObjectsCompat.equals(getSelfLoveOwnerId(), selfLoveData.getSelfLoveOwnerId()) &&
               ObjectsCompat.equals(getDisplayName(), selfLoveData.getDisplayName()) &&
               ObjectsCompat.equals(getShortDescription(), selfLoveData.getShortDescription()) &&
               ObjectsCompat.equals(getLongDescription(), selfLoveData.getLongDescription()) &&
@@ -179,6 +187,7 @@ public final class SelfLoveData implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getSelfLoveOwner())
+      .append(getSelfLoveOwnerId())
       .append(getDisplayName())
       .append(getShortDescription())
       .append(getLongDescription())
@@ -202,6 +211,7 @@ public final class SelfLoveData implements Model {
       .append("SelfLoveData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("selfLoveOwner=" + String.valueOf(getSelfLoveOwner()) + ", ")
+      .append("selfLoveOwnerId=" + String.valueOf(getSelfLoveOwnerId()) + ", ")
       .append("display_name=" + String.valueOf(getDisplayName()) + ", ")
       .append("shortDescription=" + String.valueOf(getShortDescription()) + ", ")
       .append("longDescription=" + String.valueOf(getLongDescription()) + ", ")
@@ -245,6 +255,7 @@ public final class SelfLoveData implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -252,6 +263,7 @@ public final class SelfLoveData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       selfLoveOwner,
+      selfLoveOwnerId,
       display_name,
       shortDescription,
       longDescription,
@@ -297,6 +309,7 @@ public final class SelfLoveData implements Model {
   public interface BuildStep {
     SelfLoveData build();
     BuildStep id(String id);
+    BuildStep selfLoveOwnerId(String selfLoveOwnerId);
     BuildStep shortDescription(String shortDescription);
     BuildStep longDescription(String longDescription);
     BuildStep lyrics(List<String> lyrics);
@@ -314,6 +327,7 @@ public final class SelfLoveData implements Model {
     private Integer icon;
     private Integer fullPlayTime;
     private Boolean visibleToOthers;
+    private String selfLoveOwnerId;
     private String shortDescription;
     private String longDescription;
     private List<String> lyrics;
@@ -327,6 +341,7 @@ public final class SelfLoveData implements Model {
         return new SelfLoveData(
           id,
           selfLoveOwner,
+          selfLoveOwnerId,
           display_name,
           shortDescription,
           longDescription,
@@ -383,6 +398,12 @@ public final class SelfLoveData implements Model {
     }
     
     @Override
+     public BuildStep selfLoveOwnerId(String selfLoveOwnerId) {
+        this.selfLoveOwnerId = selfLoveOwnerId;
+        return this;
+    }
+    
+    @Override
      public BuildStep shortDescription(String shortDescription) {
         this.shortDescription = shortDescription;
         return this;
@@ -430,7 +451,7 @@ public final class SelfLoveData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData selfLoveOwner, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
+    private CopyOfBuilder(String id, UserData selfLoveOwner, String selfLoveOwnerId, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
       super.id(id);
       super.selfLoveOwner(selfLoveOwner)
         .displayName(displayName)
@@ -438,6 +459,7 @@ public final class SelfLoveData implements Model {
         .icon(icon)
         .fullPlayTime(fullPlayTime)
         .visibleToOthers(visibleToOthers)
+        .selfLoveOwnerId(selfLoveOwnerId)
         .shortDescription(shortDescription)
         .longDescription(longDescription)
         .lyrics(lyrics)
@@ -474,6 +496,11 @@ public final class SelfLoveData implements Model {
     @Override
      public CopyOfBuilder visibleToOthers(Boolean visibleToOthers) {
       return (CopyOfBuilder) super.visibleToOthers(visibleToOthers);
+    }
+    
+    @Override
+     public CopyOfBuilder selfLoveOwnerId(String selfLoveOwnerId) {
+      return (CopyOfBuilder) super.selfLoveOwnerId(selfLoveOwnerId);
     }
     
     @Override

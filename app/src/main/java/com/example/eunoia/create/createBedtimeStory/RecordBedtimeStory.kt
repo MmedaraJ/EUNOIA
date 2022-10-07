@@ -153,6 +153,7 @@ fun RecordBedtimeStoryUI(
                     "Chapter ${bedtimeStoryChapters.size + 1}",
                     bedtimeStoryChapters.size + 1,
                     BedtimeStoryObject.BedtimeStory.from(bedtimeStoryData),
+                    bedtimeStoryData.id
                 )
                 BedtimeStoryChapterBackend.createBedtimeStoryInfoChapter(chapter){
                     bedtimeStoryChapters.add(mutableStateOf(it))

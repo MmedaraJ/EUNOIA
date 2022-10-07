@@ -13,7 +13,8 @@ object StretchObject{
     @Parcelize
     data class Stretch(
         val id: String,
-        val stretchOwner: @RawValue UserObject.User,
+        val stretchOwner: @RawValue UserObject.User?,
+        val stretchOwnerId: String?,
         val displayName: String,
     ): Parcelable {
         override fun toString(): String {
@@ -22,8 +23,9 @@ object StretchObject{
 
         val data: StretchData
             get() = StretchData.builder()
-                .stretchOwner(this.stretchOwner.data)
+                .stretchOwner(this.stretchOwner!!.data)
                 .displayName(this.displayName)
+                .stretchOwnerId(this.stretchOwnerId)
                 .id(this.id)
                 .build()
 
@@ -32,6 +34,7 @@ object StretchObject{
                 val result = Stretch(
                     stretchData.id,
                     UserObject.User.from(stretchData.stretchOwner),
+                    stretchData.stretchOwnerId,
                     stretchData.displayName
                 )
                 return result

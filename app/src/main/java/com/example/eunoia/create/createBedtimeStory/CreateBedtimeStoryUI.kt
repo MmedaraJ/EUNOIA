@@ -9,7 +9,6 @@ import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,20 +16,20 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ResetTv
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
-import com.amplifyframework.datastore.generated.model.ChapterPageData
+import com.amplifyframework.datastore.generated.model.PageData
 import com.example.eunoia.R
+import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.create.createSound.*
 import com.example.eunoia.ui.components.CustomizableButton
 import com.example.eunoia.ui.components.CustomizableLRButton
@@ -48,19 +47,28 @@ fun ChapterBlock(
     chapterData: BedtimeStoryInfoChapterData,
     index: Int
 ){
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .clickable {
-                navigateToBedtimeStoryChapterScreen(navController, chapterData, index)
-            }
-    ) {
-        val pagesText = if(chapterData.pages.size == 1) "page" else "pages"
-        WrappedPurpleBackgroundStart(
-            chapterData.displayName,
-            "${chapterData.pages.size} $pagesText"
+    var numberOfPages by rememberSaveable { mutableStateOf(false) }
+    var pages = mutableListOf<PageData>()
+    PageBackend.queryPageBasedOnChapter(chapterData){
+        pages = it.toMutableList()
+        numberOfPages = true
+    }
+
+    if(numberOfPages) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .clickable {
+                    navigateToBedtimeStoryChapterScreen(navController, chapterData, index)
+                }
         ) {
+            val pagesText = if (pages.size == 1) "page" else "pages"
+            WrappedPurpleBackgroundStart(
+                chapterData.displayName,
+                "${pages.size} $pagesText"
+            ) {
+            }
         }
     }
 }
@@ -68,7 +76,7 @@ fun ChapterBlock(
 @Composable
 fun PageBlock(
     navController: NavController,
-    pageData: ChapterPageData,
+    pageData: PageData,
     index: Int
 ){
     Column(
@@ -95,7 +103,7 @@ fun PageBlock(
             14,
             BeautyBush
         ) {
-            navigateToChapterPageScreen(navController, pageData, index)
+            navigateToPageScreen(navController, pageData, index)
         }
     }
     Spacer(modifier = Modifier.height(16.dp))

@@ -49,12 +49,12 @@ var timerTime = mutableStateOf(0L)
 var showCommentBox by mutableStateOf(false)
 var showAssociatedSoundWithSameVolume = mutableStateOf(false)
 var comment_icon_value by mutableStateOf(R.drawable.comment_icon)
-var soundPreset: PresetData? = null
+var soundPreset: SoundPresetData? = null
 var sliderPositions: MutableList<MutableState<Float>?>? = null
 var sliderVolumes: MutableList<Int>? = null
-var allOriginalSoundPresets: MutableSet<PresetData>? = null
-var allUserSoundPresets: MutableSet<PresetData>? = null
-var otherPresetsThatOriginatedFromThisSound: MutableList<PresetData>? = null
+var allOriginalSoundPresets: MutableSet<SoundPresetData>? = null
+var allUserSoundPresets: MutableSet<SoundPresetData>? = null
+var otherPresetsThatOriginatedFromThisSound: MutableList<SoundPresetData>? = null
 var commentsForThisSound = mutableListOf<CommentData>()
 var soundUris = mutableListOf<Uri?>()
 var defaultVolumes: MutableList<Int>? = null
@@ -97,8 +97,9 @@ var soundScreenBackgroundControlColor2 = arrayOf(
     mutableStateOf(White),
 )
 
-var associatedPreset: PresetData? = null
+var associatedPreset: SoundPresetData? = null
 var currentUserSoundRelationship: UserSoundRelationship? = null
+var mergedPresets = mutableSetOf<SoundPresetData>()
 
 
 @Composable
@@ -250,7 +251,6 @@ fun SoundScreen(
                         end.linkTo(parent.end, margin = 0.dp)
                     },
             ) {
-                val mergedPresets = mutableSetOf<PresetData>()
 
                 if(!allOriginalSoundPresets.isNullOrEmpty()) {
                     allOriginalSoundPresets?.let { mergedPresets.addAll(it) }
@@ -522,40 +522,42 @@ private fun getNecessaryPresets(soundData: SoundData, completed: () -> Unit){
         soundData,
         soundData.soundOwner
     ) { presets ->
-        sliderPositions = mutableListOf()
-        sliderVolumes = mutableListOf()
-        defaultVolumes = mutableListOf()
-        allOriginalSoundPresets = mutableSetOf()
-        allUserSoundPresets = mutableSetOf()
-        otherPresetsThatOriginatedFromThisSound = mutableListOf()
-        soundPreset = presets[0]
-        associatedPreset = soundPreset
+        if(presets.isNotEmpty()){
+            sliderPositions = mutableListOf()
+            sliderVolumes = mutableListOf()
+            defaultVolumes = mutableListOf()
+            allOriginalSoundPresets = mutableSetOf()
+            allUserSoundPresets = mutableSetOf()
+            otherPresetsThatOriginatedFromThisSound = mutableListOf()
+            soundPreset = presets[0]
+            associatedPreset = soundPreset
 
-        for(volume in presets[0].volumes){
-            if(
-                sliderVolumes!!.size < presets[0].volumes!!.size &&
-                defaultVolumes!!.size < presets[0].volumes!!.size &&
-                sliderPositions!!.size < presets[0].volumes!!.size
-            ) {
-                sliderVolumes!!.add(volume)
-                defaultVolumes!!.add(volume)
-                sliderPositions!!.add(mutableStateOf(volume!!.toFloat()))
+            for(volume in presets[0].volumes){
+                if(
+                    sliderVolumes!!.size < presets[0].volumes!!.size &&
+                    defaultVolumes!!.size < presets[0].volumes!!.size &&
+                    sliderPositions!!.size < presets[0].volumes!!.size
+                ) {
+                    sliderVolumes!!.add(volume)
+                    defaultVolumes!!.add(volume)
+                    sliderPositions!!.add(mutableStateOf(volume!!.toFloat()))
+                }
             }
-        }
 
-        allOriginalSoundPresets!!.addAll(presets)
-        meditationBellInterval.value = 0
-        timerTime.value = 0L
+            allOriginalSoundPresets!!.addAll(presets)
+            meditationBellInterval.value = 0
+            timerTime.value = 0L
 
-        getUserSoundPresets(
-            soundData,
-            globalViewModel_!!.currentUser!!
-        ) { presetList ->
-            if(presetList.isNotEmpty()) {
-                allUserSoundPresets!!.addAll(presetList)
+            getUserSoundPresets(
+                soundData,
+                globalViewModel_!!.currentUser!!
+            ) { presetList ->
+                if(presetList.isNotEmpty()) {
+                    allUserSoundPresets!!.addAll(presetList)
+                }
+                resetControlsUI()
+                completed()
             }
-            resetControlsUI()
-            completed()
         }
     }
 }
@@ -563,18 +565,18 @@ private fun getNecessaryPresets(soundData: SoundData, completed: () -> Unit){
 fun getUserSoundPresets(
     sound: SoundData,
     userData: UserData,
-    completed: (presets: MutableList<PresetData>) -> Unit
+    completed: (presets: MutableList<SoundPresetData>) -> Unit
 ){
-    PresetBackend.queryUserPresetsBasedOnSound(sound, userData){
+    SoundPresetBackend.queryUserSoundPresetsBasedOnSound(sound, userData){
         completed(it)
     }
 }
 
 fun getPresetsWithCommentsThatOriginatedFromThisSound(
     soundData: SoundData,
-    completed: (presetList: List<PresetData>) -> Unit
+    completed: (presetList: List<SoundPresetData>) -> Unit
 ) {
-    PresetBackend.queryPresetsWithCommentsBasedOnSound(soundData){ presets ->
+    SoundPresetBackend.querySoundPresetsWithCommentsBasedOnSound(soundData){ presets ->
         completed(presets)
     }
 }
@@ -624,7 +626,7 @@ fun checkIfPresetNameIsTaken(
     context: Context,
     completed: (bool: Boolean) -> Unit
 ) {
-    PresetBackend.queryPublicPresetsBasedOnDisplayNameAndSound(
+    SoundPresetBackend.queryPublicSoundPresetsBasedOnDisplayNameAndSound(
         newPresetName,
         soundData
     ) {
@@ -649,17 +651,18 @@ fun makePublicPresetObject(
     soundData: SoundData,
     comment: String
 ){
-    val preset = PresetObject.Preset(
+    val preset = SoundPresetObject.SoundPreset(
         UUID.randomUUID().toString(),
         UserObject.User.from(globalViewModel_!!.currentUser!!),
+        globalViewModel_!!.currentUser!!.id,
         newPresetName,
         sliderVolumes!!.toList(),
-        SoundObject.Sound.from(soundData),
-        PresetPublicityStatus.PUBLIC
+        SoundObject.Sound.from(soundData).id,
+        SoundPresetPublicityStatus.PUBLIC
     )
 
-    PresetBackend.createPreset(preset){ newPreset ->
-        UserPresetBackend.createUserPresetObject(newPreset) {
+    SoundPresetBackend.createSoundPreset(preset){ newPreset ->
+        UserSoundPresetBackend.createUserSoundPresetObject(newPreset) {
             allUserSoundPresets!!.add(newPreset)
             createSoundComment(soundData, newPreset, comment)
         }
@@ -668,15 +671,18 @@ fun makePublicPresetObject(
 
 private fun createSoundComment(
     soundData: SoundData,
-    presetData: PresetData,
+    presetData: SoundPresetData,
     newComment: String
 ){
     val comment = CommentObject.Comment(
         UUID.randomUUID().toString(),
-        UserObject.signedInUser().value!!.data,
+        UserObject.User.from(globalViewModel_!!.currentUser!!),
+        globalViewModel_!!.currentUser!!.id,
         newComment,
-        soundData,
-        presetData
+        SoundObject.Sound.from(soundData),
+        soundData.id,
+        SoundPresetObject.SoundPreset.from(presetData),
+        presetData.id
     )
     CommentBackend.createComment(comment){
         showCommentBox = false

@@ -14,6 +14,7 @@ object PrayerObject {
     data class Prayer(
         val id: String,
         val prayerOwner: @RawValue UserObject.User?,
+        val prayerOwnerId: String?,
         val displayName: String,
         val shortDescription: String?,
         val longDescription: String?,
@@ -44,6 +45,7 @@ object PrayerObject {
                 .tags(this.tags)
                 .audioSource(this.audioSource)
                 .approvalStatus(this.approvalStatus)
+                .prayerOwnerId(this.prayerOwnerId)
                 .shortDescription(this.shortDescription)
                 .longDescription(this.longDescription)
                 .id(this.id)
@@ -54,6 +56,7 @@ object PrayerObject {
                 val result = Prayer(
                     prayerData.id,
                     UserObject.User.from(prayerData.prayerOwner),
+                    prayerData.prayerOwnerId,
                     prayerData.displayName,
                     prayerData.shortDescription,
                     prayerData.longDescription,

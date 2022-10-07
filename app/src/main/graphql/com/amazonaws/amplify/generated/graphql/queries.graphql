@@ -92,6 +92,7 @@ query GetSoundData($id: ID!) {
       updatedAt
       owner
     }
+    soundOwnerId
     original_name
     display_name
     short_description
@@ -123,9 +124,12 @@ query GetSoundData($id: ID!) {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -136,9 +140,11 @@ query GetSoundData($id: ID!) {
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -202,6 +208,7 @@ query ListSoundDatas(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -353,6 +360,7 @@ query GetUserSoundRelationship($id: ID!) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -430,6 +438,7 @@ query ListUserSoundRelationships(
       userSoundRelationshipSound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -550,6 +559,7 @@ query GetCommentData($id: ID!) {
       updatedAt
       owner
     }
+    commentOwnerId
     comment
     soundID
     sound {
@@ -575,6 +585,7 @@ query GetCommentData($id: ID!) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -606,6 +617,7 @@ query GetCommentData($id: ID!) {
       updatedAt
       owner
     }
+    commentSoundId
     presetID
     preset {
       id
@@ -630,12 +642,14 @@ query GetCommentData($id: ID!) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -652,6 +666,7 @@ query GetCommentData($id: ID!) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -669,6 +684,7 @@ query GetCommentData($id: ID!) {
       updatedAt
       owner
     }
+    commentPresetId
     createdAt
     updatedAt
     owner
@@ -703,11 +719,13 @@ query ListCommentDatas(
         updatedAt
         owner
       }
+      commentOwnerId
       comment
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -724,18 +742,22 @@ query ListCommentDatas(
         updatedAt
         owner
       }
+      commentSoundId
       presetID
       preset {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
         owner
       }
+      commentPresetId
       createdAt
       updatedAt
       owner
@@ -836,6 +858,7 @@ query GetPresetData($id: ID!) {
       updatedAt
       owner
     }
+    presetOwnerId
     key
     volumes
     soundID
@@ -862,6 +885,7 @@ query GetPresetData($id: ID!) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -893,14 +917,18 @@ query GetPresetData($id: ID!) {
       updatedAt
       owner
     }
+    soundId
     publicityStatus
     commentsOwnedByPreset {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -976,12 +1004,14 @@ query ListPresetDatas(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -998,6 +1028,7 @@ query ListPresetDatas(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -1135,12 +1166,14 @@ query GetUserPresetRelationship($id: ID!) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -1157,6 +1190,7 @@ query GetUserPresetRelationship($id: ID!) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -1218,9 +1252,11 @@ query ListUserPresetRelationships(
       userPresetRelationshipPreset {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -1328,6 +1364,7 @@ query GetRoutineData($id: ID!) {
       updatedAt
       owner
     }
+    routineOwnerId
     originalName
     displayName
     numberOfSteps
@@ -1490,6 +1527,7 @@ query ListRoutineDatas(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -1668,6 +1706,7 @@ query GetUserRoutineRelationship($id: ID!) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -1770,6 +1809,7 @@ query ListUserRoutineRelationships(
       userRoutineRelationshipRoutine {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -1903,6 +1943,7 @@ query GetBedtimeStoryInfoData($id: ID!) {
       updatedAt
       owner
     }
+    bedtimeStoryOwnerId
     displayName
     shortDescription
     longDescription
@@ -1955,6 +1996,7 @@ query GetBedtimeStoryInfoData($id: ID!) {
         display_name
         chapterNumber
         bedtimeStoryInfoDataID
+        bedtimeStoryInfoId
         createdAt
         updatedAt
         owner
@@ -1999,6 +2041,7 @@ query ListBedtimeStoryInfoDatas(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -2146,6 +2189,7 @@ query GetUserBedtimeStoryInfoRelationship($id: ID!) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -2217,6 +2261,7 @@ query ListUserBedtimeStoryInfoRelationships(
       userBedtimeStoryInfoRelationshipBedtimeStoryInfo {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -2270,6 +2315,7 @@ query GetBedtimeStoryInfoChapterData($id: ID!) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -2297,6 +2343,7 @@ query GetBedtimeStoryInfoChapterData($id: ID!) {
       updatedAt
       owner
     }
+    bedtimeStoryInfoId
     pages {
       items {
         id
@@ -2305,6 +2352,7 @@ query GetBedtimeStoryInfoChapterData($id: ID!) {
         audioKeysS3
         audioNames
         bedtimeStoryInfoChapterDataID
+        bedtimeStoryInfoChapterId
         createdAt
         updatedAt
         owner
@@ -2334,6 +2382,7 @@ query ListBedtimeStoryInfoChapterDatas(
       bedtimeStoryInfo {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -2349,6 +2398,7 @@ query ListBedtimeStoryInfoChapterDatas(
         updatedAt
         owner
       }
+      bedtimeStoryInfoId
       pages {
         nextToken
       }
@@ -2375,6 +2425,7 @@ query GetChapterPageData($id: ID!) {
       bedtimeStoryInfo {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -2390,6 +2441,7 @@ query GetChapterPageData($id: ID!) {
         updatedAt
         owner
       }
+      bedtimeStoryInfoId
       pages {
         nextToken
       }
@@ -2397,6 +2449,7 @@ query GetChapterPageData($id: ID!) {
       updatedAt
       owner
     }
+    bedtimeStoryInfoChapterId
     createdAt
     updatedAt
     owner
@@ -2420,10 +2473,12 @@ query ListChapterPageDatas(
         display_name
         chapterNumber
         bedtimeStoryInfoDataID
+        bedtimeStoryInfoId
         createdAt
         updatedAt
         owner
       }
+      bedtimeStoryInfoChapterId
       createdAt
       updatedAt
       owner
@@ -2524,6 +2579,7 @@ query GetPrayerData($id: ID!) {
       updatedAt
       owner
     }
+    prayerOwnerId
     displayName
     shortDescription
     longDescription
@@ -2605,6 +2661,7 @@ query ListPrayerDatas(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -2750,6 +2807,7 @@ query GetUserPrayerRelationship($id: ID!) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -2819,6 +2877,7 @@ query ListUserPrayerRelationships(
       userPrayerRelationshipPrayer {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -2937,6 +2996,7 @@ query GetSelfLoveData($id: ID!) {
       updatedAt
       owner
     }
+    selfLoveOwnerId
     display_name
     shortDescription
     longDescription
@@ -3017,6 +3077,7 @@ query ListSelfLoveDatas(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -3161,6 +3222,7 @@ query GetUserSelfLoveRelationship($id: ID!) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -3229,6 +3291,7 @@ query ListUserSelfLoveRelationships(
       userSelfLoveRelationshipSelfLove {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -3346,6 +3409,7 @@ query GetStretchData($id: ID!) {
       updatedAt
       owner
     }
+    stretchOwnerId
     display_name
     routines {
       items {
@@ -3403,6 +3467,7 @@ query ListStretchDatas(
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -3510,6 +3575,7 @@ query GetBreathingData($id: ID!) {
       updatedAt
       owner
     }
+    breathingOwnerId
     display_name
     routines {
       items {
@@ -3567,6 +3633,7 @@ query ListBreathingDatas(
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -3682,6 +3749,7 @@ query GetUserData($id: ID!) {
       items {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -3715,9 +3783,11 @@ query GetUserData($id: ID!) {
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -3740,9 +3810,12 @@ query GetUserData($id: ID!) {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -3753,6 +3826,7 @@ query GetUserData($id: ID!) {
       items {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -3801,6 +3875,7 @@ query GetUserData($id: ID!) {
       items {
         id
         userDataID
+        stretchOwnerId
         display_name
         createdAt
         updatedAt
@@ -3823,6 +3898,7 @@ query GetUserData($id: ID!) {
       items {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -3856,6 +3932,7 @@ query GetUserData($id: ID!) {
       items {
         id
         userDataID
+        breathingOwnerId
         display_name
         createdAt
         updatedAt
@@ -3878,6 +3955,7 @@ query GetUserData($id: ID!) {
       items {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -3910,6 +3988,7 @@ query GetUserData($id: ID!) {
       items {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -4069,6 +4148,7 @@ query GetUserSound($id: ID!) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -4207,6 +4287,7 @@ query ListUserSounds(
       soundData {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -4278,6 +4359,7 @@ query GetRoutineSound($id: ID!) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -4332,6 +4414,7 @@ query GetRoutineSound($id: ID!) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -4408,6 +4491,7 @@ query ListRoutineSounds(
       soundData {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -4427,6 +4511,7 @@ query ListRoutineSounds(
       routineData {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -4493,12 +4578,14 @@ query GetUserPreset($id: ID!) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -4515,6 +4602,7 @@ query GetUserPreset($id: ID!) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -4639,9 +4727,11 @@ query ListUserPresets(
       presetData {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -4702,12 +4792,14 @@ query GetRoutinePreset($id: ID!) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -4724,6 +4816,7 @@ query GetRoutinePreset($id: ID!) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -4764,6 +4857,7 @@ query GetRoutinePreset($id: ID!) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -4840,9 +4934,11 @@ query ListRoutinePresets(
       presetData {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -4851,6 +4947,7 @@ query ListRoutinePresets(
       routineData {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -4917,6 +5014,7 @@ query GetRoutinePrayer($id: ID!) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -4998,6 +5096,7 @@ query GetRoutinePrayer($id: ID!) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -5041,6 +5140,7 @@ query ListRoutinePrayers(
       routineData {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -5075,6 +5175,7 @@ query ListRoutinePrayers(
       prayerData {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -5126,6 +5227,7 @@ query GetRoutineStretch($id: ID!) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -5207,6 +5309,7 @@ query GetRoutineStretch($id: ID!) {
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -5236,6 +5339,7 @@ query ListRoutineStretches(
       routineData {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -5270,6 +5374,7 @@ query ListRoutineStretches(
       stretchData {
         id
         userDataID
+        stretchOwnerId
         display_name
         createdAt
         updatedAt
@@ -5310,6 +5415,7 @@ query GetRoutineBreathing($id: ID!) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -5391,6 +5497,7 @@ query GetRoutineBreathing($id: ID!) {
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -5420,6 +5527,7 @@ query ListRoutineBreathings(
       routineData {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -5454,6 +5562,7 @@ query ListRoutineBreathings(
       breathingData {
         id
         userDataID
+        breathingOwnerId
         display_name
         createdAt
         updatedAt
@@ -5494,6 +5603,7 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -5575,6 +5685,7 @@ query GetRoutineBedtimeStoryInfo($id: ID!) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -5624,6 +5735,7 @@ query ListRoutineBedtimeStoryInfos(
       routineData {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -5658,6 +5770,7 @@ query ListRoutineBedtimeStoryInfos(
       bedtimeStoryInfoData {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -5708,6 +5821,7 @@ query GetRoutineSelfLove($id: ID!) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -5789,6 +5903,7 @@ query GetRoutineSelfLove($id: ID!) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -5831,6 +5946,7 @@ query ListRoutineSelfLoves(
       routineData {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -5865,6 +5981,7 @@ query ListRoutineSelfLoves(
       selfLoveData {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -5915,6 +6032,7 @@ query GetUserRoutine($id: ID!) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -6080,6 +6198,7 @@ query ListUserRoutines(
       routineData {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -6166,6 +6285,7 @@ query GetUserBedtimeStoryInfo($id: ID!) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -6304,6 +6424,7 @@ query ListUserBedtimeStoryInfos(
       bedtimeStoryInfoData {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -6374,6 +6495,7 @@ query GetUserPrayer($id: ID!) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -6506,6 +6628,7 @@ query ListUserPrayers(
       prayerData {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -6577,6 +6700,7 @@ query GetUserSelfLove($id: ID!) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -6708,6 +6832,7 @@ query ListUserSelfLoves(
       selfLoveData {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -6778,6 +6903,7 @@ query GetUserStretch($id: ID!) {
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -6896,6 +7022,7 @@ query ListUserStretches(
       stretchData {
         id
         userDataID
+        stretchOwnerId
         display_name
         createdAt
         updatedAt
@@ -6956,6 +7083,7 @@ query GetUserBreathing($id: ID!) {
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -7074,6 +7202,7 @@ query ListUserBreathings(
       breathingData {
         id
         userDataID
+        breathingOwnerId
         display_name
         createdAt
         updatedAt

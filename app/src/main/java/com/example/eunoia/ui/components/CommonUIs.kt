@@ -48,6 +48,7 @@ import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
 import com.example.eunoia.dashboard.bedtimeStory.bedtimeStoryActivityPlayButtonTexts
+import com.example.eunoia.dashboard.home.routineActivityPlayButtonTexts
 import com.example.eunoia.dashboard.sound.soundActivityPlayButtonTexts
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.formatMilliSecond
@@ -68,9 +69,9 @@ fun StandardBlueButton(text: String, lambda: () -> Unit){
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
         border = BorderStroke(1.dp, MaterialTheme.colors.primary),
         modifier = Modifier
-            .size(
-                width = dimensionResource(id = R.dimen.sign_in_out_width_dimen),
-                height = dimensionResource(id = R.dimen.sign_in_out_height_dimen)
+            .sizeIn(
+                minWidth = dimensionResource(id = R.dimen.sign_in_out_width_dimen),
+                minHeight = dimensionResource(id = R.dimen.sign_in_out_height_dimen)
             )
             .testTag(text)
     ) {
@@ -328,7 +329,7 @@ fun standardOutlinedTextInput(width: Int, height: Int, placeholder: String, offs
             )
         },
         modifier = Modifier
-            .size(width.dp, height.dp)
+            .sizeIn(width.dp, height.dp)
             .padding(0.dp)
             .testTag(placeholder)
     )
@@ -613,7 +614,7 @@ fun standardPasswordOutlinedTextInput(placeholder: String, offset: Int): String{
             }
         },
         modifier = Modifier
-            .size(211.dp, 50.dp)
+            .sizeIn(211.dp, 50.dp)
             .padding(0.dp)
     )
     return password
@@ -1138,7 +1139,12 @@ fun EmptyRoutine(lambda: () -> Unit){
 }
 
 @Composable
-fun Routine(routine: RoutineData, clicked: () -> Unit){
+fun RoutineCard(
+    routine: RoutineData,
+    index: Int,
+    startClicked: (index: Int) -> Unit,
+    clicked: () -> Unit
+){
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)
@@ -1211,11 +1217,14 @@ fun Routine(routine: RoutineData, clicked: () -> Unit){
                     .constrainAs(shuffle) {
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                         start.linkTo(parent.start, margin = 0.dp)
+                    }
+                    .clickable {
+                        startClicked(index)
                     },
                 contentAlignment = Alignment.Center
             ){
                 MorgeNormalText(
-                    text = "start",
+                    text = routineActivityPlayButtonTexts[index]!!.value,
                     color = Color.White,
                     fontSize = 15,
                     xOffset = 0,
@@ -1245,7 +1254,7 @@ fun Routine(routine: RoutineData, clicked: () -> Unit){
 }
 
 @Composable
-fun DisplayUsersSounds(
+fun SoundCard(
     sound: SoundData,
     index: Int,
     startClicked: (index: Int) -> Unit,

@@ -95,6 +95,7 @@ mutation CreateSoundData(
       updatedAt
       owner
     }
+    soundOwnerId
     original_name
     display_name
     short_description
@@ -126,9 +127,12 @@ mutation CreateSoundData(
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -139,9 +143,11 @@ mutation CreateSoundData(
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -272,6 +278,7 @@ mutation UpdateSoundData(
       updatedAt
       owner
     }
+    soundOwnerId
     original_name
     display_name
     short_description
@@ -303,9 +310,12 @@ mutation UpdateSoundData(
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -316,9 +326,11 @@ mutation UpdateSoundData(
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -449,6 +461,7 @@ mutation DeleteSoundData(
       updatedAt
       owner
     }
+    soundOwnerId
     original_name
     display_name
     short_description
@@ -480,9 +493,12 @@ mutation DeleteSoundData(
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -493,9 +509,11 @@ mutation DeleteSoundData(
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -650,6 +668,7 @@ mutation CreateUserSoundRelationship(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -810,6 +829,7 @@ mutation UpdateUserSoundRelationship(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -970,6 +990,7 @@ mutation DeleteUserSoundRelationship(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1106,6 +1127,7 @@ mutation CreateCommentData(
       updatedAt
       owner
     }
+    commentOwnerId
     comment
     soundID
     sound {
@@ -1131,6 +1153,7 @@ mutation CreateCommentData(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1162,6 +1185,7 @@ mutation CreateCommentData(
       updatedAt
       owner
     }
+    commentSoundId
     presetID
     preset {
       id
@@ -1186,12 +1210,14 @@ mutation CreateCommentData(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -1208,6 +1234,7 @@ mutation CreateCommentData(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -1225,6 +1252,7 @@ mutation CreateCommentData(
       updatedAt
       owner
     }
+    commentPresetId
     createdAt
     updatedAt
     owner
@@ -1326,6 +1354,7 @@ mutation UpdateCommentData(
       updatedAt
       owner
     }
+    commentOwnerId
     comment
     soundID
     sound {
@@ -1351,6 +1380,7 @@ mutation UpdateCommentData(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1382,6 +1412,7 @@ mutation UpdateCommentData(
       updatedAt
       owner
     }
+    commentSoundId
     presetID
     preset {
       id
@@ -1406,12 +1437,14 @@ mutation UpdateCommentData(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -1428,6 +1461,7 @@ mutation UpdateCommentData(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -1445,6 +1479,7 @@ mutation UpdateCommentData(
       updatedAt
       owner
     }
+    commentPresetId
     createdAt
     updatedAt
     owner
@@ -1546,6 +1581,7 @@ mutation DeleteCommentData(
       updatedAt
       owner
     }
+    commentOwnerId
     comment
     soundID
     sound {
@@ -1571,6 +1607,7 @@ mutation DeleteCommentData(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1602,6 +1639,7 @@ mutation DeleteCommentData(
       updatedAt
       owner
     }
+    commentSoundId
     presetID
     preset {
       id
@@ -1626,12 +1664,14 @@ mutation DeleteCommentData(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -1648,6 +1688,7 @@ mutation DeleteCommentData(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -1665,6 +1706,7 @@ mutation DeleteCommentData(
       updatedAt
       owner
     }
+    commentPresetId
     createdAt
     updatedAt
     owner
@@ -1766,6 +1808,7 @@ mutation CreatePresetData(
       updatedAt
       owner
     }
+    presetOwnerId
     key
     volumes
     soundID
@@ -1792,6 +1835,7 @@ mutation CreatePresetData(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1823,14 +1867,18 @@ mutation CreatePresetData(
       updatedAt
       owner
     }
+    soundId
     publicityStatus
     commentsOwnedByPreset {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -1973,6 +2021,7 @@ mutation UpdatePresetData(
       updatedAt
       owner
     }
+    presetOwnerId
     key
     volumes
     soundID
@@ -1999,6 +2048,7 @@ mutation UpdatePresetData(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -2030,14 +2080,18 @@ mutation UpdatePresetData(
       updatedAt
       owner
     }
+    soundId
     publicityStatus
     commentsOwnedByPreset {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -2180,6 +2234,7 @@ mutation DeletePresetData(
       updatedAt
       owner
     }
+    presetOwnerId
     key
     volumes
     soundID
@@ -2206,6 +2261,7 @@ mutation DeletePresetData(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -2237,14 +2293,18 @@ mutation DeletePresetData(
       updatedAt
       owner
     }
+    soundId
     publicityStatus
     commentsOwnedByPreset {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -2411,12 +2471,14 @@ mutation CreateUserPresetRelationship(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -2433,6 +2495,7 @@ mutation CreateUserPresetRelationship(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -2577,12 +2640,14 @@ mutation UpdateUserPresetRelationship(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -2599,6 +2664,7 @@ mutation UpdateUserPresetRelationship(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -2743,12 +2809,14 @@ mutation DeleteUserPresetRelationship(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -2765,6 +2833,7 @@ mutation DeleteUserPresetRelationship(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -2885,6 +2954,7 @@ mutation CreateRoutineData(
       updatedAt
       owner
     }
+    routineOwnerId
     originalName
     displayName
     numberOfSteps
@@ -3114,6 +3184,7 @@ mutation UpdateRoutineData(
       updatedAt
       owner
     }
+    routineOwnerId
     originalName
     displayName
     numberOfSteps
@@ -3343,6 +3414,7 @@ mutation DeleteRoutineData(
       updatedAt
       owner
     }
+    routineOwnerId
     originalName
     displayName
     numberOfSteps
@@ -3596,6 +3668,7 @@ mutation CreateUserRoutineRelationship(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -3781,6 +3854,7 @@ mutation UpdateUserRoutineRelationship(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -3966,6 +4040,7 @@ mutation DeleteUserRoutineRelationship(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -4127,6 +4202,7 @@ mutation CreateBedtimeStoryInfoData(
       updatedAt
       owner
     }
+    bedtimeStoryOwnerId
     displayName
     shortDescription
     longDescription
@@ -4179,6 +4255,7 @@ mutation CreateBedtimeStoryInfoData(
         display_name
         chapterNumber
         bedtimeStoryInfoDataID
+        bedtimeStoryInfoId
         createdAt
         updatedAt
         owner
@@ -4286,6 +4363,7 @@ mutation UpdateBedtimeStoryInfoData(
       updatedAt
       owner
     }
+    bedtimeStoryOwnerId
     displayName
     shortDescription
     longDescription
@@ -4338,6 +4416,7 @@ mutation UpdateBedtimeStoryInfoData(
         display_name
         chapterNumber
         bedtimeStoryInfoDataID
+        bedtimeStoryInfoId
         createdAt
         updatedAt
         owner
@@ -4445,6 +4524,7 @@ mutation DeleteBedtimeStoryInfoData(
       updatedAt
       owner
     }
+    bedtimeStoryOwnerId
     displayName
     shortDescription
     longDescription
@@ -4497,6 +4577,7 @@ mutation DeleteBedtimeStoryInfoData(
         display_name
         chapterNumber
         bedtimeStoryInfoDataID
+        bedtimeStoryInfoId
         createdAt
         updatedAt
         owner
@@ -4628,6 +4709,7 @@ mutation CreateUserBedtimeStoryInfoRelationship(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -4782,6 +4864,7 @@ mutation UpdateUserBedtimeStoryInfoRelationship(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -4936,6 +5019,7 @@ mutation DeleteUserBedtimeStoryInfoRelationship(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -5002,6 +5086,7 @@ mutation CreateBedtimeStoryInfoChapterData(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -5029,6 +5114,7 @@ mutation CreateBedtimeStoryInfoChapterData(
       updatedAt
       owner
     }
+    bedtimeStoryInfoId
     pages {
       items {
         id
@@ -5037,6 +5123,7 @@ mutation CreateBedtimeStoryInfoChapterData(
         audioKeysS3
         audioNames
         bedtimeStoryInfoChapterDataID
+        bedtimeStoryInfoChapterId
         createdAt
         updatedAt
         owner
@@ -5080,6 +5167,7 @@ mutation UpdateBedtimeStoryInfoChapterData(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -5107,6 +5195,7 @@ mutation UpdateBedtimeStoryInfoChapterData(
       updatedAt
       owner
     }
+    bedtimeStoryInfoId
     pages {
       items {
         id
@@ -5115,6 +5204,7 @@ mutation UpdateBedtimeStoryInfoChapterData(
         audioKeysS3
         audioNames
         bedtimeStoryInfoChapterDataID
+        bedtimeStoryInfoChapterId
         createdAt
         updatedAt
         owner
@@ -5158,6 +5248,7 @@ mutation DeleteBedtimeStoryInfoChapterData(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -5185,6 +5276,7 @@ mutation DeleteBedtimeStoryInfoChapterData(
       updatedAt
       owner
     }
+    bedtimeStoryInfoId
     pages {
       items {
         id
@@ -5193,6 +5285,7 @@ mutation DeleteBedtimeStoryInfoChapterData(
         audioKeysS3
         audioNames
         bedtimeStoryInfoChapterDataID
+        bedtimeStoryInfoChapterId
         createdAt
         updatedAt
         owner
@@ -5223,6 +5316,7 @@ mutation CreateChapterPageData(
       bedtimeStoryInfo {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -5238,6 +5332,7 @@ mutation CreateChapterPageData(
         updatedAt
         owner
       }
+      bedtimeStoryInfoId
       pages {
         nextToken
       }
@@ -5245,6 +5340,7 @@ mutation CreateChapterPageData(
       updatedAt
       owner
     }
+    bedtimeStoryInfoChapterId
     createdAt
     updatedAt
     owner
@@ -5269,6 +5365,7 @@ mutation UpdateChapterPageData(
       bedtimeStoryInfo {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -5284,6 +5381,7 @@ mutation UpdateChapterPageData(
         updatedAt
         owner
       }
+      bedtimeStoryInfoId
       pages {
         nextToken
       }
@@ -5291,6 +5389,7 @@ mutation UpdateChapterPageData(
       updatedAt
       owner
     }
+    bedtimeStoryInfoChapterId
     createdAt
     updatedAt
     owner
@@ -5315,6 +5414,7 @@ mutation DeleteChapterPageData(
       bedtimeStoryInfo {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -5330,6 +5430,7 @@ mutation DeleteChapterPageData(
         updatedAt
         owner
       }
+      bedtimeStoryInfoId
       pages {
         nextToken
       }
@@ -5337,6 +5438,7 @@ mutation DeleteChapterPageData(
       updatedAt
       owner
     }
+    bedtimeStoryInfoChapterId
     createdAt
     updatedAt
     owner
@@ -5438,6 +5540,7 @@ mutation CreatePrayerData(
       updatedAt
       owner
     }
+    prayerOwnerId
     displayName
     shortDescription
     longDescription
@@ -5586,6 +5689,7 @@ mutation UpdatePrayerData(
       updatedAt
       owner
     }
+    prayerOwnerId
     displayName
     shortDescription
     longDescription
@@ -5734,6 +5838,7 @@ mutation DeletePrayerData(
       updatedAt
       owner
     }
+    prayerOwnerId
     displayName
     shortDescription
     longDescription
@@ -5906,6 +6011,7 @@ mutation CreateUserPrayerRelationship(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -6058,6 +6164,7 @@ mutation UpdateUserPrayerRelationship(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -6210,6 +6317,7 @@ mutation DeleteUserPrayerRelationship(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -6338,6 +6446,7 @@ mutation CreateSelfLoveData(
       updatedAt
       owner
     }
+    selfLoveOwnerId
     display_name
     shortDescription
     longDescription
@@ -6485,6 +6594,7 @@ mutation UpdateSelfLoveData(
       updatedAt
       owner
     }
+    selfLoveOwnerId
     display_name
     shortDescription
     longDescription
@@ -6632,6 +6742,7 @@ mutation DeleteSelfLoveData(
       updatedAt
       owner
     }
+    selfLoveOwnerId
     display_name
     shortDescription
     longDescription
@@ -6803,6 +6914,7 @@ mutation CreateUserSelfLoveRelationship(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -6954,6 +7066,7 @@ mutation UpdateUserSelfLoveRelationship(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -7105,6 +7218,7 @@ mutation DeleteUserSelfLoveRelationship(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -7232,6 +7346,7 @@ mutation CreateStretchData(
       updatedAt
       owner
     }
+    stretchOwnerId
     display_name
     routines {
       items {
@@ -7356,6 +7471,7 @@ mutation UpdateStretchData(
       updatedAt
       owner
     }
+    stretchOwnerId
     display_name
     routines {
       items {
@@ -7480,6 +7596,7 @@ mutation DeleteStretchData(
       updatedAt
       owner
     }
+    stretchOwnerId
     display_name
     routines {
       items {
@@ -7604,6 +7721,7 @@ mutation CreateBreathingData(
       updatedAt
       owner
     }
+    breathingOwnerId
     display_name
     routines {
       items {
@@ -7728,6 +7846,7 @@ mutation UpdateBreathingData(
       updatedAt
       owner
     }
+    breathingOwnerId
     display_name
     routines {
       items {
@@ -7852,6 +7971,7 @@ mutation DeleteBreathingData(
       updatedAt
       owner
     }
+    breathingOwnerId
     display_name
     routines {
       items {
@@ -7984,6 +8104,7 @@ mutation CreateUserData(
       items {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -8017,9 +8138,11 @@ mutation CreateUserData(
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -8042,9 +8165,12 @@ mutation CreateUserData(
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -8055,6 +8181,7 @@ mutation CreateUserData(
       items {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -8103,6 +8230,7 @@ mutation CreateUserData(
       items {
         id
         userDataID
+        stretchOwnerId
         display_name
         createdAt
         updatedAt
@@ -8125,6 +8253,7 @@ mutation CreateUserData(
       items {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -8158,6 +8287,7 @@ mutation CreateUserData(
       items {
         id
         userDataID
+        breathingOwnerId
         display_name
         createdAt
         updatedAt
@@ -8180,6 +8310,7 @@ mutation CreateUserData(
       items {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -8212,6 +8343,7 @@ mutation CreateUserData(
       items {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -8349,6 +8481,7 @@ mutation UpdateUserData(
       items {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -8382,9 +8515,11 @@ mutation UpdateUserData(
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -8407,9 +8542,12 @@ mutation UpdateUserData(
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -8420,6 +8558,7 @@ mutation UpdateUserData(
       items {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -8468,6 +8607,7 @@ mutation UpdateUserData(
       items {
         id
         userDataID
+        stretchOwnerId
         display_name
         createdAt
         updatedAt
@@ -8490,6 +8630,7 @@ mutation UpdateUserData(
       items {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -8523,6 +8664,7 @@ mutation UpdateUserData(
       items {
         id
         userDataID
+        breathingOwnerId
         display_name
         createdAt
         updatedAt
@@ -8545,6 +8687,7 @@ mutation UpdateUserData(
       items {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -8577,6 +8720,7 @@ mutation UpdateUserData(
       items {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -8714,6 +8858,7 @@ mutation DeleteUserData(
       items {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -8747,9 +8892,11 @@ mutation DeleteUserData(
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -8772,9 +8919,12 @@ mutation DeleteUserData(
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -8785,6 +8935,7 @@ mutation DeleteUserData(
       items {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -8833,6 +8984,7 @@ mutation DeleteUserData(
       items {
         id
         userDataID
+        stretchOwnerId
         display_name
         createdAt
         updatedAt
@@ -8855,6 +9007,7 @@ mutation DeleteUserData(
       items {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -8888,6 +9041,7 @@ mutation DeleteUserData(
       items {
         id
         userDataID
+        breathingOwnerId
         display_name
         createdAt
         updatedAt
@@ -8910,6 +9064,7 @@ mutation DeleteUserData(
       items {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -8942,6 +9097,7 @@ mutation DeleteUserData(
       items {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -9006,6 +9162,7 @@ mutation CreateUserSound(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9162,6 +9319,7 @@ mutation UpdateUserSound(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9318,6 +9476,7 @@ mutation DeleteUserSound(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9474,6 +9633,7 @@ mutation CreateRoutineSound(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9528,6 +9688,7 @@ mutation CreateRoutineSound(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -9622,6 +9783,7 @@ mutation UpdateRoutineSound(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9676,6 +9838,7 @@ mutation UpdateRoutineSound(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -9770,6 +9933,7 @@ mutation DeleteRoutineSound(
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9824,6 +9988,7 @@ mutation DeleteRoutineSound(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -9918,12 +10083,14 @@ mutation CreateUserPreset(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -9940,6 +10107,7 @@ mutation CreateUserPreset(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10082,12 +10250,14 @@ mutation UpdateUserPreset(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -10104,6 +10274,7 @@ mutation UpdateUserPreset(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10246,12 +10417,14 @@ mutation DeleteUserPreset(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -10268,6 +10441,7 @@ mutation DeleteUserPreset(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10410,12 +10584,14 @@ mutation CreateRoutinePreset(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -10432,6 +10608,7 @@ mutation CreateRoutinePreset(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10472,6 +10649,7 @@ mutation CreateRoutinePreset(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -10566,12 +10744,14 @@ mutation UpdateRoutinePreset(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -10588,6 +10768,7 @@ mutation UpdateRoutinePreset(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10628,6 +10809,7 @@ mutation UpdateRoutinePreset(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -10722,12 +10904,14 @@ mutation DeleteRoutinePreset(
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -10744,6 +10928,7 @@ mutation DeleteRoutinePreset(
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10784,6 +10969,7 @@ mutation DeleteRoutinePreset(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -10878,6 +11064,7 @@ mutation CreateRoutinePrayer(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -10959,6 +11146,7 @@ mutation CreateRoutinePrayer(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -11020,6 +11208,7 @@ mutation UpdateRoutinePrayer(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11101,6 +11290,7 @@ mutation UpdateRoutinePrayer(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -11162,6 +11352,7 @@ mutation DeleteRoutinePrayer(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11243,6 +11434,7 @@ mutation DeleteRoutinePrayer(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -11304,6 +11496,7 @@ mutation CreateRoutineStretch(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11385,6 +11578,7 @@ mutation CreateRoutineStretch(
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -11432,6 +11626,7 @@ mutation UpdateRoutineStretch(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11513,6 +11708,7 @@ mutation UpdateRoutineStretch(
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -11560,6 +11756,7 @@ mutation DeleteRoutineStretch(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11641,6 +11838,7 @@ mutation DeleteRoutineStretch(
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -11688,6 +11886,7 @@ mutation CreateRoutineBreathing(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11769,6 +11968,7 @@ mutation CreateRoutineBreathing(
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -11816,6 +12016,7 @@ mutation UpdateRoutineBreathing(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11897,6 +12098,7 @@ mutation UpdateRoutineBreathing(
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -11944,6 +12146,7 @@ mutation DeleteRoutineBreathing(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12025,6 +12228,7 @@ mutation DeleteRoutineBreathing(
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -12072,6 +12276,7 @@ mutation CreateRoutineBedtimeStoryInfo(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12153,6 +12358,7 @@ mutation CreateRoutineBedtimeStoryInfo(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -12216,6 +12422,7 @@ mutation UpdateRoutineBedtimeStoryInfo(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12297,6 +12504,7 @@ mutation UpdateRoutineBedtimeStoryInfo(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -12360,6 +12568,7 @@ mutation DeleteRoutineBedtimeStoryInfo(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12441,6 +12650,7 @@ mutation DeleteRoutineBedtimeStoryInfo(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -12504,6 +12714,7 @@ mutation CreateRoutineSelfLove(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12585,6 +12796,7 @@ mutation CreateRoutineSelfLove(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -12645,6 +12857,7 @@ mutation UpdateRoutineSelfLove(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12726,6 +12939,7 @@ mutation UpdateRoutineSelfLove(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -12786,6 +13000,7 @@ mutation DeleteRoutineSelfLove(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12867,6 +13082,7 @@ mutation DeleteRoutineSelfLove(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -12927,6 +13143,7 @@ mutation CreateUserRoutine(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -13110,6 +13327,7 @@ mutation UpdateUserRoutine(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -13293,6 +13511,7 @@ mutation DeleteUserRoutine(
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -13476,6 +13695,7 @@ mutation CreateUserBedtimeStoryInfo(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -13628,6 +13848,7 @@ mutation UpdateUserBedtimeStoryInfo(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -13780,6 +14001,7 @@ mutation DeleteUserBedtimeStoryInfo(
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -13932,6 +14154,7 @@ mutation CreateUserPrayer(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -14082,6 +14305,7 @@ mutation UpdateUserPrayer(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -14232,6 +14456,7 @@ mutation DeleteUserPrayer(
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -14382,6 +14607,7 @@ mutation CreateUserSelfLove(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -14531,6 +14757,7 @@ mutation UpdateUserSelfLove(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -14680,6 +14907,7 @@ mutation DeleteUserSelfLove(
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -14829,6 +15057,7 @@ mutation CreateUserStretch(
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -14965,6 +15194,7 @@ mutation UpdateUserStretch(
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -15101,6 +15331,7 @@ mutation DeleteUserStretch(
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -15237,6 +15468,7 @@ mutation CreateUserBreathing(
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -15373,6 +15605,7 @@ mutation UpdateUserBreathing(
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -15509,6 +15742,7 @@ mutation DeleteUserBreathing(
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken

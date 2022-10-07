@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
 import com.example.eunoia.dashboard.home.UserDashboardActivity
+import com.example.eunoia.ui.navigation.globalViewModel_
 import java.io.IOException
 
 private const val ACTION_PLAY: String = "PLAY"
@@ -23,6 +24,7 @@ class GeneralMediaPlayerService:
     private var mediaPlayer: MediaPlayer? = null
     private var mediaPlayerInitialized = false
     private var mediaPlayerIsPlaying = false
+    private var mediaPlayerIsLooping = false
     private var audioUri: Uri? = null
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -71,6 +73,25 @@ class GeneralMediaPlayerService:
         mediaPlayerIsPlaying = true
     }
 
+    fun stopMediaPlayer(){
+        mediaPlayer!!.stop()
+        mediaPlayerIsPlaying = false
+    }
+
+    fun loopMediaPlayer(){
+        if(mediaPlayerInitialized){
+            mediaPlayer!!.isLooping = true
+        }
+        mediaPlayerIsLooping = true
+    }
+
+    fun toggleLoopMediaPlayer(){
+        if(mediaPlayerInitialized){
+            mediaPlayer!!.isLooping = !mediaPlayer!!.isLooping
+        }
+        mediaPlayerIsLooping = !mediaPlayerIsLooping
+    }
+
     fun isMediaPlayerInitialized(): Boolean{
         return mediaPlayerInitialized
     }
@@ -98,15 +119,16 @@ class GeneralMediaPlayerService:
         TODO("Not yet implemented")
     }
 
-    override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
+    override fun onError(mp: MediaPlayer?, p1: Int, p2: Int): Boolean {
         Log.e(TAG, "Media player error")
+        mp!!.reset()
+        mediaPlayerInitialized = false
         return true
     }
 
     override fun onCompletion(mediaPlayer: MediaPlayer?) {
-        /*mediaPlayer!!.pause()
-        mediaPlayer.seekTo(0)*/
         Log.i(TAG, "Media player completed")
+        globalViewModel_!!.setGeneralMediaPlayerIsCompleted(true)
     }
 
     override fun onDestroy() {

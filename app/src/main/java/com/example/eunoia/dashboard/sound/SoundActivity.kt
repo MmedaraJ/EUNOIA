@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amazonaws.util.DateUtils
 import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.*
@@ -42,7 +41,7 @@ private const val TAG = "Sound Activity"
 var soundActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
 var soundActivityUris = mutableListOf<MutableList<Uri?>>()
 var soundActivityUriVolumes = mutableListOf<MutableList<Int>>()
-var soundActivityPresets = mutableListOf<MutableState<PresetData?>?>()
+var soundActivityPresets = mutableListOf<MutableState<SoundPresetData?>?>()
 private const val START_SOUND = "start"
 private const val PAUSE_SOUND = "pause"
 private const val WAIT_FOR_SOUND = "wait"
@@ -92,6 +91,7 @@ fun SoundActivityUI(
     resetSoundActivityPlayButtonTexts()
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
+
     var retrievedSounds by rememberSaveable{ mutableStateOf(false) }
     globalViewModel_!!.currentUser?.let {
         UserSoundRelationshipBackend.queryApprovedUserSoundRelationshipBasedOnUser(it) { userSoundRelationship ->
@@ -211,7 +211,7 @@ fun SoundActivityUI(
                 if(globalViewModel_!!.currentUsersSoundRelationships!!.size > 0){
                     for(i in globalViewModel_!!.currentUsersSoundRelationships!!.indices){
                         setSoundActivityPlayButtonTextsCorrectly(i)
-                        DisplayUsersSounds(
+                        SoundCard(
                             globalViewModel_!!.currentUsersSoundRelationships!![i]!!.userSoundRelationshipSound,
                             i,
                             { index ->
@@ -226,6 +226,8 @@ fun SoundActivityUI(
                             { index ->
                                 if(soundActivityPlayButtonTexts[index]!!.value != WAIT_FOR_SOUND) {
                                     soundScreenBorderControlColors[7].value = Bizarre
+
+                                    Log.d(TAG, "Sound is 123 ${globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound}")
                                     navigateToSoundScreen(
                                         navController,
                                         globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound

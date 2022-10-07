@@ -16,6 +16,7 @@ object BedtimeStoryChapterObject{
         val displayName: String,
         val chapterNumber: Int,
         val bedtimeStory: @RawValue BedtimeStoryObject.BedtimeStory,
+        val bedtimeStoryId: String?
     ):Parcelable{
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -26,6 +27,7 @@ object BedtimeStoryChapterObject{
                 .displayName(this.displayName)
                 .chapterNumber(this.chapterNumber)
                 .bedtimeStoryInfo(this.bedtimeStory.data)
+                .bedtimeStoryInfoId(this.bedtimeStoryId)
                 .id(this.id)
                 .build()
 
@@ -35,7 +37,8 @@ object BedtimeStoryChapterObject{
                     bedtimeStoryChapterData.id,
                     bedtimeStoryChapterData.displayName,
                     bedtimeStoryChapterData.chapterNumber,
-                    BedtimeStoryObject.BedtimeStory.from(bedtimeStoryChapterData.bedtimeStoryInfo)
+                    BedtimeStoryObject.BedtimeStory.from(bedtimeStoryChapterData.bedtimeStoryInfo),
+                    bedtimeStoryChapterData.bedtimeStoryInfoId,
                 )
                 return result
             }

@@ -31,9 +31,11 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class BreathingData implements Model {
   public static final QueryField ID = field("BreathingData", "id");
   public static final QueryField BREATHING_OWNER = field("BreathingData", "userDataID");
+  public static final QueryField BREATHING_OWNER_ID = field("BreathingData", "breathingOwnerId");
   public static final QueryField DISPLAY_NAME = field("BreathingData", "display_name");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData breathingOwner;
+  private final @ModelField(targetType="String") String breathingOwnerId;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="RoutineBreathing") @HasMany(associatedWith = "breathingData", type = RoutineBreathing.class) List<RoutineBreathing> routines = null;
   private final @ModelField(targetType="UserBreathing") @HasMany(associatedWith = "breathingData", type = UserBreathing.class) List<UserBreathing> users = null;
@@ -45,6 +47,10 @@ public final class BreathingData implements Model {
   
   public UserData getBreathingOwner() {
       return breathingOwner;
+  }
+  
+  public String getBreathingOwnerId() {
+      return breathingOwnerId;
   }
   
   public String getDisplayName() {
@@ -67,9 +73,10 @@ public final class BreathingData implements Model {
       return updatedAt;
   }
   
-  private BreathingData(String id, UserData breathingOwner, String display_name) {
+  private BreathingData(String id, UserData breathingOwner, String breathingOwnerId, String display_name) {
     this.id = id;
     this.breathingOwner = breathingOwner;
+    this.breathingOwnerId = breathingOwnerId;
     this.display_name = display_name;
   }
   
@@ -83,6 +90,7 @@ public final class BreathingData implements Model {
       BreathingData breathingData = (BreathingData) obj;
       return ObjectsCompat.equals(getId(), breathingData.getId()) &&
               ObjectsCompat.equals(getBreathingOwner(), breathingData.getBreathingOwner()) &&
+              ObjectsCompat.equals(getBreathingOwnerId(), breathingData.getBreathingOwnerId()) &&
               ObjectsCompat.equals(getDisplayName(), breathingData.getDisplayName()) &&
               ObjectsCompat.equals(getCreatedAt(), breathingData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), breathingData.getUpdatedAt());
@@ -94,6 +102,7 @@ public final class BreathingData implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getBreathingOwner())
+      .append(getBreathingOwnerId())
       .append(getDisplayName())
       .append(getCreatedAt())
       .append(getUpdatedAt())
@@ -107,6 +116,7 @@ public final class BreathingData implements Model {
       .append("BreathingData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("breathingOwner=" + String.valueOf(getBreathingOwner()) + ", ")
+      .append("breathingOwnerId=" + String.valueOf(getBreathingOwnerId()) + ", ")
       .append("display_name=" + String.valueOf(getDisplayName()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
@@ -130,6 +140,7 @@ public final class BreathingData implements Model {
     return new BreathingData(
       id,
       null,
+      null,
       null
     );
   }
@@ -137,6 +148,7 @@ public final class BreathingData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       breathingOwner,
+      breathingOwnerId,
       display_name);
   }
   public interface BreathingOwnerStep {
@@ -152,6 +164,7 @@ public final class BreathingData implements Model {
   public interface BuildStep {
     BreathingData build();
     BuildStep id(String id);
+    BuildStep breathingOwnerId(String breathingOwnerId);
   }
   
 
@@ -159,6 +172,7 @@ public final class BreathingData implements Model {
     private String id;
     private UserData breathingOwner;
     private String display_name;
+    private String breathingOwnerId;
     @Override
      public BreathingData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -166,6 +180,7 @@ public final class BreathingData implements Model {
         return new BreathingData(
           id,
           breathingOwner,
+          breathingOwnerId,
           display_name);
     }
     
@@ -183,6 +198,12 @@ public final class BreathingData implements Model {
         return this;
     }
     
+    @Override
+     public BuildStep breathingOwnerId(String breathingOwnerId) {
+        this.breathingOwnerId = breathingOwnerId;
+        return this;
+    }
+    
     /**
      * @param id id
      * @return Current Builder instance, for fluent method chaining
@@ -195,10 +216,11 @@ public final class BreathingData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData breathingOwner, String displayName) {
+    private CopyOfBuilder(String id, UserData breathingOwner, String breathingOwnerId, String displayName) {
       super.id(id);
       super.breathingOwner(breathingOwner)
-        .displayName(displayName);
+        .displayName(displayName)
+        .breathingOwnerId(breathingOwnerId);
     }
     
     @Override
@@ -209,6 +231,11 @@ public final class BreathingData implements Model {
     @Override
      public CopyOfBuilder displayName(String displayName) {
       return (CopyOfBuilder) super.displayName(displayName);
+    }
+    
+    @Override
+     public CopyOfBuilder breathingOwnerId(String breathingOwnerId) {
+      return (CopyOfBuilder) super.breathingOwnerId(breathingOwnerId);
     }
   }
   

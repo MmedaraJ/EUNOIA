@@ -149,6 +149,34 @@ object SoundBackend{
         }
     }
 
+    fun querySoundBasedOnId(
+        soundId: String,
+        completed: (sounds: List<SoundData?>) -> Unit
+    ) {
+        scope.launch {
+            val soundList = mutableListOf<SoundData?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    SoundData::class.java,
+                    SoundData.ID.eq(soundId)
+                ),
+                { response ->
+                    Log.i(TAG, "Response: $response")
+                    if(response.hasData()) {
+                        for (soundData in response.data) {
+                            if(soundData != null) {
+                                Log.i(TAG, soundData.toString())
+                                soundList.add(soundData)
+                            }
+                        }
+                    }
+                    completed(soundList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
     fun querySound(context: Context) {
         Log.i(TAG, "Querying sounds")
         scope.launch {

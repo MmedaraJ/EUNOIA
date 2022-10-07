@@ -50,6 +50,7 @@ private const val MAX_BEDTIME_STORY_SHORT_DESCRIPTION = 50
 private const val MAX_BEDTIME_STORY_LONG_DESCRIPTION = 200
 private const val MAX_BEDTIME_STORY_TAGS = 50
 var incompleteBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?>()
+//private var shortDescriptionTitleTopMargin by mutableStateOf(16)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -59,7 +60,7 @@ fun NameBedtimeStoryUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    clearChapterPagesList()
+    clearPagesList()
     clearBedtimeStoryChaptersList()
     clearPageRecordingsList()
     SetupAlertDialogs()
@@ -87,12 +88,19 @@ fun NameBedtimeStoryUI(
         val (
             header,
             title,
+            nameTitle,
             nameColumn,
             nameError,
+            shortDescriptionTitle,
             shortDescriptionColumn,
             shortDescriptionError,
+            longDescriptionTitle,
             longDescriptionColumn,
-            longDescriptionError,
+            longDescriptionError
+        ) = createRefs()
+
+        val (
+            tagTitle,
             tagColumn,
             tagError,
             iconTitle,
@@ -141,9 +149,25 @@ fun NameBedtimeStoryUI(
             )
         }
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(nameTitle) {
+                    top.linkTo(title.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedNormalText(
+                text = "Name",
+                color = Black,
+                fontSize = 13,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
             modifier = Modifier
                 .constrainAs(nameColumn) {
-                    top.linkTo(title.bottom, margin = 16.dp)
+                    top.linkTo(nameTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -155,7 +179,7 @@ fun NameBedtimeStoryUI(
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
-                placeholder = "Name",
+                placeholder = "eg. Mary's Blistered Toe",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
                 offset = 0
@@ -169,10 +193,26 @@ fun NameBedtimeStoryUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            AlignedNormalText(
                 text = bedtimeStoryNameErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(shortDescriptionTitle) {
+                    top.linkTo(nameError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedNormalText(
+                text = "Get people excited in one sentence",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -180,7 +220,7 @@ fun NameBedtimeStoryUI(
         Column(
             modifier = Modifier
                 .constrainAs(shortDescriptionColumn) {
-                    top.linkTo(nameError.bottom, margin = 16.dp)
+                    top.linkTo(shortDescriptionTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -192,7 +232,7 @@ fun NameBedtimeStoryUI(
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
-                placeholder = "Short description",
+                placeholder = "eg. When a man looses his mind over love",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
                 offset = 0
@@ -206,10 +246,26 @@ fun NameBedtimeStoryUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            AlignedNormalText(
                 text = bedtimeStoryShortDescriptionErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(longDescriptionTitle) {
+                    top.linkTo(shortDescriptionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedNormalText(
+                text = "Summarize this story",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -217,7 +273,7 @@ fun NameBedtimeStoryUI(
         Column(
             modifier = Modifier
                 .constrainAs(longDescriptionColumn) {
-                    top.linkTo(shortDescriptionError.bottom, margin = 16.dp)
+                    top.linkTo(longDescriptionTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -225,7 +281,7 @@ fun NameBedtimeStoryUI(
             bedtimeStoryLongDescription = customizableBigOutlinedTextInput(
                 maxLength = MAX_BEDTIME_STORY_LONG_DESCRIPTION,
                 height = 100,
-                placeholder = "Long description",
+                placeholder = "Make it lengthy",
                 backgroundColor = SoftPeach,
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
@@ -243,10 +299,26 @@ fun NameBedtimeStoryUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            AlignedNormalText(
                 text = bedtimeStoryLongDescriptionErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(tagTitle) {
+                    top.linkTo(longDescriptionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            AlignedNormalText(
+                text = "Hashtags help users find your story",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -254,7 +326,7 @@ fun NameBedtimeStoryUI(
         Column(
             modifier = Modifier
                 .constrainAs(tagColumn) {
-                    top.linkTo(longDescriptionError.bottom, margin = 16.dp)
+                    top.linkTo(tagTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -266,7 +338,7 @@ fun NameBedtimeStoryUI(
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
-                placeholder = "Tags",
+                placeholder = "eg. thriller, spy, dangerous",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
                 offset = 0
@@ -280,10 +352,10 @@ fun NameBedtimeStoryUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            AlignedNormalText(
                 text = bedtimeStoryTagsErrorMessage,
-                color = Black,
-                fontSize = 10,
+                color = BeautyBush,
+                fontSize = 11,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -292,12 +364,12 @@ fun NameBedtimeStoryUI(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .constrainAs(iconTitle) {
-                    top.linkTo(tagError.bottom, margin = 24.dp)
+                    top.linkTo(tagError.bottom, margin = 48.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ){
-            NormalText(
+            AlignedNormalText(
                 text = bedtimeStoryIconSelectionTitle,
                 color = Black,
                 fontSize = 16,
@@ -467,9 +539,9 @@ private fun SetupAlertDialogs(){
 
 private fun initializeBedtimeStoryNameError() {
     bedtimeStoryNameErrorMessage = if(bedtimeStoryName.isEmpty()){
-        "Name this bedtime story"
+        ""
     } else if(bedtimeStoryName.length < MIN_BEDTIME_STORY_NAME){
-        "Name must be at least $MIN_BEDTIME_STORY_NAME characters"
+        "Must be at least $MIN_BEDTIME_STORY_NAME characters"
     } else{
         ""
     }
@@ -477,9 +549,9 @@ private fun initializeBedtimeStoryNameError() {
 
 private fun initializeBedtimeStoryShortDescriptionError() {
     bedtimeStoryShortDescriptionErrorMessage = if(bedtimeStoryShortDescription.isEmpty()){
-        "Provide a short description"
+        ""
     } else if(bedtimeStoryShortDescription.length < MIN_BEDTIME_STORY_SHORT_DESCRIPTION){
-        "Short description must be at least $MIN_BEDTIME_STORY_SHORT_DESCRIPTION characters"
+        "Must be at least $MIN_BEDTIME_STORY_SHORT_DESCRIPTION characters"
     } else{
         ""
     }
@@ -487,9 +559,9 @@ private fun initializeBedtimeStoryShortDescriptionError() {
 
 private fun initializeBedtimeStoryLongDescriptionError() {
     bedtimeStoryLongDescriptionErrorMessage = if(bedtimeStoryLongDescription.isEmpty()){
-        "Provide a long description"
+        ""
     } else if(bedtimeStoryLongDescription.length < MIN_BEDTIME_STORY_LONG_DESCRIPTION){
-        "Long description must be at least $MIN_BEDTIME_STORY_LONG_DESCRIPTION characters"
+        "Must be at least $MIN_BEDTIME_STORY_LONG_DESCRIPTION characters"
     } else{
         ""
     }
@@ -497,9 +569,9 @@ private fun initializeBedtimeStoryLongDescriptionError() {
 
 private fun initializeBedtimeStoryTagsError() {
     bedtimeStoryTagsErrorMessage = if(bedtimeStoryTags.isEmpty()){
-        "Add tags to this bedtime story. Separate tags with a comma"
+        "Separate hashtags with a comma"
     } else if(bedtimeStoryTags.length < MIN_BEDTIME_STORY_TAGS){
-        "Tags must be at least $MIN_BEDTIME_STORY_TAGS characters"
+        "Must be at least $MIN_BEDTIME_STORY_TAGS characters"
     } else{
         ""
     }
@@ -529,6 +601,7 @@ private fun createBedtimeStory(
                 val bedtimeStory = BedtimeStoryObject.BedtimeStory(
                     UUID.randomUUID().toString(),
                     UserObject.User.from(globalViewModel_!!.currentUser!!),
+                    globalViewModel_!!.currentUser!!.id,
                     bedtimeStoryName,
                     bedtimeStoryShortDescription,
                     bedtimeStoryLongDescription,

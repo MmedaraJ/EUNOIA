@@ -1,6 +1,7 @@
 package com.example.eunoia.ui.screens
 
 import android.os.Bundle
+import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import com.example.eunoia.R
 
@@ -73,7 +74,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
     object UploadBedtimeStory: Screen("Upload Bedtime Story", -1,"upload_bedtime_story")
     object BedtimeStoryChapterScreen: Screen("Bedtime Story Chapter Screen", -1,"bedtime_story_chapter_screen")
     object IncompleteBedtimeStories: Screen("Incomplete Bedtime Story", -1,"incomplete_bedtime_story")
-    object ChapterPageScreen: Screen("Chapter Page Screen", -1,"chapter_page_screen")
+    object PageScreen: Screen("Page Screen", -1,"page_screen")
 
     /**
      * Create prayer
@@ -127,7 +128,99 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                 UploadBedtimeStory.screen_route -> UploadBedtimeStory
                 BedtimeStoryChapterScreen.screen_route -> BedtimeStoryChapterScreen
                 IncompleteBedtimeStories.screen_route -> IncompleteBedtimeStories
-                ChapterPageScreen.screen_route -> ChapterPageScreen
+                PageScreen.screen_route -> PageScreen
+
+                /**
+                 * Create Prayer
+                 */
+                NamePrayer.screen_route -> NamePrayer
+                UploadPrayer.screen_route -> UploadPrayer
+                RecordPrayer.screen_route -> RecordPrayer
+
+                /**
+                 * Create Self Love
+                 */
+                NameSelfLove.screen_route -> NameSelfLove
+                UploadSelfLove.screen_route -> UploadSelfLove
+                RecordSelfLove.screen_route -> RecordSelfLove
+
+                /**
+                 * Sound
+                 */
+                Sound.screen_route -> Sound
+                SoundScreen.screen_route -> SoundScreen
+
+                /**
+                 * Self love
+                 */
+                SelfLove.screen_route -> SelfLove
+                SelfLoveScreen.screen_route -> SelfLoveScreen
+
+                /**
+                 * Bedtime story
+                 */
+                BedtimeStory.screen_route -> BedtimeStory
+                BedtimeStoryScreen.screen_route -> BedtimeStoryScreen
+
+                /**
+                 * Prayer
+                 */
+                Prayer.screen_route -> Prayer
+                PrayerScreen.screen_route -> PrayerScreen
+
+                /**
+                 * Routine
+                 */
+                RoutineScreen.screen_route -> RoutineScreen
+                RoutinePresetScreen.screen_route -> RoutinePresetScreen
+
+                /**
+                 * Settings
+                 */
+                Settings.screen_route -> Settings
+                EightHourCountdown.screen_route -> EightHourCountdown
+
+                /**
+                 * Article
+                 */
+                Article.screen_route -> Article
+
+                /**
+                 * Pricing
+                 */
+                Pricing.screen_route -> Pricing
+
+                else -> Dashboard
+            }
+        }
+
+        fun getScreenFromRoute(route: String): Screen {
+            return when (route) {
+                /**
+                 * bottom nav bar
+                 */
+                Dashboard.screen_route -> Dashboard
+                Create.screen_route -> Create
+                Feedback.screen_route -> Feedback
+                Account.screen_route -> Account
+                Search.screen_route -> Search
+
+                /**
+                 * Create Sound
+                 */
+                NameSound.screen_route -> NameSound
+                CreatePreset.screen_route -> CreatePreset
+                UploadSounds.screen_route -> UploadSounds
+
+                /**
+                 * Create Bedtime Story
+                 */
+                NameBedtimeStory.screen_route -> NameBedtimeStory
+                RecordBedtimeStory.screen_route -> RecordBedtimeStory
+                UploadBedtimeStory.screen_route -> UploadBedtimeStory
+                BedtimeStoryChapterScreen.screen_route -> BedtimeStoryChapterScreen
+                IncompleteBedtimeStories.screen_route -> IncompleteBedtimeStories
+                PageScreen.screen_route -> PageScreen
 
                 /**
                  * Create Prayer

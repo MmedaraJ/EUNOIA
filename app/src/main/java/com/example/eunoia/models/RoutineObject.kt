@@ -14,6 +14,7 @@ object RoutineObject{
     data class Routine(
         val id: String,
         val routineOwner: @RawValue UserObject.User,
+        val routineOwnerId: String?,
         val originalName: String?,
         val displayName: String?,
         val numberOfSteps: Int?,
@@ -49,6 +50,7 @@ object RoutineObject{
         val data: RoutineData
             get() = RoutineData.builder()
                 .routineOwner(this.routineOwner.data)
+                .routineOwnerId(this.routineOwnerId)
                 .originalName(this.originalName)
                 .displayName(this.displayName)
                 .numberOfSteps(this.numberOfSteps)
@@ -84,6 +86,7 @@ object RoutineObject{
                 val result = Routine(
                     routineData.id,
                     UserObject.User.from(routineData.routineOwner),
+                    routineData.routineOwnerId,
                     routineData.originalName,
                     routineData.displayName,
                     routineData.numberOfSteps,

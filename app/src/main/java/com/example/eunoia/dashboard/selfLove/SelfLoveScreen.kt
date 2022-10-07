@@ -172,7 +172,10 @@ fun SelfLoveScreen(
                     thumbColor = Snuff,
                     progressColor = Black,
                     backgroundColor = PeriwinkleGray.copy(alpha = 0.5F),
-                    modifier = Modifier.size(320.dp),
+                    modifier = Modifier
+                        //.size(320.dp)
+                        .fillMaxWidth(0.8f)
+                        .aspectRatio(1f),
                 ){ appliedAngle ->
                     if(globalViewModel_!!.currentSelfLovePlaying != null){
                         if(globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id){
@@ -201,7 +204,9 @@ fun SelfLoveScreen(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .size(223.51.dp)
+                            //.size(223.51.dp)
+                            .fillMaxWidth(0.55f)
+                            .aspectRatio(1f)
                             .clip(CircleShape)
                             .gradientBackground(
                                 listOf(

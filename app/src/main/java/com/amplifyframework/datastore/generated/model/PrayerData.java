@@ -31,6 +31,7 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class PrayerData implements Model {
   public static final QueryField ID = field("PrayerData", "id");
   public static final QueryField PRAYER_OWNER = field("PrayerData", "userDataID");
+  public static final QueryField PRAYER_OWNER_ID = field("PrayerData", "prayerOwnerId");
   public static final QueryField DISPLAY_NAME = field("PrayerData", "displayName");
   public static final QueryField SHORT_DESCRIPTION = field("PrayerData", "shortDescription");
   public static final QueryField LONG_DESCRIPTION = field("PrayerData", "longDescription");
@@ -45,6 +46,7 @@ public final class PrayerData implements Model {
   public static final QueryField APPROVAL_STATUS = field("PrayerData", "approvalStatus");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData prayerOwner;
+  private final @ModelField(targetType="String") String prayerOwnerId;
   private final @ModelField(targetType="String", isRequired = true) String displayName;
   private final @ModelField(targetType="String") String shortDescription;
   private final @ModelField(targetType="String") String longDescription;
@@ -68,6 +70,10 @@ public final class PrayerData implements Model {
   
   public UserData getPrayerOwner() {
       return prayerOwner;
+  }
+  
+  public String getPrayerOwnerId() {
+      return prayerOwnerId;
   }
   
   public String getDisplayName() {
@@ -138,9 +144,10 @@ public final class PrayerData implements Model {
       return updatedAt;
   }
   
-  private PrayerData(String id, UserData prayerOwner, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
+  private PrayerData(String id, UserData prayerOwner, String prayerOwnerId, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
     this.id = id;
     this.prayerOwner = prayerOwner;
+    this.prayerOwnerId = prayerOwnerId;
     this.displayName = displayName;
     this.shortDescription = shortDescription;
     this.longDescription = longDescription;
@@ -165,6 +172,7 @@ public final class PrayerData implements Model {
       PrayerData prayerData = (PrayerData) obj;
       return ObjectsCompat.equals(getId(), prayerData.getId()) &&
               ObjectsCompat.equals(getPrayerOwner(), prayerData.getPrayerOwner()) &&
+              ObjectsCompat.equals(getPrayerOwnerId(), prayerData.getPrayerOwnerId()) &&
               ObjectsCompat.equals(getDisplayName(), prayerData.getDisplayName()) &&
               ObjectsCompat.equals(getShortDescription(), prayerData.getShortDescription()) &&
               ObjectsCompat.equals(getLongDescription(), prayerData.getLongDescription()) &&
@@ -187,6 +195,7 @@ public final class PrayerData implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getPrayerOwner())
+      .append(getPrayerOwnerId())
       .append(getDisplayName())
       .append(getShortDescription())
       .append(getLongDescription())
@@ -211,6 +220,7 @@ public final class PrayerData implements Model {
       .append("PrayerData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("prayerOwner=" + String.valueOf(getPrayerOwner()) + ", ")
+      .append("prayerOwnerId=" + String.valueOf(getPrayerOwnerId()) + ", ")
       .append("displayName=" + String.valueOf(getDisplayName()) + ", ")
       .append("shortDescription=" + String.valueOf(getShortDescription()) + ", ")
       .append("longDescription=" + String.valueOf(getLongDescription()) + ", ")
@@ -256,6 +266,7 @@ public final class PrayerData implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -263,6 +274,7 @@ public final class PrayerData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       prayerOwner,
+      prayerOwnerId,
       displayName,
       shortDescription,
       longDescription,
@@ -309,6 +321,7 @@ public final class PrayerData implements Model {
   public interface BuildStep {
     PrayerData build();
     BuildStep id(String id);
+    BuildStep prayerOwnerId(String prayerOwnerId);
     BuildStep shortDescription(String shortDescription);
     BuildStep longDescription(String longDescription);
     BuildStep religion(String religion);
@@ -327,6 +340,7 @@ public final class PrayerData implements Model {
     private Integer icon;
     private Integer fullPlayTime;
     private Boolean visibleToOthers;
+    private String prayerOwnerId;
     private String shortDescription;
     private String longDescription;
     private String religion;
@@ -341,6 +355,7 @@ public final class PrayerData implements Model {
         return new PrayerData(
           id,
           prayerOwner,
+          prayerOwnerId,
           displayName,
           shortDescription,
           longDescription,
@@ -398,6 +413,12 @@ public final class PrayerData implements Model {
     }
     
     @Override
+     public BuildStep prayerOwnerId(String prayerOwnerId) {
+        this.prayerOwnerId = prayerOwnerId;
+        return this;
+    }
+    
+    @Override
      public BuildStep shortDescription(String shortDescription) {
         this.shortDescription = shortDescription;
         return this;
@@ -451,7 +472,7 @@ public final class PrayerData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData prayerOwner, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
+    private CopyOfBuilder(String id, UserData prayerOwner, String prayerOwnerId, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
       super.id(id);
       super.prayerOwner(prayerOwner)
         .displayName(displayName)
@@ -459,6 +480,7 @@ public final class PrayerData implements Model {
         .icon(icon)
         .fullPlayTime(fullPlayTime)
         .visibleToOthers(visibleToOthers)
+        .prayerOwnerId(prayerOwnerId)
         .shortDescription(shortDescription)
         .longDescription(longDescription)
         .religion(religion)
@@ -496,6 +518,11 @@ public final class PrayerData implements Model {
     @Override
      public CopyOfBuilder visibleToOthers(Boolean visibleToOthers) {
       return (CopyOfBuilder) super.visibleToOthers(visibleToOthers);
+    }
+    
+    @Override
+     public CopyOfBuilder prayerOwnerId(String prayerOwnerId) {
+      return (CopyOfBuilder) super.prayerOwnerId(prayerOwnerId);
     }
     
     @Override

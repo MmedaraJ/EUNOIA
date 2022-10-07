@@ -62,11 +62,11 @@ public final class UserData implements Model {
   private final @ModelField(targetType="UserPrayerRelationship") @HasMany(associatedWith = "userPrayerRelationshipOwner", type = UserPrayerRelationship.class) List<UserPrayerRelationship> userPrayerRelationshipsOwnedByUser = null;
   private final @ModelField(targetType="UserSelfLoveRelationship") @HasMany(associatedWith = "userSelfLoveRelationshipOwner", type = UserSelfLoveRelationship.class) List<UserSelfLoveRelationship> userSelfLoveRelationshipsOwnedByUser = null;
   private final @ModelField(targetType="UserRoutineRelationship") @HasMany(associatedWith = "userRoutineRelationshipOwner", type = UserRoutineRelationship.class) List<UserRoutineRelationship> userRoutineRelationshipsOwnedByUser = null;
-  private final @ModelField(targetType="UserPresetRelationship") @HasMany(associatedWith = "userPresetRelationshipOwner", type = UserPresetRelationship.class) List<UserPresetRelationship> userPresetRelationshipsOwnedByUser = null;
+  private final @ModelField(targetType="UserSoundPresetRelationship") @HasMany(associatedWith = "userSoundPresetRelationshipOwner", type = UserSoundPresetRelationship.class) List<UserSoundPresetRelationship> userSoundPresetRelationshipsOwnedByUser = null;
   private final @ModelField(targetType="SoundData") @HasMany(associatedWith = "soundOwner", type = SoundData.class) List<SoundData> soundsOwnedByUser = null;
   private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "userData", type = UserSound.class) List<UserSound> sounds = null;
-  private final @ModelField(targetType="PresetData") @HasMany(associatedWith = "presetOwner", type = PresetData.class) List<PresetData> presetsOwnedByUser = null;
-  private final @ModelField(targetType="UserPreset") @HasMany(associatedWith = "userData", type = UserPreset.class) List<UserPreset> presets = null;
+  private final @ModelField(targetType="SoundPresetData") @HasMany(associatedWith = "presetOwner", type = SoundPresetData.class) List<SoundPresetData> presetsOwnedByUser = null;
+  private final @ModelField(targetType="UserSoundPreset") @HasMany(associatedWith = "userData", type = UserSoundPreset.class) List<UserSoundPreset> presets = null;
   private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "commentOwner", type = CommentData.class) List<CommentData> commentsOwnedByUser = null;
   private final @ModelField(targetType="RoutineData") @HasMany(associatedWith = "routineOwner", type = RoutineData.class) List<RoutineData> routinesOwnedByUser = null;
   private final @ModelField(targetType="UserRoutine") @HasMany(associatedWith = "userData", type = UserRoutine.class) List<UserRoutine> routines = null;
@@ -162,8 +162,8 @@ public final class UserData implements Model {
       return userRoutineRelationshipsOwnedByUser;
   }
   
-  public List<UserPresetRelationship> getUserPresetRelationshipsOwnedByUser() {
-      return userPresetRelationshipsOwnedByUser;
+  public List<UserSoundPresetRelationship> getUserSoundPresetRelationshipsOwnedByUser() {
+      return userSoundPresetRelationshipsOwnedByUser;
   }
   
   public List<SoundData> getSoundsOwnedByUser() {
@@ -174,11 +174,11 @@ public final class UserData implements Model {
       return sounds;
   }
   
-  public List<PresetData> getPresetsOwnedByUser() {
+  public List<SoundPresetData> getPresetsOwnedByUser() {
       return presetsOwnedByUser;
   }
   
-  public List<UserPreset> getPresets() {
+  public List<UserSoundPreset> getPresets() {
       return presets;
   }
   

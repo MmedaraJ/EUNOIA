@@ -14,6 +14,7 @@ object BedtimeStoryObject{
     data class BedtimeStory(
         val id: String,
         val bedtimeStoryOwner: @RawValue UserObject.User?,
+        val bedtimeStoryOwnerId: String?,
         val displayName: String,
         val shortDescription: String?,
         val longDescription: String?,
@@ -42,6 +43,7 @@ object BedtimeStoryObject{
                 .audioSource(this.audioSource)
                 .approvalStatus(this.approvalStatus)
                 .creationStatus(this.creationStatus)
+                .bedtimeStoryOwnerId(this.bedtimeStoryOwnerId)
                 .shortDescription(this.shortDescription)
                 .longDescription(this.longDescription)
                 .id(this.id)
@@ -52,6 +54,7 @@ object BedtimeStoryObject{
                 val result = BedtimeStory(
                     bedtimeStoryData.id,
                     UserObject.User.from(bedtimeStoryData.bedtimeStoryOwner!!),
+                    bedtimeStoryData.bedtimeStoryOwnerId,
                     bedtimeStoryData.displayName,
                     bedtimeStoryData.shortDescription,
                     bedtimeStoryData.longDescription,

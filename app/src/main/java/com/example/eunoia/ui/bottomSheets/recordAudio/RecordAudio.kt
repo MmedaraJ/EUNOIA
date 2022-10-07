@@ -29,8 +29,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.amplifyframework.datastore.generated.model.ChapterPageData
+import com.amplifyframework.datastore.generated.model.PageData
 import com.example.eunoia.R
-import com.example.eunoia.backend.ChapterPageBackend
+import com.example.eunoia.backend.BedtimeStoryChapterBackend
+import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.create.createBedtimeStory.AudioWaves
 import com.example.eunoia.create.createBedtimeStory.clearAmplitudes
@@ -524,8 +526,8 @@ fun setUpMediaRecorder(context: Context) {
 fun saveRecordedAudio(generalMediaPlayerService: GeneralMediaPlayerService) {
     var key = ""
     when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
-        is ChapterPageData -> {
-            val chapterPageData = recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording as ChapterPageData
+        is PageData -> {
+            val chapterPageData = recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording as PageData
             storeToS3IfChapterPage(chapterPageData)
         }
 
@@ -559,28 +561,32 @@ fun saveRecordedAudio(generalMediaPlayerService: GeneralMediaPlayerService) {
     }*/
 }
 
-fun storeToS3IfChapterPage(chapterPageData: ChapterPageData){
-    val key = "Routine/" +
-            "BedtimeStories/" +
-            "${globalViewModel_!!.currentUser!!.username}/" +
-            "recorded/" +
-            "${chapterPageData.bedtimeStoryInfoChapter.bedtimeStoryInfo.displayName}/" +
-            "${chapterPageData.bedtimeStoryInfoChapter.displayName}/" +
-            "${chapterPageData.displayName}/" +
-            "recording_${chapterPageData.audioKeysS3.size + 1}.aac"
+fun storeToS3IfChapterPage(chapterPageData: PageData){
+    BedtimeStoryChapterBackend.queryBedtimeStoryChapterBasedOnId(chapterPageData.bedtimeStoryInfoChapterId){
+        if(it.isNotEmpty()) {
+            val key = "Routine/" +
+                    "BedtimeStories/" +
+                    "${globalViewModel_!!.currentUser!!.username}/" +
+                    "recorded/" +
+                    "${it[0].bedtimeStoryInfo.displayName}/" +
+                    "${it[0].displayName}/" +
+                    "${chapterPageData.displayName}/" +
+                    "recording_${chapterPageData.audioKeysS3.size + 1}.aac"
 
-    SoundBackend.storeAudio(recordingFile!!.absolutePath, key){ s3key ->
-        updateChapterPageData(
-            s3key,
-            chapterPageData
-        )
+            SoundBackend.storeAudio(recordingFile!!.absolutePath, key) { s3key ->
+                updateChapterPageData(
+                    s3key,
+                    chapterPageData
+                )
+            }
+        }
     }
 }
 
-fun updateChapterPageData(s3Key: String, chapterPageData: ChapterPageData) {
+fun updateChapterPageData(s3Key: String, chapterPageData: PageData) {
     chapterPageData.audioKeysS3.add(s3Key)
     chapterPageData.audioNames.add("${chapterPageData.audioNames.size + 1}")
-    ChapterPageBackend.updateChapterPage(chapterPageData){
+    PageBackend.updatePage(chapterPageData){
         Log.i(TAG, "${chapterPageData.displayName}'s audio names ==>> ${it.audioNames}")
         Log.i(TAG, "${chapterPageData.displayName}'s audio keys ==>> ${it.audioKeysS3}")
     }

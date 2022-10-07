@@ -3,7 +3,6 @@
   "serviceConfiguration": {
     "apiName": "eunoia2",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/Users/mmedarajosiah/AndroidStudioProjects/EUNOIA/amplify/backend/api/eunoia2/schema.graphql",
     "defaultAuthType": {
       "mode": "AMAZON_COGNITO_USER_POOLS",
       "cognitoUserPoolId": "autheunoia26cecbc6e"

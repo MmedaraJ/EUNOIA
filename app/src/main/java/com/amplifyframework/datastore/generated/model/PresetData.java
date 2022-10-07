@@ -32,15 +32,19 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class PresetData implements Model {
   public static final QueryField ID = field("PresetData", "id");
   public static final QueryField PRESET_OWNER = field("PresetData", "presetUserDataID");
+  public static final QueryField PRESET_OWNER_ID = field("PresetData", "presetOwnerId");
   public static final QueryField KEY = field("PresetData", "key");
   public static final QueryField VOLUMES = field("PresetData", "volumes");
   public static final QueryField SOUND = field("PresetData", "soundID");
+  public static final QueryField SOUND_ID = field("PresetData", "soundId");
   public static final QueryField PUBLICITY_STATUS = field("PresetData", "publicityStatus");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "presetUserDataID", type = UserData.class) UserData presetOwner;
+  private final @ModelField(targetType="String") String presetOwnerId;
   private final @ModelField(targetType="String", isRequired = true) String key;
   private final @ModelField(targetType="Int", isRequired = true) List<Integer> volumes;
   private final @ModelField(targetType="SoundData", isRequired = true) @BelongsTo(targetName = "soundID", type = SoundData.class) SoundData sound;
+  private final @ModelField(targetType="String") String soundId;
   private final @ModelField(targetType="PresetPublicityStatus") PresetPublicityStatus publicityStatus;
   private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "preset", type = CommentData.class) List<CommentData> commentsOwnedByPreset = null;
   private final @ModelField(targetType="UserPresetRelationship") @HasMany(associatedWith = "userPresetRelationshipPreset", type = UserPresetRelationship.class) List<UserPresetRelationship> userPresetRelationshipsOwnedByPreset = null;
@@ -56,6 +60,10 @@ public final class PresetData implements Model {
       return presetOwner;
   }
   
+  public String getPresetOwnerId() {
+      return presetOwnerId;
+  }
+  
   public String getKey() {
       return key;
   }
@@ -66,6 +74,10 @@ public final class PresetData implements Model {
   
   public SoundData getSound() {
       return sound;
+  }
+  
+  public String getSoundId() {
+      return soundId;
   }
   
   public PresetPublicityStatus getPublicityStatus() {
@@ -96,12 +108,14 @@ public final class PresetData implements Model {
       return updatedAt;
   }
   
-  private PresetData(String id, UserData presetOwner, String key, List<Integer> volumes, SoundData sound, PresetPublicityStatus publicityStatus) {
+  private PresetData(String id, UserData presetOwner, String presetOwnerId, String key, List<Integer> volumes, SoundData sound, String soundId, PresetPublicityStatus publicityStatus) {
     this.id = id;
     this.presetOwner = presetOwner;
+    this.presetOwnerId = presetOwnerId;
     this.key = key;
     this.volumes = volumes;
     this.sound = sound;
+    this.soundId = soundId;
     this.publicityStatus = publicityStatus;
   }
   
@@ -115,9 +129,11 @@ public final class PresetData implements Model {
       PresetData presetData = (PresetData) obj;
       return ObjectsCompat.equals(getId(), presetData.getId()) &&
               ObjectsCompat.equals(getPresetOwner(), presetData.getPresetOwner()) &&
+              ObjectsCompat.equals(getPresetOwnerId(), presetData.getPresetOwnerId()) &&
               ObjectsCompat.equals(getKey(), presetData.getKey()) &&
               ObjectsCompat.equals(getVolumes(), presetData.getVolumes()) &&
               ObjectsCompat.equals(getSound(), presetData.getSound()) &&
+              ObjectsCompat.equals(getSoundId(), presetData.getSoundId()) &&
               ObjectsCompat.equals(getPublicityStatus(), presetData.getPublicityStatus()) &&
               ObjectsCompat.equals(getCreatedAt(), presetData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), presetData.getUpdatedAt());
@@ -129,9 +145,11 @@ public final class PresetData implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getPresetOwner())
+      .append(getPresetOwnerId())
       .append(getKey())
       .append(getVolumes())
       .append(getSound())
+      .append(getSoundId())
       .append(getPublicityStatus())
       .append(getCreatedAt())
       .append(getUpdatedAt())
@@ -145,9 +163,11 @@ public final class PresetData implements Model {
       .append("PresetData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("presetOwner=" + String.valueOf(getPresetOwner()) + ", ")
+      .append("presetOwnerId=" + String.valueOf(getPresetOwnerId()) + ", ")
       .append("key=" + String.valueOf(getKey()) + ", ")
       .append("volumes=" + String.valueOf(getVolumes()) + ", ")
       .append("sound=" + String.valueOf(getSound()) + ", ")
+      .append("soundId=" + String.valueOf(getSoundId()) + ", ")
       .append("publicityStatus=" + String.valueOf(getPublicityStatus()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
@@ -174,6 +194,8 @@ public final class PresetData implements Model {
       null,
       null,
       null,
+      null,
+      null,
       null
     );
   }
@@ -181,9 +203,11 @@ public final class PresetData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       presetOwner,
+      presetOwnerId,
       key,
       volumes,
       sound,
+      soundId,
       publicityStatus);
   }
   public interface PresetOwnerStep {
@@ -209,6 +233,8 @@ public final class PresetData implements Model {
   public interface BuildStep {
     PresetData build();
     BuildStep id(String id);
+    BuildStep presetOwnerId(String presetOwnerId);
+    BuildStep soundId(String soundId);
     BuildStep publicityStatus(PresetPublicityStatus publicityStatus);
   }
   
@@ -219,6 +245,8 @@ public final class PresetData implements Model {
     private String key;
     private List<Integer> volumes;
     private SoundData sound;
+    private String presetOwnerId;
+    private String soundId;
     private PresetPublicityStatus publicityStatus;
     @Override
      public PresetData build() {
@@ -227,9 +255,11 @@ public final class PresetData implements Model {
         return new PresetData(
           id,
           presetOwner,
+          presetOwnerId,
           key,
           volumes,
           sound,
+          soundId,
           publicityStatus);
     }
     
@@ -262,6 +292,18 @@ public final class PresetData implements Model {
     }
     
     @Override
+     public BuildStep presetOwnerId(String presetOwnerId) {
+        this.presetOwnerId = presetOwnerId;
+        return this;
+    }
+    
+    @Override
+     public BuildStep soundId(String soundId) {
+        this.soundId = soundId;
+        return this;
+    }
+    
+    @Override
      public BuildStep publicityStatus(PresetPublicityStatus publicityStatus) {
         this.publicityStatus = publicityStatus;
         return this;
@@ -279,12 +321,14 @@ public final class PresetData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData presetOwner, String key, List<Integer> volumes, SoundData sound, PresetPublicityStatus publicityStatus) {
+    private CopyOfBuilder(String id, UserData presetOwner, String presetOwnerId, String key, List<Integer> volumes, SoundData sound, String soundId, PresetPublicityStatus publicityStatus) {
       super.id(id);
       super.presetOwner(presetOwner)
         .key(key)
         .volumes(volumes)
         .sound(sound)
+        .presetOwnerId(presetOwnerId)
+        .soundId(soundId)
         .publicityStatus(publicityStatus);
     }
     
@@ -306,6 +350,16 @@ public final class PresetData implements Model {
     @Override
      public CopyOfBuilder sound(SoundData sound) {
       return (CopyOfBuilder) super.sound(sound);
+    }
+    
+    @Override
+     public CopyOfBuilder presetOwnerId(String presetOwnerId) {
+      return (CopyOfBuilder) super.presetOwnerId(presetOwnerId);
+    }
+    
+    @Override
+     public CopyOfBuilder soundId(String soundId) {
+      return (CopyOfBuilder) super.soundId(soundId);
     }
     
     @Override

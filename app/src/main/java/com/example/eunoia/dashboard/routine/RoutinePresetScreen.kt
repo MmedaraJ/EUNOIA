@@ -17,6 +17,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.RoutinePreset
+import com.amplifyframework.datastore.generated.model.RoutineSoundPreset
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.AlignedNormalText
@@ -27,7 +28,7 @@ import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
 
-var routinePresetList by mutableStateOf<MutableList<RoutinePreset?>?>(null)
+var routinePresetList by mutableStateOf<MutableList<RoutineSoundPreset?>?>(null)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

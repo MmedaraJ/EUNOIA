@@ -1,6 +1,5 @@
 package com.amplifyframework.datastore.generated.model;
 
-import com.amplifyframework.core.model.annotations.BelongsTo;
 import com.amplifyframework.core.model.temporal.Temporal;
 
 import java.util.List;
@@ -26,20 +25,19 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
   @AuthRule(allow = AuthStrategy.PRIVATE, operations = { ModelOperation.READ }),
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", provider = "userPools", operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-@Index(name = "ChapterPages", fields = {"bedtimeStoryInfoChapterDataID","id"})
 public final class ChapterPageData implements Model {
   public static final QueryField ID = field("ChapterPageData", "id");
   public static final QueryField DISPLAY_NAME = field("ChapterPageData", "display_name");
   public static final QueryField PAGE_NUMBER = field("ChapterPageData", "pageNumber");
   public static final QueryField AUDIO_KEYS_S3 = field("ChapterPageData", "audioKeysS3");
   public static final QueryField AUDIO_NAMES = field("ChapterPageData", "audioNames");
-  public static final QueryField BEDTIME_STORY_INFO_CHAPTER = field("ChapterPageData", "bedtimeStoryInfoChapterDataID");
+  public static final QueryField BEDTIME_STORY_INFO_CHAPTER_ID = field("ChapterPageData", "bedtimeStoryInfoChapterId");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="Int", isRequired = true) Integer pageNumber;
   private final @ModelField(targetType="String", isRequired = true) List<String> audioKeysS3;
   private final @ModelField(targetType="String", isRequired = true) List<String> audioNames;
-  private final @ModelField(targetType="BedtimeStoryInfoChapterData", isRequired = true) @BelongsTo(targetName = "bedtimeStoryInfoChapterDataID", type = BedtimeStoryInfoChapterData.class) BedtimeStoryInfoChapterData bedtimeStoryInfoChapter;
+  private final @ModelField(targetType="String") String bedtimeStoryInfoChapterId;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -62,8 +60,8 @@ public final class ChapterPageData implements Model {
       return audioNames;
   }
   
-  public BedtimeStoryInfoChapterData getBedtimeStoryInfoChapter() {
-      return bedtimeStoryInfoChapter;
+  public String getBedtimeStoryInfoChapterId() {
+      return bedtimeStoryInfoChapterId;
   }
   
   public Temporal.DateTime getCreatedAt() {
@@ -74,13 +72,13 @@ public final class ChapterPageData implements Model {
       return updatedAt;
   }
   
-  private ChapterPageData(String id, String display_name, Integer pageNumber, List<String> audioKeysS3, List<String> audioNames, BedtimeStoryInfoChapterData bedtimeStoryInfoChapter) {
+  private ChapterPageData(String id, String display_name, Integer pageNumber, List<String> audioKeysS3, List<String> audioNames, String bedtimeStoryInfoChapterId) {
     this.id = id;
     this.display_name = display_name;
     this.pageNumber = pageNumber;
     this.audioKeysS3 = audioKeysS3;
     this.audioNames = audioNames;
-    this.bedtimeStoryInfoChapter = bedtimeStoryInfoChapter;
+    this.bedtimeStoryInfoChapterId = bedtimeStoryInfoChapterId;
   }
   
   @Override
@@ -96,7 +94,7 @@ public final class ChapterPageData implements Model {
               ObjectsCompat.equals(getPageNumber(), chapterPageData.getPageNumber()) &&
               ObjectsCompat.equals(getAudioKeysS3(), chapterPageData.getAudioKeysS3()) &&
               ObjectsCompat.equals(getAudioNames(), chapterPageData.getAudioNames()) &&
-              ObjectsCompat.equals(getBedtimeStoryInfoChapter(), chapterPageData.getBedtimeStoryInfoChapter()) &&
+              ObjectsCompat.equals(getBedtimeStoryInfoChapterId(), chapterPageData.getBedtimeStoryInfoChapterId()) &&
               ObjectsCompat.equals(getCreatedAt(), chapterPageData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), chapterPageData.getUpdatedAt());
       }
@@ -110,7 +108,7 @@ public final class ChapterPageData implements Model {
       .append(getPageNumber())
       .append(getAudioKeysS3())
       .append(getAudioNames())
-      .append(getBedtimeStoryInfoChapter())
+      .append(getBedtimeStoryInfoChapterId())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -126,7 +124,7 @@ public final class ChapterPageData implements Model {
       .append("pageNumber=" + String.valueOf(getPageNumber()) + ", ")
       .append("audioKeysS3=" + String.valueOf(getAudioKeysS3()) + ", ")
       .append("audioNames=" + String.valueOf(getAudioNames()) + ", ")
-      .append("bedtimeStoryInfoChapter=" + String.valueOf(getBedtimeStoryInfoChapter()) + ", ")
+      .append("bedtimeStoryInfoChapterId=" + String.valueOf(getBedtimeStoryInfoChapterId()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -162,7 +160,7 @@ public final class ChapterPageData implements Model {
       pageNumber,
       audioKeysS3,
       audioNames,
-      bedtimeStoryInfoChapter);
+      bedtimeStoryInfoChapterId);
   }
   public interface DisplayNameStep {
     PageNumberStep displayName(String displayName);
@@ -180,28 +178,24 @@ public final class ChapterPageData implements Model {
   
 
   public interface AudioNamesStep {
-    BedtimeStoryInfoChapterStep audioNames(List<String> audioNames);
-  }
-  
-
-  public interface BedtimeStoryInfoChapterStep {
-    BuildStep bedtimeStoryInfoChapter(BedtimeStoryInfoChapterData bedtimeStoryInfoChapter);
+    BuildStep audioNames(List<String> audioNames);
   }
   
 
   public interface BuildStep {
     ChapterPageData build();
     BuildStep id(String id);
+    BuildStep bedtimeStoryInfoChapterId(String bedtimeStoryInfoChapterId);
   }
   
 
-  public static class Builder implements DisplayNameStep, PageNumberStep, AudioKeysS3Step, AudioNamesStep, BedtimeStoryInfoChapterStep, BuildStep {
+  public static class Builder implements DisplayNameStep, PageNumberStep, AudioKeysS3Step, AudioNamesStep, BuildStep {
     private String id;
     private String display_name;
     private Integer pageNumber;
     private List<String> audioKeysS3;
     private List<String> audioNames;
-    private BedtimeStoryInfoChapterData bedtimeStoryInfoChapter;
+    private String bedtimeStoryInfoChapterId;
     @Override
      public ChapterPageData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -212,7 +206,7 @@ public final class ChapterPageData implements Model {
           pageNumber,
           audioKeysS3,
           audioNames,
-          bedtimeStoryInfoChapter);
+          bedtimeStoryInfoChapterId);
     }
     
     @Override
@@ -237,16 +231,15 @@ public final class ChapterPageData implements Model {
     }
     
     @Override
-     public BedtimeStoryInfoChapterStep audioNames(List<String> audioNames) {
+     public BuildStep audioNames(List<String> audioNames) {
         Objects.requireNonNull(audioNames);
         this.audioNames = audioNames;
         return this;
     }
     
     @Override
-     public BuildStep bedtimeStoryInfoChapter(BedtimeStoryInfoChapterData bedtimeStoryInfoChapter) {
-        Objects.requireNonNull(bedtimeStoryInfoChapter);
-        this.bedtimeStoryInfoChapter = bedtimeStoryInfoChapter;
+     public BuildStep bedtimeStoryInfoChapterId(String bedtimeStoryInfoChapterId) {
+        this.bedtimeStoryInfoChapterId = bedtimeStoryInfoChapterId;
         return this;
     }
     
@@ -262,13 +255,13 @@ public final class ChapterPageData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String displayName, Integer pageNumber, List<String> audioKeysS3, List<String> audioNames, BedtimeStoryInfoChapterData bedtimeStoryInfoChapter) {
+    private CopyOfBuilder(String id, String displayName, Integer pageNumber, List<String> audioKeysS3, List<String> audioNames, String bedtimeStoryInfoChapterId) {
       super.id(id);
       super.displayName(displayName)
         .pageNumber(pageNumber)
         .audioKeysS3(audioKeysS3)
         .audioNames(audioNames)
-        .bedtimeStoryInfoChapter(bedtimeStoryInfoChapter);
+        .bedtimeStoryInfoChapterId(bedtimeStoryInfoChapterId);
     }
     
     @Override
@@ -292,8 +285,8 @@ public final class ChapterPageData implements Model {
     }
     
     @Override
-     public CopyOfBuilder bedtimeStoryInfoChapter(BedtimeStoryInfoChapterData bedtimeStoryInfoChapter) {
-      return (CopyOfBuilder) super.bedtimeStoryInfoChapter(bedtimeStoryInfoChapter);
+     public CopyOfBuilder bedtimeStoryInfoChapterId(String bedtimeStoryInfoChapterId) {
+      return (CopyOfBuilder) super.bedtimeStoryInfoChapterId(bedtimeStoryInfoChapterId);
     }
   }
   

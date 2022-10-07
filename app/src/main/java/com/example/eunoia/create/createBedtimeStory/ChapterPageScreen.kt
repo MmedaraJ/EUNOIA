@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.amplifyframework.datastore.generated.model.ChapterPageData
+import com.amplifyframework.datastore.generated.model.PageData
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -27,9 +27,9 @@ private var TAG = "Page Screen"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ChapterPageScreenUI(
+fun PageScreenUI(
     navController: NavController,
-    chapterPageData: ChapterPageData,
+    pageData: PageData,
     pageIndex: Int,
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
@@ -41,9 +41,9 @@ fun ChapterPageScreenUI(
         }
     }
     var numberOfRecordings by rememberSaveable { mutableStateOf(pageRecordings[pageIndex].size) }
-    for (i in pageRecordings[pageIndex].size until chapterPageData.audioKeysS3.size) {
-        pageRecordings[pageIndex][remember{mutableStateOf(chapterPageData.audioNames[i])}] =
-            remember{mutableStateOf(chapterPageData.audioKeysS3[i])}
+    for (i in pageRecordings[pageIndex].size until pageData.audioKeysS3.size) {
+        pageRecordings[pageIndex][remember{mutableStateOf(pageData.audioNames[i])}] =
+            remember{mutableStateOf(pageData.audioKeysS3[i])}
     }
     numberOfRecordings = pageRecordings[pageIndex].size
     val scrollState = rememberScrollState()
@@ -90,7 +90,7 @@ fun ChapterPageScreenUI(
                 }
         ) {
             NormalText(
-                text = "${chapterPageData.bedtimeStoryInfoChapter.displayName} - ${chapterPageData.displayName}",
+                text = /*${pageData.bedtimeStoryInfoChapter.displayName} -*/ "${pageData.displayName}",
                 color = Black,
                 fontSize = 16,
                 xOffset = 0,
@@ -141,7 +141,7 @@ fun ChapterPageScreenUI(
                 maxWidthFraction = 1F
             ) {
                 globalViewModel_!!.bottomSheetOpenFor = "recordAudio"
-                recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording = chapterPageData
+                recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording = pageData
                 openBottomSheet(scope, state)
             }
         }

@@ -167,75 +167,80 @@ class UploadFilesActivity : ComponentActivity() {
         }
     }
 
-    private fun createUserPreset(presetData: PresetData){
-        val userPresetModel = UserPresetObject.UserPresetModel(
+    private fun createUserPreset(presetData: SoundPresetData){
+        val userSoundPresetModel = UserSoundPresetObject.UserSoundPresetModel(
             UUID.randomUUID().toString(),
             UserObject.signedInUser().value!!,
-            PresetObject.Preset.from(presetData),
+            SoundPresetObject.SoundPreset.from(presetData),
         )
-        UserPresetBackend.createUserPreset(userPresetModel){
+        UserSoundPresetBackend.createUserSoundPreset(userSoundPresetModel){
 
         }
     }
 
     private fun createSoundPreset(soundData: SoundData){
-        val originalVolumes = PresetObject.Preset(
+        val originalVolumes = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
             UserObject.User.from(globalViewModel_!!.currentUser!!),
+            globalViewModel_!!.currentUser!!.id,
             "original_volumes",
             listOf(5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
-            SoundObject.Sound.from(soundData),
-            PresetPublicityStatus.PUBLIC
+            soundData.id,
+            SoundPresetPublicityStatus.PUBLIC
         )
-        PresetBackend.createPreset(originalVolumes){
+        SoundPresetBackend.createSoundPreset(originalVolumes){
             createUserPreset(it)
         }
 
-        val preset1 = PresetObject.Preset(
+        val preset1 = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
             UserObject.User.from(globalViewModel_!!.currentUser!!),
+            globalViewModel_!!.currentUser!!.id,
             "preset1",
             listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
-            SoundObject.Sound.from(soundData),
-            PresetPublicityStatus.PUBLIC
+            soundData.id,
+            SoundPresetPublicityStatus.PUBLIC
         )
-        PresetBackend.createPreset(preset1){
+        SoundPresetBackend.createSoundPreset(preset1){
             createUserPreset(it)
         }
 
-        val preset2 = PresetObject.Preset(
+        val preset2 = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
             UserObject.User.from(globalViewModel_!!.currentUser!!),
+            globalViewModel_!!.currentUser!!.id,
             "preset2",
             listOf(10, 9, 8, 7, 6, 5, 4, 3, 2, 1),
-            SoundObject.Sound.from(soundData),
-            PresetPublicityStatus.PUBLIC
+            soundData.id,
+            SoundPresetPublicityStatus.PUBLIC
         )
-        PresetBackend.createPreset(preset2){
+        SoundPresetBackend.createSoundPreset(preset2){
             createUserPreset(it)
         }
 
-        val preset3 = PresetObject.Preset(
+        val preset3 = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
             UserObject.User.from(globalViewModel_!!.currentUser!!),
+            globalViewModel_!!.currentUser!!.id,
             "preset3",
             listOf(10, 9, 8, 7, 6, 1, 2, 3, 4, 5),
-            SoundObject.Sound.from(soundData),
-            PresetPublicityStatus.PUBLIC
+            soundData.id,
+            SoundPresetPublicityStatus.PUBLIC
         )
-        PresetBackend.createPreset(preset3){
+        SoundPresetBackend.createSoundPreset(preset3){
             createUserPreset(it)
         }
 
-        val preset4 = PresetObject.Preset(
+        val preset4 = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
             UserObject.User.from(globalViewModel_!!.currentUser!!),
+            globalViewModel_!!.currentUser!!.id,
             "preset4",
             listOf(10, 8, 6, 4, 2, 1, 2, 4, 6, 8),
-            SoundObject.Sound.from(soundData),
-            PresetPublicityStatus.PUBLIC
+            soundData.id,
+            SoundPresetPublicityStatus.PUBLIC
         )
-        PresetBackend.createPreset(preset4){
+        SoundPresetBackend.createSoundPreset(preset4){
             createUserPreset(it)
         }
     }
@@ -244,6 +249,7 @@ class UploadFilesActivity : ComponentActivity() {
         val sound = SoundObject.Sound(
             UUID.randomUUID().toString(),
             UserObject.signedInUser().value!!,
+            UserObject.signedInUser().value!!.id,
             "pouring rain",
             "pouring rain",
             "The beautiful sound of the pouring rain",

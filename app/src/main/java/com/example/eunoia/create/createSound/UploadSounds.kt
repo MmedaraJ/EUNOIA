@@ -16,19 +16,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
-import com.example.eunoia.dashboard.sound.updatePreviousUserSoundRelationship
-import com.example.eunoia.models.PresetObject
+import com.example.eunoia.models.SoundPresetObject
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
-import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.ui.theme.SwansDown
 import com.example.eunoia.ui.theme.WePeep
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -41,7 +36,7 @@ var fileUris = mutableListOf<MutableState<Uri>?>()
 var fileMediaPlayers = mutableListOf<MutableState<MediaPlayer>?>()
 var fileNames = mutableListOf<MutableState<String>?>()
 var audioFileLengthMilliSeconds = mutableListOf<MutableState<Long>?>()
-var createSoundPresets = mutableListOf<MutableState<PresetObject.Preset>?>()
+var createSoundPresets = mutableListOf<MutableState<SoundPresetObject.SoundPreset>?>()
 var selectedIndex by mutableStateOf(0)
 var TAG = "Upload Sounds"
 

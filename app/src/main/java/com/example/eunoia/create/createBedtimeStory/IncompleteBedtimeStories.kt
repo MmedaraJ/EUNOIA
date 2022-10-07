@@ -33,7 +33,7 @@ fun IncompleteBedtimeStoriesUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    clearChapterPagesList()
+    clearPagesList()
     clearBedtimeStoryChaptersList()
     clearPageRecordingsList()
     var numberOfBedtimeStories by rememberSaveable { mutableStateOf(userBedtimeStories.size) }

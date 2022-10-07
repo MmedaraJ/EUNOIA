@@ -14,6 +14,7 @@ object SelfLoveObject {
     data class SelfLove(
         val id: String,
         val selfLoveOwner: @RawValue UserObject.User?,
+        val selfLoveOwnerId: String?,
         val displayName: String,
         val shortDescription: String?,
         val longDescription: String?,
@@ -42,6 +43,7 @@ object SelfLoveObject {
                 .tags(this.tags)
                 .audioSource(this.audioSource)
                 .approvalStatus(this.approvalStatus)
+                .selfLoveOwnerId(this.selfLoveOwnerId)
                 .shortDescription(this.shortDescription)
                 .longDescription(this.longDescription)
                 .id(this.id)
@@ -52,6 +54,7 @@ object SelfLoveObject {
                 val result = SelfLove(
                     selfLoveData.id,
                     UserObject.User.from(selfLoveData.selfLoveOwner),
+                    selfLoveData.selfLoveOwnerId,
                     selfLoveData.displayName,
                     selfLoveData.shortDescription,
                     selfLoveData.longDescription,

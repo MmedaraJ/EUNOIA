@@ -28,18 +28,24 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 })
 @Index(name = "CommentsOwnedByUser", fields = {"userDataID","comment"})
 @Index(name = "CommentsOwnedBySound", fields = {"soundID","comment"})
-@Index(name = "CommentsOwnedByPreset", fields = {"presetID","comment"})
+@Index(name = "CommentsOwnedBySoundPreset", fields = {"presetID","comment"})
 public final class CommentData implements Model {
   public static final QueryField ID = field("CommentData", "id");
   public static final QueryField COMMENT_OWNER = field("CommentData", "userDataID");
+  public static final QueryField COMMENT_OWNER_ID = field("CommentData", "commentOwnerId");
   public static final QueryField COMMENT = field("CommentData", "comment");
   public static final QueryField SOUND = field("CommentData", "soundID");
+  public static final QueryField SOUND_ID = field("CommentData", "soundId");
   public static final QueryField PRESET = field("CommentData", "presetID");
+  public static final QueryField PRESET_ID = field("CommentData", "presetId");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData commentOwner;
+  private final @ModelField(targetType="String") String commentOwnerId;
   private final @ModelField(targetType="String", isRequired = true) String comment;
   private final @ModelField(targetType="SoundData", isRequired = true) @BelongsTo(targetName = "soundID", type = SoundData.class) SoundData sound;
-  private final @ModelField(targetType="PresetData", isRequired = true) @BelongsTo(targetName = "presetID", type = PresetData.class) PresetData preset;
+  private final @ModelField(targetType="String") String soundId;
+  private final @ModelField(targetType="SoundPresetData", isRequired = true) @BelongsTo(targetName = "presetID", type = SoundPresetData.class) SoundPresetData preset;
+  private final @ModelField(targetType="String") String presetId;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -50,6 +56,10 @@ public final class CommentData implements Model {
       return commentOwner;
   }
   
+  public String getCommentOwnerId() {
+      return commentOwnerId;
+  }
+  
   public String getComment() {
       return comment;
   }
@@ -58,8 +68,16 @@ public final class CommentData implements Model {
       return sound;
   }
   
-  public PresetData getPreset() {
+  public String getSoundId() {
+      return soundId;
+  }
+  
+  public SoundPresetData getPreset() {
       return preset;
+  }
+  
+  public String getPresetId() {
+      return presetId;
   }
   
   public Temporal.DateTime getCreatedAt() {
@@ -70,12 +88,15 @@ public final class CommentData implements Model {
       return updatedAt;
   }
   
-  private CommentData(String id, UserData commentOwner, String comment, SoundData sound, PresetData preset) {
+  private CommentData(String id, UserData commentOwner, String commentOwnerId, String comment, SoundData sound, String soundId, SoundPresetData preset, String presetId) {
     this.id = id;
     this.commentOwner = commentOwner;
+    this.commentOwnerId = commentOwnerId;
     this.comment = comment;
     this.sound = sound;
+    this.soundId = soundId;
     this.preset = preset;
+    this.presetId = presetId;
   }
   
   @Override
@@ -88,9 +109,12 @@ public final class CommentData implements Model {
       CommentData commentData = (CommentData) obj;
       return ObjectsCompat.equals(getId(), commentData.getId()) &&
               ObjectsCompat.equals(getCommentOwner(), commentData.getCommentOwner()) &&
+              ObjectsCompat.equals(getCommentOwnerId(), commentData.getCommentOwnerId()) &&
               ObjectsCompat.equals(getComment(), commentData.getComment()) &&
               ObjectsCompat.equals(getSound(), commentData.getSound()) &&
+              ObjectsCompat.equals(getSoundId(), commentData.getSoundId()) &&
               ObjectsCompat.equals(getPreset(), commentData.getPreset()) &&
+              ObjectsCompat.equals(getPresetId(), commentData.getPresetId()) &&
               ObjectsCompat.equals(getCreatedAt(), commentData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), commentData.getUpdatedAt());
       }
@@ -101,9 +125,12 @@ public final class CommentData implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getCommentOwner())
+      .append(getCommentOwnerId())
       .append(getComment())
       .append(getSound())
+      .append(getSoundId())
       .append(getPreset())
+      .append(getPresetId())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -116,9 +143,12 @@ public final class CommentData implements Model {
       .append("CommentData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("commentOwner=" + String.valueOf(getCommentOwner()) + ", ")
+      .append("commentOwnerId=" + String.valueOf(getCommentOwnerId()) + ", ")
       .append("comment=" + String.valueOf(getComment()) + ", ")
       .append("sound=" + String.valueOf(getSound()) + ", ")
+      .append("soundId=" + String.valueOf(getSoundId()) + ", ")
       .append("preset=" + String.valueOf(getPreset()) + ", ")
+      .append("presetId=" + String.valueOf(getPresetId()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -143,6 +173,9 @@ public final class CommentData implements Model {
       null,
       null,
       null,
+      null,
+      null,
+      null,
       null
     );
   }
@@ -150,9 +183,12 @@ public final class CommentData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       commentOwner,
+      commentOwnerId,
       comment,
       sound,
-      preset);
+      soundId,
+      preset,
+      presetId);
   }
   public interface CommentOwnerStep {
     CommentStep commentOwner(UserData commentOwner);
@@ -170,13 +206,16 @@ public final class CommentData implements Model {
   
 
   public interface PresetStep {
-    BuildStep preset(PresetData preset);
+    BuildStep preset(SoundPresetData preset);
   }
   
 
   public interface BuildStep {
     CommentData build();
     BuildStep id(String id);
+    BuildStep commentOwnerId(String commentOwnerId);
+    BuildStep soundId(String soundId);
+    BuildStep presetId(String presetId);
   }
   
 
@@ -185,7 +224,10 @@ public final class CommentData implements Model {
     private UserData commentOwner;
     private String comment;
     private SoundData sound;
-    private PresetData preset;
+    private SoundPresetData preset;
+    private String commentOwnerId;
+    private String soundId;
+    private String presetId;
     @Override
      public CommentData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -193,9 +235,12 @@ public final class CommentData implements Model {
         return new CommentData(
           id,
           commentOwner,
+          commentOwnerId,
           comment,
           sound,
-          preset);
+          soundId,
+          preset,
+          presetId);
     }
     
     @Override
@@ -220,9 +265,27 @@ public final class CommentData implements Model {
     }
     
     @Override
-     public BuildStep preset(PresetData preset) {
+     public BuildStep preset(SoundPresetData preset) {
         Objects.requireNonNull(preset);
         this.preset = preset;
+        return this;
+    }
+    
+    @Override
+     public BuildStep commentOwnerId(String commentOwnerId) {
+        this.commentOwnerId = commentOwnerId;
+        return this;
+    }
+    
+    @Override
+     public BuildStep soundId(String soundId) {
+        this.soundId = soundId;
+        return this;
+    }
+    
+    @Override
+     public BuildStep presetId(String presetId) {
+        this.presetId = presetId;
         return this;
     }
     
@@ -238,12 +301,15 @@ public final class CommentData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData commentOwner, String comment, SoundData sound, PresetData preset) {
+    private CopyOfBuilder(String id, UserData commentOwner, String commentOwnerId, String comment, SoundData sound, String soundId, SoundPresetData preset, String presetId) {
       super.id(id);
       super.commentOwner(commentOwner)
         .comment(comment)
         .sound(sound)
-        .preset(preset);
+        .preset(preset)
+        .commentOwnerId(commentOwnerId)
+        .soundId(soundId)
+        .presetId(presetId);
     }
     
     @Override
@@ -262,8 +328,23 @@ public final class CommentData implements Model {
     }
     
     @Override
-     public CopyOfBuilder preset(PresetData preset) {
+     public CopyOfBuilder preset(SoundPresetData preset) {
       return (CopyOfBuilder) super.preset(preset);
+    }
+    
+    @Override
+     public CopyOfBuilder commentOwnerId(String commentOwnerId) {
+      return (CopyOfBuilder) super.commentOwnerId(commentOwnerId);
+    }
+    
+    @Override
+     public CopyOfBuilder soundId(String soundId) {
+      return (CopyOfBuilder) super.soundId(soundId);
+    }
+    
+    @Override
+     public CopyOfBuilder presetId(String presetId) {
+      return (CopyOfBuilder) super.presetId(presetId);
     }
   }
   

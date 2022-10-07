@@ -31,9 +31,11 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class StretchData implements Model {
   public static final QueryField ID = field("StretchData", "id");
   public static final QueryField STRETCH_OWNER = field("StretchData", "userDataID");
+  public static final QueryField STRETCH_OWNER_ID = field("StretchData", "stretchOwnerId");
   public static final QueryField DISPLAY_NAME = field("StretchData", "display_name");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData stretchOwner;
+  private final @ModelField(targetType="String") String stretchOwnerId;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="RoutineStretch") @HasMany(associatedWith = "stretchData", type = RoutineStretch.class) List<RoutineStretch> routines = null;
   private final @ModelField(targetType="UserStretch") @HasMany(associatedWith = "stretchData", type = UserStretch.class) List<UserStretch> users = null;
@@ -45,6 +47,10 @@ public final class StretchData implements Model {
   
   public UserData getStretchOwner() {
       return stretchOwner;
+  }
+  
+  public String getStretchOwnerId() {
+      return stretchOwnerId;
   }
   
   public String getDisplayName() {
@@ -67,9 +73,10 @@ public final class StretchData implements Model {
       return updatedAt;
   }
   
-  private StretchData(String id, UserData stretchOwner, String display_name) {
+  private StretchData(String id, UserData stretchOwner, String stretchOwnerId, String display_name) {
     this.id = id;
     this.stretchOwner = stretchOwner;
+    this.stretchOwnerId = stretchOwnerId;
     this.display_name = display_name;
   }
   
@@ -83,6 +90,7 @@ public final class StretchData implements Model {
       StretchData stretchData = (StretchData) obj;
       return ObjectsCompat.equals(getId(), stretchData.getId()) &&
               ObjectsCompat.equals(getStretchOwner(), stretchData.getStretchOwner()) &&
+              ObjectsCompat.equals(getStretchOwnerId(), stretchData.getStretchOwnerId()) &&
               ObjectsCompat.equals(getDisplayName(), stretchData.getDisplayName()) &&
               ObjectsCompat.equals(getCreatedAt(), stretchData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), stretchData.getUpdatedAt());
@@ -94,6 +102,7 @@ public final class StretchData implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getStretchOwner())
+      .append(getStretchOwnerId())
       .append(getDisplayName())
       .append(getCreatedAt())
       .append(getUpdatedAt())
@@ -107,6 +116,7 @@ public final class StretchData implements Model {
       .append("StretchData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("stretchOwner=" + String.valueOf(getStretchOwner()) + ", ")
+      .append("stretchOwnerId=" + String.valueOf(getStretchOwnerId()) + ", ")
       .append("display_name=" + String.valueOf(getDisplayName()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
@@ -130,6 +140,7 @@ public final class StretchData implements Model {
     return new StretchData(
       id,
       null,
+      null,
       null
     );
   }
@@ -137,6 +148,7 @@ public final class StretchData implements Model {
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
       stretchOwner,
+      stretchOwnerId,
       display_name);
   }
   public interface StretchOwnerStep {
@@ -152,6 +164,7 @@ public final class StretchData implements Model {
   public interface BuildStep {
     StretchData build();
     BuildStep id(String id);
+    BuildStep stretchOwnerId(String stretchOwnerId);
   }
   
 
@@ -159,6 +172,7 @@ public final class StretchData implements Model {
     private String id;
     private UserData stretchOwner;
     private String display_name;
+    private String stretchOwnerId;
     @Override
      public StretchData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -166,6 +180,7 @@ public final class StretchData implements Model {
         return new StretchData(
           id,
           stretchOwner,
+          stretchOwnerId,
           display_name);
     }
     
@@ -183,6 +198,12 @@ public final class StretchData implements Model {
         return this;
     }
     
+    @Override
+     public BuildStep stretchOwnerId(String stretchOwnerId) {
+        this.stretchOwnerId = stretchOwnerId;
+        return this;
+    }
+    
     /**
      * @param id id
      * @return Current Builder instance, for fluent method chaining
@@ -195,10 +216,11 @@ public final class StretchData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData stretchOwner, String displayName) {
+    private CopyOfBuilder(String id, UserData stretchOwner, String stretchOwnerId, String displayName) {
       super.id(id);
       super.stretchOwner(stretchOwner)
-        .displayName(displayName);
+        .displayName(displayName)
+        .stretchOwnerId(stretchOwnerId);
     }
     
     @Override
@@ -209,6 +231,11 @@ public final class StretchData implements Model {
     @Override
      public CopyOfBuilder displayName(String displayName) {
       return (CopyOfBuilder) super.displayName(displayName);
+    }
+    
+    @Override
+     public CopyOfBuilder stretchOwnerId(String stretchOwnerId) {
+      return (CopyOfBuilder) super.stretchOwnerId(stretchOwnerId);
     }
   }
   

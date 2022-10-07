@@ -17,12 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
-import com.amplifyframework.datastore.generated.model.PresetData
-import com.amplifyframework.datastore.generated.model.PresetPublicityStatus
-import com.amplifyframework.datastore.generated.model.SoundApprovalStatus
-import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
-import com.example.eunoia.create.createPrayer.prayerName
 import com.example.eunoia.create.createSoundViewModel
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.*
@@ -31,7 +27,6 @@ import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.navigation.openPrayerNameTakenDialogBox
 import com.example.eunoia.ui.navigation.openSavedElementDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
@@ -317,6 +312,7 @@ fun createSound(completed: (soundData: SoundData) -> Unit){
     val sound = SoundObject.Sound(
         UUID.randomUUID().toString(),
         UserObject.User.from(globalViewModel_!!.currentUser!!),
+        globalViewModel_!!.currentUser!!.id,
         soundName,
         soundName,
         soundShortDescription,
@@ -383,8 +379,8 @@ private fun createUserSoundRelationship(soundData: SoundData, completed: () -> U
 
 private fun createSoundPreset(soundData: SoundData, completed: () -> Unit) {
     for(i in createSoundPresets.indices){
-        createSoundPresets[i]!!.value.sound = SoundObject.Sound.from(soundData)
-        PresetBackend.createPreset(createSoundPresets[i]!!.value){
+        createSoundPresets[i]!!.value.soundId = SoundObject.Sound.from(soundData).id
+        SoundPresetBackend.createSoundPreset(createSoundPresets[i]!!.value){
             createUserPresetRelationship(it, i) {
                 createUserPreset(it, i) {
                     completed()
@@ -395,16 +391,16 @@ private fun createSoundPreset(soundData: SoundData, completed: () -> Unit) {
 }
 
 private fun createUserPreset(
-    presetData: PresetData,
+    presetData: SoundPresetData,
     index: Int,
     completed: () -> Unit
 ){
-    val userPresetModel = UserPresetObject.UserPresetModel(
+    val userSoundPresetModel = UserSoundPresetObject.UserSoundPresetModel(
         UUID.randomUUID().toString(),
         UserObject.signedInUser().value!!,
-        PresetObject.Preset.from(presetData),
+        SoundPresetObject.SoundPreset.from(presetData),
     )
-    UserPresetBackend.createUserPreset(userPresetModel){
+    UserSoundPresetBackend.createUserSoundPreset(userSoundPresetModel){
         if(index == createSoundPresets.size - 1){
             completed()
         }
@@ -412,11 +408,11 @@ private fun createUserPreset(
 }
 
 private fun createUserPresetRelationship(
-    presetData: PresetData,
+    presetData: SoundPresetData,
     index: Int,
     completed: () -> Unit
 ){
-    UserPresetRelationshipBackend.createUserPresetRelationshipObject(presetData){
+    UserSoundPresetRelationshipBackend.createUserSoundPresetRelationshipObject(presetData){
         if(index == createSoundPresets.size - 1){
             completed()
         }
@@ -429,13 +425,14 @@ fun saveThisPreset(completed: () -> Unit){
         volumes.add(volume!!.value)
     }
     val preset = mutableStateOf(
-        PresetObject.Preset(
+        SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
             UserObject.User.from(globalViewModel_!!.currentUser!!),
+            globalViewModel_!!.currentUser!!.id,
             presetName,
             volumes,
             null,
-            PresetPublicityStatus.PUBLIC
+            SoundPresetPublicityStatus.PUBLIC
         )
     )
     createSoundPresets.add(preset)

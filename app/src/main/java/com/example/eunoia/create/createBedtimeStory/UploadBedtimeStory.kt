@@ -182,6 +182,7 @@ fun createBedtimeStoryFromUpload(
             val bedtimeStory = BedtimeStoryObject.BedtimeStory(
                 UUID.randomUUID().toString(),
                 UserObject.User.from(globalViewModel_!!.currentUser!!),
+                globalViewModel_!!.currentUser!!.id,
                 bedtimeStoryName,
                 bedtimeStoryShortDescription,
                 bedtimeStoryLongDescription,
@@ -230,7 +231,7 @@ fun recordBedtimeStoryCreatedViaUploadPinpointEvent(bedtimeStoryData: BedtimeSto
 fun resetAllBedtimeStoryCreationObjects(){
     resetNameBedtimeStoryVariables()
     resetIncompleteBedtimeStoriesVariables()
-    clearChapterPagesList()
+    clearPagesList()
     clearPageRecordingsList()
     resetRecordBedtimeStoryVariables()
     clearBedtimeStoryChaptersList()

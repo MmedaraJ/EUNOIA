@@ -92,6 +92,7 @@ subscription OnCreateSoundData($owner: String) {
       updatedAt
       owner
     }
+    soundOwnerId
     original_name
     display_name
     short_description
@@ -123,9 +124,12 @@ subscription OnCreateSoundData($owner: String) {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -136,9 +140,11 @@ subscription OnCreateSoundData($owner: String) {
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -266,6 +272,7 @@ subscription OnUpdateSoundData($owner: String) {
       updatedAt
       owner
     }
+    soundOwnerId
     original_name
     display_name
     short_description
@@ -297,9 +304,12 @@ subscription OnUpdateSoundData($owner: String) {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -310,9 +320,11 @@ subscription OnUpdateSoundData($owner: String) {
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -440,6 +452,7 @@ subscription OnDeleteSoundData($owner: String) {
       updatedAt
       owner
     }
+    soundOwnerId
     original_name
     display_name
     short_description
@@ -471,9 +484,12 @@ subscription OnDeleteSoundData($owner: String) {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -484,9 +500,11 @@ subscription OnDeleteSoundData($owner: String) {
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -638,6 +656,7 @@ subscription OnCreateUserSoundRelationship($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -795,6 +814,7 @@ subscription OnUpdateUserSoundRelationship($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -952,6 +972,7 @@ subscription OnDeleteUserSoundRelationship($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1085,6 +1106,7 @@ subscription OnCreateCommentData($owner: String) {
       updatedAt
       owner
     }
+    commentOwnerId
     comment
     soundID
     sound {
@@ -1110,6 +1132,7 @@ subscription OnCreateCommentData($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1141,6 +1164,7 @@ subscription OnCreateCommentData($owner: String) {
       updatedAt
       owner
     }
+    commentSoundId
     presetID
     preset {
       id
@@ -1165,12 +1189,14 @@ subscription OnCreateCommentData($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -1187,6 +1213,7 @@ subscription OnCreateCommentData($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -1204,6 +1231,7 @@ subscription OnCreateCommentData($owner: String) {
       updatedAt
       owner
     }
+    commentPresetId
     createdAt
     updatedAt
     owner
@@ -1302,6 +1330,7 @@ subscription OnUpdateCommentData($owner: String) {
       updatedAt
       owner
     }
+    commentOwnerId
     comment
     soundID
     sound {
@@ -1327,6 +1356,7 @@ subscription OnUpdateCommentData($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1358,6 +1388,7 @@ subscription OnUpdateCommentData($owner: String) {
       updatedAt
       owner
     }
+    commentSoundId
     presetID
     preset {
       id
@@ -1382,12 +1413,14 @@ subscription OnUpdateCommentData($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -1404,6 +1437,7 @@ subscription OnUpdateCommentData($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -1421,6 +1455,7 @@ subscription OnUpdateCommentData($owner: String) {
       updatedAt
       owner
     }
+    commentPresetId
     createdAt
     updatedAt
     owner
@@ -1519,6 +1554,7 @@ subscription OnDeleteCommentData($owner: String) {
       updatedAt
       owner
     }
+    commentOwnerId
     comment
     soundID
     sound {
@@ -1544,6 +1580,7 @@ subscription OnDeleteCommentData($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1575,6 +1612,7 @@ subscription OnDeleteCommentData($owner: String) {
       updatedAt
       owner
     }
+    commentSoundId
     presetID
     preset {
       id
@@ -1599,12 +1637,14 @@ subscription OnDeleteCommentData($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -1621,6 +1661,7 @@ subscription OnDeleteCommentData($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -1638,6 +1679,7 @@ subscription OnDeleteCommentData($owner: String) {
       updatedAt
       owner
     }
+    commentPresetId
     createdAt
     updatedAt
     owner
@@ -1736,6 +1778,7 @@ subscription OnCreatePresetData($owner: String) {
       updatedAt
       owner
     }
+    presetOwnerId
     key
     volumes
     soundID
@@ -1762,6 +1805,7 @@ subscription OnCreatePresetData($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1793,14 +1837,18 @@ subscription OnCreatePresetData($owner: String) {
       updatedAt
       owner
     }
+    soundId
     publicityStatus
     commentsOwnedByPreset {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -1940,6 +1988,7 @@ subscription OnUpdatePresetData($owner: String) {
       updatedAt
       owner
     }
+    presetOwnerId
     key
     volumes
     soundID
@@ -1966,6 +2015,7 @@ subscription OnUpdatePresetData($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -1997,14 +2047,18 @@ subscription OnUpdatePresetData($owner: String) {
       updatedAt
       owner
     }
+    soundId
     publicityStatus
     commentsOwnedByPreset {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -2144,6 +2198,7 @@ subscription OnDeletePresetData($owner: String) {
       updatedAt
       owner
     }
+    presetOwnerId
     key
     volumes
     soundID
@@ -2170,6 +2225,7 @@ subscription OnDeletePresetData($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -2201,14 +2257,18 @@ subscription OnDeletePresetData($owner: String) {
       updatedAt
       owner
     }
+    soundId
     publicityStatus
     commentsOwnedByPreset {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -2372,12 +2432,14 @@ subscription OnCreateUserPresetRelationship($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -2394,6 +2456,7 @@ subscription OnCreateUserPresetRelationship($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -2535,12 +2598,14 @@ subscription OnUpdateUserPresetRelationship($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -2557,6 +2622,7 @@ subscription OnUpdateUserPresetRelationship($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -2698,12 +2764,14 @@ subscription OnDeleteUserPresetRelationship($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -2720,6 +2788,7 @@ subscription OnDeleteUserPresetRelationship($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -2837,6 +2906,7 @@ subscription OnCreateRoutineData($owner: String) {
       updatedAt
       owner
     }
+    routineOwnerId
     originalName
     displayName
     numberOfSteps
@@ -3063,6 +3133,7 @@ subscription OnUpdateRoutineData($owner: String) {
       updatedAt
       owner
     }
+    routineOwnerId
     originalName
     displayName
     numberOfSteps
@@ -3289,6 +3360,7 @@ subscription OnDeleteRoutineData($owner: String) {
       updatedAt
       owner
     }
+    routineOwnerId
     originalName
     displayName
     numberOfSteps
@@ -3539,6 +3611,7 @@ subscription OnCreateUserRoutineRelationship($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -3721,6 +3794,7 @@ subscription OnUpdateUserRoutineRelationship($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -3903,6 +3977,7 @@ subscription OnDeleteUserRoutineRelationship($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -4061,6 +4136,7 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
       updatedAt
       owner
     }
+    bedtimeStoryOwnerId
     displayName
     shortDescription
     longDescription
@@ -4113,6 +4189,7 @@ subscription OnCreateBedtimeStoryInfoData($owner: String) {
         display_name
         chapterNumber
         bedtimeStoryInfoDataID
+        bedtimeStoryInfoId
         createdAt
         updatedAt
         owner
@@ -4217,6 +4294,7 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
       updatedAt
       owner
     }
+    bedtimeStoryOwnerId
     displayName
     shortDescription
     longDescription
@@ -4269,6 +4347,7 @@ subscription OnUpdateBedtimeStoryInfoData($owner: String) {
         display_name
         chapterNumber
         bedtimeStoryInfoDataID
+        bedtimeStoryInfoId
         createdAt
         updatedAt
         owner
@@ -4373,6 +4452,7 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
       updatedAt
       owner
     }
+    bedtimeStoryOwnerId
     displayName
     shortDescription
     longDescription
@@ -4425,6 +4505,7 @@ subscription OnDeleteBedtimeStoryInfoData($owner: String) {
         display_name
         chapterNumber
         bedtimeStoryInfoDataID
+        bedtimeStoryInfoId
         createdAt
         updatedAt
         owner
@@ -4553,6 +4634,7 @@ subscription OnCreateUserBedtimeStoryInfoRelationship($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -4704,6 +4786,7 @@ subscription OnUpdateUserBedtimeStoryInfoRelationship($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -4855,6 +4938,7 @@ subscription OnDeleteUserBedtimeStoryInfoRelationship($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -4918,6 +5002,7 @@ subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -4945,6 +5030,7 @@ subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
       updatedAt
       owner
     }
+    bedtimeStoryInfoId
     pages {
       items {
         id
@@ -4953,6 +5039,7 @@ subscription OnCreateBedtimeStoryInfoChapterData($owner: String) {
         audioKeysS3
         audioNames
         bedtimeStoryInfoChapterDataID
+        bedtimeStoryInfoChapterId
         createdAt
         updatedAt
         owner
@@ -4993,6 +5080,7 @@ subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -5020,6 +5108,7 @@ subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
       updatedAt
       owner
     }
+    bedtimeStoryInfoId
     pages {
       items {
         id
@@ -5028,6 +5117,7 @@ subscription OnUpdateBedtimeStoryInfoChapterData($owner: String) {
         audioKeysS3
         audioNames
         bedtimeStoryInfoChapterDataID
+        bedtimeStoryInfoChapterId
         createdAt
         updatedAt
         owner
@@ -5068,6 +5158,7 @@ subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -5095,6 +5186,7 @@ subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
       updatedAt
       owner
     }
+    bedtimeStoryInfoId
     pages {
       items {
         id
@@ -5103,6 +5195,7 @@ subscription OnDeleteBedtimeStoryInfoChapterData($owner: String) {
         audioKeysS3
         audioNames
         bedtimeStoryInfoChapterDataID
+        bedtimeStoryInfoChapterId
         createdAt
         updatedAt
         owner
@@ -5130,6 +5223,7 @@ subscription OnCreateChapterPageData($owner: String) {
       bedtimeStoryInfo {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -5145,6 +5239,7 @@ subscription OnCreateChapterPageData($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryInfoId
       pages {
         nextToken
       }
@@ -5152,6 +5247,7 @@ subscription OnCreateChapterPageData($owner: String) {
       updatedAt
       owner
     }
+    bedtimeStoryInfoChapterId
     createdAt
     updatedAt
     owner
@@ -5173,6 +5269,7 @@ subscription OnUpdateChapterPageData($owner: String) {
       bedtimeStoryInfo {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -5188,6 +5285,7 @@ subscription OnUpdateChapterPageData($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryInfoId
       pages {
         nextToken
       }
@@ -5195,6 +5293,7 @@ subscription OnUpdateChapterPageData($owner: String) {
       updatedAt
       owner
     }
+    bedtimeStoryInfoChapterId
     createdAt
     updatedAt
     owner
@@ -5216,6 +5315,7 @@ subscription OnDeleteChapterPageData($owner: String) {
       bedtimeStoryInfo {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -5231,6 +5331,7 @@ subscription OnDeleteChapterPageData($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryInfoId
       pages {
         nextToken
       }
@@ -5238,6 +5339,7 @@ subscription OnDeleteChapterPageData($owner: String) {
       updatedAt
       owner
     }
+    bedtimeStoryInfoChapterId
     createdAt
     updatedAt
     owner
@@ -5336,6 +5438,7 @@ subscription OnCreatePrayerData($owner: String) {
       updatedAt
       owner
     }
+    prayerOwnerId
     displayName
     shortDescription
     longDescription
@@ -5481,6 +5584,7 @@ subscription OnUpdatePrayerData($owner: String) {
       updatedAt
       owner
     }
+    prayerOwnerId
     displayName
     shortDescription
     longDescription
@@ -5626,6 +5730,7 @@ subscription OnDeletePrayerData($owner: String) {
       updatedAt
       owner
     }
+    prayerOwnerId
     displayName
     shortDescription
     longDescription
@@ -5795,6 +5900,7 @@ subscription OnCreateUserPrayerRelationship($owner: String) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -5944,6 +6050,7 @@ subscription OnUpdateUserPrayerRelationship($owner: String) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -6093,6 +6200,7 @@ subscription OnDeleteUserPrayerRelationship($owner: String) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -6218,6 +6326,7 @@ subscription OnCreateSelfLoveData($owner: String) {
       updatedAt
       owner
     }
+    selfLoveOwnerId
     display_name
     shortDescription
     longDescription
@@ -6362,6 +6471,7 @@ subscription OnUpdateSelfLoveData($owner: String) {
       updatedAt
       owner
     }
+    selfLoveOwnerId
     display_name
     shortDescription
     longDescription
@@ -6506,6 +6616,7 @@ subscription OnDeleteSelfLoveData($owner: String) {
       updatedAt
       owner
     }
+    selfLoveOwnerId
     display_name
     shortDescription
     longDescription
@@ -6674,6 +6785,7 @@ subscription OnCreateUserSelfLoveRelationship($owner: String) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -6822,6 +6934,7 @@ subscription OnUpdateUserSelfLoveRelationship($owner: String) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -6970,6 +7083,7 @@ subscription OnDeleteUserSelfLoveRelationship($owner: String) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -7094,6 +7208,7 @@ subscription OnCreateStretchData($owner: String) {
       updatedAt
       owner
     }
+    stretchOwnerId
     display_name
     routines {
       items {
@@ -7215,6 +7330,7 @@ subscription OnUpdateStretchData($owner: String) {
       updatedAt
       owner
     }
+    stretchOwnerId
     display_name
     routines {
       items {
@@ -7336,6 +7452,7 @@ subscription OnDeleteStretchData($owner: String) {
       updatedAt
       owner
     }
+    stretchOwnerId
     display_name
     routines {
       items {
@@ -7457,6 +7574,7 @@ subscription OnCreateBreathingData($owner: String) {
       updatedAt
       owner
     }
+    breathingOwnerId
     display_name
     routines {
       items {
@@ -7578,6 +7696,7 @@ subscription OnUpdateBreathingData($owner: String) {
       updatedAt
       owner
     }
+    breathingOwnerId
     display_name
     routines {
       items {
@@ -7699,6 +7818,7 @@ subscription OnDeleteBreathingData($owner: String) {
       updatedAt
       owner
     }
+    breathingOwnerId
     display_name
     routines {
       items {
@@ -7828,6 +7948,7 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -7861,9 +7982,11 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -7886,9 +8009,12 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -7899,6 +8025,7 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -7947,6 +8074,7 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         userDataID
+        stretchOwnerId
         display_name
         createdAt
         updatedAt
@@ -7969,6 +8097,7 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -8002,6 +8131,7 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         userDataID
+        breathingOwnerId
         display_name
         createdAt
         updatedAt
@@ -8024,6 +8154,7 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -8056,6 +8187,7 @@ subscription OnCreateUserData($owner: String) {
       items {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -8190,6 +8322,7 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -8223,9 +8356,11 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -8248,9 +8383,12 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -8261,6 +8399,7 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -8309,6 +8448,7 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         userDataID
+        stretchOwnerId
         display_name
         createdAt
         updatedAt
@@ -8331,6 +8471,7 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -8364,6 +8505,7 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         userDataID
+        breathingOwnerId
         display_name
         createdAt
         updatedAt
@@ -8386,6 +8528,7 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -8418,6 +8561,7 @@ subscription OnUpdateUserData($owner: String) {
       items {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -8552,6 +8696,7 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -8585,9 +8730,11 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         presetUserDataID
+        presetOwnerId
         key
         volumes
         soundID
+        soundId
         publicityStatus
         createdAt
         updatedAt
@@ -8610,9 +8757,12 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         userDataID
+        commentOwnerId
         comment
         soundID
+        commentSoundId
         presetID
+        commentPresetId
         createdAt
         updatedAt
         owner
@@ -8623,6 +8773,7 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         userDataID
+        routineOwnerId
         originalName
         displayName
         numberOfSteps
@@ -8671,6 +8822,7 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         userDataID
+        stretchOwnerId
         display_name
         createdAt
         updatedAt
@@ -8693,6 +8845,7 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         userDataID
+        prayerOwnerId
         displayName
         shortDescription
         longDescription
@@ -8726,6 +8879,7 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         userDataID
+        breathingOwnerId
         display_name
         createdAt
         updatedAt
@@ -8748,6 +8902,7 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         userDataID
+        selfLoveOwnerId
         display_name
         shortDescription
         longDescription
@@ -8780,6 +8935,7 @@ subscription OnDeleteUserData($owner: String) {
       items {
         id
         bedtimeStoryUserDataID
+        bedtimeStoryOwnerId
         displayName
         shortDescription
         longDescription
@@ -8841,6 +8997,7 @@ subscription OnCreateUserSound($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -8994,6 +9151,7 @@ subscription OnUpdateUserSound($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9147,6 +9305,7 @@ subscription OnDeleteUserSound($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9300,6 +9459,7 @@ subscription OnCreateRoutineSound($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9354,6 +9514,7 @@ subscription OnCreateRoutineSound($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -9445,6 +9606,7 @@ subscription OnUpdateRoutineSound($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9499,6 +9661,7 @@ subscription OnUpdateRoutineSound($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -9590,6 +9753,7 @@ subscription OnDeleteRoutineSound($owner: String) {
         updatedAt
         owner
       }
+      soundOwnerId
       original_name
       display_name
       short_description
@@ -9644,6 +9808,7 @@ subscription OnDeleteRoutineSound($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -9735,12 +9900,14 @@ subscription OnCreateUserPreset($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -9757,6 +9924,7 @@ subscription OnCreateUserPreset($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -9896,12 +10064,14 @@ subscription OnUpdateUserPreset($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -9918,6 +10088,7 @@ subscription OnUpdateUserPreset($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10057,12 +10228,14 @@ subscription OnDeleteUserPreset($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -10079,6 +10252,7 @@ subscription OnDeleteUserPreset($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10218,12 +10392,14 @@ subscription OnCreateRoutinePreset($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -10240,6 +10416,7 @@ subscription OnCreateRoutinePreset($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10280,6 +10457,7 @@ subscription OnCreateRoutinePreset($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -10371,12 +10549,14 @@ subscription OnUpdateRoutinePreset($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -10393,6 +10573,7 @@ subscription OnUpdateRoutinePreset($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10433,6 +10614,7 @@ subscription OnUpdateRoutinePreset($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -10524,12 +10706,14 @@ subscription OnDeleteRoutinePreset($owner: String) {
         updatedAt
         owner
       }
+      presetOwnerId
       key
       volumes
       soundID
       sound {
         id
         soundUserDataID
+        soundOwnerId
         original_name
         display_name
         short_description
@@ -10546,6 +10730,7 @@ subscription OnDeleteRoutinePreset($owner: String) {
         updatedAt
         owner
       }
+      soundId
       publicityStatus
       commentsOwnedByPreset {
         nextToken
@@ -10586,6 +10771,7 @@ subscription OnDeleteRoutinePreset($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -10677,6 +10863,7 @@ subscription OnCreateRoutinePrayer($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -10758,6 +10945,7 @@ subscription OnCreateRoutinePrayer($owner: String) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -10816,6 +11004,7 @@ subscription OnUpdateRoutinePrayer($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -10897,6 +11086,7 @@ subscription OnUpdateRoutinePrayer($owner: String) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -10955,6 +11145,7 @@ subscription OnDeleteRoutinePrayer($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11036,6 +11227,7 @@ subscription OnDeleteRoutinePrayer($owner: String) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -11094,6 +11286,7 @@ subscription OnCreateRoutineStretch($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11175,6 +11368,7 @@ subscription OnCreateRoutineStretch($owner: String) {
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -11219,6 +11413,7 @@ subscription OnUpdateRoutineStretch($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11300,6 +11495,7 @@ subscription OnUpdateRoutineStretch($owner: String) {
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -11344,6 +11540,7 @@ subscription OnDeleteRoutineStretch($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11425,6 +11622,7 @@ subscription OnDeleteRoutineStretch($owner: String) {
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -11469,6 +11667,7 @@ subscription OnCreateRoutineBreathing($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11550,6 +11749,7 @@ subscription OnCreateRoutineBreathing($owner: String) {
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -11594,6 +11794,7 @@ subscription OnUpdateRoutineBreathing($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11675,6 +11876,7 @@ subscription OnUpdateRoutineBreathing($owner: String) {
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -11719,6 +11921,7 @@ subscription OnDeleteRoutineBreathing($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11800,6 +12003,7 @@ subscription OnDeleteRoutineBreathing($owner: String) {
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -11844,6 +12048,7 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -11925,6 +12130,7 @@ subscription OnCreateRoutineBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -11985,6 +12191,7 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12066,6 +12273,7 @@ subscription OnUpdateRoutineBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -12126,6 +12334,7 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12207,6 +12416,7 @@ subscription OnDeleteRoutineBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -12267,6 +12477,7 @@ subscription OnCreateRoutineSelfLove($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12348,6 +12559,7 @@ subscription OnCreateRoutineSelfLove($owner: String) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -12405,6 +12617,7 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12486,6 +12699,7 @@ subscription OnUpdateRoutineSelfLove($owner: String) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -12543,6 +12757,7 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12624,6 +12839,7 @@ subscription OnDeleteRoutineSelfLove($owner: String) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -12681,6 +12897,7 @@ subscription OnCreateUserRoutine($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -12861,6 +13078,7 @@ subscription OnUpdateUserRoutine($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -13041,6 +13259,7 @@ subscription OnDeleteUserRoutine($owner: String) {
         updatedAt
         owner
       }
+      routineOwnerId
       originalName
       displayName
       numberOfSteps
@@ -13221,6 +13440,7 @@ subscription OnCreateUserBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -13370,6 +13590,7 @@ subscription OnUpdateUserBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -13519,6 +13740,7 @@ subscription OnDeleteUserBedtimeStoryInfo($owner: String) {
         updatedAt
         owner
       }
+      bedtimeStoryOwnerId
       displayName
       shortDescription
       longDescription
@@ -13668,6 +13890,7 @@ subscription OnCreateUserPrayer($owner: String) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -13815,6 +14038,7 @@ subscription OnUpdateUserPrayer($owner: String) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -13962,6 +14186,7 @@ subscription OnDeleteUserPrayer($owner: String) {
         updatedAt
         owner
       }
+      prayerOwnerId
       displayName
       shortDescription
       longDescription
@@ -14109,6 +14334,7 @@ subscription OnCreateUserSelfLove($owner: String) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -14255,6 +14481,7 @@ subscription OnUpdateUserSelfLove($owner: String) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -14401,6 +14628,7 @@ subscription OnDeleteUserSelfLove($owner: String) {
         updatedAt
         owner
       }
+      selfLoveOwnerId
       display_name
       shortDescription
       longDescription
@@ -14547,6 +14775,7 @@ subscription OnCreateUserStretch($owner: String) {
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -14680,6 +14909,7 @@ subscription OnUpdateUserStretch($owner: String) {
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -14813,6 +15043,7 @@ subscription OnDeleteUserStretch($owner: String) {
         updatedAt
         owner
       }
+      stretchOwnerId
       display_name
       routines {
         nextToken
@@ -14946,6 +15177,7 @@ subscription OnCreateUserBreathing($owner: String) {
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -15079,6 +15311,7 @@ subscription OnUpdateUserBreathing($owner: String) {
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken
@@ -15212,6 +15445,7 @@ subscription OnDeleteUserBreathing($owner: String) {
         updatedAt
         owner
       }
+      breathingOwnerId
       display_name
       routines {
         nextToken

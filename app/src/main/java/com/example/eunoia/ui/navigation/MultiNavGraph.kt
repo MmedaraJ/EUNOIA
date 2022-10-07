@@ -29,6 +29,7 @@ import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.viewModels.GlobalViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.eunoia.create.createSound.NameSoundUI
 import com.example.eunoia.create.CreateUI
 import com.example.eunoia.create.createBedtimeStory.*
@@ -113,6 +114,12 @@ fun MultiBottomNavApp(
         )
     }
 }
+
+var dashboardNavController: NavController? = null
+var searchNavController: NavController? = null
+var createNavController: NavController? = null
+var feedbackNavController: NavController? = null
+var accountNavController: NavController? = null
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -322,6 +329,37 @@ fun EunoiaApp(
                                     alwaysShowLabel = true,
                                     selected = currentTab == item,
                                     onClick = {
+                                        if(currentTab == item){
+                                            when(item){
+                                                Screen.Dashboard -> {
+                                                    if(dashboardNavController != null){
+                                                        dashboardNavController!!.popBackStack()
+                                                    }
+                                                }
+                                                Screen.Search -> {
+                                                    if(searchNavController != null){
+                                                        searchNavController!!.popBackStack()
+                                                    }
+                                                }
+                                                Screen.Create -> {
+                                                    if(createNavController != null){
+                                                        createNavController!!.popBackStack()
+                                                    }
+                                                }
+                                                Screen.Feedback -> {
+                                                    if(feedbackNavController != null){
+                                                        feedbackNavController!!.popBackStack()
+                                                    }
+                                                }
+                                                Screen.Account -> {
+                                                    if(accountNavController != null){
+                                                        accountNavController!!.popBackStack()
+                                                    }
+                                                }
+                                                else -> {}
+                                            }
+                                        }
+
                                         currentTab = item
                                         /*navController.navigate(item.screen_route) {
                                             navController.graph.startDestinationRoute?.let { screen_route ->
@@ -390,10 +428,12 @@ fun DashboardTab(
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
+    dashboardNavController = navController
+
+    var startDestination = Screen.Dashboard.screen_route
 
     DisposableEffect(Unit) {
         val callback = NavController.OnDestinationChangedListener { navController, _, _ ->
-            navController.saveState()
             navState.value = navController.saveState() ?: Bundle()
         }
         navController.addOnDestinationChangedListener(callback)
@@ -407,9 +447,13 @@ fun DashboardTab(
         }
     }
 
+    /*Log.i(TAG, "1. navController og $navController")
+    Log.i(TAG, "2. navController o1 $dashboardNavController")
+    Log.i(TAG, "3. currentBackStackEntry ${navController.currentBackStackEntryAsState().value!!}")*/
+
     NavHost(
         navController = navController,
-        startDestination = Screen.Dashboard.screen_route
+        startDestination = startDestination
     ) {
         composable(
             Screen.Dashboard.screen_route
@@ -420,7 +464,8 @@ fun DashboardTab(
                 globalViewModel,
                 scope,
                 state,
-                generalMediaPlayerService
+                generalMediaPlayerService,
+                soundMediaPlayerService
             )
         }
         composable(
@@ -616,6 +661,7 @@ fun CreateTab(
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
+    createNavController = navController
 
     DisposableEffect(Unit) {
         val callback = NavController.OnDestinationChangedListener { controller, _, _ ->
@@ -755,19 +801,19 @@ fun CreateTab(
             )
         }
         composable(
-            "${Screen.ChapterPageScreen.screen_route}/chapterPage={chapterPage}/{pageIndex}",
+            "${Screen.PageScreen.screen_route}/chapterPage={chapterPage}/{pageIndex}",
             arguments = listOf(
                 navArgument("chapterPage") {
-                    type = ChapterPageObject.ChapterPageType()
+                    type = PageObject.PageType()
                 },
                 navArgument("pageIndex") {
                     type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
-            val chapterPage = backStackEntry.arguments?.getParcelable<ChapterPageObject.ChapterPage>("chapterPage")
+            val chapterPage = backStackEntry.arguments?.getParcelable<PageObject.Page>("chapterPage")
             Log.i("ChapterPageScreen", "You are now on the ${chapterPage!!.displayName} tab")
-           ChapterPageScreenUI(
+           PageScreenUI(
                 navController = navController,
                chapterPage.data,
                 backStackEntry.arguments?.getString("pageIndex")!!.toInt(),
@@ -911,6 +957,7 @@ fun SearchTab(
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
+    searchNavController = navController
 
     DisposableEffect(Unit) {
         val callback = NavController.OnDestinationChangedListener { controller, _, _ ->
@@ -964,6 +1011,7 @@ fun FeedbackTab(
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
+    feedbackNavController = navController
 
     DisposableEffect(Unit) {
         val callback = NavController.OnDestinationChangedListener { controller, _, _ ->
@@ -1027,6 +1075,7 @@ fun AccountTab(
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
     val navController = rememberNavController()
+    accountNavController = navController
 
     DisposableEffect(Unit) {
         val callback = NavController.OnDestinationChangedListener { controller, _, _ ->

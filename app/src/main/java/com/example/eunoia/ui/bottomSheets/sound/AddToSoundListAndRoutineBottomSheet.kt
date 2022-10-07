@@ -22,10 +22,7 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
 import com.example.eunoia.dashboard.sound.*
-import com.example.eunoia.models.PresetObject
-import com.example.eunoia.models.RoutineObject
-import com.example.eunoia.models.SoundObject
-import com.example.eunoia.models.UserObject
+import com.example.eunoia.models.*
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -415,12 +412,12 @@ fun setUpRoutinePreset(
     alreadyExists: () -> Unit,
     completed: () -> Unit,
 ) {
-    RoutinePresetBackend.queryRoutinePresetBasedOnRoutineAndPreset(
+    RoutineSoundPresetBackend.queryRoutineSoundPresetBasedOnRoutineAndSoundPreset(
         userRoutine.routineData,
         globalViewModel_!!.currentPresetToBeAdded!!
     ){
         if (it.isEmpty()) {
-            RoutinePresetBackend.createRoutinePresetObject(
+            RoutineSoundPresetBackend.createRoutineSoundPresetObject(
                 globalViewModel_!!.currentPresetToBeAdded!!,
                 userRoutine.routineData
             ) {
@@ -509,7 +506,7 @@ fun setUpRoutineAndUserPresetAfterMakingNewRoutine(
     routineData: RoutineData,
     completed: () -> Unit
 ){
-    RoutinePresetBackend.createRoutinePresetObject(
+    RoutineSoundPresetBackend.createRoutineSoundPresetObject(
         globalViewModel_!!.currentPresetToBeAdded!!,
         routineData
     ) {
@@ -540,12 +537,12 @@ fun setUpRoutineAndUserSoundAfterMakingNewRoutine(
 fun setUpUserPreset(
     completed: () -> Unit
 ){
-    UserPresetBackend.queryUserPresetBasedOnUserAndPreset(
+    UserSoundPresetBackend.queryUserSoundPresetBasedOnUserAndSoundPreset(
         globalViewModel_!!.currentUser!!,
         globalViewModel_!!.currentPresetToBeAdded!!
     ){
         if(it.isEmpty()){
-            UserPresetBackend.createUserPresetObject(
+            UserSoundPresetBackend.createUserSoundPresetObject(
                 globalViewModel_!!.currentPresetToBeAdded!!
             ) {
                 completed()
@@ -559,12 +556,12 @@ fun setUpUserPreset(
 fun setUpUserPresetRelationship(
     completed: () -> Unit
 ){
-    UserPresetRelationshipBackend.queryUserPresetRelationshipBasedOnUserAndPreset(
+    UserSoundPresetRelationshipBackend.queryUserSoundPresetRelationshipBasedOnUserAndSoundPreset(
         globalViewModel_!!.currentUser!!,
         globalViewModel_!!.currentPresetToBeAdded!!
     ){
         if(it.isEmpty()){
-            UserPresetRelationshipBackend.createUserPresetRelationshipObject(
+            UserSoundPresetRelationshipBackend.createUserSoundPresetRelationshipObject(
                 globalViewModel_!!.currentPresetToBeAdded!!
             ) {
                 completed()
@@ -576,20 +573,21 @@ fun setUpUserPresetRelationship(
 }
 
 private fun makePrivatePresetObject(
-    completed: (presetData: PresetData) -> Unit
+    completed: (presetData: SoundPresetData) -> Unit
 ){
-    val preset = PresetObject.Preset(
+    val preset = SoundPresetObject.SoundPreset(
         UUID.randomUUID().toString(),
         UserObject.User.from(globalViewModel_!!.currentUser!!),
+        globalViewModel_!!.currentUser!!.id,
         globalViewModel_!!.presetNameToBeCreated,
         sliderVolumes!!.toList(),
-        SoundObject.Sound.from(globalViewModel_!!.currentSoundToBeAdded!!),
-        PresetPublicityStatus.PRIVATE
+        globalViewModel_!!.currentSoundToBeAdded!!.id,
+        SoundPresetPublicityStatus.PRIVATE
     )
 
-    PresetBackend.createPreset(preset) { presetData ->
-        UserPresetRelationshipBackend.createUserPresetRelationshipObject(presetData) {
-            UserPresetBackend.createUserPresetObject(presetData) {
+    SoundPresetBackend.createSoundPreset(preset) { presetData ->
+        UserSoundPresetRelationshipBackend.createUserSoundPresetRelationshipObject(presetData) {
+            UserSoundPresetBackend.createUserSoundPresetObject(presetData) {
                 globalViewModel_!!.currentPresetToBeAdded = presetData
                 if (globalViewModel_!!.currentAllUserSoundPreset == null) {
                     globalViewModel_!!.currentAllUserSoundPreset = mutableSetOf()
@@ -743,7 +741,7 @@ fun inputPresetName(
 }
 
 private fun checkIfPresetNameIsTaken(completed: (bool: Boolean) -> Unit){
-    PresetBackend.queryPublicPresetsBasedOnDisplayNameAndSound(
+    SoundPresetBackend.queryPublicSoundPresetsBasedOnDisplayNameAndSound(
         globalViewModel_!!.presetNameToBeCreated,
         globalViewModel_!!.currentSoundToBeAdded!!
     ) {
@@ -956,6 +954,7 @@ private fun newRoutineIconSelected(
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
         routineOwner = UserObject.signedInUser().value!!,
+        routineOwnerId = UserObject.signedInUser().value!!.id,
         originalName = globalViewModel_!!.routineNameToBeAdded,
         displayName = globalViewModel_!!.routineNameToBeAdded,
         numberOfSteps = 2,

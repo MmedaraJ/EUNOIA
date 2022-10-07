@@ -14,16 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.RoutineData
-import com.amplifyframework.datastore.generated.model.RoutinePreset
-import com.amplifyframework.datastore.generated.model.UserBedtimeStoryInfo
-import com.amplifyframework.datastore.generated.model.UserRoutine
-import com.example.eunoia.backend.RoutinePresetBackend
+import com.example.eunoia.backend.RoutineSoundPresetBackend
+import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.dashboard.sound.navigateToSoundScreen
-import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.RoutineObject
-import com.example.eunoia.ui.components.AlignedLightText
 import com.example.eunoia.ui.components.AlignedNormalText
 import com.example.eunoia.ui.components.SimpleFlowRow
 import com.example.eunoia.ui.screens.Screen
@@ -147,7 +144,7 @@ fun RoutinePresetElements(
 ){
     var retrievedRoutinePresets by rememberSaveable{ mutableStateOf(false) }
 
-    RoutinePresetBackend.queryRoutinePresetBasedOnRoutine(routineData) { routinePresets ->
+    RoutineSoundPresetBackend.queryRoutineSoundPresetBasedOnRoutine(routineData) { routinePresets ->
         routinePresetList = routinePresets.toMutableList()
         retrievedRoutinePresets = true
     }
@@ -182,7 +179,13 @@ fun RoutinePresetElements(
                                     border.value = false
                                 }
                                 borders[index].value = !borders[index].value
-                                navigateToSoundScreen(navController, element!!.presetData.sound)
+                                SoundBackend.querySoundBasedOnId(element!!.soundPresetData.soundId){
+                                    if(it.isNotEmpty()) {
+                                        runOnUiThread {
+                                            navigateToSoundScreen(navController, it[0]!!)
+                                        }
+                                    }
+                                }
                             }
 
                         if (borders[index].value) {
@@ -222,7 +225,7 @@ fun RoutinePresetElements(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                     ){
                                         AlignedNormalText(
-                                            text = element!!.presetData.key,
+                                            text = element!!.soundPresetData.key,
                                             color = Black,
                                             fontSize = 13,
                                             xOffset = 0,

@@ -15,6 +15,7 @@ object SoundObject {
     data class Sound(
         val id: String,
         val soundOwner: @RawValue UserObject.User?,
+        val soundOwnerId: String?,
         val original_name: String,
         val display_name: String,
         val short_description: String,
@@ -45,6 +46,7 @@ object SoundObject {
                 .tags(this.tags)
                 .audioNames(this.audio_names)
                 .approvalStatus(this.approvalStatus)
+                .soundOwnerId(this.soundOwnerId)
                 .longDescription(this.long_description)
                 .shortDescription(this.short_description)
                 .id(this.id)
@@ -55,6 +57,7 @@ object SoundObject {
                 val result = Sound(
                     soundData.id,
                     UserObject.User.from(soundData.soundOwner),
+                    soundData.soundOwnerId,
                     soundData.originalName,
                     soundData.displayName,
                     soundData.shortDescription,
