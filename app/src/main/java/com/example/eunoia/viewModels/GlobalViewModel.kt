@@ -66,8 +66,14 @@ class GlobalViewModel: ViewModel(){
     var currentRoutinePlayingRoutinePresetsIndex by mutableStateOf<Int?>(0)
     var currentRoutinePlayingRoutinePrayers by mutableStateOf<MutableList<RoutinePrayer?>?>(null)
     var currentRoutinePlayingRoutinePrayersIndex by mutableStateOf<Int?>(0)
+    var currentRoutinePlayingRoutineSelfLoves by mutableStateOf<MutableList<RoutineSelfLove?>?>(null)
+    var currentRoutinePlayingRoutineSelfLovesIndex by mutableStateOf<Int?>(0)
+    var currentRoutinePlayingRoutineBedtimeStories by mutableStateOf<MutableList<RoutineBedtimeStoryInfo?>?>(null)
+    var currentRoutinePlayingRoutineBedtimeStoriesIndex by mutableStateOf<Int?>(0)
     var currentRoutinePlayingSoundCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingPrayerCountDownTimer: CountDownTimer? = null
+    var currentRoutinePlayingSelfLoveCountDownTimer: CountDownTimer? = null
+    var currentRoutinePlayingBedtimeStoryCountDownTimer: CountDownTimer? = null
 
 
     var bottomSheetOpenFor by mutableStateOf("")

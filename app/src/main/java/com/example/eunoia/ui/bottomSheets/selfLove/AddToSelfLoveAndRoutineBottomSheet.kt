@@ -26,7 +26,6 @@ import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.prayer.setUpUserPrayerRelationship
 import com.example.eunoia.ui.bottomSheets.sound.checkIfRoutineNameIsTaken
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
@@ -40,6 +39,7 @@ import java.util.*
 private const val TAG = "AddToSelfLoveListAndRoutineBottomSheet"
 var userRoutinesSize = 0
 private const val MAX_ROUTINE_PLAYTIME = 2_700_000
+private const val MAX_SELF_LOVE_PLAYTIME = 600_000
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -739,10 +739,16 @@ private fun newRoutineIconSelected(
 ) {
     globalViewModel_!!.routineIconToBeAdded = icon
     //45' default playtime
-    var playTime = 2700000
+    var playTime = MAX_ROUTINE_PLAYTIME
     if(globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime < playTime){
         playTime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
     }
+
+    var selfLovePlayTime = MAX_SELF_LOVE_PLAYTIME
+    if(globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime < selfLovePlayTime){
+        selfLovePlayTime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
+    }
+
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
         routineOwner = UserObject.signedInUser().value!!,
@@ -764,7 +770,7 @@ private fun newRoutineIconSelected(
         eachSoundPlayTime = 900000,
         prayerPlayTime = 300000,
         bedtimeStoryPlayTime = 1200000,
-        selfLovePlayTime = 600000,
+        selfLovePlayTime = selfLovePlayTime,
         stretchTime = 600000,
         breathingTime = 600000,
         currentBedtimeStoryPlayingIndex = -1,
@@ -773,7 +779,7 @@ private fun newRoutineIconSelected(
         currentSelfLoveContinuePlayingTime = 0,
         currentPrayerPlayingIndex = -1,
         currentPrayerContinuePlayingTime = -1,
-        playingOrder = listOf("sleep", "selfLove")
+        playingOrder = listOf("sleep", "self-love")
     )
 
     createRoutineAndOtherNecessaryData(

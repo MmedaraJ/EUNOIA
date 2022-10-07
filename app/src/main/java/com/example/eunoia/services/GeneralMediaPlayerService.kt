@@ -108,6 +108,14 @@ class GeneralMediaPlayerService:
         return mediaPlayer
     }
 
+    fun seekToPos(pos: Int){
+        if(mediaPlayerIsPlaying) {
+            mediaPlayer!!.seekTo(pos)
+        }else{
+            seekToPos(pos)
+        }
+    }
+
     override fun onPrepared(mediaPlayer: MediaPlayer?) {
         mediaPlayer!!.start()
         mediaPlayerIsPlaying = true

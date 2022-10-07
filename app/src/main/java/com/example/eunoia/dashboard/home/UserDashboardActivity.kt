@@ -51,6 +51,7 @@ import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.sign_in_process.SignUpConfirmationCodeActivity
 import com.example.eunoia.ui.bottomSheets.*
+import com.example.eunoia.ui.bottomSheets.bedtimeStory.activateBedtimeStoryGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.prayer.activatePrayerGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.prayer.deActivatePrayerGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.recordAudio.recorder
@@ -77,14 +78,12 @@ var routineActivitySoundUrisMapList = mutableListOf<MutableMap<String, MutableLi
 var routineActivitySoundUriVolumes = mutableListOf<MutableMap<String, MutableList<Int>>>()
 
 var routineActivityPrayerUrisMapList = mutableListOf<MutableMap<String, Uri>>()
-var routineActivityBedtimeStoryUris = mutableListOf<MutableState<Uri>?>()
-var routineActivitySelfLoveUris = mutableListOf<MutableState<Uri>?>()
+var routineActivityBedtimeStoryUrisMapList = mutableListOf<MutableMap<String, Uri>>()
+var routineActivitySelfLoveUrisMapList = mutableListOf<MutableMap<String, Uri>>()
 
-var playingSoundNow: SoundData? = null
-
-private const val START_ROUTINE = "start"
-private const val PAUSE_ROUTINE = "pause"
-private const val WAIT_FOR_ROUTINE = "wait"
+const val START_ROUTINE = "start"
+const val PAUSE_ROUTINE = "pause"
+const val WAIT_FOR_ROUTINE = "wait"
 
 private const val TAG = "UserDashboardActivity"
 
@@ -382,8 +381,8 @@ fun UserDashboardActivityUI(
                     routineActivitySoundUriVolumes.add(mutableMapOf())
                     routineActivitySoundUrisMapList.add(mutableMapOf())
                     routineActivityPrayerUrisMapList.add(mutableMapOf())
-                    routineActivityBedtimeStoryUris.add(mutableStateOf("".toUri()))
-                    routineActivitySelfLoveUris.add(mutableStateOf("".toUri()))
+                    routineActivityBedtimeStoryUrisMapList.add(mutableMapOf())
+                    routineActivitySelfLoveUrisMapList.add(mutableMapOf())
                 }
             }
 
@@ -618,6 +617,8 @@ private fun selectNextRoutineElement(
         context
     )
 
+    updateRoutineOncePlayIsClicked(index)
+
     globalViewModel_!!.currentRoutinePlayingOrder = globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.playingOrder
     globalViewModel_!!.currentRoutinePlaying = globalViewModel_!!.currentUsersRoutines!![index]!!.routineData
     Log.i(TAG, "Our routine playing orderz is ${globalViewModel_!!.currentRoutinePlayingOrder!![globalViewModel_!!.currentRoutinePlayingOrderIndex!!]}")
@@ -639,7 +640,7 @@ private fun selectNextRoutineElement(
             )
         }
         "prayer" -> {
-            playOrPausePrayerAccordingly(
+            PrayerForRoutine.playOrPausePrayerAccordingly(
                 soundMediaPlayerService,
                 generalMediaPlayerService,
                 index,
@@ -647,7 +648,15 @@ private fun selectNextRoutineElement(
             )
         }
         "bedtimeStory" -> {
-            playOrPauseBedtimeStorAccordingly(
+            BedtimeStoryForRoutine.playOrPauseBedtimeStoryAccordingly(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
+        }
+        "self-love" -> {
+            SelfLoveForRoutine.playOrPauseSelfLoveAccordingly(
                 soundMediaPlayerService,
                 generalMediaPlayerService,
                 index,
@@ -662,6 +671,19 @@ private fun selectNextRoutineElement(
                 context
             )
         }
+    }
+}
+
+fun updateRoutineOncePlayIsClicked(index: Int) {
+    if (globalViewModel_!!.currentRoutinePlayingOrderIndex == 0) {
+        Log.i(TAG, "Zero manz")
+        val numberOfTimesPlayed =
+            globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.numberOfTimesUsed + 1
+        val routine = globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.copyOfBuilder()
+            .currentPrayerPlayingIndex(numberOfTimesPlayed)
+            .build()
+
+        RoutineBackend.updateRoutine(routine) {}
     }
 }
 
@@ -724,617 +746,6 @@ fun incrementPlayingOrderIndex(
             context
         )
     }
-}
-
-fun playOrPausePrayerAccordingly(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context
-) {
-    if(routineActivityPlayButtonTexts[index]!!.value == START_ROUTINE) {
-        routineActivityPlayButtonTexts[index]!!.value = WAIT_FOR_ROUTINE
-
-        if(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.playingOrder.contains("sound")){
-            if(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.playSoundDuringPrayer){
-                playSound(
-                    soundMediaPlayerService,
-                    generalMediaPlayerService,
-                    index,
-                    context
-                )
-            }else{
-                pauseSound(
-                    soundMediaPlayerService,
-                    index
-                )
-            }
-        }
-
-        playPrayer(
-            soundMediaPlayerService,
-            generalMediaPlayerService,
-            index,
-            context
-        )
-    }else if(
-        routineActivityPlayButtonTexts[index]!!.value == PAUSE_ROUTINE ||
-        routineActivityPlayButtonTexts[index]!!.value == WAIT_FOR_ROUTINE
-    ){
-        Log.i(TAG, "Pausing prayer and sound?")
-        //pause prayer and sound
-        pausePrayer(
-            generalMediaPlayerService,
-            index,
-        )
-
-        pauseSound(
-            soundMediaPlayerService,
-            index
-        )
-        routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
-    }
-}
-
-private fun pausePrayer(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int
-) {
-    if(
-        generalMediaPlayerService.isMediaPlayerInitialized() &&
-        globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-        globalViewModel_!!.currentSelfLovePlaying == null
-    ) {
-        if(generalMediaPlayerService.isMediaPlayerPlaying()) {
-            generalMediaPlayerService.pauseMediaPlayer()
-            globalViewModel_!!.prayerTimer.pause()
-            globalViewModel_!!.isCurrentPrayerPlaying = false
-            activatePrayerGlobalControlButton(2)
-        }
-    }
-}
-
-fun playPrayer(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context
-) {
-    if(globalViewModel_!!.currentRoutinePlayingRoutinePrayers != null) {
-        if(
-            routineActivityPrayerUrisMapList[index][
-                    globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                            [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
-                        .prayerData.id
-            ] != "".toUri()
-        ) {
-            if(globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!.isEmpty()) {
-                getRoutinePrayers(index) {
-                    retrievePrayerUris(
-                        generalMediaPlayerService,
-                        soundMediaPlayerService,
-                        index,
-                        context
-                    )
-                }
-            }else{
-                retrievePrayerUris(
-                    generalMediaPlayerService,
-                    soundMediaPlayerService,
-                    index,
-                    context
-                )
-            }
-        }else{
-            startPrayer(
-                generalMediaPlayerService,
-                soundMediaPlayerService,
-                index,
-                context
-            )
-        }
-    }else{
-        getRoutinePrayers(index) {
-            retrievePrayerUris(
-                generalMediaPlayerService,
-                soundMediaPlayerService,
-                index,
-                context
-            )
-        }
-    }
-}
-
-private fun getRoutinePrayers(index: Int, completed: () -> Unit){
-    getRoutinePrayersBasedOnRoutine(
-        globalViewModel_!!.currentUsersRoutines!![index]!!.routineData
-    ) { routinePrayers ->
-        for( routinePrayer in routinePrayers){
-            routineActivityPrayerUrisMapList[index][routinePrayer!!.prayerData.id] = "".toUri()
-        }
-        globalViewModel_!!.currentRoutinePlayingRoutinePrayers = routinePrayers
-        completed()
-    }
-}
-
-fun getRoutinePrayersBasedOnRoutine(
-    routineData: RoutineData,
-    completed: (routinePrayerList: MutableList<RoutinePrayer?>) -> Unit
-) {
-    RoutinePrayerBackend.queryRoutinePrayerBasedOnRoutine(routineData) { routinePrayers ->
-        completed(routinePrayers.toMutableList())
-    }
-}
-
-private fun retrievePrayerUris(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    soundMediaPlayerService: SoundMediaPlayerService,
-    index: Int,
-    context: Context
-) {
-    SoundBackend.retrieveAudio(
-        globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
-            .prayerData.audioKeyS3,
-        "us-east-1:40c47e83-afe6-426d-8ebc-250f40992dc8"
-        /*globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
-            .prayerData.prayerOwner.amplifyAuthUserId*/
-    ) {
-        routineActivityPrayerUrisMapList[index][
-                globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
-                    .prayerData.id
-        ] = it
-
-        startPrayer(
-            generalMediaPlayerService,
-            soundMediaPlayerService,
-            index,
-            context
-        )
-    }
-}
-
-fun startPrayer(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    soundMediaPlayerService: SoundMediaPlayerService,
-    index: Int,
-    context: Context
-) {
-    if(
-        routineActivityPrayerUrisMapList[index][
-                globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
-                    .prayerData.id
-        ] != "".toUri()
-    ) {
-        if(
-            generalMediaPlayerService.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-            globalViewModel_!!.currentSelfLovePlaying == null
-        ){
-            generalMediaPlayerService.startMediaPlayer()
-        }else{
-            initializePrayerMediaPlayers(
-                generalMediaPlayerService,
-                soundMediaPlayerService,
-                index,
-                context
-            )
-        }
-
-        routineActivityPlayButtonTexts[index]!!.value = PAUSE_ROUTINE
-        Log.i(TAG, "Itzz was --pause-- right here")
-        generalMediaPlayerService.loopMediaPlayer()
-        //globalViewModel_!!.previouslyPlayedUserSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]
-        //globalViewModel_!!.generalPlaytimeTimer.start()
-        setGlobalPropertiesAfterPlayingPrayer(index)
-    }
-}
-
-private fun initializePrayerMediaPlayers(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    soundMediaPlayerService: SoundMediaPlayerService,
-    index: Int,
-    context: Context
-){
-    generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(
-        routineActivityPrayerUrisMapList[index][
-                globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
-                    .prayerData.id
-        ]!!
-    )
-    val intent = Intent()
-    intent.action = "PLAY"
-    generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    generalMediaPlayerService.getMediaPlayer()!!.seekTo(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.currentPrayerContinuePlayingTime)
-    globalViewModel_!!.prayerTimer.setMaxDuration(
-        globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
-            .prayerData.fullPlayTime.toLong()
-    )
-    globalViewModel_!!.prayerTimer.setDuration(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.currentPrayerContinuePlayingTime.toLong())
-    resetOtherGeneralMediaPlayerUsersExceptPrayer()
-
-    startPrayerCDT(
-        soundMediaPlayerService,
-        generalMediaPlayerService,
-        index,
-        context
-    )
-}
-
-fun startPrayerCDT(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context
-) {
-    startPrayerCountDownTimer(
-        context,
-        globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.prayerPlayTime.toLong(),
-        generalMediaPlayerService
-    ){
-        var continuePlayingTime = -1
-        if(generalMediaPlayerService.isMediaPlayerInitialized()) {
-            continuePlayingTime = generalMediaPlayerService.getMediaPlayer()!!.currentPosition
-            generalMediaPlayerService.onDestroy()
-        }
-        deActivatePrayerGlobalControlButton(0)
-        activatePrayerGlobalControlButton(2)
-        globalViewModel_!!.isCurrentPrayerPlaying = false
-        globalViewModel_!!.currentPrayerPlaying = null
-        globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer = null
-
-        val routine = globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.copyOfBuilder()
-            .currentPrayerContinuePlayingTime(continuePlayingTime)
-            .build()
-
-        //update routine with new prayer info
-        RoutineBackend.updateRoutine(routine){
-
-        }
-
-        incrementPlayingOrderIndex(
-            soundMediaPlayerService,
-            generalMediaPlayerService,
-            index,
-            context
-        )
-    }
-}
-
-private fun startPrayerCountDownTimer(
-    context: Context,
-    time: Long,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    completed: () -> Unit
-){
-    if(globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer == null){
-        globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer = object : CountDownTimer(time, 10000) {
-            override fun onTick(millisUntilFinished: Long) {
-                Log.i(TAG, "Prayer routine timer: $millisUntilFinished")
-            }
-            override fun onFinish() {
-                completed()
-                Log.i(TAG, "Timer stopped")
-            }
-        }
-    }
-    globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer!!.start()
-}
-
-private fun setGlobalPropertiesAfterPlayingPrayer(index: Int){
-    globalViewModel_!!.currentPrayerPlaying =
-        globalViewModel_!!.currentRoutinePlayingRoutinePrayers!![
-                globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!
-        ]!!.prayerData
-
-    globalViewModel_!!.currentPrayerPlayingUri =
-        routineActivityPrayerUrisMapList[index][
-                globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
-                    .prayerData.id
-        ]
-
-    globalViewModel_!!.isCurrentPrayerPlaying = true
-    globalViewModel_!!.isCurrentRoutinePlaying = true
-    deActivatePrayerGlobalControlButton(0)
-    deActivatePrayerGlobalControlButton(2)
-}
-
-fun playSound(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context
-) {
-    if(globalViewModel_!!.currentRoutinePlayingRoutinePresets != null) {
-        if(
-            routineActivitySoundUrisMapList[index][
-                    globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                            [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
-                        .soundPresetData.id
-            ]!!.isEmpty()
-        ) {
-            if(globalViewModel_!!.currentRoutinePlayingRoutinePresets!!.isEmpty()) {
-                getRoutinePresets(index) {
-                    retrieveSoundUris(
-                        soundMediaPlayerService,
-                        generalMediaPlayerService,
-                        index,
-                        context
-                    )
-                }
-            }else{
-                retrieveSoundUris(
-                    soundMediaPlayerService,
-                    generalMediaPlayerService,
-                    index,
-                    context
-                )
-            }
-        }else{
-            startSound(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
-        }
-    }else{
-        getRoutinePresets(index) {
-            retrieveSoundUris(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
-        }
-    }
-}
-
-private fun pauseSound(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    index: Int
-) {
-    if(soundMediaPlayerService.areMediaPlayersInitialized()) {
-        if(soundMediaPlayerService.areMediaPlayersPlaying()) {
-            globalViewModel_!!.generalPlaytimeTimer.pause()
-            soundMediaPlayerService.pauseMediaPlayers()
-            com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(3)
-            globalViewModel_!!.isCurrentSoundPlaying = false
-            Log.i(TAG, "Pausedz sound")
-        }
-    }
-}
-
-private fun getRoutinePresets(index: Int, completed: () -> Unit){
-    getRoutinePresetsBasedOnRoutine(
-        globalViewModel_!!.currentUsersRoutines!![index]!!.routineData
-    ) { routinePresets ->
-        if(routinePresets.isNotEmpty()) {
-            for (routinePreset in routinePresets) {
-                routineActivitySoundUrisMapList[index][routinePreset!!.soundPresetData.id] =
-                    mutableListOf()
-                routineActivitySoundUriVolumes[index][routinePreset.soundPresetData.id] =
-                    routinePreset.soundPresetData.volumes
-            }
-            globalViewModel_!!.currentRoutinePlayingRoutinePresets = routinePresets
-            completed()
-        }
-    }
-}
-
-fun getRoutinePresetsBasedOnRoutine(
-    routineData: RoutineData,
-    completed: (routinePresetList: MutableList<RoutineSoundPreset?>) -> Unit
-) {
-    RoutineSoundPresetBackend.queryRoutineSoundPresetBasedOnRoutine(routineData) { routinePresets ->
-        completed(routinePresets.toMutableList())
-    }
-}
-
-private fun retrieveSoundUris(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context
-) {
-    SoundBackend.querySoundBasedOnId(
-        globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
-            .soundPresetData.soundId
-    ){
-        if(it.isNotEmpty()) {
-            playingSoundNow = it[0]
-            SoundBackend.listS3Sounds(
-                it[0]!!.audioKeyS3,
-                it[0]!!.soundOwner.amplifyAuthUserId
-            ) { s3List ->
-                s3List.items.forEachIndexed { i, item ->
-                    SoundBackend.retrieveAudio(
-                        item.key,
-                        it[0]!!.soundOwner.amplifyAuthUserId
-                    ) { uri ->
-                        routineActivitySoundUrisMapList[index][
-                                globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                                        [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
-                                    .soundPresetData.id
-                        ]!!.add(uri)
-                        if (i == s3List.items.indices.last) {
-                            startSound(
-                                soundMediaPlayerService,
-                                generalMediaPlayerService,
-                                index,
-                                context
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-private fun startSound(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context,
-) {
-    if(
-        !routineActivitySoundUrisMapList[index][
-                globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
-                    .soundPresetData.id
-        ].isNullOrEmpty()
-    ) {
-        if(soundMediaPlayerService.areMediaPlayersInitialized()){
-            soundMediaPlayerService.startMediaPlayers()
-        }else{
-            initializeMediaPlayers(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
-        }
-
-        routineActivityPlayButtonTexts[index]!!.value = PAUSE_ROUTINE
-        soundMediaPlayerService.loopMediaPlayers()
-        //globalViewModel_!!.previouslyPlayedUserSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]
-        //globalViewModel_!!.generalPlaytimeTimer.start()
-        setGlobalPropertiesAfterPlayingSound(index, context)
-    }
-}
-
-private fun initializeMediaPlayers(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context,
-) {
-    /*updatePreviousUserSoundRelationship {
-        updateCurrentUserSoundRelationshipUsageTimeStamp(index) {}
-        globalViewModel_!!.previouslyPlayedUserSoundRelationship = null
-    }*/
-    soundMediaPlayerService.onDestroy()
-    soundMediaPlayerService.setAudioUris(
-        routineActivitySoundUrisMapList[index][
-                globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
-                    .soundPresetData.id
-        ]!!
-    )
-    soundMediaPlayerService.setVolumes(
-        routineActivitySoundUriVolumes[index][
-                globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
-                    .soundPresetData.id
-        ]!!
-    )
-    val intent = Intent()
-    intent.action = "PLAY"
-    soundMediaPlayerService.onStartCommand(intent, 0, 0)
-    resetAll(context, soundMediaPlayerService)
-    resetGlobalControlButtons()
-    startSoundCDT(
-        soundMediaPlayerService,
-        generalMediaPlayerService,
-        index,
-        context
-    )
-}
-
-private fun startSoundCDT(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context,
-){
-    startSoundCountDownTimer(
-        context,
-        globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.eachSoundPlayTime.toLong(),
-        soundMediaPlayerService
-    ){
-        if(soundMediaPlayerService.areMediaPlayersInitialized()) {
-            soundMediaPlayerService.onDestroy()
-        }
-        resetGlobalControlButtons()
-        globalViewModel_!!.isCurrentSoundPlaying = false
-        globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer = null
-
-        globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex = globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!! + 1
-        if(globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!! > globalViewModel_!!.currentRoutinePlayingRoutinePresets!!.indices.last){
-            globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex = 0
-        }
-        playSound(
-            soundMediaPlayerService,
-            generalMediaPlayerService,
-            index,
-            context
-        )
-    }
-}
-
-private fun startSoundCountDownTimer(
-    context: Context,
-    time: Long,
-    soundMediaPlayerService: SoundMediaPlayerService,
-    completed: () -> Unit
-){
-    if(globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer == null){
-        globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer = object : CountDownTimer(time, 10000) {
-            override fun onTick(millisUntilFinished: Long) {
-                Log.i(TAG, "Sound has been going for $millisUntilFinished")
-            }
-            override fun onFinish() {
-                completed()
-                Log.i(TAG, "sound Timer stopped")
-            }
-        }
-    }
-    globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer!!.start()
-}
-
-private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
-    globalViewModel_!!.currentSoundPlaying = playingSoundNow
-
-    globalViewModel_!!.currentSoundPlayingPreset =
-        globalViewModel_!!.currentRoutinePlayingRoutinePresets!![
-                globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!
-        ]!!.soundPresetData
-
-    globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-
-    globalViewModel_!!.soundSliderVolumes =
-        globalViewModel_!!.currentRoutinePlayingRoutinePresets!![
-                globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!
-        ]!!.soundPresetData.volumes
-
-    for (volume in globalViewModel_!!.soundSliderVolumes!!) {
-        globalViewModel_!!.currentSoundPlayingSliderPositions.add(
-            mutableStateOf(volume.toFloat())
-        )
-    }
-
-    globalViewModel_!!.currentSoundPlayingUris =
-        routineActivitySoundUrisMapList[index][
-                globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
-                    .soundPresetData.id
-        ]
-
-    globalViewModel_!!.currentSoundPlayingContext = context
-    globalViewModel_!!.isCurrentSoundPlaying = true
-    globalViewModel_!!.isCurrentRoutinePlaying = true
-    com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(3)
-    com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(1)
-    com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(0)
 }
 
 private val allElements = listOf(

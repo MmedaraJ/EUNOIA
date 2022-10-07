@@ -23,7 +23,6 @@ import com.example.eunoia.backend.*
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
-import com.example.eunoia.ui.alertDialogs.*
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.sound.*
@@ -39,6 +38,7 @@ import java.util.*
 private const val TAG = "AddToBedtimeStoryListAndRoutineBottomSheet"
 var userRoutinesSize = 0
 private const val MAX_ROUTINE_PLAYTIME = 2_700_000
+private const val MAX_BEDTIME_STORY_PLAYTIME = 1_200_000
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -727,7 +727,6 @@ fun SelectRoutineIconForBedtimeStory(
         }
     }
 }
-
 @OptIn(ExperimentalMaterialApi::class)
 private fun newRoutineIconSelected(
     icon: Int,
@@ -736,10 +735,16 @@ private fun newRoutineIconSelected(
 ) {
     globalViewModel_!!.routineIconToBeAdded = icon
     //45' default playtime
-    var playTime = 2700000
+    var playTime = MAX_ROUTINE_PLAYTIME
     if(globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime < playTime){
         playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
     }
+
+    var bedtimeStoryPlayTime = MAX_BEDTIME_STORY_PLAYTIME
+    if(globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime < bedtimeStoryPlayTime){
+        bedtimeStoryPlayTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+    }
+
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
         routineOwner = UserObject.signedInUser().value!!,
@@ -760,7 +765,7 @@ private fun newRoutineIconSelected(
         playSoundDuringSleep = true,
         eachSoundPlayTime = 900000,
         prayerPlayTime = 300000,
-        bedtimeStoryPlayTime = 1200000,
+        bedtimeStoryPlayTime = bedtimeStoryPlayTime,
         selfLovePlayTime = 600000,
         stretchTime = 600000,
         breathingTime = 600000,

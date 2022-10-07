@@ -301,7 +301,7 @@ private fun pauseBedtimeStory(
     if(
         generalMediaPlayerService.isMediaPlayerInitialized() &&
         globalViewModel_!!.currentSelfLovePlaying == null &&
-        globalViewModel_!!.currentBedtimeStoryPlaying == null
+        globalViewModel_!!.currentPrayerPlaying == null
     ) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
@@ -324,7 +324,7 @@ private fun startBedtimeStory(
         if(
             generalMediaPlayerService.isMediaPlayerInitialized() &&
             globalViewModel_!!.currentSelfLovePlaying == null &&
-            globalViewModel_!!.currentBedtimeStoryPlaying == null
+            globalViewModel_!!.currentPrayerPlaying == null
         ){
             generalMediaPlayerService.startMediaPlayer()
         }else{

@@ -40,6 +40,7 @@ import java.util.*
 private const val TAG = "AddToPrayerListAndRoutineBottomSheet"
 var userRoutinesSize = 0
 private const val MAX_ROUTINE_PLAYTIME = 2_700_000
+private const val MAX_PRAYER_PLAYTIME = 300_000
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -736,10 +737,16 @@ private fun newRoutineIconSelected(
 ) {
     globalViewModel_!!.routineIconToBeAdded = icon
     //45' default playtime
-    var playTime = 2700000
+    var playTime = MAX_ROUTINE_PLAYTIME
     if(globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime < playTime){
         playTime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
     }
+
+    var prayerPlayTime = MAX_PRAYER_PLAYTIME
+    if(globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime < prayerPlayTime){
+        prayerPlayTime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
+    }
+
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
         routineOwner = UserObject.signedInUser().value!!,
@@ -759,7 +766,7 @@ private fun newRoutineIconSelected(
         playSoundDuringBedtimeStory = true,
         playSoundDuringSleep = true,
         eachSoundPlayTime = 900000,
-        prayerPlayTime = 300000,
+        prayerPlayTime = prayerPlayTime,
         bedtimeStoryPlayTime = 1200000,
         selfLovePlayTime = 600000,
         stretchTime = 600000,
