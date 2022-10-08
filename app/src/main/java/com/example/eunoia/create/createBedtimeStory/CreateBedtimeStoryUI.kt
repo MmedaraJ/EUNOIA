@@ -47,14 +47,12 @@ fun ChapterBlock(
     chapterData: BedtimeStoryInfoChapterData,
     index: Int
 ){
-    var numberOfPages by rememberSaveable { mutableStateOf(false) }
-    var pages = mutableListOf<PageData>()
+    var numberOfPages by rememberSaveable { mutableStateOf(-1) }
     PageBackend.queryPageBasedOnChapter(chapterData){
-        pages = it.toMutableList()
-        numberOfPages = true
+        numberOfPages = it.size
     }
 
-    if(numberOfPages) {
+    if(numberOfPages > -1) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -63,10 +61,10 @@ fun ChapterBlock(
                     navigateToBedtimeStoryChapterScreen(navController, chapterData, index)
                 }
         ) {
-            val pagesText = if (pages.size == 1) "page" else "pages"
+            val pagesText = if (numberOfPages == 1) "page" else "pages"
             WrappedPurpleBackgroundStart(
                 chapterData.displayName,
-                "${pages.size} $pagesText"
+                "$numberOfPages $pagesText"
             ) {
             }
         }

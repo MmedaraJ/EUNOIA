@@ -39,6 +39,7 @@ type UserSoundRelationship
     userSoundRelationshipSound: SoundData! @belongsTo(fields: ["userSoundRelationshipSoundDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    currentlyListening: Boolean
     usageTimestamps: [AWSDateTime!]
     usagePlayTimes: [Int!]
 }
@@ -91,6 +92,9 @@ type UserSoundPresetRelationship
     userSoundPresetRelationshipSoundPreset: SoundPresetData! @belongsTo(fields: ["userSoundPresetRelationshipSoundSoundPresetDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    currentlyListening: Boolean
+    usageTimestamps: [AWSDateTime!]
+    usagePlayTimes: [Int!]
 }
 
 type RoutineData
@@ -148,6 +152,28 @@ type UserRoutineRelationship
     userRoutineRelationshipRoutine: RoutineData! @belongsTo(fields: ["userRoutineRelationshipRoutineDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    currentlyListening: Boolean
+    playSoundDuringStretch: Boolean
+    playSoundDuringPrayer: Boolean
+    playSoundDuringBreathing: Boolean
+    playSoundDuringSelfLove: Boolean
+    playSoundDuringBedtimeStory: Boolean
+    playSoundDuringSleep: Boolean
+    eachSoundPlayTime: Int
+    prayerPlayTime: Int
+    bedtimeStoryPlayTime: Int
+    selfLovePlayTime: Int
+    stretchTime: Int
+    breathingTime: Int
+    currentBedtimeStoryPlayingIndex: Int
+    currentBedtimeStoryContinuePlayingTime: Int
+    currentSelfLovePlayingIndex: Int
+    currentSelfLoveContinuePlayingTime: Int
+    currentPrayerPlayingIndex: Int
+    currentPrayerContinuePlayingTime: Int
+    usageTimestamps: [AWSDateTime!]
+    usagePlayTimes: [Int!]
+    playingOrder: [String!]
 }
 
 enum BedtimeStoryAudioSource{
@@ -200,6 +226,9 @@ type UserBedtimeStoryInfoRelationship
     userBedtimeStoryInfoRelationshipBedtimeStoryInfo: BedtimeStoryInfoData! @belongsTo(fields: ["userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    currentlyListening: Boolean
+    usageTimestamps: [AWSDateTime!]
+    usagePlayTimes: [Int!]
 }
 
 type BedtimeStoryInfoChapterData
@@ -269,6 +298,9 @@ type UserPrayerRelationship
     userPrayerRelationshipPrayer: PrayerData! @belongsTo(fields: ["userPrayerRelationshipPrayerDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    currentlyListening: Boolean
+    usageTimestamps: [AWSDateTime!]
+    usagePlayTimes: [Int!]
 }
 
 enum SelfLoveAudioSource{
@@ -315,6 +347,9 @@ type UserSelfLoveRelationship
     userSelfLoveRelationshipSelfLove: SelfLoveData! @belongsTo(fields: ["userSelfLoveRelationshipSelfLoveDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    currentlyListening: Boolean
+    usageTimestamps: [AWSDateTime!]
+    usagePlayTimes: [Int!]
 }
 
 type StretchData

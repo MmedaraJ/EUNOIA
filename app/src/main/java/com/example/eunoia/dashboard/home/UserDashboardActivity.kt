@@ -618,6 +618,7 @@ private fun selectNextRoutineElement(
     )
 
     updateRoutineOncePlayIsClicked(index)
+    Log.i(TAG, "play button generalz is ${routineActivityPlayButtonTexts[index]!!.value}")
 
     globalViewModel_!!.currentRoutinePlayingOrder = globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.playingOrder
     globalViewModel_!!.currentRoutinePlaying = globalViewModel_!!.currentUsersRoutines!![index]!!.routineData
@@ -640,6 +641,7 @@ private fun selectNextRoutineElement(
             )
         }
         "prayer" -> {
+            Log.i(TAG, "play button generalz prayas is ${routineActivityPlayButtonTexts[index]!!.value}")
             PrayerForRoutine.playOrPausePrayerAccordingly(
                 soundMediaPlayerService,
                 generalMediaPlayerService,
@@ -677,13 +679,21 @@ private fun selectNextRoutineElement(
 fun updateRoutineOncePlayIsClicked(index: Int) {
     if (globalViewModel_!!.currentRoutinePlayingOrderIndex == 0) {
         Log.i(TAG, "Zero manz")
-        val numberOfTimesPlayed =
-            globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.numberOfTimesUsed + 1
+        val numberOfTimesPlayed = globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.numberOfTimesUsed + 1
         val routine = globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.copyOfBuilder()
-            .currentPrayerPlayingIndex(numberOfTimesPlayed)
+            .numberOfTimesUsed(numberOfTimesPlayed)
             .build()
 
-        RoutineBackend.updateRoutine(routine) {}
+        RoutineBackend.updateRoutine(routine) {
+            UserRoutineBackend.queryUserRoutineBasedOnRoutineAndUser(
+                globalViewModel_!!.currentUser!!,
+                it
+            ){ updatedUserRoutine ->
+                if(updatedUserRoutine.isNotEmpty()){
+                    globalViewModel_!!.currentUsersRoutines!![index] = updatedUserRoutine[0]
+                }
+            }
+        }
     }
 }
 

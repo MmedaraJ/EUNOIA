@@ -141,7 +141,7 @@ fun PageScreenUI(
                 maxWidthFraction = 1F
             ) {
                 globalViewModel_!!.bottomSheetOpenFor = "recordAudio"
-                recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording = pageData
+                recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording = "page"
                 openBottomSheet(scope, state)
             }
         }

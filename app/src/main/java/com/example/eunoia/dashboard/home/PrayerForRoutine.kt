@@ -11,6 +11,7 @@ import com.amplifyframework.datastore.generated.model.RoutinePrayer
 import com.example.eunoia.backend.RoutineBackend
 import com.example.eunoia.backend.RoutinePrayerBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.UserRoutineBackend
 import com.example.eunoia.dashboard.prayer.resetOtherGeneralMediaPlayerUsersExceptPrayer
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -27,6 +28,7 @@ object PrayerForRoutine{
         index: Int,
         context: Context
     ) {
+        Log.i(TAG, "play button 1 prayer is ${routineActivityPlayButtonTexts[index]!!.value}")
         if(routineActivityPlayButtonTexts[index]!!.value == START_ROUTINE) {
             routineActivityPlayButtonTexts[index]!!.value = WAIT_FOR_ROUTINE
 
@@ -296,7 +298,14 @@ object PrayerForRoutine{
 
             //update routine with new prayer info
             RoutineBackend.updateRoutine(routine){
-
+                UserRoutineBackend.queryUserRoutineBasedOnRoutineAndUser(
+                    globalViewModel_!!.currentUser!!,
+                    it
+                ){ updatedUserRoutine ->
+                    if(updatedUserRoutine.isNotEmpty()){
+                        globalViewModel_!!.currentUsersRoutines!![index] = updatedUserRoutine[0]
+                    }
+                }
             }
 
             routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE

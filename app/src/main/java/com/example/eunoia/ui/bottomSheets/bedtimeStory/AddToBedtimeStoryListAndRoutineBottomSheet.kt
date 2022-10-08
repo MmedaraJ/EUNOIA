@@ -402,11 +402,17 @@ fun setUpRoutineBedtimeStory(
                     }
                 }
 
+                var bedtimeStoryPlaytime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+                if(bedtimeStoryPlaytime > MAX_BEDTIME_STORY_PLAYTIME){
+                    bedtimeStoryPlaytime = MAX_BEDTIME_STORY_PLAYTIME
+                }
+
                 val numberOfSteps = userRoutine.routineData.numberOfSteps + 1
 
                 val routine = userRoutine.routineData.copyOfBuilder()
                     .numberOfSteps(numberOfSteps)
                     .fullPlayTime(playTime)
+                    .bedtimeStoryPlayTime(bedtimeStoryPlaytime)
                     .currentBedtimeStoryPlayingIndex(0)
                     .currentBedtimeStoryContinuePlayingTime(0)
                     .playingOrder(playOrder)

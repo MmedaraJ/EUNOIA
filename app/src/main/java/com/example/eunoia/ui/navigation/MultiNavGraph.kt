@@ -40,8 +40,7 @@ import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryActivityUI
 import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryScreen
 import com.example.eunoia.dashboard.prayer.PrayerActivityUI
 import com.example.eunoia.dashboard.prayer.PrayerScreen
-import com.example.eunoia.dashboard.routine.RoutinePresetScreen
-import com.example.eunoia.dashboard.routine.RoutineScreen
+import com.example.eunoia.dashboard.routine.*
 import com.example.eunoia.dashboard.selfLove.SelfLoveActivityUI
 import com.example.eunoia.dashboard.selfLove.SelfLoveScreen
 import com.example.eunoia.models.*
@@ -430,8 +429,6 @@ fun DashboardTab(
     val navController = rememberNavController()
     dashboardNavController = navController
 
-    var startDestination = Screen.Dashboard.screen_route
-
     DisposableEffect(Unit) {
         val callback = NavController.OnDestinationChangedListener { navController, _, _ ->
             navState.value = navController.saveState() ?: Bundle()
@@ -453,7 +450,7 @@ fun DashboardTab(
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = Screen.Dashboard.screen_route
     ) {
         composable(
             Screen.Dashboard.screen_route
@@ -638,11 +635,61 @@ fun DashboardTab(
             )
         ) { backStackEntry ->
             val routineData = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routineData")
-            Log.i("Routine Preset Screen", "You are now on ${routineData!!.displayName}'s sound tab")
             RoutinePresetScreen(
                 navController,
                 LocalContext.current,
-                routineData.data,
+                routineData!!.data,
+                scope,
+                state
+            )
+        }
+        composable(
+            "${Screen.RoutinePrayerScreen.screen_route}/routineData={routineData}",
+            arguments = listOf(
+                navArgument("routineData") {
+                    type = RoutineObject.RoutineType()
+                }
+            )
+        ) { backStackEntry ->
+            val routineData = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routineData")
+            RoutinePrayerScreen(
+                navController,
+                LocalContext.current,
+                routineData!!.data,
+                scope,
+                state
+            )
+        }
+        composable(
+            "${Screen.RoutineBedtimeStoryScreen.screen_route}/routineData={routineData}",
+            arguments = listOf(
+                navArgument("routineData") {
+                    type = RoutineObject.RoutineType()
+                }
+            )
+        ) { backStackEntry ->
+            val routineData = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routineData")
+            RoutineBedtimeStoryScreen(
+                navController,
+                LocalContext.current,
+                routineData!!.data,
+                scope,
+                state
+            )
+        }
+        composable(
+            "${Screen.RoutineSelfLoveScreen.screen_route}/routineData={routineData}",
+            arguments = listOf(
+                navArgument("routineData") {
+                    type = RoutineObject.RoutineType()
+                }
+            )
+        ) { backStackEntry ->
+            val routineData = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routineData")
+            RoutineSelfLoveScreen(
+                navController,
+                LocalContext.current,
+                routineData!!.data,
                 scope,
                 state
             )

@@ -78,6 +78,35 @@ object UserRoutineBackend {
         }
     }
 
+    fun queryUserRoutineBasedOnRoutineAndUser(
+        userData: UserData,
+        routineData: RoutineData,
+        completed: (userRoutine: List<UserRoutine?>) -> Unit
+    ) {
+        scope.launch {
+            val userRoutineList = mutableListOf<UserRoutine?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    UserRoutine::class.java,
+                    UserRoutine.USER_DATA.eq(userData.id)
+                        .and(UserRoutine.ROUTINE_DATA.eq(routineData.id)),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (userRoutineData in response.data) {
+                            if(userRoutineData != null) {
+                                Log.i(TAG, userRoutineData.toString())
+                                userRoutineList.add(userRoutineData)
+                            }
+                        }
+                    }
+                    completed(userRoutineList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
     fun updateUserRoutine(userRoutine: UserRoutine, completed: (userRoutine: UserRoutine) -> Unit){
         scope.launch {
             Amplify.API.mutate(

@@ -34,6 +34,7 @@ public final class UserSoundRelationship implements Model {
   public static final QueryField USER_SOUND_RELATIONSHIP_SOUND = field("UserSoundRelationship", "userSoundRelationshipSoundDataID");
   public static final QueryField NUMBER_OF_TIMES_PLAYED = field("UserSoundRelationship", "numberOfTimesPlayed");
   public static final QueryField TOTAL_PLAY_TIME = field("UserSoundRelationship", "totalPlayTime");
+  public static final QueryField CURRENTLY_LISTENING = field("UserSoundRelationship", "currentlyListening");
   public static final QueryField USAGE_TIMESTAMPS = field("UserSoundRelationship", "usageTimestamps");
   public static final QueryField USAGE_PLAY_TIMES = field("UserSoundRelationship", "usagePlayTimes");
   private final @ModelField(targetType="ID", isRequired = true) String id;
@@ -41,6 +42,7 @@ public final class UserSoundRelationship implements Model {
   private final @ModelField(targetType="SoundData", isRequired = true) @BelongsTo(targetName = "userSoundRelationshipSoundDataID", type = SoundData.class) SoundData userSoundRelationshipSound;
   private final @ModelField(targetType="Int") Integer numberOfTimesPlayed;
   private final @ModelField(targetType="Int") Integer totalPlayTime;
+  private final @ModelField(targetType="Boolean") Boolean currentlyListening;
   private final @ModelField(targetType="AWSDateTime") List<Temporal.DateTime> usageTimestamps;
   private final @ModelField(targetType="Int") List<Integer> usagePlayTimes;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
@@ -65,6 +67,10 @@ public final class UserSoundRelationship implements Model {
       return totalPlayTime;
   }
   
+  public Boolean getCurrentlyListening() {
+      return currentlyListening;
+  }
+  
   public List<Temporal.DateTime> getUsageTimestamps() {
       return usageTimestamps;
   }
@@ -81,12 +87,13 @@ public final class UserSoundRelationship implements Model {
       return updatedAt;
   }
   
-  private UserSoundRelationship(String id, UserData userSoundRelationshipOwner, SoundData userSoundRelationshipSound, Integer numberOfTimesPlayed, Integer totalPlayTime, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
+  private UserSoundRelationship(String id, UserData userSoundRelationshipOwner, SoundData userSoundRelationshipSound, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
     this.id = id;
     this.userSoundRelationshipOwner = userSoundRelationshipOwner;
     this.userSoundRelationshipSound = userSoundRelationshipSound;
     this.numberOfTimesPlayed = numberOfTimesPlayed;
     this.totalPlayTime = totalPlayTime;
+    this.currentlyListening = currentlyListening;
     this.usageTimestamps = usageTimestamps;
     this.usagePlayTimes = usagePlayTimes;
   }
@@ -104,6 +111,7 @@ public final class UserSoundRelationship implements Model {
               ObjectsCompat.equals(getUserSoundRelationshipSound(), userSoundRelationship.getUserSoundRelationshipSound()) &&
               ObjectsCompat.equals(getNumberOfTimesPlayed(), userSoundRelationship.getNumberOfTimesPlayed()) &&
               ObjectsCompat.equals(getTotalPlayTime(), userSoundRelationship.getTotalPlayTime()) &&
+              ObjectsCompat.equals(getCurrentlyListening(), userSoundRelationship.getCurrentlyListening()) &&
               ObjectsCompat.equals(getUsageTimestamps(), userSoundRelationship.getUsageTimestamps()) &&
               ObjectsCompat.equals(getUsagePlayTimes(), userSoundRelationship.getUsagePlayTimes()) &&
               ObjectsCompat.equals(getCreatedAt(), userSoundRelationship.getCreatedAt()) &&
@@ -119,6 +127,7 @@ public final class UserSoundRelationship implements Model {
       .append(getUserSoundRelationshipSound())
       .append(getNumberOfTimesPlayed())
       .append(getTotalPlayTime())
+      .append(getCurrentlyListening())
       .append(getUsageTimestamps())
       .append(getUsagePlayTimes())
       .append(getCreatedAt())
@@ -136,6 +145,7 @@ public final class UserSoundRelationship implements Model {
       .append("userSoundRelationshipSound=" + String.valueOf(getUserSoundRelationshipSound()) + ", ")
       .append("numberOfTimesPlayed=" + String.valueOf(getNumberOfTimesPlayed()) + ", ")
       .append("totalPlayTime=" + String.valueOf(getTotalPlayTime()) + ", ")
+      .append("currentlyListening=" + String.valueOf(getCurrentlyListening()) + ", ")
       .append("usageTimestamps=" + String.valueOf(getUsageTimestamps()) + ", ")
       .append("usagePlayTimes=" + String.valueOf(getUsagePlayTimes()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
@@ -164,6 +174,7 @@ public final class UserSoundRelationship implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -174,6 +185,7 @@ public final class UserSoundRelationship implements Model {
       userSoundRelationshipSound,
       numberOfTimesPlayed,
       totalPlayTime,
+      currentlyListening,
       usageTimestamps,
       usagePlayTimes);
   }
@@ -192,6 +204,7 @@ public final class UserSoundRelationship implements Model {
     BuildStep id(String id);
     BuildStep numberOfTimesPlayed(Integer numberOfTimesPlayed);
     BuildStep totalPlayTime(Integer totalPlayTime);
+    BuildStep currentlyListening(Boolean currentlyListening);
     BuildStep usageTimestamps(List<Temporal.DateTime> usageTimestamps);
     BuildStep usagePlayTimes(List<Integer> usagePlayTimes);
   }
@@ -203,6 +216,7 @@ public final class UserSoundRelationship implements Model {
     private SoundData userSoundRelationshipSound;
     private Integer numberOfTimesPlayed;
     private Integer totalPlayTime;
+    private Boolean currentlyListening;
     private List<Temporal.DateTime> usageTimestamps;
     private List<Integer> usagePlayTimes;
     @Override
@@ -215,6 +229,7 @@ public final class UserSoundRelationship implements Model {
           userSoundRelationshipSound,
           numberOfTimesPlayed,
           totalPlayTime,
+          currentlyListening,
           usageTimestamps,
           usagePlayTimes);
     }
@@ -246,6 +261,12 @@ public final class UserSoundRelationship implements Model {
     }
     
     @Override
+     public BuildStep currentlyListening(Boolean currentlyListening) {
+        this.currentlyListening = currentlyListening;
+        return this;
+    }
+    
+    @Override
      public BuildStep usageTimestamps(List<Temporal.DateTime> usageTimestamps) {
         this.usageTimestamps = usageTimestamps;
         return this;
@@ -269,12 +290,13 @@ public final class UserSoundRelationship implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData userSoundRelationshipOwner, SoundData userSoundRelationshipSound, Integer numberOfTimesPlayed, Integer totalPlayTime, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
+    private CopyOfBuilder(String id, UserData userSoundRelationshipOwner, SoundData userSoundRelationshipSound, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
       super.id(id);
       super.userSoundRelationshipOwner(userSoundRelationshipOwner)
         .userSoundRelationshipSound(userSoundRelationshipSound)
         .numberOfTimesPlayed(numberOfTimesPlayed)
         .totalPlayTime(totalPlayTime)
+        .currentlyListening(currentlyListening)
         .usageTimestamps(usageTimestamps)
         .usagePlayTimes(usagePlayTimes);
     }
@@ -297,6 +319,11 @@ public final class UserSoundRelationship implements Model {
     @Override
      public CopyOfBuilder totalPlayTime(Integer totalPlayTime) {
       return (CopyOfBuilder) super.totalPlayTime(totalPlayTime);
+    }
+    
+    @Override
+     public CopyOfBuilder currentlyListening(Boolean currentlyListening) {
+      return (CopyOfBuilder) super.currentlyListening(currentlyListening);
     }
     
     @Override

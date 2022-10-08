@@ -34,11 +34,17 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
   public static final QueryField USER_BEDTIME_STORY_INFO_RELATIONSHIP_BEDTIME_STORY_INFO = field("UserBedtimeStoryInfoRelationship", "userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID");
   public static final QueryField NUMBER_OF_TIMES_PLAYED = field("UserBedtimeStoryInfoRelationship", "numberOfTimesPlayed");
   public static final QueryField TOTAL_PLAY_TIME = field("UserBedtimeStoryInfoRelationship", "totalPlayTime");
+  public static final QueryField CURRENTLY_LISTENING = field("UserBedtimeStoryInfoRelationship", "currentlyListening");
+  public static final QueryField USAGE_TIMESTAMPS = field("UserBedtimeStoryInfoRelationship", "usageTimestamps");
+  public static final QueryField USAGE_PLAY_TIMES = field("UserBedtimeStoryInfoRelationship", "usagePlayTimes");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userBedtimeStoryInfoRelationshipUserDataID", type = UserData.class) UserData userBedtimeStoryInfoRelationshipOwner;
   private final @ModelField(targetType="BedtimeStoryInfoData", isRequired = true) @BelongsTo(targetName = "userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID", type = BedtimeStoryInfoData.class) BedtimeStoryInfoData userBedtimeStoryInfoRelationshipBedtimeStoryInfo;
   private final @ModelField(targetType="Int") Integer numberOfTimesPlayed;
   private final @ModelField(targetType="Int") Integer totalPlayTime;
+  private final @ModelField(targetType="Boolean") Boolean currentlyListening;
+  private final @ModelField(targetType="AWSDateTime") List<Temporal.DateTime> usageTimestamps;
+  private final @ModelField(targetType="Int") List<Integer> usagePlayTimes;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -61,6 +67,18 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
       return totalPlayTime;
   }
   
+  public Boolean getCurrentlyListening() {
+      return currentlyListening;
+  }
+  
+  public List<Temporal.DateTime> getUsageTimestamps() {
+      return usageTimestamps;
+  }
+  
+  public List<Integer> getUsagePlayTimes() {
+      return usagePlayTimes;
+  }
+  
   public Temporal.DateTime getCreatedAt() {
       return createdAt;
   }
@@ -69,12 +87,15 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
       return updatedAt;
   }
   
-  private UserBedtimeStoryInfoRelationship(String id, UserData userBedtimeStoryInfoRelationshipOwner, BedtimeStoryInfoData userBedtimeStoryInfoRelationshipBedtimeStoryInfo, Integer numberOfTimesPlayed, Integer totalPlayTime) {
+  private UserBedtimeStoryInfoRelationship(String id, UserData userBedtimeStoryInfoRelationshipOwner, BedtimeStoryInfoData userBedtimeStoryInfoRelationshipBedtimeStoryInfo, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
     this.id = id;
     this.userBedtimeStoryInfoRelationshipOwner = userBedtimeStoryInfoRelationshipOwner;
     this.userBedtimeStoryInfoRelationshipBedtimeStoryInfo = userBedtimeStoryInfoRelationshipBedtimeStoryInfo;
     this.numberOfTimesPlayed = numberOfTimesPlayed;
     this.totalPlayTime = totalPlayTime;
+    this.currentlyListening = currentlyListening;
+    this.usageTimestamps = usageTimestamps;
+    this.usagePlayTimes = usagePlayTimes;
   }
   
   @Override
@@ -90,6 +111,9 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
               ObjectsCompat.equals(getUserBedtimeStoryInfoRelationshipBedtimeStoryInfo(), userBedtimeStoryInfoRelationship.getUserBedtimeStoryInfoRelationshipBedtimeStoryInfo()) &&
               ObjectsCompat.equals(getNumberOfTimesPlayed(), userBedtimeStoryInfoRelationship.getNumberOfTimesPlayed()) &&
               ObjectsCompat.equals(getTotalPlayTime(), userBedtimeStoryInfoRelationship.getTotalPlayTime()) &&
+              ObjectsCompat.equals(getCurrentlyListening(), userBedtimeStoryInfoRelationship.getCurrentlyListening()) &&
+              ObjectsCompat.equals(getUsageTimestamps(), userBedtimeStoryInfoRelationship.getUsageTimestamps()) &&
+              ObjectsCompat.equals(getUsagePlayTimes(), userBedtimeStoryInfoRelationship.getUsagePlayTimes()) &&
               ObjectsCompat.equals(getCreatedAt(), userBedtimeStoryInfoRelationship.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), userBedtimeStoryInfoRelationship.getUpdatedAt());
       }
@@ -103,6 +127,9 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
       .append(getUserBedtimeStoryInfoRelationshipBedtimeStoryInfo())
       .append(getNumberOfTimesPlayed())
       .append(getTotalPlayTime())
+      .append(getCurrentlyListening())
+      .append(getUsageTimestamps())
+      .append(getUsagePlayTimes())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -118,6 +145,9 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
       .append("userBedtimeStoryInfoRelationshipBedtimeStoryInfo=" + String.valueOf(getUserBedtimeStoryInfoRelationshipBedtimeStoryInfo()) + ", ")
       .append("numberOfTimesPlayed=" + String.valueOf(getNumberOfTimesPlayed()) + ", ")
       .append("totalPlayTime=" + String.valueOf(getTotalPlayTime()) + ", ")
+      .append("currentlyListening=" + String.valueOf(getCurrentlyListening()) + ", ")
+      .append("usageTimestamps=" + String.valueOf(getUsageTimestamps()) + ", ")
+      .append("usagePlayTimes=" + String.valueOf(getUsagePlayTimes()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -142,6 +172,9 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
       null,
       null,
       null,
+      null,
+      null,
+      null,
       null
     );
   }
@@ -151,7 +184,10 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
       userBedtimeStoryInfoRelationshipOwner,
       userBedtimeStoryInfoRelationshipBedtimeStoryInfo,
       numberOfTimesPlayed,
-      totalPlayTime);
+      totalPlayTime,
+      currentlyListening,
+      usageTimestamps,
+      usagePlayTimes);
   }
   public interface UserBedtimeStoryInfoRelationshipOwnerStep {
     UserBedtimeStoryInfoRelationshipBedtimeStoryInfoStep userBedtimeStoryInfoRelationshipOwner(UserData userBedtimeStoryInfoRelationshipOwner);
@@ -168,6 +204,9 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
     BuildStep id(String id);
     BuildStep numberOfTimesPlayed(Integer numberOfTimesPlayed);
     BuildStep totalPlayTime(Integer totalPlayTime);
+    BuildStep currentlyListening(Boolean currentlyListening);
+    BuildStep usageTimestamps(List<Temporal.DateTime> usageTimestamps);
+    BuildStep usagePlayTimes(List<Integer> usagePlayTimes);
   }
   
 
@@ -177,6 +216,9 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
     private BedtimeStoryInfoData userBedtimeStoryInfoRelationshipBedtimeStoryInfo;
     private Integer numberOfTimesPlayed;
     private Integer totalPlayTime;
+    private Boolean currentlyListening;
+    private List<Temporal.DateTime> usageTimestamps;
+    private List<Integer> usagePlayTimes;
     @Override
      public UserBedtimeStoryInfoRelationship build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -186,7 +228,10 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
           userBedtimeStoryInfoRelationshipOwner,
           userBedtimeStoryInfoRelationshipBedtimeStoryInfo,
           numberOfTimesPlayed,
-          totalPlayTime);
+          totalPlayTime,
+          currentlyListening,
+          usageTimestamps,
+          usagePlayTimes);
     }
     
     @Override
@@ -215,6 +260,24 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
         return this;
     }
     
+    @Override
+     public BuildStep currentlyListening(Boolean currentlyListening) {
+        this.currentlyListening = currentlyListening;
+        return this;
+    }
+    
+    @Override
+     public BuildStep usageTimestamps(List<Temporal.DateTime> usageTimestamps) {
+        this.usageTimestamps = usageTimestamps;
+        return this;
+    }
+    
+    @Override
+     public BuildStep usagePlayTimes(List<Integer> usagePlayTimes) {
+        this.usagePlayTimes = usagePlayTimes;
+        return this;
+    }
+    
     /**
      * @param id id
      * @return Current Builder instance, for fluent method chaining
@@ -227,12 +290,15 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData userBedtimeStoryInfoRelationshipOwner, BedtimeStoryInfoData userBedtimeStoryInfoRelationshipBedtimeStoryInfo, Integer numberOfTimesPlayed, Integer totalPlayTime) {
+    private CopyOfBuilder(String id, UserData userBedtimeStoryInfoRelationshipOwner, BedtimeStoryInfoData userBedtimeStoryInfoRelationshipBedtimeStoryInfo, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
       super.id(id);
       super.userBedtimeStoryInfoRelationshipOwner(userBedtimeStoryInfoRelationshipOwner)
         .userBedtimeStoryInfoRelationshipBedtimeStoryInfo(userBedtimeStoryInfoRelationshipBedtimeStoryInfo)
         .numberOfTimesPlayed(numberOfTimesPlayed)
-        .totalPlayTime(totalPlayTime);
+        .totalPlayTime(totalPlayTime)
+        .currentlyListening(currentlyListening)
+        .usageTimestamps(usageTimestamps)
+        .usagePlayTimes(usagePlayTimes);
     }
     
     @Override
@@ -253,6 +319,21 @@ public final class UserBedtimeStoryInfoRelationship implements Model {
     @Override
      public CopyOfBuilder totalPlayTime(Integer totalPlayTime) {
       return (CopyOfBuilder) super.totalPlayTime(totalPlayTime);
+    }
+    
+    @Override
+     public CopyOfBuilder currentlyListening(Boolean currentlyListening) {
+      return (CopyOfBuilder) super.currentlyListening(currentlyListening);
+    }
+    
+    @Override
+     public CopyOfBuilder usageTimestamps(List<Temporal.DateTime> usageTimestamps) {
+      return (CopyOfBuilder) super.usageTimestamps(usageTimestamps);
+    }
+    
+    @Override
+     public CopyOfBuilder usagePlayTimes(List<Integer> usagePlayTimes) {
+      return (CopyOfBuilder) super.usagePlayTimes(usagePlayTimes);
     }
   }
   

@@ -222,6 +222,7 @@ object BedtimeStoryForRoutine{
             }
 
             routineActivityPlayButtonTexts[index]!!.value = PAUSE_ROUTINE
+            Log.i(TAG, "play button 1 bedtime story is ${routineActivityPlayButtonTexts[index]!!.value}")
             generalMediaPlayerService.loopMediaPlayer()
             //globalViewModel_!!.previouslyPlayedUserSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]
             //globalViewModel_!!.generalPlaytimeTimer.start()
@@ -246,7 +247,7 @@ object BedtimeStoryForRoutine{
         val intent = Intent()
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
-        generalMediaPlayerService.seekToPos(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.currentBedtimeStoryContinuePlayingTime)
+        //generalMediaPlayerService.seekToPos(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.currentBedtimeStoryContinuePlayingTime)
         globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(
             globalViewModel_!!.currentRoutinePlayingRoutineBedtimeStories!!
                     [globalViewModel_!!.currentRoutinePlayingRoutineBedtimeStoriesIndex!!]!!
@@ -292,6 +293,7 @@ object BedtimeStoryForRoutine{
             RoutineBackend.updateRoutine(routine){
 
             }
+            routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
 
             incrementPlayingOrderIndex(
                 soundMediaPlayerService,

@@ -152,6 +152,15 @@ fun RecordAudio(
                                                 generalMediaPlayerService
                                             )
                                         }
+                                        "page" ->{
+                                            closeRecordAudioAccordingly(
+                                                "special",
+                                                context,
+                                                scope,
+                                                state,
+                                                generalMediaPlayerService
+                                            )
+                                        }
                                     }
                                 }
                             }

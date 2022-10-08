@@ -407,11 +407,17 @@ fun setUpRoutineSelfLove(
                     }
                 }
 
+                var selfLovePlaytime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
+                if(selfLovePlaytime > MAX_SELF_LOVE_PLAYTIME){
+                    selfLovePlaytime = MAX_SELF_LOVE_PLAYTIME
+                }
+
                 val numberOfSteps = userRoutine.routineData.numberOfSteps + 1
 
                 val routine = userRoutine.routineData.copyOfBuilder()
                     .numberOfSteps(numberOfSteps)
                     .fullPlayTime(playTime)
+                    .selfLovePlayTime(selfLovePlaytime)
                     .currentSelfLovePlayingIndex(0)
                     .currentSelfLoveContinuePlayingTime(0)
                     .playingOrder(playOrder)

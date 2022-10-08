@@ -34,11 +34,17 @@ public final class UserSelfLoveRelationship implements Model {
   public static final QueryField USER_SELF_LOVE_RELATIONSHIP_SELF_LOVE = field("UserSelfLoveRelationship", "userSelfLoveRelationshipSelfLoveDataID");
   public static final QueryField NUMBER_OF_TIMES_PLAYED = field("UserSelfLoveRelationship", "numberOfTimesPlayed");
   public static final QueryField TOTAL_PLAY_TIME = field("UserSelfLoveRelationship", "totalPlayTime");
+  public static final QueryField CURRENTLY_LISTENING = field("UserSelfLoveRelationship", "currentlyListening");
+  public static final QueryField USAGE_TIMESTAMPS = field("UserSelfLoveRelationship", "usageTimestamps");
+  public static final QueryField USAGE_PLAY_TIMES = field("UserSelfLoveRelationship", "usagePlayTimes");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userSelfLoveRelationshipUserDataID", type = UserData.class) UserData userSelfLoveRelationshipOwner;
   private final @ModelField(targetType="SelfLoveData", isRequired = true) @BelongsTo(targetName = "userSelfLoveRelationshipSelfLoveDataID", type = SelfLoveData.class) SelfLoveData userSelfLoveRelationshipSelfLove;
   private final @ModelField(targetType="Int") Integer numberOfTimesPlayed;
   private final @ModelField(targetType="Int") Integer totalPlayTime;
+  private final @ModelField(targetType="Boolean") Boolean currentlyListening;
+  private final @ModelField(targetType="AWSDateTime") List<Temporal.DateTime> usageTimestamps;
+  private final @ModelField(targetType="Int") List<Integer> usagePlayTimes;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -61,6 +67,18 @@ public final class UserSelfLoveRelationship implements Model {
       return totalPlayTime;
   }
   
+  public Boolean getCurrentlyListening() {
+      return currentlyListening;
+  }
+  
+  public List<Temporal.DateTime> getUsageTimestamps() {
+      return usageTimestamps;
+  }
+  
+  public List<Integer> getUsagePlayTimes() {
+      return usagePlayTimes;
+  }
+  
   public Temporal.DateTime getCreatedAt() {
       return createdAt;
   }
@@ -69,12 +87,15 @@ public final class UserSelfLoveRelationship implements Model {
       return updatedAt;
   }
   
-  private UserSelfLoveRelationship(String id, UserData userSelfLoveRelationshipOwner, SelfLoveData userSelfLoveRelationshipSelfLove, Integer numberOfTimesPlayed, Integer totalPlayTime) {
+  private UserSelfLoveRelationship(String id, UserData userSelfLoveRelationshipOwner, SelfLoveData userSelfLoveRelationshipSelfLove, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
     this.id = id;
     this.userSelfLoveRelationshipOwner = userSelfLoveRelationshipOwner;
     this.userSelfLoveRelationshipSelfLove = userSelfLoveRelationshipSelfLove;
     this.numberOfTimesPlayed = numberOfTimesPlayed;
     this.totalPlayTime = totalPlayTime;
+    this.currentlyListening = currentlyListening;
+    this.usageTimestamps = usageTimestamps;
+    this.usagePlayTimes = usagePlayTimes;
   }
   
   @Override
@@ -90,6 +111,9 @@ public final class UserSelfLoveRelationship implements Model {
               ObjectsCompat.equals(getUserSelfLoveRelationshipSelfLove(), userSelfLoveRelationship.getUserSelfLoveRelationshipSelfLove()) &&
               ObjectsCompat.equals(getNumberOfTimesPlayed(), userSelfLoveRelationship.getNumberOfTimesPlayed()) &&
               ObjectsCompat.equals(getTotalPlayTime(), userSelfLoveRelationship.getTotalPlayTime()) &&
+              ObjectsCompat.equals(getCurrentlyListening(), userSelfLoveRelationship.getCurrentlyListening()) &&
+              ObjectsCompat.equals(getUsageTimestamps(), userSelfLoveRelationship.getUsageTimestamps()) &&
+              ObjectsCompat.equals(getUsagePlayTimes(), userSelfLoveRelationship.getUsagePlayTimes()) &&
               ObjectsCompat.equals(getCreatedAt(), userSelfLoveRelationship.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), userSelfLoveRelationship.getUpdatedAt());
       }
@@ -103,6 +127,9 @@ public final class UserSelfLoveRelationship implements Model {
       .append(getUserSelfLoveRelationshipSelfLove())
       .append(getNumberOfTimesPlayed())
       .append(getTotalPlayTime())
+      .append(getCurrentlyListening())
+      .append(getUsageTimestamps())
+      .append(getUsagePlayTimes())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -118,6 +145,9 @@ public final class UserSelfLoveRelationship implements Model {
       .append("userSelfLoveRelationshipSelfLove=" + String.valueOf(getUserSelfLoveRelationshipSelfLove()) + ", ")
       .append("numberOfTimesPlayed=" + String.valueOf(getNumberOfTimesPlayed()) + ", ")
       .append("totalPlayTime=" + String.valueOf(getTotalPlayTime()) + ", ")
+      .append("currentlyListening=" + String.valueOf(getCurrentlyListening()) + ", ")
+      .append("usageTimestamps=" + String.valueOf(getUsageTimestamps()) + ", ")
+      .append("usagePlayTimes=" + String.valueOf(getUsagePlayTimes()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -142,6 +172,9 @@ public final class UserSelfLoveRelationship implements Model {
       null,
       null,
       null,
+      null,
+      null,
+      null,
       null
     );
   }
@@ -151,7 +184,10 @@ public final class UserSelfLoveRelationship implements Model {
       userSelfLoveRelationshipOwner,
       userSelfLoveRelationshipSelfLove,
       numberOfTimesPlayed,
-      totalPlayTime);
+      totalPlayTime,
+      currentlyListening,
+      usageTimestamps,
+      usagePlayTimes);
   }
   public interface UserSelfLoveRelationshipOwnerStep {
     UserSelfLoveRelationshipSelfLoveStep userSelfLoveRelationshipOwner(UserData userSelfLoveRelationshipOwner);
@@ -168,6 +204,9 @@ public final class UserSelfLoveRelationship implements Model {
     BuildStep id(String id);
     BuildStep numberOfTimesPlayed(Integer numberOfTimesPlayed);
     BuildStep totalPlayTime(Integer totalPlayTime);
+    BuildStep currentlyListening(Boolean currentlyListening);
+    BuildStep usageTimestamps(List<Temporal.DateTime> usageTimestamps);
+    BuildStep usagePlayTimes(List<Integer> usagePlayTimes);
   }
   
 
@@ -177,6 +216,9 @@ public final class UserSelfLoveRelationship implements Model {
     private SelfLoveData userSelfLoveRelationshipSelfLove;
     private Integer numberOfTimesPlayed;
     private Integer totalPlayTime;
+    private Boolean currentlyListening;
+    private List<Temporal.DateTime> usageTimestamps;
+    private List<Integer> usagePlayTimes;
     @Override
      public UserSelfLoveRelationship build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -186,7 +228,10 @@ public final class UserSelfLoveRelationship implements Model {
           userSelfLoveRelationshipOwner,
           userSelfLoveRelationshipSelfLove,
           numberOfTimesPlayed,
-          totalPlayTime);
+          totalPlayTime,
+          currentlyListening,
+          usageTimestamps,
+          usagePlayTimes);
     }
     
     @Override
@@ -215,6 +260,24 @@ public final class UserSelfLoveRelationship implements Model {
         return this;
     }
     
+    @Override
+     public BuildStep currentlyListening(Boolean currentlyListening) {
+        this.currentlyListening = currentlyListening;
+        return this;
+    }
+    
+    @Override
+     public BuildStep usageTimestamps(List<Temporal.DateTime> usageTimestamps) {
+        this.usageTimestamps = usageTimestamps;
+        return this;
+    }
+    
+    @Override
+     public BuildStep usagePlayTimes(List<Integer> usagePlayTimes) {
+        this.usagePlayTimes = usagePlayTimes;
+        return this;
+    }
+    
     /**
      * @param id id
      * @return Current Builder instance, for fluent method chaining
@@ -227,12 +290,15 @@ public final class UserSelfLoveRelationship implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData userSelfLoveRelationshipOwner, SelfLoveData userSelfLoveRelationshipSelfLove, Integer numberOfTimesPlayed, Integer totalPlayTime) {
+    private CopyOfBuilder(String id, UserData userSelfLoveRelationshipOwner, SelfLoveData userSelfLoveRelationshipSelfLove, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
       super.id(id);
       super.userSelfLoveRelationshipOwner(userSelfLoveRelationshipOwner)
         .userSelfLoveRelationshipSelfLove(userSelfLoveRelationshipSelfLove)
         .numberOfTimesPlayed(numberOfTimesPlayed)
-        .totalPlayTime(totalPlayTime);
+        .totalPlayTime(totalPlayTime)
+        .currentlyListening(currentlyListening)
+        .usageTimestamps(usageTimestamps)
+        .usagePlayTimes(usagePlayTimes);
     }
     
     @Override
@@ -253,6 +319,21 @@ public final class UserSelfLoveRelationship implements Model {
     @Override
      public CopyOfBuilder totalPlayTime(Integer totalPlayTime) {
       return (CopyOfBuilder) super.totalPlayTime(totalPlayTime);
+    }
+    
+    @Override
+     public CopyOfBuilder currentlyListening(Boolean currentlyListening) {
+      return (CopyOfBuilder) super.currentlyListening(currentlyListening);
+    }
+    
+    @Override
+     public CopyOfBuilder usageTimestamps(List<Temporal.DateTime> usageTimestamps) {
+      return (CopyOfBuilder) super.usageTimestamps(usageTimestamps);
+    }
+    
+    @Override
+     public CopyOfBuilder usagePlayTimes(List<Integer> usagePlayTimes) {
+      return (CopyOfBuilder) super.usagePlayTimes(usagePlayTimes);
     }
   }
   

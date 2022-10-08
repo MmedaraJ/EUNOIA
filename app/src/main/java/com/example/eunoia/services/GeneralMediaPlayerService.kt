@@ -111,8 +111,6 @@ class GeneralMediaPlayerService:
     fun seekToPos(pos: Int){
         if(mediaPlayerIsPlaying) {
             mediaPlayer!!.seekTo(pos)
-        }else{
-            seekToPos(pos)
         }
     }
 

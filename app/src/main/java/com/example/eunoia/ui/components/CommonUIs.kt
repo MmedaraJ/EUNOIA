@@ -1185,8 +1185,9 @@ fun RoutineCard(
                         top.linkTo(title.bottom, margin = 2.dp)
                     }
             ) {
+                val timesUsedText = if(routine.numberOfTimesUsed == 1) "time" else "times"
                 ExtraLightText(
-                    text = "You have used this routine ${routine.numberOfTimesUsed} times.",
+                    text = "You have used this routine ${routine.numberOfTimesUsed} $timesUsedText.",
                     color = Black,
                     fontSize = 10,
                     xOffset = 0,

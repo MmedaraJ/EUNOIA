@@ -24,7 +24,6 @@ import com.example.eunoia.backend.*
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
-import com.example.eunoia.ui.bottomSheets.bedtimeStory.setUpUserBedtimeStoryInfoRelationship
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.sound.checkIfRoutineNameIsTaken
@@ -404,11 +403,17 @@ fun setUpRoutinePrayer(
                     }
                 }
 
+                var prayerPlaytime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
+                if(prayerPlaytime > MAX_PRAYER_PLAYTIME){
+                    prayerPlaytime = MAX_PRAYER_PLAYTIME
+                }
+
                 val numberOfSteps = userRoutine.routineData.numberOfSteps + 1
 
                 val routine = userRoutine.routineData.copyOfBuilder()
                     .numberOfSteps(numberOfSteps)
                     .fullPlayTime(playTime)
+                    .prayerPlayTime(prayerPlaytime)
                     .currentPrayerPlayingIndex(0)
                     .currentPrayerContinuePlayingTime(0)
                     .playingOrder(playOrder)

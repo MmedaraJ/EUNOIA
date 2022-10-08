@@ -16,23 +16,20 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.RoutineData
-import com.amplifyframework.datastore.generated.model.RoutinePreset
-import com.amplifyframework.datastore.generated.model.RoutineSoundPreset
+import com.amplifyframework.datastore.generated.model.RoutineBedtimeStoryInfo
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.AlignedNormalText
 import com.example.eunoia.ui.components.BackArrowHeader
-import com.example.eunoia.ui.components.WrappedPurpleBackgroundStart
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.Black
-import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
 
-var routinePresetList by mutableStateOf<MutableList<RoutineSoundPreset?>?>(null)
+var routineBedtimeStoryList by mutableStateOf<MutableList<RoutineBedtimeStoryInfo?>?>(null)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RoutinePresetScreen(
+fun RoutineBedtimeStoryScreen(
     navController: NavController,
     context: Context,
     routineData: RoutineData,
@@ -100,10 +97,10 @@ fun RoutinePresetScreen(
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            if(routinePresetList != null) {
-                val soundText = if(routinePresetList!!.size > 1) "sounds" else "sound"
+            if(routineBedtimeStoryList != null) {
+                val BedtimeStoryText = if(routineBedtimeStoryList!!.size > 1) "BedtimeStorys" else "BedtimeStory"
                 AlignedNormalText(
-                    text = "${routinePresetList!!.size} $soundText",
+                    text = "${routineBedtimeStoryList!!.size} $BedtimeStoryText",
                     color = Black,
                     fontSize = 13,
                     xOffset = 0,
@@ -118,9 +115,9 @@ fun RoutinePresetScreen(
                     start.linkTo(parent.start, margin = 16.dp)
                     end.linkTo(parent.end, margin = 16.dp)
                 }
-                //.wrapContentHeight()
+            //.wrapContentHeight()
         ) {
-            RoutinePresetElements(navController, routineData)
+            RoutineBedtimeStoryElements(navController, routineData)
             Spacer(modifier = Modifier.height(40.dp))
         }
     }

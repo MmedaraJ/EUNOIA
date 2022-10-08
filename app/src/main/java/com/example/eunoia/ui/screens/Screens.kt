@@ -95,6 +95,9 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
      */
     object RoutineScreen: Screen("Routine Screen", -1, "routine_screen")
     object RoutinePresetScreen: Screen("Routine Preset Screen", -1, "routine_preset_screen")
+    object RoutinePrayerScreen: Screen("Routine Prayer Screen", -1, "routine_prayer_screen")
+    object RoutineBedtimeStoryScreen: Screen("Routine Bedtime Story Screen", -1, "routine_bedtime_story_screen")
+    object RoutineSelfLoveScreen: Screen("Routine Self Love Screen", -1, "routine_self_love_screen")
 
     fun saveState(): Bundle {
         return bundleOf(KEY_SCREEN to screen_route)
@@ -173,6 +176,9 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                  */
                 RoutineScreen.screen_route -> RoutineScreen
                 RoutinePresetScreen.screen_route -> RoutinePresetScreen
+                RoutinePrayerScreen.screen_route -> RoutinePrayerScreen
+                RoutineBedtimeStoryScreen.screen_route -> RoutineBedtimeStoryScreen
+                RoutineSelfLoveScreen.screen_route -> RoutineSelfLoveScreen
 
                 /**
                  * Settings
