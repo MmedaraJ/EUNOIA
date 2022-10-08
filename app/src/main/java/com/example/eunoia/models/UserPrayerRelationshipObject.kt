@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.UserPrayerRelationship
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
@@ -17,6 +18,9 @@ object UserPrayerRelationshipObject {
         val userPrayerRelationshipPrayer: @RawValue PrayerObject.Prayer,
         val numberOfTimesPlayed: Int,
         val totalPlayTime: Long,
+        val currentlyListening: Boolean?,
+        val usageTimeStamp: @RawValue List<Temporal.DateTime>?,
+        val usagePlayTimes: List<Int>?,
     ): Parcelable {
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -28,6 +32,9 @@ object UserPrayerRelationshipObject {
                 .userPrayerRelationshipPrayer(this.userPrayerRelationshipPrayer.data)
                 .numberOfTimesPlayed(this.numberOfTimesPlayed)
                 .totalPlayTime(this.totalPlayTime.toInt())
+                .currentlyListening(this.currentlyListening)
+                .usageTimestamps(this.usageTimeStamp)
+                .usagePlayTimes(this.usagePlayTimes)
                 .id(this.id)
                 .build()
 
@@ -38,7 +45,10 @@ object UserPrayerRelationshipObject {
                     UserObject.User.from(userPrayerRelationship.userPrayerRelationshipOwner),
                     PrayerObject.Prayer.from(userPrayerRelationship.userPrayerRelationshipPrayer),
                     userPrayerRelationship.numberOfTimesPlayed,
-                    userPrayerRelationship.totalPlayTime.toLong()
+                    userPrayerRelationship.totalPlayTime.toLong(),
+                    userPrayerRelationship.currentlyListening,
+                    userPrayerRelationship.usageTimestamps,
+                    userPrayerRelationship.usagePlayTimes
                 )
                 return result
             }

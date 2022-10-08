@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.UserBedtimeStoryInfo
 import com.amplifyframework.datastore.generated.model.UserBedtimeStoryInfoRelationship
 import com.google.gson.Gson
@@ -18,6 +19,9 @@ object UserBedtimeStoryInfoRelationshipObject {
         val userBedtimeStoryInfoRelationshipBedtimeStoryInfo: @RawValue BedtimeStoryObject.BedtimeStory,
         val numberOfTimesPlayed: Int,
         val totalPlayTime: Long,
+        val currentlyListening: Boolean?,
+        val usageTimeStamp: @RawValue List<Temporal.DateTime>?,
+        val usagePlayTimes: List<Int>?,
     ): Parcelable {
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -29,6 +33,9 @@ object UserBedtimeStoryInfoRelationshipObject {
                 .userBedtimeStoryInfoRelationshipBedtimeStoryInfo(this.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.data)
                 .numberOfTimesPlayed(this.numberOfTimesPlayed)
                 .totalPlayTime(this.totalPlayTime.toInt())
+                .currentlyListening(this.currentlyListening)
+                .usageTimestamps(this.usageTimeStamp)
+                .usagePlayTimes(this.usagePlayTimes)
                 .id(this.id)
                 .build()
 
@@ -39,7 +46,10 @@ object UserBedtimeStoryInfoRelationshipObject {
                     UserObject.User.from(userBedtimeStoryInfoRelationship.userBedtimeStoryInfoRelationshipOwner),
                     BedtimeStoryObject.BedtimeStory.from(userBedtimeStoryInfoRelationship.userBedtimeStoryInfoRelationshipBedtimeStoryInfo),
                     userBedtimeStoryInfoRelationship.numberOfTimesPlayed,
-                    userBedtimeStoryInfoRelationship.totalPlayTime.toLong()
+                    userBedtimeStoryInfoRelationship.totalPlayTime.toLong(),
+                    userBedtimeStoryInfoRelationship.currentlyListening,
+                    userBedtimeStoryInfoRelationship.usageTimestamps,
+                    userBedtimeStoryInfoRelationship.usagePlayTimes
                 )
                 return result
             }

@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.UserPresetRelationship
 import com.amplifyframework.datastore.generated.model.UserSoundPresetRelationship
 import com.google.gson.Gson
@@ -18,6 +19,9 @@ object UserSoundPresetRelationshipObject {
         val userSoundPresetRelationshipSoundPreset: @RawValue SoundPresetObject.SoundPreset,
         val numberOfTimesPlayed: Int,
         val totalPlayTime: Long,
+        val currentlyListening: Boolean?,
+        val usageTimeStamp: @RawValue List<Temporal.DateTime>?,
+        val usagePlayTimes: List<Int>?,
     ): Parcelable {
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -29,6 +33,9 @@ object UserSoundPresetRelationshipObject {
                 .userSoundPresetRelationshipSoundPreset(this.userSoundPresetRelationshipSoundPreset.data)
                 .numberOfTimesPlayed(this.numberOfTimesPlayed)
                 .totalPlayTime(this.totalPlayTime.toInt())
+                .currentlyListening(this.currentlyListening)
+                .usageTimestamps(this.usageTimeStamp)
+                .usagePlayTimes(this.usagePlayTimes)
                 .id(this.id)
                 .build()
 
@@ -39,7 +46,10 @@ object UserSoundPresetRelationshipObject {
                     UserObject.User.from(userSoundPresetRelationship.userSoundPresetRelationshipOwner),
                     SoundPresetObject.SoundPreset.from(userSoundPresetRelationship.userSoundPresetRelationshipSoundPreset),
                     userSoundPresetRelationship.numberOfTimesPlayed,
-                    userSoundPresetRelationship.totalPlayTime.toLong()
+                    userSoundPresetRelationship.totalPlayTime.toLong(),
+                    userSoundPresetRelationship.currentlyListening,
+                    userSoundPresetRelationship.usageTimestamps,
+                    userSoundPresetRelationship.usagePlayTimes
                 )
                 return result
             }

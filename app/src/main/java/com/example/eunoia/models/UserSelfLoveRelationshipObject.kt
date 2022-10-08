@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.UserSelfLoveRelationship
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
@@ -17,6 +18,9 @@ object UserSelfLoveRelationshipObject {
         val userSelfLoveRelationshipSelfLove: @RawValue SelfLoveObject.SelfLove,
         val numberOfTimesPlayed: Int,
         val totalPlayTime: Long,
+        val currentlyListening: Boolean?,
+        val usageTimeStamp: @RawValue List<Temporal.DateTime>?,
+        val usagePlayTimes: List<Int>?,
     ): Parcelable {
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -28,6 +32,9 @@ object UserSelfLoveRelationshipObject {
                 .userSelfLoveRelationshipSelfLove(this.userSelfLoveRelationshipSelfLove.data)
                 .numberOfTimesPlayed(this.numberOfTimesPlayed)
                 .totalPlayTime(this.totalPlayTime.toInt())
+                .currentlyListening(this.currentlyListening)
+                .usageTimestamps(this.usageTimeStamp)
+                .usagePlayTimes(this.usagePlayTimes)
                 .id(this.id)
                 .build()
 
@@ -38,7 +45,10 @@ object UserSelfLoveRelationshipObject {
                     UserObject.User.from(userSelfLoveRelationship.userSelfLoveRelationshipOwner),
                     SelfLoveObject.SelfLove.from(userSelfLoveRelationship.userSelfLoveRelationshipSelfLove),
                     userSelfLoveRelationship.numberOfTimesPlayed,
-                    userSelfLoveRelationship.totalPlayTime.toLong()
+                    userSelfLoveRelationship.totalPlayTime.toLong(),
+                    userSelfLoveRelationship.currentlyListening,
+                    userSelfLoveRelationship.usageTimestamps,
+                    userSelfLoveRelationship.usagePlayTimes
                 )
                 return result
             }

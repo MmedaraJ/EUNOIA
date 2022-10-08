@@ -19,8 +19,9 @@ object UserSoundRelationshipObject {
         val userSoundRelationshipSound: @RawValue SoundObject.Sound,
         val numberOfTimesPlayed: Int,
         val totalPlayTime: Long,
+        val currentlyListening: Boolean?,
         val usageTimeStamp: @RawValue List<Temporal.DateTime>?,
-        val usagePlayTimes: @RawValue List<Int>?,
+        val usagePlayTimes: List<Int>?,
     ): Parcelable {
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -32,6 +33,7 @@ object UserSoundRelationshipObject {
                 .userSoundRelationshipSound(this.userSoundRelationshipSound.data)
                 .numberOfTimesPlayed(this.numberOfTimesPlayed)
                 .totalPlayTime(this.totalPlayTime.toInt())
+                .currentlyListening(this.currentlyListening)
                 .usageTimestamps(this.usageTimeStamp)
                 .usagePlayTimes(this.usagePlayTimes)
                 .id(this.id)
@@ -45,6 +47,7 @@ object UserSoundRelationshipObject {
                     SoundObject.Sound.from(userSoundRelationship.userSoundRelationshipSound),
                     userSoundRelationship.numberOfTimesPlayed,
                     userSoundRelationship.totalPlayTime.toLong(),
+                    userSoundRelationship.currentlyListening,
                     userSoundRelationship.usageTimestamps,
                     userSoundRelationship.usagePlayTimes
                 )
