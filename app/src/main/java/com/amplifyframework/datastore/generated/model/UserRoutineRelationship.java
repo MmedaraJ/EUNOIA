@@ -1,6 +1,7 @@
 package com.amplifyframework.datastore.generated.model;
 
 import com.amplifyframework.core.model.annotations.BelongsTo;
+import com.amplifyframework.core.model.annotations.HasMany;
 import com.amplifyframework.core.model.temporal.Temporal;
 
 import java.util.List;
@@ -34,6 +35,8 @@ public final class UserRoutineRelationship implements Model {
   public static final QueryField USER_ROUTINE_RELATIONSHIP_ROUTINE = field("UserRoutineRelationship", "userRoutineRelationshipRoutineDataID");
   public static final QueryField NUMBER_OF_TIMES_PLAYED = field("UserRoutineRelationship", "numberOfTimesPlayed");
   public static final QueryField TOTAL_PLAY_TIME = field("UserRoutineRelationship", "totalPlayTime");
+  public static final QueryField FULL_PLAY_TIME = field("UserRoutineRelationship", "fullPlayTime");
+  public static final QueryField NUMBER_OF_STEPS = field("UserRoutineRelationship", "numberOfSteps");
   public static final QueryField CURRENTLY_LISTENING = field("UserRoutineRelationship", "currentlyListening");
   public static final QueryField PLAY_SOUND_DURING_STRETCH = field("UserRoutineRelationship", "playSoundDuringStretch");
   public static final QueryField PLAY_SOUND_DURING_PRAYER = field("UserRoutineRelationship", "playSoundDuringPrayer");
@@ -61,6 +64,8 @@ public final class UserRoutineRelationship implements Model {
   private final @ModelField(targetType="RoutineData", isRequired = true) @BelongsTo(targetName = "userRoutineRelationshipRoutineDataID", type = RoutineData.class) RoutineData userRoutineRelationshipRoutine;
   private final @ModelField(targetType="Int") Integer numberOfTimesPlayed;
   private final @ModelField(targetType="Int") Integer totalPlayTime;
+  private final @ModelField(targetType="Int") Integer fullPlayTime;
+  private final @ModelField(targetType="Int") Integer numberOfSteps;
   private final @ModelField(targetType="Boolean") Boolean currentlyListening;
   private final @ModelField(targetType="Boolean") Boolean playSoundDuringStretch;
   private final @ModelField(targetType="Boolean") Boolean playSoundDuringPrayer;
@@ -83,6 +88,13 @@ public final class UserRoutineRelationship implements Model {
   private final @ModelField(targetType="AWSDateTime") List<Temporal.DateTime> usageTimestamps;
   private final @ModelField(targetType="Int") List<Integer> usagePlayTimes;
   private final @ModelField(targetType="String") List<String> playingOrder;
+  private final @ModelField(targetType="UserRoutineRelationshipSound") @HasMany(associatedWith = "userRoutineRelationship", type = UserRoutineRelationshipSound.class) List<UserRoutineRelationshipSound> sounds = null;
+  private final @ModelField(targetType="UserRoutineRelationshipSoundPreset") @HasMany(associatedWith = "userRoutineRelationship", type = UserRoutineRelationshipSoundPreset.class) List<UserRoutineRelationshipSoundPreset> presets = null;
+  private final @ModelField(targetType="UserRoutineRelationshipPrayer") @HasMany(associatedWith = "userRoutineRelationship", type = UserRoutineRelationshipPrayer.class) List<UserRoutineRelationshipPrayer> prayers = null;
+  private final @ModelField(targetType="UserRoutineRelationshipStretch") @HasMany(associatedWith = "userRoutineRelationship", type = UserRoutineRelationshipStretch.class) List<UserRoutineRelationshipStretch> stretches = null;
+  private final @ModelField(targetType="UserRoutineRelationshipBreathing") @HasMany(associatedWith = "userRoutineRelationship", type = UserRoutineRelationshipBreathing.class) List<UserRoutineRelationshipBreathing> breathing = null;
+  private final @ModelField(targetType="UserRoutineRelationshipBedtimeStoryInfo") @HasMany(associatedWith = "userRoutineRelationship", type = UserRoutineRelationshipBedtimeStoryInfo.class) List<UserRoutineRelationshipBedtimeStoryInfo> bedtimeStories = null;
+  private final @ModelField(targetType="UserRoutineRelationshipSelfLove") @HasMany(associatedWith = "userRoutineRelationship", type = UserRoutineRelationshipSelfLove.class) List<UserRoutineRelationshipSelfLove> selfLoves = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -103,6 +115,14 @@ public final class UserRoutineRelationship implements Model {
   
   public Integer getTotalPlayTime() {
       return totalPlayTime;
+  }
+  
+  public Integer getFullPlayTime() {
+      return fullPlayTime;
+  }
+  
+  public Integer getNumberOfSteps() {
+      return numberOfSteps;
   }
   
   public Boolean getCurrentlyListening() {
@@ -193,6 +213,34 @@ public final class UserRoutineRelationship implements Model {
       return playingOrder;
   }
   
+  public List<UserRoutineRelationshipSound> getSounds() {
+      return sounds;
+  }
+  
+  public List<UserRoutineRelationshipSoundPreset> getPresets() {
+      return presets;
+  }
+  
+  public List<UserRoutineRelationshipPrayer> getPrayers() {
+      return prayers;
+  }
+  
+  public List<UserRoutineRelationshipStretch> getStretches() {
+      return stretches;
+  }
+  
+  public List<UserRoutineRelationshipBreathing> getBreathing() {
+      return breathing;
+  }
+  
+  public List<UserRoutineRelationshipBedtimeStoryInfo> getBedtimeStories() {
+      return bedtimeStories;
+  }
+  
+  public List<UserRoutineRelationshipSelfLove> getSelfLoves() {
+      return selfLoves;
+  }
+  
   public Temporal.DateTime getCreatedAt() {
       return createdAt;
   }
@@ -201,12 +249,14 @@ public final class UserRoutineRelationship implements Model {
       return updatedAt;
   }
   
-  private UserRoutineRelationship(String id, UserData userRoutineRelationshipOwner, RoutineData userRoutineRelationshipRoutine, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes, List<String> playingOrder) {
+  private UserRoutineRelationship(String id, UserData userRoutineRelationshipOwner, RoutineData userRoutineRelationshipRoutine, Integer numberOfTimesPlayed, Integer totalPlayTime, Integer fullPlayTime, Integer numberOfSteps, Boolean currentlyListening, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes, List<String> playingOrder) {
     this.id = id;
     this.userRoutineRelationshipOwner = userRoutineRelationshipOwner;
     this.userRoutineRelationshipRoutine = userRoutineRelationshipRoutine;
     this.numberOfTimesPlayed = numberOfTimesPlayed;
     this.totalPlayTime = totalPlayTime;
+    this.fullPlayTime = fullPlayTime;
+    this.numberOfSteps = numberOfSteps;
     this.currentlyListening = currentlyListening;
     this.playSoundDuringStretch = playSoundDuringStretch;
     this.playSoundDuringPrayer = playSoundDuringPrayer;
@@ -244,6 +294,8 @@ public final class UserRoutineRelationship implements Model {
               ObjectsCompat.equals(getUserRoutineRelationshipRoutine(), userRoutineRelationship.getUserRoutineRelationshipRoutine()) &&
               ObjectsCompat.equals(getNumberOfTimesPlayed(), userRoutineRelationship.getNumberOfTimesPlayed()) &&
               ObjectsCompat.equals(getTotalPlayTime(), userRoutineRelationship.getTotalPlayTime()) &&
+              ObjectsCompat.equals(getFullPlayTime(), userRoutineRelationship.getFullPlayTime()) &&
+              ObjectsCompat.equals(getNumberOfSteps(), userRoutineRelationship.getNumberOfSteps()) &&
               ObjectsCompat.equals(getCurrentlyListening(), userRoutineRelationship.getCurrentlyListening()) &&
               ObjectsCompat.equals(getPlaySoundDuringStretch(), userRoutineRelationship.getPlaySoundDuringStretch()) &&
               ObjectsCompat.equals(getPlaySoundDuringPrayer(), userRoutineRelationship.getPlaySoundDuringPrayer()) &&
@@ -279,6 +331,8 @@ public final class UserRoutineRelationship implements Model {
       .append(getUserRoutineRelationshipRoutine())
       .append(getNumberOfTimesPlayed())
       .append(getTotalPlayTime())
+      .append(getFullPlayTime())
+      .append(getNumberOfSteps())
       .append(getCurrentlyListening())
       .append(getPlaySoundDuringStretch())
       .append(getPlaySoundDuringPrayer())
@@ -316,6 +370,8 @@ public final class UserRoutineRelationship implements Model {
       .append("userRoutineRelationshipRoutine=" + String.valueOf(getUserRoutineRelationshipRoutine()) + ", ")
       .append("numberOfTimesPlayed=" + String.valueOf(getNumberOfTimesPlayed()) + ", ")
       .append("totalPlayTime=" + String.valueOf(getTotalPlayTime()) + ", ")
+      .append("fullPlayTime=" + String.valueOf(getFullPlayTime()) + ", ")
+      .append("numberOfSteps=" + String.valueOf(getNumberOfSteps()) + ", ")
       .append("currentlyListening=" + String.valueOf(getCurrentlyListening()) + ", ")
       .append("playSoundDuringStretch=" + String.valueOf(getPlaySoundDuringStretch()) + ", ")
       .append("playSoundDuringPrayer=" + String.valueOf(getPlaySoundDuringPrayer()) + ", ")
@@ -384,6 +440,8 @@ public final class UserRoutineRelationship implements Model {
       null,
       null,
       null,
+      null,
+      null,
       null
     );
   }
@@ -394,6 +452,8 @@ public final class UserRoutineRelationship implements Model {
       userRoutineRelationshipRoutine,
       numberOfTimesPlayed,
       totalPlayTime,
+      fullPlayTime,
+      numberOfSteps,
       currentlyListening,
       playSoundDuringStretch,
       playSoundDuringPrayer,
@@ -432,6 +492,8 @@ public final class UserRoutineRelationship implements Model {
     BuildStep id(String id);
     BuildStep numberOfTimesPlayed(Integer numberOfTimesPlayed);
     BuildStep totalPlayTime(Integer totalPlayTime);
+    BuildStep fullPlayTime(Integer fullPlayTime);
+    BuildStep numberOfSteps(Integer numberOfSteps);
     BuildStep currentlyListening(Boolean currentlyListening);
     BuildStep playSoundDuringStretch(Boolean playSoundDuringStretch);
     BuildStep playSoundDuringPrayer(Boolean playSoundDuringPrayer);
@@ -463,6 +525,8 @@ public final class UserRoutineRelationship implements Model {
     private RoutineData userRoutineRelationshipRoutine;
     private Integer numberOfTimesPlayed;
     private Integer totalPlayTime;
+    private Integer fullPlayTime;
+    private Integer numberOfSteps;
     private Boolean currentlyListening;
     private Boolean playSoundDuringStretch;
     private Boolean playSoundDuringPrayer;
@@ -495,6 +559,8 @@ public final class UserRoutineRelationship implements Model {
           userRoutineRelationshipRoutine,
           numberOfTimesPlayed,
           totalPlayTime,
+          fullPlayTime,
+          numberOfSteps,
           currentlyListening,
           playSoundDuringStretch,
           playSoundDuringPrayer,
@@ -542,6 +608,18 @@ public final class UserRoutineRelationship implements Model {
     @Override
      public BuildStep totalPlayTime(Integer totalPlayTime) {
         this.totalPlayTime = totalPlayTime;
+        return this;
+    }
+    
+    @Override
+     public BuildStep fullPlayTime(Integer fullPlayTime) {
+        this.fullPlayTime = fullPlayTime;
+        return this;
+    }
+    
+    @Override
+     public BuildStep numberOfSteps(Integer numberOfSteps) {
+        this.numberOfSteps = numberOfSteps;
         return this;
     }
     
@@ -689,12 +767,14 @@ public final class UserRoutineRelationship implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData userRoutineRelationshipOwner, RoutineData userRoutineRelationshipRoutine, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes, List<String> playingOrder) {
+    private CopyOfBuilder(String id, UserData userRoutineRelationshipOwner, RoutineData userRoutineRelationshipRoutine, Integer numberOfTimesPlayed, Integer totalPlayTime, Integer fullPlayTime, Integer numberOfSteps, Boolean currentlyListening, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes, List<String> playingOrder) {
       super.id(id);
       super.userRoutineRelationshipOwner(userRoutineRelationshipOwner)
         .userRoutineRelationshipRoutine(userRoutineRelationshipRoutine)
         .numberOfTimesPlayed(numberOfTimesPlayed)
         .totalPlayTime(totalPlayTime)
+        .fullPlayTime(fullPlayTime)
+        .numberOfSteps(numberOfSteps)
         .currentlyListening(currentlyListening)
         .playSoundDuringStretch(playSoundDuringStretch)
         .playSoundDuringPrayer(playSoundDuringPrayer)
@@ -737,6 +817,16 @@ public final class UserRoutineRelationship implements Model {
     @Override
      public CopyOfBuilder totalPlayTime(Integer totalPlayTime) {
       return (CopyOfBuilder) super.totalPlayTime(totalPlayTime);
+    }
+    
+    @Override
+     public CopyOfBuilder fullPlayTime(Integer fullPlayTime) {
+      return (CopyOfBuilder) super.fullPlayTime(fullPlayTime);
+    }
+    
+    @Override
+     public CopyOfBuilder numberOfSteps(Integer numberOfSteps) {
+      return (CopyOfBuilder) super.numberOfSteps(numberOfSteps);
     }
     
     @Override

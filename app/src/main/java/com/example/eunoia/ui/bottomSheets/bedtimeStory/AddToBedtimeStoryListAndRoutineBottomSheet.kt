@@ -202,7 +202,7 @@ private fun addToBedtimeStoryListClicked(
 ) {
     if (globalViewModel_!!.currentBedtimeStoryToBeAdded != null) {
         if (globalViewModel_!!.currentUser != null) {
-            UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
+            UserBedtimeStoryInfoRelationshipBackend.queryUserBedtimeStoryInfoRelationshipBasedOnUserAndBedtimeStoryInfo(
                 globalViewModel_!!.currentUser!!,
                 globalViewModel_!!.currentBedtimeStoryToBeAdded!!
             ){
@@ -229,10 +229,10 @@ fun SelectRoutineForBedtimeStory(
     state: ModalBottomSheetState
 ) {
     SetUpAlertDialogs()
-    val userRoutines = remember{ mutableStateOf(mutableListOf<UserRoutine?>()) }
-    UserRoutineBackend.queryUserRoutineBasedOnUser(globalViewModel_!!.currentUser!!){
+    val userRoutineRelationships = remember{ mutableStateOf(mutableListOf<UserRoutineRelationship?>()) }
+    UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUser(globalViewModel_!!.currentUser!!){
         userRoutinesSize = it.size
-        userRoutines.value = it.toMutableList()
+        userRoutineRelationships.value = it.toMutableList()
     }
 
     ConstraintLayout(
@@ -307,15 +307,15 @@ fun SelectRoutineForBedtimeStory(
                     yOffset = 0
                 )
             }
-            if(userRoutines.value.size > 0 && userRoutines.value.size == userRoutinesSize){
-                userRoutines.value.forEach{ userRoutine ->
+            if(userRoutineRelationships.value.size > 0 && userRoutineRelationships.value.size == userRoutinesSize){
+                userRoutineRelationships.value.forEach{ userRoutineRelationship ->
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .padding(bottom = 15.dp)
                             .clickable {
                                 selectRoutineClicked(
-                                    userRoutine!!,
+                                    userRoutineRelationship!!,
                                     scope,
                                     state
                                 )
@@ -327,11 +327,11 @@ fun SelectRoutineForBedtimeStory(
                                     .size(71.dp, 71.dp)
                                     .fillMaxWidth(),
                                 shape = MaterialTheme.shapes.small,
-                                backgroundColor = Color(userRoutine!!.routineData.colorHex),
+                                backgroundColor = Color(userRoutineRelationship!!.userRoutineRelationshipRoutine.colorHex),
                                 elevation = 8.dp
                             ) {
                                 Image(
-                                    painter = painterResource(id = userRoutine.routineData.icon),
+                                    painter = painterResource(id = userRoutineRelationship.userRoutineRelationshipRoutine.icon),
                                     contentDescription = "routine icon",
                                     modifier = Modifier
                                         .size(width = 25.64.dp, height = 25.64.dp)
@@ -342,7 +342,7 @@ fun SelectRoutineForBedtimeStory(
 
                         Spacer(modifier = Modifier.height(4.dp))
 
-                        val goodDisplayName = displayRoutineNameForBottomSheet(userRoutine!!)
+                        val goodDisplayName = displayRoutineNameForBottomSheet(userRoutineRelationship!!)
                         AlignedNormalText(
                             text = goodDisplayName,
                             color = MaterialTheme.colors.primary,
@@ -359,12 +359,12 @@ fun SelectRoutineForBedtimeStory(
 
 @OptIn(ExperimentalMaterialApi::class)
 private fun selectRoutineClicked(
-    userRoutine: UserRoutine,
+    userRoutineRelationship: UserRoutineRelationship,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    setUpRoutineBedtimeStory(
-        userRoutine,
+    setUpUserRoutineRelationshipBedtimeStory(
+        userRoutineRelationship,
         {
             closeBottomSheet(scope, state)
             openRoutineAlreadyHasBedtimeStoryDialogBox = true
@@ -379,74 +379,23 @@ private fun selectRoutineClicked(
     }
 }
 
-fun setUpRoutineBedtimeStory(
-    userRoutine: UserRoutine,
+fun setUpUserRoutineRelationshipBedtimeStory(
+    userRoutineRelationship: UserRoutineRelationship,
     alreadyExists: () -> Unit,
     completed: () -> Unit
 ) {
-    RoutineBedtimeStoryBackend.queryRoutineBedtimeStoryBasedOnBedtimeStoryAndRoutine(
-        userRoutine.routineData,
+    UserRoutineRelationshipBedtimeStoryInfoBackend.queryUserRoutineRelationshipBedtimeStoryInfoBasedOnBedtimeStoryAndUserRoutineRelationship(
+        userRoutineRelationship,
         globalViewModel_!!.currentBedtimeStoryToBeAdded!!
     ){
         if (it.isEmpty()) {
-            if (!userRoutine.routineData.playingOrder.contains("bedtimeStory")) {
-                val playOrder = userRoutine.routineData.playingOrder
-                playOrder.add("bedtimeStory")
-
-                //updated play time should be <= 45'
-                var playTime = userRoutine.routineData.fullPlayTime
-                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime > playTime) {
-                    playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
-                    if (playTime > MAX_ROUTINE_PLAYTIME) {
-                        playTime = MAX_ROUTINE_PLAYTIME
-                    }
-                }
-
-                var bedtimeStoryPlaytime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
-                if(bedtimeStoryPlaytime > MAX_BEDTIME_STORY_PLAYTIME){
-                    bedtimeStoryPlaytime = MAX_BEDTIME_STORY_PLAYTIME
-                }
-
-                val numberOfSteps = userRoutine.routineData.numberOfSteps + 1
-
-                val routine = userRoutine.routineData.copyOfBuilder()
-                    .numberOfSteps(numberOfSteps)
-                    .fullPlayTime(playTime)
-                    .bedtimeStoryPlayTime(bedtimeStoryPlaytime)
-                    .currentBedtimeStoryPlayingIndex(0)
-                    .currentBedtimeStoryContinuePlayingTime(0)
-                    .playingOrder(playOrder)
-                    .build()
-
-                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
-                    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
-                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
-                        updatedRoutine
-                    ) {
-                        completed()
-                    }
+            if (!userRoutineRelationship.playingOrder.contains("bedtimeStory")) {
+                updateUserRoutineRelationshipThatDoesNotContainBedtimeStory(userRoutineRelationship){
+                    completed()
                 }
             }else{
-                //updated play time should be <= 45'
-                var playTime = userRoutine.routineData.fullPlayTime
-                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime > playTime) {
-                    playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
-                    if (playTime > MAX_ROUTINE_PLAYTIME) {
-                        playTime = MAX_ROUTINE_PLAYTIME
-                    }
-                }
-
-                val routine = userRoutine.routineData.copyOfBuilder()
-                    .fullPlayTime(playTime)
-                    .build()
-
-                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
-                    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
-                        globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
-                        updatedRoutine
-                    ) {
-                        completed()
-                    }
+                updateUserRoutineRelationshipThatContainsBedtimeStory(userRoutineRelationship){
+                    completed()
                 }
             }
         }else{
@@ -455,7 +404,85 @@ fun setUpRoutineBedtimeStory(
     }
 }
 
-fun setUpUserBedtimeStory(completed: () -> Unit) {
+private fun updateUserRoutineRelationshipThatDoesNotContainBedtimeStory(
+    userRoutineRelationship: UserRoutineRelationship,
+    completed: () -> Unit
+) {
+    val playOrder = userRoutineRelationship.playingOrder
+    playOrder.add("bedtimeStory")
+
+    //updated play time should be <= 45'
+    var playTime = userRoutineRelationship.fullPlayTime
+    if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime > playTime) {
+        playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+        if (playTime > MAX_ROUTINE_PLAYTIME) {
+            playTime = MAX_ROUTINE_PLAYTIME
+        }
+    }
+
+    var bedtimeStoryPlaytime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+    if(bedtimeStoryPlaytime > MAX_BEDTIME_STORY_PLAYTIME){
+        bedtimeStoryPlaytime = MAX_BEDTIME_STORY_PLAYTIME
+    }
+
+    val numberOfSteps = userRoutineRelationship.numberOfSteps + 1
+
+    val newUserRoutineRelationship = userRoutineRelationship.copyOfBuilder()
+        .numberOfSteps(numberOfSteps)
+        .fullPlayTime(playTime)
+        .bedtimeStoryPlayTime(bedtimeStoryPlaytime)
+        .currentBedtimeStoryPlayingIndex(0)
+        .currentBedtimeStoryContinuePlayingTime(0)
+        .playingOrder(playOrder)
+        .build()
+
+    UserRoutineRelationshipBackend.updateUserRoutineRelationship(newUserRoutineRelationship) { updatedUserRoutineRelationship ->
+        UserRoutineRelationshipBedtimeStoryInfoBackend.createUserRoutineRelationshipBedtimeStoryInfoObject(
+            globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+            updatedUserRoutineRelationship
+        ) {
+            RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
+                globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+                updatedUserRoutineRelationship.userRoutineRelationshipRoutine
+            ) {
+                completed()
+            }
+        }
+    }
+}
+
+private fun updateUserRoutineRelationshipThatContainsBedtimeStory(
+    userRoutineRelationship: UserRoutineRelationship,
+    completed: () -> Unit
+) {
+    var playTime = userRoutineRelationship.fullPlayTime
+    if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime > playTime) {
+        playTime = globalViewModel_!!.currentBedtimeStoryToBeAdded!!.fullPlayTime
+        if (playTime > MAX_ROUTINE_PLAYTIME) {
+            playTime = MAX_ROUTINE_PLAYTIME
+        }
+    }
+
+    val newUserRoutineRelationship = userRoutineRelationship.copyOfBuilder()
+        .fullPlayTime(playTime)
+        .build()
+
+    UserRoutineRelationshipBackend.updateUserRoutineRelationship(newUserRoutineRelationship) { updatedUserRoutineRelationship ->
+        UserRoutineRelationshipBedtimeStoryInfoBackend.createUserRoutineRelationshipBedtimeStoryInfoObject(
+            globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+            updatedUserRoutineRelationship
+        ) {
+            RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
+                globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+                updatedUserRoutineRelationship.userRoutineRelationshipRoutine
+            ) {
+                completed()
+            }
+        }
+    }
+}
+
+private fun setUpUserBedtimeStory(completed: () -> Unit) {
     UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
         globalViewModel_!!.currentUser!!,
         globalViewModel_!!.currentBedtimeStoryToBeAdded!!
@@ -758,7 +785,6 @@ private fun newRoutineIconSelected(
         originalName = globalViewModel_!!.routineNameToBeAdded,
         displayName = globalViewModel_!!.routineNameToBeAdded,
         numberOfSteps = 2,
-        numberOfTimesUsed = 0,
         fullPlayTime = playTime.toLong(),
         icon = globalViewModel_!!.routineIconToBeAdded!!,
         visibleToOthers = false,
@@ -798,9 +824,9 @@ private fun createRoutineAndOtherNecessaryData(
     state: ModalBottomSheetState
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
-        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) {
+        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) { updatedUserRoutineRelationship ->
             UserRoutineBackend.createUserRoutineObject(newRoutine) {
-                setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(newRoutine) {
+                setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(updatedUserRoutineRelationship) {
                     closeBottomSheet(scope, state)
                     openSavedElementDialogBox = true
                 }
@@ -810,16 +836,21 @@ private fun createRoutineAndOtherNecessaryData(
 }
 
 fun setUpRoutineAndUserBedtimeStoryAfterMakingNewRoutine(
-    routineData: RoutineData,
+    userRoutineRelationship: UserRoutineRelationship,
     completed: () -> Unit
 ){
-    RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
+    UserRoutineRelationshipBedtimeStoryInfoBackend.createUserRoutineRelationshipBedtimeStoryInfoObject(
         globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
-        routineData
+        userRoutineRelationship
     ) {
-        setUpUserBedtimeStoryInfoRelationship {
-            setUpUserBedtimeStory {
-                completed()
+        RoutineBedtimeStoryBackend.createRoutineBedtimeStoryObject(
+            globalViewModel_!!.currentBedtimeStoryToBeAdded!!,
+            userRoutineRelationship.userRoutineRelationshipRoutine
+        ) {
+            setUpUserBedtimeStoryInfoRelationship {
+                setUpUserBedtimeStory {
+                    completed()
+                }
             }
         }
     }

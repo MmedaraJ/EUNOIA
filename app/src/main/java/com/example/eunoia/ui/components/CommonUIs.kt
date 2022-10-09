@@ -46,6 +46,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 import com.example.eunoia.R
 import com.example.eunoia.dashboard.bedtimeStory.bedtimeStoryActivityPlayButtonTexts
 import com.example.eunoia.dashboard.home.routineActivityPlayButtonTexts
@@ -1139,8 +1140,8 @@ fun EmptyRoutine(lambda: () -> Unit){
 }
 
 @Composable
-fun RoutineCard(
-    routine: RoutineData,
+fun UserRoutineRelationshipCard(
+    userRoutineRelationship: UserRoutineRelationship,
     index: Int,
     startClicked: (index: Int) -> Unit,
     clicked: () -> Unit
@@ -1152,7 +1153,7 @@ fun RoutineCard(
             .clickable { clicked() }
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
-        backgroundColor = Color(routine.colorHex),
+        backgroundColor = Color(userRoutineRelationship.userRoutineRelationshipRoutine.colorHex),
         elevation = 8.dp
     ){
         ConstraintLayout(
@@ -1172,7 +1173,7 @@ fun RoutineCard(
                     }
             ) {
                 NormalText(
-                    text = "[${routine.displayName}]",
+                    text = "[${userRoutineRelationship.userRoutineRelationshipRoutine.displayName}]",
                     color = Black,
                     fontSize = 14,
                     xOffset = 0,
@@ -1185,9 +1186,9 @@ fun RoutineCard(
                         top.linkTo(title.bottom, margin = 2.dp)
                     }
             ) {
-                val timesUsedText = if(routine.numberOfTimesUsed == 1) "time" else "times"
+                val timesUsedText = if(userRoutineRelationship.numberOfTimesPlayed == 1) "time" else "times"
                 ExtraLightText(
-                    text = "You have used this routine ${routine.numberOfTimesUsed} $timesUsedText.",
+                    text = "You have used this routine ${userRoutineRelationship.numberOfTimesPlayed} $timesUsedText.",
                     color = Black,
                     fontSize = 10,
                     xOffset = 0,
@@ -1200,10 +1201,17 @@ fun RoutineCard(
                         top.linkTo(times_used.bottom, margin = 2.dp)
                     }
             ) {
-                val step = if(routine.numberOfSteps > 1) "steps" else "step"
-                val playTimeString = formatMilliSecond(routine.fullPlayTime.toLong())
+                var step = "0 steps"
+                var playTimeString = "0:00"
+                var finalText = "$step ~ $playTimeString"
+
+                if(userRoutineRelationship.numberOfSteps != null){
+                    step = if(userRoutineRelationship.numberOfSteps > 1) "steps" else "step"
+                    playTimeString = formatMilliSecond(userRoutineRelationship.fullPlayTime.toLong())
+                    finalText = "${userRoutineRelationship.numberOfSteps} $step ~ $playTimeString"
+                }
                 LightText(
-                    text = "${routine.numberOfSteps} $step ~ $playTimeString",
+                    text = finalText,
                     color = Grey,
                     fontSize = 7,
                     xOffset = 0,
@@ -1241,8 +1249,8 @@ fun RoutineCard(
                     }
             ) {
                 AnImage(
-                    routine.icon,
-                    "${routine.displayName} icon",
+                    userRoutineRelationship.userRoutineRelationshipRoutine.icon,
+                    "${userRoutineRelationship.userRoutineRelationshipRoutine.displayName} icon",
                     97.0,
                     104.0,
                     0,

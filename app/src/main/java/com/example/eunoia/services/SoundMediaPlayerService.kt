@@ -43,38 +43,40 @@ class SoundMediaPlayerService:
         when(action) {
             ACTION_PLAY -> {
                 for(i in audioUris.indices) {
-                    val mediaPlayer = MediaPlayer().apply {
-                        setAudioAttributes(
-                            AudioAttributes
-                                .Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .setUsage(AudioAttributes.USAGE_MEDIA)
-                                .build()
-                        )
-                        try {
-                            setDataSource(
-                                UserDashboardActivity.getInstanceActivity(),
-                                audioUris[i]!!
+                    if(i < volumes.size) {
+                        val mediaPlayer = MediaPlayer().apply {
+                            setAudioAttributes(
+                                AudioAttributes
+                                    .Builder()
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                                    .build()
                             )
-                            setVolume(
-                                volumes[i]!!.toFloat() / 10,
-                                volumes[i]!!.toFloat() / 10
-                            )
-                            setWakeMode(
-                                UserDashboardActivity.getInstanceActivity(),
-                                PowerManager.PARTIAL_WAKE_LOCK
-                            )
-                            setOnPreparedListener(this@SoundMediaPlayerService)
-                            prepareAsync() // prepare async to not block main thread
-                        } catch (e: IllegalArgumentException) {
-                            e.printStackTrace();
-                        } catch (e: IllegalStateException) {
-                            e.printStackTrace();
-                        } catch (e: IOException) {
-                            e.printStackTrace();
+                            try {
+                                setDataSource(
+                                    UserDashboardActivity.getInstanceActivity(),
+                                    audioUris[i]!!
+                                )
+                                setVolume(
+                                    volumes[i]!!.toFloat() / 10,
+                                    volumes[i]!!.toFloat() / 10
+                                )
+                                setWakeMode(
+                                    UserDashboardActivity.getInstanceActivity(),
+                                    PowerManager.PARTIAL_WAKE_LOCK
+                                )
+                                setOnPreparedListener(this@SoundMediaPlayerService)
+                                prepareAsync() // prepare async to not block main thread
+                            } catch (e: IllegalArgumentException) {
+                                e.printStackTrace();
+                            } catch (e: IllegalStateException) {
+                                e.printStackTrace();
+                            } catch (e: IOException) {
+                                e.printStackTrace();
+                            }
                         }
+                        mediaPlayers.add(mediaPlayer)
                     }
-                    mediaPlayers.add(mediaPlayer)
                 }
             }
         }

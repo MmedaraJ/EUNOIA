@@ -46,6 +46,7 @@ object UserSoundRelationshipBackend {
             SoundObject.Sound.from(sound),
             0,
             0,
+            false,
             listOf(),
             listOf()
         )
@@ -94,6 +95,33 @@ object UserSoundRelationshipBackend {
                                     Log.i(TAG, userSoundRelationshipData.toString())
                                     userSoundRelationshipList.add(userSoundRelationshipData)
                                 }
+                            }
+                        }
+                    }
+                    completed(userSoundRelationshipList)
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun queryUserSoundRelationshipBasedOnUser(
+        userData: UserData,
+        completed: (userSoundRelationship: List<UserSoundRelationship?>) -> Unit
+    ) {
+        scope.launch {
+            val userSoundRelationshipList = mutableListOf<UserSoundRelationship?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    UserSoundRelationship::class.java,
+                    UserSoundRelationship.USER_SOUND_RELATIONSHIP_OWNER.eq(userData.id),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (userSoundRelationshipData in response.data) {
+                            if(userSoundRelationshipData != null) {
+                                Log.i(TAG, userSoundRelationshipData.toString())
+                                userSoundRelationshipList.add(userSoundRelationshipData)
                             }
                         }
                     }

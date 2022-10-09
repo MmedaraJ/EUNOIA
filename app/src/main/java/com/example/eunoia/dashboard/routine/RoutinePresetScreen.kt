@@ -15,9 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.amplifyframework.datastore.generated.model.RoutineData
-import com.amplifyframework.datastore.generated.model.RoutinePreset
-import com.amplifyframework.datastore.generated.model.RoutineSoundPreset
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.AlignedNormalText
@@ -28,14 +26,14 @@ import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
 
-var routinePresetList by mutableStateOf<MutableList<RoutineSoundPreset?>?>(null)
+var routinePresetList by mutableStateOf<MutableList<UserRoutineRelationshipSoundPreset?>?>(null)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RoutinePresetScreen(
     navController: NavController,
     context: Context,
-    routineData: RoutineData,
+    userRoutineRelationship: UserRoutineRelationship,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -82,7 +80,7 @@ fun RoutinePresetScreen(
                 .wrapContentHeight()
         ) {
             AlignedNormalText(
-                text = "[${routineData.displayName}]",
+                text = "[${userRoutineRelationship.userRoutineRelationshipRoutine.displayName}]",
                 color = Black,
                 fontSize = 16,
                 xOffset = 0,
@@ -120,7 +118,7 @@ fun RoutinePresetScreen(
                 }
                 //.wrapContentHeight()
         ) {
-            RoutinePresetElements(navController, routineData)
+            RoutinePresetElements(navController, userRoutineRelationship)
             Spacer(modifier = Modifier.height(40.dp))
         }
     }

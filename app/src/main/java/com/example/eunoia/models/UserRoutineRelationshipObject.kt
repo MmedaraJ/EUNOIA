@@ -18,6 +18,8 @@ object UserRoutineRelationshipObject {
         val userRoutineRelationshipRoutine: @RawValue RoutineObject.Routine,
         val numberOfTimesPlayed: Int,
         val totalPlayTime: Long,
+        val fullPlayTime: Long?,
+        val numberOfSteps: Int?,
         var currentlyListening: Boolean?,
         val playSoundDuringStretch: Boolean?,
         val playSoundDuringPrayer: Boolean?,
@@ -50,6 +52,8 @@ object UserRoutineRelationshipObject {
                 .userRoutineRelationshipOwner(this.userRoutineRelationshipOwner.data)
                 .userRoutineRelationshipRoutine(this.userRoutineRelationshipRoutine.data)
                 .numberOfTimesPlayed(this.numberOfTimesPlayed)
+                .numberOfSteps(this.numberOfSteps)
+                .fullPlayTime(this.fullPlayTime!!.toInt())
                 .currentlyListening(this.currentlyListening)
                 .totalPlayTime(this.totalPlayTime.toInt())
                 .playSoundDuringStretch(this.playSoundDuringStretch)
@@ -84,6 +88,8 @@ object UserRoutineRelationshipObject {
                     RoutineObject.Routine.from(userRoutineRelationship.userRoutineRelationshipRoutine),
                     userRoutineRelationship.numberOfTimesPlayed,
                     userRoutineRelationship.totalPlayTime.toLong(),
+                    userRoutineRelationship.fullPlayTime.toLong(),
+                    userRoutineRelationship.numberOfSteps,
                     userRoutineRelationship.currentlyListening,
                     userRoutineRelationship.playSoundDuringStretch,
                     userRoutineRelationship.playSoundDuringPrayer,

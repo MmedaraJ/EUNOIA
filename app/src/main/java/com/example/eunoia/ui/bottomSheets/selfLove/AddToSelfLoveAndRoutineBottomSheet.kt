@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.amplifyframework.datastore.generated.model.RoutineData
-import com.amplifyframework.datastore.generated.model.UserRoutine
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
 import com.example.eunoia.models.RoutineObject
@@ -203,7 +203,7 @@ private fun addToSelfLoveListClicked(
 ) {
     if (globalViewModel_!!.currentSelfLoveToBeAdded != null) {
         if (globalViewModel_!!.currentUser != null) {
-            UserSelfLoveBackend.queryUserSelfLoveBasedOnUserAndSelfLove(
+            UserSelfLoveRelationshipBackend.queryUserSelfLoveRelationshipBasedOnUserAndSelfLove(
                 globalViewModel_!!.currentUser!!,
                 globalViewModel_!!.currentSelfLoveToBeAdded!!
             ){
@@ -234,10 +234,10 @@ fun SelectRoutineForSelfLove(
     state: ModalBottomSheetState
 ) {
     SetUpAlertDialogs()
-    val userRoutines = remember{ mutableStateOf(mutableListOf<UserRoutine?>()) }
-    UserRoutineBackend.queryUserRoutineBasedOnUser(globalViewModel_!!.currentUser!!){
+    val userRoutineRelationships = remember{ mutableStateOf(mutableListOf<UserRoutineRelationship?>()) }
+    UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUser(globalViewModel_!!.currentUser!!){
         userRoutinesSize = it.size
-        userRoutines.value = it.toMutableList()
+        userRoutineRelationships.value = it.toMutableList()
     }
 
     ConstraintLayout(
@@ -312,15 +312,15 @@ fun SelectRoutineForSelfLove(
                     yOffset = 0
                 )
             }
-            if(userRoutines.value.size > 0 && userRoutines.value.size == userRoutinesSize){
-                userRoutines.value.forEach{ userRoutine ->
+            if(userRoutineRelationships.value.size > 0 && userRoutineRelationships.value.size == userRoutinesSize){
+                userRoutineRelationships.value.forEach{ userRoutineRelationship ->
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .padding(bottom = 15.dp)
                             .clickable {
                                 selectRoutineClicked(
-                                    userRoutine!!,
+                                    userRoutineRelationship!!,
                                     scope,
                                     state
                                 )
@@ -332,11 +332,11 @@ fun SelectRoutineForSelfLove(
                                     .size(71.dp, 71.dp)
                                     .fillMaxWidth(),
                                 shape = MaterialTheme.shapes.small,
-                                backgroundColor = Color(userRoutine!!.routineData.colorHex),
+                                backgroundColor = Color(userRoutineRelationship!!.userRoutineRelationshipRoutine.colorHex),
                                 elevation = 8.dp
                             ) {
                                 Image(
-                                    painter = painterResource(id = userRoutine.routineData.icon),
+                                    painter = painterResource(id = userRoutineRelationship.userRoutineRelationshipRoutine.icon),
                                     contentDescription = "routine icon",
                                     modifier = Modifier
                                         .size(width = 25.64.dp, height = 25.64.dp)
@@ -347,7 +347,7 @@ fun SelectRoutineForSelfLove(
 
                         Spacer(modifier = Modifier.height(4.dp))
 
-                        val goodDisplayName = displayRoutineNameForBottomSheet(userRoutine!!)
+                        val goodDisplayName = displayRoutineNameForBottomSheet(userRoutineRelationship!!)
                         AlignedNormalText(
                             text = goodDisplayName,
                             color = MaterialTheme.colors.primary,
@@ -364,12 +364,12 @@ fun SelectRoutineForSelfLove(
 
 @OptIn(ExperimentalMaterialApi::class)
 private fun selectRoutineClicked(
-    userRoutine: UserRoutine,
+    userRoutineRelationship: UserRoutineRelationship,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    setUpRoutineSelfLove(
-        userRoutine,
+    setUpUserRoutineRelationshipSelfLove(
+        userRoutineRelationship,
         {
             closeBottomSheet(scope, state)
             openRoutineAlreadyHasSelfLoveDialogBox = true
@@ -384,77 +384,105 @@ private fun selectRoutineClicked(
     }
 }
 
-fun setUpRoutineSelfLove(
-    userRoutine: UserRoutine,
+fun setUpUserRoutineRelationshipSelfLove(
+    userRoutineRelationship: UserRoutineRelationship,
     alreadyExists: () -> Unit,
     completed: () -> Unit
 ) {
-    RoutineSelfLoveBackend.queryRoutineSelfLoveBasedOnSelfLoveAndRoutine(
-        userRoutine.routineData,
+    UserRoutineRelationshipSelfLoveBackend.queryUserRoutineRelationshipSelfLoveBasedOnSelfLoveAndUserRoutineRelationship(
+        userRoutineRelationship,
         globalViewModel_!!.currentSelfLoveToBeAdded!!
     ){
         if (it.isEmpty()) {
-            if (!userRoutine.routineData.playingOrder.contains("self-love")) {
-                val playOrder = userRoutine.routineData.playingOrder
-                playOrder.add("self-love")
-
-                //updated play time should be <= 45'
-                var playTime = userRoutine.routineData.fullPlayTime
-                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime > playTime) {
-                    playTime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
-                    if (playTime > MAX_ROUTINE_PLAYTIME) {
-                        playTime = MAX_ROUTINE_PLAYTIME
-                    }
-                }
-
-                var selfLovePlaytime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
-                if(selfLovePlaytime > MAX_SELF_LOVE_PLAYTIME){
-                    selfLovePlaytime = MAX_SELF_LOVE_PLAYTIME
-                }
-
-                val numberOfSteps = userRoutine.routineData.numberOfSteps + 1
-
-                val routine = userRoutine.routineData.copyOfBuilder()
-                    .numberOfSteps(numberOfSteps)
-                    .fullPlayTime(playTime)
-                    .selfLovePlayTime(selfLovePlaytime)
-                    .currentSelfLovePlayingIndex(0)
-                    .currentSelfLoveContinuePlayingTime(0)
-                    .playingOrder(playOrder)
-                    .build()
-
-                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
-                    RoutineSelfLoveBackend.createRoutineSelfLoveObject(
-                        globalViewModel_!!.currentSelfLoveToBeAdded!!,
-                        updatedRoutine
-                    ) {
-                        completed()
-                    }
+            if (!userRoutineRelationship.playingOrder.contains("self-love")) {
+                updateUserRoutineRelationshipThatDoesNotContainSelfLove(userRoutineRelationship){
+                    completed()
                 }
             }else{
-                var playTime = userRoutine.routineData.fullPlayTime
-                if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime > playTime) {
-                    playTime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
-                    if (playTime > MAX_ROUTINE_PLAYTIME) {
-                        playTime = MAX_ROUTINE_PLAYTIME
-                    }
-                }
-
-                val routine = userRoutine.routineData.copyOfBuilder()
-                    .fullPlayTime(playTime)
-                    .build()
-
-                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
-                    RoutineSelfLoveBackend.createRoutineSelfLoveObject(
-                        globalViewModel_!!.currentSelfLoveToBeAdded!!,
-                        updatedRoutine
-                    ) {
-                        completed()
-                    }
+                updateUserRoutineRelationshipThatContainsSelfLove(userRoutineRelationship){
+                    completed()
                 }
             }
         }else{
             alreadyExists()
+        }
+    }
+}
+
+private fun updateUserRoutineRelationshipThatDoesNotContainSelfLove(
+    userRoutineRelationship: UserRoutineRelationship,
+    completed: () -> Unit
+) {
+    val playOrder = userRoutineRelationship.playingOrder
+    playOrder.add("self-love")
+
+    //updated play time should be <= 45'
+    var playTime = userRoutineRelationship.fullPlayTime
+    if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime > playTime) {
+        playTime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
+        if (playTime > MAX_ROUTINE_PLAYTIME) {
+            playTime = MAX_ROUTINE_PLAYTIME
+        }
+    }
+
+    var selfLovePlaytime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
+    if(selfLovePlaytime > MAX_SELF_LOVE_PLAYTIME){
+        selfLovePlaytime = MAX_SELF_LOVE_PLAYTIME
+    }
+
+    val numberOfSteps = userRoutineRelationship.numberOfSteps + 1
+
+    val newUserRoutineRelationship = userRoutineRelationship.copyOfBuilder()
+        .numberOfSteps(numberOfSteps)
+        .fullPlayTime(playTime)
+        .selfLovePlayTime(selfLovePlaytime)
+        .currentSelfLovePlayingIndex(0)
+        .currentSelfLoveContinuePlayingTime(0)
+        .playingOrder(playOrder)
+        .build()
+
+    UserRoutineRelationshipBackend.updateUserRoutineRelationship(newUserRoutineRelationship) { updatedUserRoutineRelationship ->
+        UserRoutineRelationshipSelfLoveBackend.createUserRoutineRelationshipSelfLoveObject(
+            globalViewModel_!!.currentSelfLoveToBeAdded!!,
+            updatedUserRoutineRelationship
+        ) {
+            RoutineSelfLoveBackend.createRoutineSelfLoveObject(
+                globalViewModel_!!.currentSelfLoveToBeAdded!!,
+                updatedUserRoutineRelationship.userRoutineRelationshipRoutine
+            ) {
+                completed()
+            }
+        }
+    }
+}
+
+private fun updateUserRoutineRelationshipThatContainsSelfLove(
+    userRoutineRelationship: UserRoutineRelationship,
+    completed: () -> Unit
+) {
+    var playTime = userRoutineRelationship.fullPlayTime
+    if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime > playTime) {
+        playTime = globalViewModel_!!.currentSelfLoveToBeAdded!!.fullPlayTime
+        if (playTime > MAX_ROUTINE_PLAYTIME) {
+            playTime = MAX_ROUTINE_PLAYTIME
+        }
+    }
+
+    val newUserRoutineRelationship = userRoutineRelationship.copyOfBuilder()
+        .fullPlayTime(playTime)
+        .build()
+
+    UserRoutineRelationshipBackend.updateUserRoutineRelationship(newUserRoutineRelationship) { updatedUserRoutineRelationship ->
+        UserRoutineRelationshipSelfLoveBackend.createUserRoutineRelationshipSelfLoveObject(
+            globalViewModel_!!.currentSelfLoveToBeAdded!!,
+            updatedUserRoutineRelationship
+        ) {
+            RoutineSelfLoveBackend.createRoutineSelfLoveObject(
+                globalViewModel_!!.currentSelfLoveToBeAdded!!,
+                updatedUserRoutineRelationship.userRoutineRelationshipRoutine
+            ) {
+                completed()
+            }
         }
     }
 }
@@ -762,7 +790,6 @@ private fun newRoutineIconSelected(
         originalName = globalViewModel_!!.routineNameToBeAdded,
         displayName = globalViewModel_!!.routineNameToBeAdded,
         numberOfSteps = 2,
-        numberOfTimesUsed = 0,
         fullPlayTime = playTime.toLong(),
         icon = globalViewModel_!!.routineIconToBeAdded!!,
         visibleToOthers = false,
@@ -802,9 +829,9 @@ private fun createRoutineAndOtherNecessaryData(
     state: ModalBottomSheetState
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
-        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) {
+        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) { updatedUserRoutineRelationship ->
             UserRoutineBackend.createUserRoutineObject(newRoutine) {
-                setUpRoutineAndUserSelfLoveAfterMakingNewRoutine(newRoutine) {
+                setUpRoutineAndUserSelfLoveAfterMakingNewRoutine(updatedUserRoutineRelationship) {
                     closeBottomSheet(scope, state)
                     openSavedElementDialogBox = true
                 }
@@ -814,16 +841,21 @@ private fun createRoutineAndOtherNecessaryData(
 }
 
 fun setUpRoutineAndUserSelfLoveAfterMakingNewRoutine(
-    routineData: RoutineData,
+    userRoutineRelationship: UserRoutineRelationship,
     completed: () -> Unit
 ){
-    RoutineSelfLoveBackend.createRoutineSelfLoveObject(
+    UserRoutineRelationshipSelfLoveBackend.createUserRoutineRelationshipSelfLoveObject(
         globalViewModel_!!.currentSelfLoveToBeAdded!!,
-        routineData
+        userRoutineRelationship
     ) {
-        setUpUserSelfLoveRelationship {
-            setUpUserSelfLove {
-                completed()
+        RoutineSelfLoveBackend.createRoutineSelfLoveObject(
+            globalViewModel_!!.currentSelfLoveToBeAdded!!,
+            userRoutineRelationship.userRoutineRelationshipRoutine
+        ) {
+            setUpUserSelfLoveRelationship {
+                setUpUserSelfLove {
+                    completed()
+                }
             }
         }
     }

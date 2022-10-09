@@ -54,22 +54,36 @@ class GlobalViewModel: ViewModel(){
     /**
      * routine
      */
-    var currentRoutinePlaying by mutableStateOf<RoutineData?>(null)
+    var currentUserRoutineRelationshipPlaying by mutableStateOf<UserRoutineRelationship?>(null)
     var isCurrentRoutinePlaying by mutableStateOf(false)
     var routineNameToBeAdded by mutableStateOf("")
     var routineColorToBeAdded by mutableStateOf<Long?>(null)
     var routineIconToBeAdded by mutableStateOf<Int?>(null)
     var currentUsersRoutines by mutableStateOf<MutableList<UserRoutine?>?>(null)
+    var currentUsersRoutineRelationships by mutableStateOf<MutableList<UserRoutineRelationship?>?>(null)
     var currentRoutinePlayingOrderIndex by mutableStateOf<Int?>(0)
     var currentRoutinePlayingOrder by mutableStateOf<MutableList<String?>?>(null)
+
     var currentRoutinePlayingRoutinePresets by mutableStateOf<MutableList<RoutineSoundPreset?>?>(null)
+    var currentRoutinePlayingUserRoutineRelationshipPresets by mutableStateOf<MutableList<UserRoutineRelationshipSoundPreset?>?>(null)
     var currentRoutinePlayingRoutinePresetsIndex by mutableStateOf<Int?>(0)
+    var currentRoutinePlayingUserRoutineRelationshipPresetsIndex by mutableStateOf<Int?>(0)
+
     var currentRoutinePlayingRoutinePrayers by mutableStateOf<MutableList<RoutinePrayer?>?>(null)
+    var currentRoutinePlayingUserRoutineRelationshipPrayers by mutableStateOf<MutableList<UserRoutineRelationshipPrayer?>?>(null)
     var currentRoutinePlayingRoutinePrayersIndex by mutableStateOf<Int?>(0)
-    var currentRoutinePlayingRoutineSelfLoves by mutableStateOf<MutableList<RoutineSelfLove?>?>(null)
-    var currentRoutinePlayingRoutineSelfLovesIndex by mutableStateOf<Int?>(0)
-    var currentRoutinePlayingRoutineBedtimeStories by mutableStateOf<MutableList<RoutineBedtimeStoryInfo?>?>(null)
-    var currentRoutinePlayingRoutineBedtimeStoriesIndex by mutableStateOf<Int?>(0)
+    var currentRoutinePlayingUserRoutineRelationshipPrayersIndex by mutableStateOf<Int?>(0)
+
+    var currentRoutinePlayingSelfLoves by mutableStateOf<MutableList<RoutineSelfLove?>?>(null)
+    var currentRoutinePlayingUserRoutineRelationshipSelfLoves by mutableStateOf<MutableList<UserRoutineRelationshipSelfLove?>?>(null)
+    var currentRoutinePlayingSelfLovesIndex by mutableStateOf<Int?>(0)
+    var currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex by mutableStateOf<Int?>(0)
+
+    var currentRoutinePlayingBedtimeStories by mutableStateOf<MutableList<RoutineBedtimeStoryInfo?>?>(null)
+    var currentRoutinePlayingUserRoutineRelationshipBedtimeStories by mutableStateOf<MutableList<UserRoutineRelationshipBedtimeStoryInfo?>?>(null)
+    var currentRoutinePlayingBedtimeStoriesIndex by mutableStateOf<Int?>(0)
+    var currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex by mutableStateOf<Int?>(0)
+
     var currentRoutinePlayingSoundCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingPrayerCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingSelfLoveCountDownTimer: CountDownTimer? = null

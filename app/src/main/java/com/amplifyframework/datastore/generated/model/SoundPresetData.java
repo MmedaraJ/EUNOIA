@@ -47,6 +47,7 @@ public final class SoundPresetData implements Model {
   private final @ModelField(targetType="UserSoundPresetRelationship") @HasMany(associatedWith = "userSoundPresetRelationshipSoundPreset", type = UserSoundPresetRelationship.class) List<UserSoundPresetRelationship> userSoundPresetRelationshipsOwnedBySoundPreset = null;
   private final @ModelField(targetType="UserSoundPreset") @HasMany(associatedWith = "soundPresetData", type = UserSoundPreset.class) List<UserSoundPreset> users = null;
   private final @ModelField(targetType="RoutineSoundPreset") @HasMany(associatedWith = "soundPresetData", type = RoutineSoundPreset.class) List<RoutineSoundPreset> routines = null;
+  private final @ModelField(targetType="UserRoutineRelationshipSoundPreset") @HasMany(associatedWith = "soundPresetData", type = UserRoutineRelationshipSoundPreset.class) List<UserRoutineRelationshipSoundPreset> userRoutineRelationships = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -91,6 +92,10 @@ public final class SoundPresetData implements Model {
   
   public List<RoutineSoundPreset> getRoutines() {
       return routines;
+  }
+  
+  public List<UserRoutineRelationshipSoundPreset> getUserRoutineRelationships() {
+      return userRoutineRelationships;
   }
   
   public Temporal.DateTime getCreatedAt() {

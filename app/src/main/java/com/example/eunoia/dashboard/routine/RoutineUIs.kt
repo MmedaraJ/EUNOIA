@@ -15,6 +15,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.RoutineData
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 import com.example.eunoia.backend.*
 import com.example.eunoia.dashboard.bedtimeStory.navigateToBedtimeStoryScreen
 import com.example.eunoia.dashboard.prayer.navigateToPrayerScreen
@@ -22,6 +23,7 @@ import com.example.eunoia.dashboard.selfLove.navigateToSelfLoveScreen
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.dashboard.sound.navigateToSoundScreen
 import com.example.eunoia.models.RoutineObject
+import com.example.eunoia.models.UserRoutineRelationshipObject
 import com.example.eunoia.ui.components.AlignedNormalText
 import com.example.eunoia.ui.components.SimpleFlowRow
 import com.example.eunoia.ui.screens.Screen
@@ -32,10 +34,10 @@ import com.example.eunoia.ui.theme.SoftPeach
 @Composable
 fun RoutineElements(
     navController: NavController,
-    routineData: RoutineData
+    userRoutineRelationship: UserRoutineRelationship
 ){
     val borders = mutableListOf<MutableState<Boolean>>()
-    for(i in routineData.playingOrder.indices){
+    for(i in userRoutineRelationship.playingOrder.indices){
         borders.add(remember { mutableStateOf(false) })
     }
 
@@ -55,7 +57,7 @@ fun RoutineElements(
                     bottom.linkTo(parent.bottom, margin = 0.dp)
                 }
         ) {
-            routineData.playingOrder.forEachIndexed {index, element ->
+            userRoutineRelationship.playingOrder.forEachIndexed { index, element ->
                 var cardModifier = Modifier
                     .clickable {
                         borders.forEach { border ->
@@ -66,7 +68,7 @@ fun RoutineElements(
                         routineElementClicked(
                             navController,
                             element,
-                            routineData
+                            userRoutineRelationship
                         )
                     }
 
@@ -123,38 +125,38 @@ fun RoutineElements(
 fun routineElementClicked(
     navController: NavController,
     element: String,
-    routineData: RoutineData
+    userRoutineRelationship: UserRoutineRelationship
 ) {
     when(element){
         "sound" -> {
-            navigateToRoutinePresetsPage(navController, routineData)
+            navigateToRoutinePresetsPage(navController, userRoutineRelationship)
         }
         "prayer" -> {
-            navigateToRoutinePrayersPage(navController, routineData)
+            navigateToRoutinePrayersPage(navController, userRoutineRelationship)
         }
         "bedtimeStory" -> {
-            navigateToRoutineBedtimeStoriesPage(navController, routineData)
+            navigateToRoutineBedtimeStoriesPage(navController, userRoutineRelationship)
         }
         "self-love" -> {
-            navigateToRoutineSelfLovesPage(navController, routineData)
+            navigateToRoutineSelfLovesPage(navController, userRoutineRelationship)
         }
     }
 }
 
-fun navigateToRoutinePresetsPage(navController: NavController, routineData: RoutineData) {
-    navController.navigate("${Screen.RoutinePresetScreen.screen_route}/routineData=${RoutineObject.Routine.from(routineData)}")
+fun navigateToRoutinePresetsPage(navController: NavController, userRoutineRelationship: UserRoutineRelationship) {
+    navController.navigate("${Screen.RoutinePresetScreen.screen_route}/userRoutineRelationship=${UserRoutineRelationshipObject.UserRoutineRelationshipModel.from(userRoutineRelationship)}")
 }
 
-fun navigateToRoutinePrayersPage(navController: NavController, routineData: RoutineData) {
-    navController.navigate("${Screen.RoutinePrayerScreen.screen_route}/routineData=${RoutineObject.Routine.from(routineData)}")
+fun navigateToRoutinePrayersPage(navController: NavController, userRoutineRelationship: UserRoutineRelationship) {
+    navController.navigate("${Screen.RoutinePrayerScreen.screen_route}/userRoutineRelationship=${UserRoutineRelationshipObject.UserRoutineRelationshipModel.from(userRoutineRelationship)}")
 }
 
-fun navigateToRoutineBedtimeStoriesPage(navController: NavController, routineData: RoutineData) {
-    navController.navigate("${Screen.RoutineBedtimeStoryScreen.screen_route}/routineData=${RoutineObject.Routine.from(routineData)}")
+fun navigateToRoutineBedtimeStoriesPage(navController: NavController, userRoutineRelationship: UserRoutineRelationship) {
+    navController.navigate("${Screen.RoutineBedtimeStoryScreen.screen_route}/userRoutineRelationship=${UserRoutineRelationshipObject.UserRoutineRelationshipModel.from(userRoutineRelationship)}")
 }
 
-fun navigateToRoutineSelfLovesPage(navController: NavController, routineData: RoutineData) {
-    navController.navigate("${Screen.RoutineSelfLoveScreen.screen_route}/routineData=${RoutineObject.Routine.from(routineData)}")
+fun navigateToRoutineSelfLovesPage(navController: NavController, userRoutineRelationship: UserRoutineRelationship) {
+    navController.navigate("${Screen.RoutineSelfLoveScreen.screen_route}/userRoutineRelationship=${UserRoutineRelationshipObject.UserRoutineRelationshipModel.from(userRoutineRelationship)}")
 }
 
 private const val TAG = "Routine Preset Screen"
@@ -162,12 +164,12 @@ private const val TAG = "Routine Preset Screen"
 @Composable
 fun RoutinePresetElements(
     navController: NavController,
-    routineData: RoutineData
+    userRoutineRelationship: UserRoutineRelationship
 ){
     var retrievedRoutinePresets by rememberSaveable{ mutableStateOf(false) }
 
-    RoutineSoundPresetBackend.queryRoutineSoundPresetBasedOnRoutine(routineData) { routinePresets ->
-        routinePresetList = routinePresets.toMutableList()
+    UserRoutineRelationshipSoundPresetBackend.queryUserRoutineRelationshipSoundPresetBasedOnUserRoutineRelationship(userRoutineRelationship) { userRoutineRelationships ->
+        routinePresetList = userRoutineRelationships.toMutableList()
         retrievedRoutinePresets = true
     }
 
@@ -269,12 +271,12 @@ fun RoutinePresetElements(
 @Composable
 fun RoutinePrayerElements(
     navController: NavController,
-    routineData: RoutineData
+    userRoutineRelationship: UserRoutineRelationship
 ){
     var retrievedRoutinePrayer by rememberSaveable{ mutableStateOf(false) }
 
-    RoutinePrayerBackend.queryRoutinePrayerBasedOnRoutine(routineData) { routinePrayer ->
-        routinePrayerList = routinePrayer.toMutableList()
+    UserRoutineRelationshipPrayerBackend.queryUserRoutineRelationshipPrayerBasedOnUserRoutineRelationship(userRoutineRelationship) { userRoutineRelationships ->
+        routinePrayerList = userRoutineRelationships.toMutableList()
         retrievedRoutinePrayer = true
     }
 
@@ -370,12 +372,12 @@ fun RoutinePrayerElements(
 @Composable
 fun RoutineSelfLoveElements(
     navController: NavController,
-    routineData: RoutineData
+    userRoutineRelationship: UserRoutineRelationship
 ){
     var retrievedRoutineSelfLove by rememberSaveable{ mutableStateOf(false) }
 
-    RoutineSelfLoveBackend.queryRoutineSelfLoveBasedOnRoutine(routineData) { routineSelfLove ->
-        routineSelfLoveList = routineSelfLove.toMutableList()
+    UserRoutineRelationshipSelfLoveBackend.queryUserRoutineRelationshipSelfLoveBasedOnUserRoutineRelationship(userRoutineRelationship) { userRoutineRelationships ->
+        routineSelfLoveList = userRoutineRelationships.toMutableList()
         retrievedRoutineSelfLove = true
     }
 
@@ -471,12 +473,12 @@ fun RoutineSelfLoveElements(
 @Composable
 fun RoutineBedtimeStoryElements(
     navController: NavController,
-    routineData: RoutineData
+    userRoutineRelationship: UserRoutineRelationship
 ){
     var retrievedRoutineBedtimeStory by rememberSaveable{ mutableStateOf(false) }
 
-    RoutineBedtimeStoryBackend.queryRoutineBedtimeStoryBasedOnRoutine(routineData) { routineBedtimeStory ->
-        routineBedtimeStoryList = routineBedtimeStory.toMutableList()
+    UserRoutineRelationshipBedtimeStoryInfoBackend.queryUserRoutineRelationshipBedtimeStoryInfoBasedOnUserRoutineRelationship(userRoutineRelationship) { userRoutineRelationships ->
+        routineBedtimeStoryList = userRoutineRelationships.toMutableList()
         retrievedRoutineBedtimeStory = true
     }
 

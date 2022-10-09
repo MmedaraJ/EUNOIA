@@ -5,13 +5,8 @@ import android.content.Intent
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.core.net.toUri
-import com.amplifyframework.datastore.generated.model.PrayerAudioSource
-import com.amplifyframework.datastore.generated.model.RoutineData
-import com.amplifyframework.datastore.generated.model.RoutinePrayer
-import com.example.eunoia.backend.RoutineBackend
-import com.example.eunoia.backend.RoutinePrayerBackend
-import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserRoutineBackend
+import com.amplifyframework.datastore.generated.model.*
+import com.example.eunoia.backend.*
 import com.example.eunoia.dashboard.prayer.resetOtherGeneralMediaPlayerUsersExceptPrayer
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -32,8 +27,8 @@ object PrayerForRoutine{
         if(routineActivityPlayButtonTexts[index]!!.value == START_ROUTINE) {
             routineActivityPlayButtonTexts[index]!!.value = WAIT_FOR_ROUTINE
 
-            if(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.playingOrder.contains("sound")){
-                if(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.playSoundDuringPrayer){
+            if(globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.playingOrder.contains("sound")){
+                if(globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.playSoundDuringPrayer){
                     SoundForRoutine.playSound(
                         soundMediaPlayerService,
                         generalMediaPlayerService,
@@ -97,15 +92,15 @@ object PrayerForRoutine{
         index: Int,
         context: Context
     ) {
-        if(globalViewModel_!!.currentRoutinePlayingRoutinePrayers != null) {
+        if(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers != null) {
             if(
                 routineActivityPrayerUrisMapList[index][
-                        globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                                [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
+                        globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                                [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                             .prayerData.id
                 ] != "".toUri()
             ) {
-                if(globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!.isEmpty()) {
+                if(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!.isEmpty()) {
                     getRoutinePrayers(index) {
                         retrievePrayerUris(
                             generalMediaPlayerService,
@@ -144,22 +139,22 @@ object PrayerForRoutine{
 
     private fun getRoutinePrayers(index: Int, completed: () -> Unit){
         getRoutinePrayersBasedOnRoutine(
-            globalViewModel_!!.currentUsersRoutines!![index]!!.routineData
-        ) { routinePrayers ->
-            for( routinePrayer in routinePrayers){
-                routineActivityPrayerUrisMapList[index][routinePrayer!!.prayerData.id] = "".toUri()
+            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!
+        ) { userRoutineRelationshipPrayers ->
+            for( userRoutineRelationshipPrayer in userRoutineRelationshipPrayers){
+                routineActivityPrayerUrisMapList[index][userRoutineRelationshipPrayer!!.prayerData.id] = "".toUri()
             }
-            globalViewModel_!!.currentRoutinePlayingRoutinePrayers = routinePrayers
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers = userRoutineRelationshipPrayers
             completed()
         }
     }
 
     private fun getRoutinePrayersBasedOnRoutine(
-        routineData: RoutineData,
-        completed: (routinePrayerList: MutableList<RoutinePrayer?>) -> Unit
+        userRoutineRelationship: UserRoutineRelationship,
+        completed: (userRoutineRelationshipPrayersPrayerList: MutableList<UserRoutineRelationshipPrayer?>) -> Unit
     ) {
-        RoutinePrayerBackend.queryRoutinePrayerBasedOnRoutine(routineData) { routinePrayers ->
-            completed(routinePrayers.toMutableList())
+        UserRoutineRelationshipPrayerBackend.queryUserRoutineRelationshipPrayerBasedOnUserRoutineRelationship(userRoutineRelationship) { userRoutineRelationshipPrayers ->
+            completed(userRoutineRelationshipPrayers.toMutableList())
         }
     }
 
@@ -170,21 +165,21 @@ object PrayerForRoutine{
         context: Context
     ) {
         if(
-            globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                    [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                    [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                 .prayerData.audioSource == PrayerAudioSource.UPLOADED
         ) {
             SoundBackend.retrieveAudio(
-                globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                     .prayerData.audioKeyS3,
-                globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                        [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                     .prayerData.prayerOwner.amplifyAuthUserId
             ) {
                 routineActivityPrayerUrisMapList[index][
-                        globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                                [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
+                        globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                                [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                             .prayerData.id
                 ] = it
 
@@ -208,8 +203,8 @@ object PrayerForRoutine{
     ) {
         if(
             routineActivityPrayerUrisMapList[index][
-                    globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                            [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                            [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                         .prayerData.id
             ] != "".toUri()
         ) {
@@ -245,21 +240,21 @@ object PrayerForRoutine{
         generalMediaPlayerService.onDestroy()
         generalMediaPlayerService.setAudioUri(
             routineActivityPrayerUrisMapList[index][
-                    globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                            [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                            [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                         .prayerData.id
             ]!!
         )
         val intent = Intent()
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
-        //generalMediaPlayerService.getMediaPlayer()!!.seekTo(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.currentPrayerContinuePlayingTime)
+        //generalMediaPlayerService.getMediaPlayer()!!.seekTo(globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.routineData.currentPrayerContinuePlayingTime)
         globalViewModel_!!.prayerTimer.setMaxDuration(
-            globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                    [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                    [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                 .prayerData.fullPlayTime.toLong()
         )
-        globalViewModel_!!.prayerTimer.setDuration(globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.currentPrayerContinuePlayingTime.toLong())
+        globalViewModel_!!.prayerTimer.setDuration(globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentPrayerContinuePlayingTime.toLong())
         resetOtherGeneralMediaPlayerUsersExceptPrayer()
 
         startPrayerCDT(
@@ -278,7 +273,7 @@ object PrayerForRoutine{
     ) {
         startPrayerCountDownTimer(
             context,
-            globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.prayerPlayTime.toLong(),
+            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.prayerPlayTime.toLong(),
             generalMediaPlayerService
         ){
             var continuePlayingTime = -1
@@ -292,20 +287,13 @@ object PrayerForRoutine{
             globalViewModel_!!.currentPrayerPlaying = null
             globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer = null
 
-            val routine = globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.copyOfBuilder()
+            val routine = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
                 .currentPrayerContinuePlayingTime(continuePlayingTime)
                 .build()
 
             //update routine with new prayer info
-            RoutineBackend.updateRoutine(routine){
-                UserRoutineBackend.queryUserRoutineBasedOnRoutineAndUser(
-                    globalViewModel_!!.currentUser!!,
-                    it
-                ){ updatedUserRoutine ->
-                    if(updatedUserRoutine.isNotEmpty()){
-                        globalViewModel_!!.currentUsersRoutines!![index] = updatedUserRoutine[0]
-                    }
-                }
+            UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine){
+                globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
             }
 
             routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
@@ -341,14 +329,14 @@ object PrayerForRoutine{
 
     private fun setGlobalPropertiesAfterPlayingPrayer(index: Int){
         globalViewModel_!!.currentPrayerPlaying =
-            globalViewModel_!!.currentRoutinePlayingRoutinePrayers!![
-                    globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!![
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!
             ]!!.prayerData
 
         globalViewModel_!!.currentPrayerPlayingUri =
             routineActivityPrayerUrisMapList[index][
-                    globalViewModel_!!.currentRoutinePlayingRoutinePrayers!!
-                            [globalViewModel_!!.currentRoutinePlayingRoutinePrayersIndex!!]!!
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                            [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                         .prayerData.id
             ]
 

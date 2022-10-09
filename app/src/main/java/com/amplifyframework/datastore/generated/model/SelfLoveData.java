@@ -59,6 +59,7 @@ public final class SelfLoveData implements Model {
   private final @ModelField(targetType="SelfLoveApprovalStatus") SelfLoveApprovalStatus approvalStatus;
   private final @ModelField(targetType="UserSelfLoveRelationship") @HasMany(associatedWith = "userSelfLoveRelationshipSelfLove", type = UserSelfLoveRelationship.class) List<UserSelfLoveRelationship> userSelfLoveRelationshipsOwnedBySelfLove = null;
   private final @ModelField(targetType="RoutineSelfLove") @HasMany(associatedWith = "selfLoveData", type = RoutineSelfLove.class) List<RoutineSelfLove> routines = null;
+  private final @ModelField(targetType="UserRoutineRelationshipSelfLove") @HasMany(associatedWith = "selfLoveData", type = UserRoutineRelationshipSelfLove.class) List<UserRoutineRelationshipSelfLove> userRoutineRelationships = null;
   private final @ModelField(targetType="UserSelfLove") @HasMany(associatedWith = "selfLoveData", type = UserSelfLove.class) List<UserSelfLove> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
@@ -124,6 +125,10 @@ public final class SelfLoveData implements Model {
   
   public List<RoutineSelfLove> getRoutines() {
       return routines;
+  }
+  
+  public List<UserRoutineRelationshipSelfLove> getUserRoutineRelationships() {
+      return userRoutineRelationships;
   }
   
   public List<UserSelfLove> getUsers() {

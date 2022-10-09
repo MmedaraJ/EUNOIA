@@ -38,6 +38,7 @@ public final class StretchData implements Model {
   private final @ModelField(targetType="String") String stretchOwnerId;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="RoutineStretch") @HasMany(associatedWith = "stretchData", type = RoutineStretch.class) List<RoutineStretch> routines = null;
+  private final @ModelField(targetType="UserRoutineRelationshipStretch") @HasMany(associatedWith = "stretchData", type = UserRoutineRelationshipStretch.class) List<UserRoutineRelationshipStretch> userRoutineRelationships = null;
   private final @ModelField(targetType="UserStretch") @HasMany(associatedWith = "stretchData", type = UserStretch.class) List<UserStretch> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
@@ -59,6 +60,10 @@ public final class StretchData implements Model {
   
   public List<RoutineStretch> getRoutines() {
       return routines;
+  }
+  
+  public List<UserRoutineRelationshipStretch> getUserRoutineRelationships() {
+      return userRoutineRelationships;
   }
   
   public List<UserStretch> getUsers() {

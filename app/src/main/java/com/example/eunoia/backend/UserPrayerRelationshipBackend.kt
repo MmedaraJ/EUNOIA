@@ -49,7 +49,10 @@ object UserPrayerRelationshipBackend {
             UserObject.User.from(globalViewModel_!!.currentUser!!),
             PrayerObject.Prayer.from(prayer),
             0,
-            0
+            0,
+            false,
+            listOf(),
+            listOf()
         )
         createUserPrayerRelationship(userPrayerRelationshipModel){
             completed(it)

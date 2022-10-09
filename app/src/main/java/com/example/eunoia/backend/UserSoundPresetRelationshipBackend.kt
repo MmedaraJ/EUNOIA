@@ -45,7 +45,10 @@ object UserSoundPresetRelationshipBackend {
             UserObject.User.from(globalViewModel_!!.currentUser!!),
             SoundPresetObject.SoundPreset.from(preset),
             0,
-            0
+            0,
+            false,
+            listOf(),
+            listOf()
         )
         createUserSoundPresetRelationship(userSoundPresetRelationshipModel){
             completed(it)

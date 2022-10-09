@@ -35,7 +35,6 @@ public final class RoutineData implements Model {
   public static final QueryField ORIGINAL_NAME = field("RoutineData", "originalName");
   public static final QueryField DISPLAY_NAME = field("RoutineData", "displayName");
   public static final QueryField NUMBER_OF_STEPS = field("RoutineData", "numberOfSteps");
-  public static final QueryField NUMBER_OF_TIMES_USED = field("RoutineData", "numberOfTimesUsed");
   public static final QueryField FULL_PLAY_TIME = field("RoutineData", "fullPlayTime");
   public static final QueryField ICON = field("RoutineData", "icon");
   public static final QueryField VISIBLE_TO_OTHERS = field("RoutineData", "visibleToOthers");
@@ -65,7 +64,6 @@ public final class RoutineData implements Model {
   private final @ModelField(targetType="String") String originalName;
   private final @ModelField(targetType="String") String displayName;
   private final @ModelField(targetType="Int") Integer numberOfSteps;
-  private final @ModelField(targetType="Int") Integer numberOfTimesUsed;
   private final @ModelField(targetType="Int") Integer fullPlayTime;
   private final @ModelField(targetType="Int") Integer icon;
   private final @ModelField(targetType="Boolean") Boolean visibleToOthers;
@@ -122,10 +120,6 @@ public final class RoutineData implements Model {
   
   public Integer getNumberOfSteps() {
       return numberOfSteps;
-  }
-  
-  public Integer getNumberOfTimesUsed() {
-      return numberOfTimesUsed;
   }
   
   public Integer getFullPlayTime() {
@@ -264,14 +258,13 @@ public final class RoutineData implements Model {
       return updatedAt;
   }
   
-  private RoutineData(String id, UserData routineOwner, String routineOwnerId, String originalName, String displayName, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visibleToOthers, Integer colorHEX, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<String> playingOrder) {
+  private RoutineData(String id, UserData routineOwner, String routineOwnerId, String originalName, String displayName, Integer numberOfSteps, Integer fullPlayTime, Integer icon, Boolean visibleToOthers, Integer colorHEX, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<String> playingOrder) {
     this.id = id;
     this.routineOwner = routineOwner;
     this.routineOwnerId = routineOwnerId;
     this.originalName = originalName;
     this.displayName = displayName;
     this.numberOfSteps = numberOfSteps;
-    this.numberOfTimesUsed = numberOfTimesUsed;
     this.fullPlayTime = fullPlayTime;
     this.icon = icon;
     this.visibleToOthers = visibleToOthers;
@@ -311,7 +304,6 @@ public final class RoutineData implements Model {
               ObjectsCompat.equals(getOriginalName(), routineData.getOriginalName()) &&
               ObjectsCompat.equals(getDisplayName(), routineData.getDisplayName()) &&
               ObjectsCompat.equals(getNumberOfSteps(), routineData.getNumberOfSteps()) &&
-              ObjectsCompat.equals(getNumberOfTimesUsed(), routineData.getNumberOfTimesUsed()) &&
               ObjectsCompat.equals(getFullPlayTime(), routineData.getFullPlayTime()) &&
               ObjectsCompat.equals(getIcon(), routineData.getIcon()) &&
               ObjectsCompat.equals(getVisibleToOthers(), routineData.getVisibleToOthers()) &&
@@ -349,7 +341,6 @@ public final class RoutineData implements Model {
       .append(getOriginalName())
       .append(getDisplayName())
       .append(getNumberOfSteps())
-      .append(getNumberOfTimesUsed())
       .append(getFullPlayTime())
       .append(getIcon())
       .append(getVisibleToOthers())
@@ -389,7 +380,6 @@ public final class RoutineData implements Model {
       .append("originalName=" + String.valueOf(getOriginalName()) + ", ")
       .append("displayName=" + String.valueOf(getDisplayName()) + ", ")
       .append("numberOfSteps=" + String.valueOf(getNumberOfSteps()) + ", ")
-      .append("numberOfTimesUsed=" + String.valueOf(getNumberOfTimesUsed()) + ", ")
       .append("fullPlayTime=" + String.valueOf(getFullPlayTime()) + ", ")
       .append("icon=" + String.valueOf(getIcon()) + ", ")
       .append("visibleToOthers=" + String.valueOf(getVisibleToOthers()) + ", ")
@@ -461,7 +451,6 @@ public final class RoutineData implements Model {
       null,
       null,
       null,
-      null,
       null
     );
   }
@@ -473,7 +462,6 @@ public final class RoutineData implements Model {
       originalName,
       displayName,
       numberOfSteps,
-      numberOfTimesUsed,
       fullPlayTime,
       icon,
       visibleToOthers,
@@ -510,7 +498,6 @@ public final class RoutineData implements Model {
     BuildStep originalName(String originalName);
     BuildStep displayName(String displayName);
     BuildStep numberOfSteps(Integer numberOfSteps);
-    BuildStep numberOfTimesUsed(Integer numberOfTimesUsed);
     BuildStep fullPlayTime(Integer fullPlayTime);
     BuildStep icon(Integer icon);
     BuildStep visibleToOthers(Boolean visibleToOthers);
@@ -544,7 +531,6 @@ public final class RoutineData implements Model {
     private String originalName;
     private String displayName;
     private Integer numberOfSteps;
-    private Integer numberOfTimesUsed;
     private Integer fullPlayTime;
     private Integer icon;
     private Boolean visibleToOthers;
@@ -579,7 +565,6 @@ public final class RoutineData implements Model {
           originalName,
           displayName,
           numberOfSteps,
-          numberOfTimesUsed,
           fullPlayTime,
           icon,
           visibleToOthers,
@@ -633,12 +618,6 @@ public final class RoutineData implements Model {
     @Override
      public BuildStep numberOfSteps(Integer numberOfSteps) {
         this.numberOfSteps = numberOfSteps;
-        return this;
-    }
-    
-    @Override
-     public BuildStep numberOfTimesUsed(Integer numberOfTimesUsed) {
-        this.numberOfTimesUsed = numberOfTimesUsed;
         return this;
     }
     
@@ -792,14 +771,13 @@ public final class RoutineData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData routineOwner, String routineOwnerId, String originalName, String displayName, Integer numberOfSteps, Integer numberOfTimesUsed, Integer fullPlayTime, Integer icon, Boolean visibleToOthers, Integer colorHex, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<String> playingOrder) {
+    private CopyOfBuilder(String id, UserData routineOwner, String routineOwnerId, String originalName, String displayName, Integer numberOfSteps, Integer fullPlayTime, Integer icon, Boolean visibleToOthers, Integer colorHex, Boolean playSoundDuringStretch, Boolean playSoundDuringPrayer, Boolean playSoundDuringBreathing, Boolean playSoundDuringSelfLove, Boolean playSoundDuringBedtimeStory, Boolean playSoundDuringSleep, Integer eachSoundPlayTime, Integer prayerPlayTime, Integer bedtimeStoryPlayTime, Integer selfLovePlayTime, Integer stretchTime, Integer breathingTime, Integer currentBedtimeStoryPlayingIndex, Integer currentBedtimeStoryContinuePlayingTime, Integer currentSelfLovePlayingIndex, Integer currentSelfLoveContinuePlayingTime, Integer currentPrayerPlayingIndex, Integer currentPrayerContinuePlayingTime, List<String> playingOrder) {
       super.id(id);
       super.routineOwner(routineOwner)
         .routineOwnerId(routineOwnerId)
         .originalName(originalName)
         .displayName(displayName)
         .numberOfSteps(numberOfSteps)
-        .numberOfTimesUsed(numberOfTimesUsed)
         .fullPlayTime(fullPlayTime)
         .icon(icon)
         .visibleToOthers(visibleToOthers)
@@ -848,11 +826,6 @@ public final class RoutineData implements Model {
     @Override
      public CopyOfBuilder numberOfSteps(Integer numberOfSteps) {
       return (CopyOfBuilder) super.numberOfSteps(numberOfSteps);
-    }
-    
-    @Override
-     public CopyOfBuilder numberOfTimesUsed(Integer numberOfTimesUsed) {
-      return (CopyOfBuilder) super.numberOfTimesUsed(numberOfTimesUsed);
     }
     
     @Override

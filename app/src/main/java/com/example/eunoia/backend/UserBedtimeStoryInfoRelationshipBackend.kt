@@ -48,11 +48,14 @@ object UserBedtimeStoryInfoRelationshipBackend {
         completed: (userBedtimeStoryInfoRelationship: UserBedtimeStoryInfoRelationship) -> Unit
     ){
         val userBedtimeStoryInfoRelationshipModel = UserBedtimeStoryInfoRelationshipObject.UserBedtimeStoryInfoRelationshipModel(
-            UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
-            BedtimeStoryObject.BedtimeStory.from(bedtimeStoryInfo),
-            0,
-            0
+            id = UUID.randomUUID().toString(),
+            userBedtimeStoryInfoRelationshipOwner = UserObject.User.from(globalViewModel_!!.currentUser!!),
+            userBedtimeStoryInfoRelationshipBedtimeStoryInfo = BedtimeStoryObject.BedtimeStory.from(bedtimeStoryInfo),
+            numberOfTimesPlayed = 0,
+            totalPlayTime = 0,
+            currentlyListening = false,
+            usageTimeStamp = listOf(),
+            usagePlayTimes = listOf()
         )
         createUserBedtimeStoryInfoRelationship(userBedtimeStoryInfoRelationshipModel){
             completed(it)

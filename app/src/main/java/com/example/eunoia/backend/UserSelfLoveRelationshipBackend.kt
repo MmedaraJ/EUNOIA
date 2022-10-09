@@ -45,11 +45,14 @@ object UserSelfLoveRelationshipBackend {
 
     fun createUserSelfLoveRelationshipObject(selfLove: SelfLoveData, completed: (userSelfLoveRelationship: UserSelfLoveRelationship) -> Unit){
         val userSelfLoveRelationshipModel = UserSelfLoveRelationshipObject.UserSelfLoveRelationshipModel(
-            UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
-            SelfLoveObject.SelfLove.from(selfLove),
-            0,
-            0
+            id = UUID.randomUUID().toString(),
+            userSelfLoveRelationshipOwner = UserObject.User.from(globalViewModel_!!.currentUser!!),
+            userSelfLoveRelationshipSelfLove = SelfLoveObject.SelfLove.from(selfLove),
+            numberOfTimesPlayed = 0,
+            totalPlayTime = 0,
+            currentlyListening = false,
+            usageTimeStamp = listOf(),
+            usagePlayTimes = listOf()
         )
         createUserSelfLoveRelationship(userSelfLoveRelationshipModel){
             completed(it)

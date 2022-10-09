@@ -1,6 +1,5 @@
 package com.example.eunoia.ui.bottomSheets.sound
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -187,13 +186,17 @@ private fun addToSoundListClicked(
 ) {
     if (globalViewModel_!!.currentSoundToBeAdded != null) {
         if (globalViewModel_!!.currentUser != null) {
-            UserSoundBackend.queryUserSoundBasedOnSoundAndUser(
+            UserSoundRelationshipBackend.queryUserSoundRelationshipBasedOnUserAndSound(
                 globalViewModel_!!.currentUser!!,
                 globalViewModel_!!.currentSoundToBeAdded!!
             ){
                 if(it.isEmpty()){
-                    UserSoundRelationshipBackend.createUserSoundRelationshipObject(globalViewModel_!!.currentSoundToBeAdded!!) {
-                        UserSoundBackend.createUserSoundObject(globalViewModel_!!.currentSoundToBeAdded!!) {
+                    UserSoundRelationshipBackend.createUserSoundRelationshipObject(
+                        globalViewModel_!!.currentSoundToBeAdded!!
+                    ) {
+                        UserSoundBackend.createUserSoundObject(
+                            globalViewModel_!!.currentSoundToBeAdded!!
+                        ) {
                             closeBottomSheet(scope, state)
                             openSavedElementDialogBox = true
                         }
@@ -231,15 +234,15 @@ private fun SetUpAlertDialogs(){
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectRoutine(
+fun SelectRoutineForSound(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
     SetUpAlertDialogs()
-    val userRoutines = remember{ mutableStateOf(mutableListOf<UserRoutine?>()) }
-    UserRoutineBackend.queryUserRoutineBasedOnUser(globalViewModel_!!.currentUser!!){
-        userRoutinesSize = it.size
-        userRoutines.value = it.toMutableList()
+    val userRoutineRelationships = remember{ mutableStateOf(mutableListOf<UserRoutineRelationship?>()) }
+    UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUser(globalViewModel_!!.currentUser!!){
+        com.example.eunoia.ui.bottomSheets.prayer.userRoutinesSize = it.size
+        userRoutineRelationships.value = it.toMutableList()
     }
 
         ConstraintLayout(
@@ -314,15 +317,15 @@ fun SelectRoutine(
                         yOffset = 0
                     )
                 }
-                if(userRoutines.value.size > 0 && userRoutines.value.size == userRoutinesSize){
-                    userRoutines.value.forEach{ userRoutine ->
+                if(userRoutineRelationships.value.size > 0 && userRoutineRelationships.value.size == userRoutinesSize){
+                    userRoutineRelationships.value.forEach{ userRoutineRelationship ->
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .padding(bottom = 15.dp)
                                 .clickable {
                                     selectRoutineClicked(
-                                        userRoutine!!,
+                                        userRoutineRelationship!!,
                                         scope,
                                         state
                                     )
@@ -334,11 +337,11 @@ fun SelectRoutine(
                                         .size(71.dp, 71.dp)
                                         .fillMaxWidth(),
                                     shape = MaterialTheme.shapes.small,
-                                    backgroundColor = Color(userRoutine!!.routineData.colorHex),
+                                    backgroundColor = Color(userRoutineRelationship!!.userRoutineRelationshipRoutine.colorHex),
                                     elevation = 8.dp
                                 ) {
                                     Image(
-                                        painter = painterResource(id = userRoutine.routineData.icon),
+                                        painter = painterResource(id = userRoutineRelationship.userRoutineRelationshipRoutine.icon),
                                         contentDescription = "routine icon",
                                         modifier = Modifier
                                             .size(width = 25.64.dp, height = 25.64.dp)
@@ -349,7 +352,7 @@ fun SelectRoutine(
 
                             Spacer(modifier = Modifier.height(4.dp))
 
-                            val goodDisplayName = displayRoutineNameForBottomSheet(userRoutine!!)
+                            val goodDisplayName = displayRoutineNameForBottomSheet(userRoutineRelationship!!)
                             AlignedNormalText(
                                 text = goodDisplayName,
                                 color = MaterialTheme.colors.primary,
@@ -366,14 +369,14 @@ fun SelectRoutine(
 
 @OptIn(ExperimentalMaterialApi::class)
 private fun selectRoutineClicked(
-    userRoutine: UserRoutine,
+    userRoutineRelationship: UserRoutineRelationship,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
     if (globalViewModel_!!.currentPresetToBeAdded == null) {
         makePrivatePresetObject{
-            setUpRoutinePreset(userRoutine, {}){
-                setUpRoutineSound(userRoutine) {
+            setUpRoutinePreset(userRoutineRelationship, {}){
+                setUpUserRoutineRelationshipSound(userRoutineRelationship) {
                     setUpUserSoundRelationship {
                         setUpUserSound {
                             closeBottomSheet(scope, state)
@@ -385,13 +388,13 @@ private fun selectRoutineClicked(
         }
     } else {
         setUpRoutinePreset(
-            userRoutine,
+            userRoutineRelationship,
             {
                 closeBottomSheet(scope, state)
                 openRoutineAlreadyHasPresetDialogBox = true
             }
         ){
-            setUpRoutineSound(userRoutine) {
+            setUpUserRoutineRelationshipSound(userRoutineRelationship) {
                 setUpUserSoundRelationship {
                     setUpUserSound {
                         setUpUserPresetRelationship {
@@ -408,18 +411,18 @@ private fun selectRoutineClicked(
 }
 
 fun setUpRoutinePreset(
-    userRoutine: UserRoutine,
+    userRoutineRelationship: UserRoutineRelationship,
     alreadyExists: () -> Unit,
     completed: () -> Unit,
 ) {
-    RoutineSoundPresetBackend.queryRoutineSoundPresetBasedOnRoutineAndSoundPreset(
-        userRoutine.routineData,
+    UserRoutineRelationshipSoundPresetBackend.queryUserRoutineRelationshipSoundPresetBasedOnRoutineAndSoundPreset(
+        userRoutineRelationship,
         globalViewModel_!!.currentPresetToBeAdded!!
     ){
         if (it.isEmpty()) {
-            RoutineSoundPresetBackend.createRoutineSoundPresetObject(
+            UserRoutineRelationshipSoundPresetBackend.createUserRoutineRelationshipSoundPresetObject(
                 globalViewModel_!!.currentPresetToBeAdded!!,
-                userRoutine.routineData
+                userRoutineRelationship
             ) {
                 completed()
             }
@@ -429,40 +432,71 @@ fun setUpRoutinePreset(
     }
 }
 
-fun setUpRoutineSound(userRoutine: UserRoutine, completed: () -> Unit){
-    RoutineSoundBackend.queryRoutineSoundBasedOnRoutineAndSound(
-        userRoutine.routineData,
+fun setUpUserRoutineRelationshipSound(
+    userRoutineRelationship: UserRoutineRelationship,
+    completed: () -> Unit
+){
+    UserRoutineRelationshipSoundBackend.queryUserRoutineRelationshipSoundBasedOnUserRoutineRelationshipAndSound(
+        userRoutineRelationship,
         globalViewModel_!!.currentSoundToBeAdded!!
     ){
         if (it.isEmpty()) {
-            if (!userRoutine.routineData.playingOrder.contains("sound")) {
-                val playOrder = userRoutine.routineData.playingOrder
-                playOrder.add("sound")
-
-                val numberOfSteps = userRoutine.routineData.numberOfSteps + 1
-
-                val routine = userRoutine.routineData.copyOfBuilder()
-                    .numberOfSteps(numberOfSteps)
-                    .playingOrder(playOrder)
-                    .build()
-
-                RoutineBackend.updateRoutine(routine) { updatedRoutine ->
-                    RoutineSoundBackend.createRoutineSoundObject(
-                        globalViewModel_!!.currentSoundToBeAdded!!,
-                        updatedRoutine
-                    ) {
-                        completed()
-                    }
+            if (!userRoutineRelationship.playingOrder.contains("sound")) {
+                updateUserRoutineRelationshipThatDoesNotContainSound(userRoutineRelationship){
+                    completed()
                 }
             }else{
-                RoutineSoundBackend.createRoutineSoundObject(
-                    globalViewModel_!!.currentSoundToBeAdded!!,
-                    userRoutine.routineData
-                ) {
+                updateUserRoutineRelationshipThatContainsSound(userRoutineRelationship){
                     completed()
                 }
             }
         }else{
+            completed()
+        }
+    }
+}
+
+private fun updateUserRoutineRelationshipThatDoesNotContainSound(
+    userRoutineRelationship: UserRoutineRelationship,
+    completed: () -> Unit
+) {
+    val playOrder = userRoutineRelationship.playingOrder
+    playOrder.add("sound")
+
+    val numberOfSteps = userRoutineRelationship.numberOfSteps + 1
+
+    val newUserRoutineRelationship = userRoutineRelationship.copyOfBuilder()
+        .numberOfSteps(numberOfSteps)
+        .playingOrder(playOrder)
+        .build()
+
+    UserRoutineRelationshipBackend.updateUserRoutineRelationship(newUserRoutineRelationship) { updatedUserRoutineRelationship ->
+        UserRoutineRelationshipSoundBackend.createUserRoutineRelationshipSoundObject(
+            globalViewModel_!!.currentSoundToBeAdded!!,
+            updatedUserRoutineRelationship
+        ) {
+            RoutineSoundBackend.createRoutineSoundObject(
+                globalViewModel_!!.currentSoundToBeAdded!!,
+                updatedUserRoutineRelationship.userRoutineRelationshipRoutine
+            ) {
+                completed()
+            }
+        }
+    }
+}
+
+private fun updateUserRoutineRelationshipThatContainsSound(
+    userRoutineRelationship: UserRoutineRelationship,
+    completed: () -> Unit
+) {
+    UserRoutineRelationshipSoundBackend.createUserRoutineRelationshipSoundObject(
+        globalViewModel_!!.currentSoundToBeAdded!!,
+        userRoutineRelationship
+    ) {
+        RoutineSoundBackend.createRoutineSoundObject(
+            globalViewModel_!!.currentSoundToBeAdded!!,
+            userRoutineRelationship.userRoutineRelationshipRoutine
+        ) {
             completed()
         }
     }
@@ -503,32 +537,42 @@ fun setUpUserSoundRelationship(completed: () -> Unit){
 }
 
 fun setUpRoutineAndUserPresetAfterMakingNewRoutine(
-    routineData: RoutineData,
+    userRoutineRelationship: UserRoutineRelationship,
     completed: () -> Unit
 ){
-    RoutineSoundPresetBackend.createRoutineSoundPresetObject(
+    UserRoutineRelationshipSoundPresetBackend.createUserRoutineRelationshipSoundPresetObject(
         globalViewModel_!!.currentPresetToBeAdded!!,
-        routineData
+        userRoutineRelationship
     ) {
-        setUpUserPresetRelationship {
-            setUpUserPreset {
-                completed()
+        RoutineSoundPresetBackend.createRoutineSoundPresetObject(
+            globalViewModel_!!.currentPresetToBeAdded!!,
+            userRoutineRelationship.userRoutineRelationshipRoutine
+        ) {
+            setUpUserPresetRelationship {
+                setUpUserPreset {
+                    completed()
+                }
             }
         }
     }
 }
 
 fun setUpRoutineAndUserSoundAfterMakingNewRoutine(
-    routineData: RoutineData,
+    userRoutineRelationship: UserRoutineRelationship,
     completed: () -> Unit
 ){
-    RoutineSoundBackend.createRoutineSoundObject(
+    UserRoutineRelationshipSoundBackend.createUserRoutineRelationshipSoundObject(
         globalViewModel_!!.currentSoundToBeAdded!!,
-        routineData
+        userRoutineRelationship
     ) {
-        setUpUserSoundRelationship {
-            setUpUserSound {
-                completed()
+        RoutineSoundBackend.createRoutineSoundObject(
+            globalViewModel_!!.currentSoundToBeAdded!!,
+            userRoutineRelationship.userRoutineRelationshipRoutine
+        ) {
+            setUpUserSoundRelationship {
+                setUpUserSound {
+                    completed()
+                }
             }
         }
     }
@@ -946,11 +990,13 @@ private fun newRoutineIconSelected(
     state: ModalBottomSheetState
 ) {
     globalViewModel_!!.routineIconToBeAdded = icon
+
     //45' default playtime
     var playTime = MAX_ROUTINE_PLAYTIME
     if(globalViewModel_!!.currentSoundToBeAdded!!.fullPlayTime < playTime){
         playTime = globalViewModel_!!.currentSoundToBeAdded!!.fullPlayTime
     }
+
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
         routineOwner = UserObject.signedInUser().value!!,
@@ -958,7 +1004,6 @@ private fun newRoutineIconSelected(
         originalName = globalViewModel_!!.routineNameToBeAdded,
         displayName = globalViewModel_!!.routineNameToBeAdded,
         numberOfSteps = 2,
-        numberOfTimesUsed = 0,
         fullPlayTime = playTime.toLong(),
         icon = globalViewModel_!!.routineIconToBeAdded!!,
         visibleToOthers = false,
@@ -998,18 +1043,16 @@ private fun createRoutineAndOtherNecessaryData(
     state: ModalBottomSheetState
 ) {
     RoutineBackend.createRoutine(routine) { newRoutine ->
-        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) {
+        UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(newRoutine) { updatedUserRoutineRelationship ->
             UserRoutineBackend.createUserRoutineObject(newRoutine) {
-                setUpRoutineAndUserSoundAfterMakingNewRoutine(newRoutine) {
+                setUpRoutineAndUserSoundAfterMakingNewRoutine(updatedUserRoutineRelationship) {
                     if (globalViewModel_!!.currentPresetToBeAdded == null) {
                         makePrivatePresetObject {
-                            //setUpRoutineAndUserPresetAfterMakingNewRoutine(newRoutine) {
-                                closeBottomSheet(scope, state)
-                                openSavedElementDialogBox = true
-                            //}
+                            closeBottomSheet(scope, state)
+                            openSavedElementDialogBox = true
                         }
                     } else {
-                        setUpRoutineAndUserPresetAfterMakingNewRoutine(newRoutine) {
+                        setUpRoutineAndUserPresetAfterMakingNewRoutine(updatedUserRoutineRelationship) {
                             closeBottomSheet(scope, state)
                             openSavedElementDialogBox = true
                         }

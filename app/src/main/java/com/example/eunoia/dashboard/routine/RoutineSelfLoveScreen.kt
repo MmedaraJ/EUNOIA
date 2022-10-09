@@ -17,6 +17,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.RoutineSelfLove
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationshipSelfLove
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.AlignedNormalText
@@ -25,14 +27,14 @@ import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.Black
 import kotlinx.coroutines.CoroutineScope
 
-var routineSelfLoveList by mutableStateOf<MutableList<RoutineSelfLove?>?>(null)
+var routineSelfLoveList by mutableStateOf<MutableList<UserRoutineRelationshipSelfLove?>?>(null)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RoutineSelfLoveScreen(
     navController: NavController,
     context: Context,
-    routineData: RoutineData,
+    userRoutineRelationship: UserRoutineRelationship,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -79,7 +81,7 @@ fun RoutineSelfLoveScreen(
                 .wrapContentHeight()
         ) {
             AlignedNormalText(
-                text = "[${routineData.displayName}]",
+                text = "[${userRoutineRelationship.userRoutineRelationshipRoutine.displayName}]",
                 color = Black,
                 fontSize = 16,
                 xOffset = 0,
@@ -117,7 +119,7 @@ fun RoutineSelfLoveScreen(
                 }
             //.wrapContentHeight()
         ) {
-            RoutineSelfLoveElements(navController, routineData)
+            RoutineSelfLoveElements(navController, userRoutineRelationship)
             Spacer(modifier = Modifier.height(40.dp))
         }
     }

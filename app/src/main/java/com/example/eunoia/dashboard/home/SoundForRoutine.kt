@@ -5,11 +5,10 @@ import android.content.Intent
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import com.amplifyframework.datastore.generated.model.RoutineData
-import com.amplifyframework.datastore.generated.model.RoutineSoundPreset
-import com.amplifyframework.datastore.generated.model.SoundData
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.RoutineSoundPresetBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.backend.UserRoutineRelationshipSoundPresetBackend
 import com.example.eunoia.dashboard.sound.resetAll
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -26,15 +25,15 @@ object SoundForRoutine{
         index: Int,
         context: Context
     ) {
-        if(globalViewModel_!!.currentRoutinePlayingRoutinePresets != null) {
+        if(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets != null) {
             if(
                 routineActivitySoundUrisMapList[index][
-                        globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                                [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
+                        globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+                                [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!]!!
                             .soundPresetData.id
                 ]!!.isEmpty()
             ) {
-                if(globalViewModel_!!.currentRoutinePlayingRoutinePresets!!.isEmpty()) {
+                if(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!.isEmpty()) {
                     getRoutinePresets(index) {
                         retrieveSoundUris(
                             soundMediaPlayerService,
@@ -88,7 +87,7 @@ object SoundForRoutine{
 
     private fun getRoutinePresets(index: Int, completed: () -> Unit){
         getRoutinePresetsBasedOnRoutine(
-            globalViewModel_!!.currentUsersRoutines!![index]!!.routineData
+            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!
         ) { routinePresets ->
             if(routinePresets.isNotEmpty()) {
                 for (routinePreset in routinePresets) {
@@ -97,18 +96,18 @@ object SoundForRoutine{
                     routineActivitySoundUriVolumes[index][routinePreset.soundPresetData.id] =
                         routinePreset.soundPresetData.volumes
                 }
-                globalViewModel_!!.currentRoutinePlayingRoutinePresets = routinePresets
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets = routinePresets
                 completed()
             }
         }
     }
 
-    fun getRoutinePresetsBasedOnRoutine(
-        routineData: RoutineData,
-        completed: (routinePresetList: MutableList<RoutineSoundPreset?>) -> Unit
+    private fun getRoutinePresetsBasedOnRoutine(
+        userRoutineRelationship: UserRoutineRelationship,
+        completed: (userRoutineRelationshipPresetList: MutableList<UserRoutineRelationshipSoundPreset?>) -> Unit
     ) {
-        RoutineSoundPresetBackend.queryRoutineSoundPresetBasedOnRoutine(routineData) { routinePresets ->
-            completed(routinePresets.toMutableList())
+        UserRoutineRelationshipSoundPresetBackend.queryUserRoutineRelationshipSoundPresetBasedOnUserRoutineRelationship(userRoutineRelationship) { userRoutineRelationshipPresets ->
+            completed(userRoutineRelationshipPresets.toMutableList())
         }
     }
 
@@ -119,8 +118,8 @@ object SoundForRoutine{
         context: Context
     ) {
         SoundBackend.querySoundBasedOnId(
-            globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                    [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+                    [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!]!!
                 .soundPresetData.soundId
         ){
             if(it.isNotEmpty()) {
@@ -135,8 +134,8 @@ object SoundForRoutine{
                             it[0]!!.soundOwner.amplifyAuthUserId
                         ) { uri ->
                             routineActivitySoundUrisMapList[index][
-                                    globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                                            [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
+                                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+                                            [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!]!!
                                         .soundPresetData.id
                             ]!!.add(uri)
                             if (i == s3List.items.indices.last) {
@@ -162,8 +161,8 @@ object SoundForRoutine{
     ) {
         if(
             !routineActivitySoundUrisMapList[index][
-                    globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                            [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+                            [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!]!!
                         .soundPresetData.id
             ].isNullOrEmpty()
         ) {
@@ -199,15 +198,15 @@ object SoundForRoutine{
         soundMediaPlayerService.onDestroy()
         soundMediaPlayerService.setAudioUris(
             routineActivitySoundUrisMapList[index][
-                    globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                            [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+                            [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!]!!
                         .soundPresetData.id
             ]!!
         )
         soundMediaPlayerService.setVolumes(
             routineActivitySoundUriVolumes[index][
-                    globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                            [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+                            [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!]!!
                         .soundPresetData.id
             ]!!
         )
@@ -232,7 +231,7 @@ object SoundForRoutine{
     ){
         startSoundCountDownTimer(
             context,
-            globalViewModel_!!.currentUsersRoutines!![index]!!.routineData.eachSoundPlayTime.toLong(),
+            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.eachSoundPlayTime.toLong(),
             soundMediaPlayerService
         ){
             if(soundMediaPlayerService.areMediaPlayersInitialized()) {
@@ -242,9 +241,9 @@ object SoundForRoutine{
             globalViewModel_!!.isCurrentSoundPlaying = false
             globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer = null
 
-            globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex = globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!! + 1
-            if(globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!! > globalViewModel_!!.currentRoutinePlayingRoutinePresets!!.indices.last){
-                globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex = 0
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!! + 1
+            if(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!! > globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!.indices.last){
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = 0
             }
             playSound(
                 soundMediaPlayerService,
@@ -279,15 +278,15 @@ object SoundForRoutine{
         globalViewModel_!!.currentSoundPlaying = playingSoundNow
 
         globalViewModel_!!.currentSoundPlayingPreset =
-            globalViewModel_!!.currentRoutinePlayingRoutinePresets!![
-                    globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!![
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!
             ]!!.soundPresetData
 
         globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
 
         globalViewModel_!!.soundSliderVolumes =
-            globalViewModel_!!.currentRoutinePlayingRoutinePresets!![
-                    globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!![
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!
             ]!!.soundPresetData.volumes
 
         for (volume in globalViewModel_!!.soundSliderVolumes!!) {
@@ -298,8 +297,8 @@ object SoundForRoutine{
 
         globalViewModel_!!.currentSoundPlayingUris =
             routineActivitySoundUrisMapList[index][
-                    globalViewModel_!!.currentRoutinePlayingRoutinePresets!!
-                            [globalViewModel_!!.currentRoutinePlayingRoutinePresetsIndex!!]!!
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+                            [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!]!!
                         .soundPresetData.id
             ]
 

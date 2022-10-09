@@ -17,6 +17,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.RoutinePrayer
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationshipPrayer
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.AlignedNormalText
@@ -25,14 +27,14 @@ import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.Black
 import kotlinx.coroutines.CoroutineScope
 
-var routinePrayerList by mutableStateOf<MutableList<RoutinePrayer?>?>(null)
+var routinePrayerList by mutableStateOf<MutableList<UserRoutineRelationshipPrayer?>?>(null)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RoutinePrayerScreen(
     navController: NavController,
     context: Context,
-    routineData: RoutineData,
+    userRoutineRelationship: UserRoutineRelationship,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -79,7 +81,7 @@ fun RoutinePrayerScreen(
                 .wrapContentHeight()
         ) {
             AlignedNormalText(
-                text = "[${routineData.displayName}]",
+                text = "[${userRoutineRelationship.userRoutineRelationshipRoutine.displayName}]",
                 color = Black,
                 fontSize = 16,
                 xOffset = 0,
@@ -117,7 +119,7 @@ fun RoutinePrayerScreen(
                 }
             //.wrapContentHeight()
         ) {
-            RoutinePrayerElements(navController, routineData)
+            RoutinePrayerElements(navController, userRoutineRelationship)
             Spacer(modifier = Modifier.height(40.dp))
         }
     }

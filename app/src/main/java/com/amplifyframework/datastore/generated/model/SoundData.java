@@ -63,6 +63,7 @@ public final class SoundData implements Model {
   private final @ModelField(targetType="CommentData") @HasMany(associatedWith = "sound", type = CommentData.class) List<CommentData> commentsOwnedBySound = null;
   private final @ModelField(targetType="UserSound") @HasMany(associatedWith = "soundData", type = UserSound.class) List<UserSound> users = null;
   private final @ModelField(targetType="RoutineSound") @HasMany(associatedWith = "soundData", type = RoutineSound.class) List<RoutineSound> routines = null;
+  private final @ModelField(targetType="UserRoutineRelationshipSound") @HasMany(associatedWith = "soundData", type = UserRoutineRelationshipSound.class) List<UserRoutineRelationshipSound> userRoutineRelationships = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
@@ -139,6 +140,10 @@ public final class SoundData implements Model {
   
   public List<RoutineSound> getRoutines() {
       return routines;
+  }
+  
+  public List<UserRoutineRelationshipSound> getUserRoutineRelationships() {
+      return userRoutineRelationships;
   }
   
   public Temporal.DateTime getCreatedAt() {

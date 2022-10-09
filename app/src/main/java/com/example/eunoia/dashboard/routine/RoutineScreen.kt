@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.amplifyframework.datastore.generated.model.RoutineData
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 fun RoutineScreen(
     navController: NavController,
     context: Context,
-    routineData: RoutineData,
+    userRoutineRelationship: UserRoutineRelationship,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -72,10 +72,10 @@ fun RoutineScreen(
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            val playTimeString = formatMilliSecond(routineData.fullPlayTime.toLong())
+            val playTimeString = formatMilliSecond(userRoutineRelationship.fullPlayTime.toLong())
             WrappedPurpleBackgroundStart(
-                "[${routineData.displayName}]",
-                "${routineData.numberOfSteps} steps ~ $playTimeString"
+                "[${userRoutineRelationship.userRoutineRelationshipRoutine.displayName}]",
+                "${userRoutineRelationship.numberOfSteps} steps ~ $playTimeString"
             ) {}
         }
         Column(
@@ -87,7 +87,7 @@ fun RoutineScreen(
                 }
                 .wrapContentHeight()
         ) {
-            RoutineElements(navController, routineData)
+            RoutineElements(navController, userRoutineRelationship)
             Spacer(modifier = Modifier.height(40.dp))
         }
     }

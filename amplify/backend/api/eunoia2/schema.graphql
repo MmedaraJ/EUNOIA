@@ -27,6 +27,7 @@ type SoundData
     commentsOwnedBySound: [CommentData!] @hasMany(indexName: "CommentsOwnedBySound", fields: ["id"])
     users: [UserData!] @manyToMany(relationName: "UserSound")
     routines: [RoutineData!] @manyToMany(relationName: "RoutineSound")
+    userRoutineRelationships: [UserRoutineRelationship!] @manyToMany(relationName: "UserRoutineRelationshipSound")
 }
 
 type UserSoundRelationship
@@ -80,6 +81,7 @@ type SoundPresetData
     userSoundPresetRelationshipsOwnedBySoundPreset: [UserSoundPresetRelationship!] @hasMany(indexName: "UserSoundPresetRelationshipsOwnedBySoundPreset", fields: ["id"])
     users: [UserData!] @manyToMany(relationName: "UserSoundPreset")
     routines: [RoutineData!] @manyToMany(relationName: "RoutineSoundPreset")
+    userRoutineRelationships: [UserRoutineRelationship!] @manyToMany(relationName: "UserRoutineRelationshipSoundPreset")
 }
 
 type UserSoundPresetRelationship
@@ -107,7 +109,6 @@ type RoutineData
     originalName: String
     displayName: String
     numberOfSteps: Int
-    numberOfTimesUsed: Int
     fullPlayTime: Int
     icon: Int
     visibleToOthers: Boolean
@@ -152,6 +153,8 @@ type UserRoutineRelationship
     userRoutineRelationshipRoutine: RoutineData! @belongsTo(fields: ["userRoutineRelationshipRoutineDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    fullPlayTime: Int
+    numberOfSteps: Int
     currentlyListening: Boolean
     playSoundDuringStretch: Boolean
     playSoundDuringPrayer: Boolean
@@ -174,6 +177,13 @@ type UserRoutineRelationship
     usageTimestamps: [AWSDateTime!]
     usagePlayTimes: [Int!]
     playingOrder: [String!]
+    sounds: [SoundData!] @manyToMany(relationName: "UserRoutineRelationshipSound")
+    presets: [SoundPresetData!] @manyToMany(relationName: "UserRoutineRelationshipSoundPreset")
+    prayers: [PrayerData!] @manyToMany(relationName: "UserRoutineRelationshipPrayer")
+    stretches: [StretchData!] @manyToMany(relationName: "UserRoutineRelationshipStretch")
+    breathing: [BreathingData!] @manyToMany(relationName: "UserRoutineRelationshipBreathing")
+    bedtimeStories: [BedtimeStoryInfoData!] @manyToMany(relationName: "UserRoutineRelationshipBedtimeStoryInfo")
+    selfLoves: [SelfLoveData!] @manyToMany(relationName: "UserRoutineRelationshipSelfLove")
 }
 
 enum BedtimeStoryAudioSource{
@@ -212,6 +222,7 @@ type BedtimeStoryInfoData
     creationStatus: BedtimeStoryCreationStatus
     userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo: [UserBedtimeStoryInfoRelationship!] @hasMany(indexName: "UserBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo", fields: ["id"])
     routines: [RoutineData!] @manyToMany(relationName: "RoutineBedtimeStoryInfo")
+    userRoutineRelationships: [UserRoutineRelationship!] @manyToMany(relationName: "UserRoutineRelationshipBedtimeStoryInfo")
     users: [UserData!] @manyToMany(relationName: "UserBedtimeStoryInfo")
     chapters: [BedtimeStoryInfoChapterData!] @hasMany(indexName: "BedtimeStoryInfoChapters", fields: ["id"])
 }
@@ -285,6 +296,7 @@ type PrayerData
     approvalStatus: PrayerApprovalStatus
     userPrayerRelationshipsOwnedByPrayer: [UserPrayerRelationship!] @hasMany(indexName: "UserPrayerRelationshipsOwnedByPrayer", fields: ["id"])
     routines: [RoutineData!] @manyToMany(relationName: "RoutinePrayer")
+    userRoutineRelationships: [UserRoutineRelationship!] @manyToMany(relationName: "UserRoutineRelationshipPrayer")
     users: [UserData!] @manyToMany(relationName: "UserPrayer")
 }
 
@@ -334,6 +346,7 @@ type SelfLoveData
     approvalStatus: SelfLoveApprovalStatus
     userSelfLoveRelationshipsOwnedBySelfLove: [UserSelfLoveRelationship!] @hasMany(indexName: "UserSelfLoveRelationshipsOwnedBySelfLove", fields: ["id"])
     routines: [RoutineData!] @manyToMany(relationName: "RoutineSelfLove")
+    userRoutineRelationships: [UserRoutineRelationship!] @manyToMany(relationName: "UserRoutineRelationshipSelfLove")
     users: [UserData!] @manyToMany(relationName: "UserSelfLove")
 }
 
@@ -361,6 +374,7 @@ type StretchData
     stretchOwnerId: String
     display_name: String!
     routines: [RoutineData!] @manyToMany(relationName: "RoutineStretch")
+    userRoutineRelationships: [UserRoutineRelationship!] @manyToMany(relationName: "UserRoutineRelationshipStretch")
     users: [UserData!] @manyToMany(relationName: "UserStretch")
 }
 
@@ -373,6 +387,7 @@ type BreathingData
     breathingOwnerId: String
     display_name: String!
     routines: [RoutineData!] @manyToMany(relationName: "RoutineBreathing")
+    userRoutineRelationships: [UserRoutineRelationship!] @manyToMany(relationName: "UserRoutineRelationshipBreathing")
     users: [UserData!] @manyToMany(relationName: "UserBreathing")
 }
 

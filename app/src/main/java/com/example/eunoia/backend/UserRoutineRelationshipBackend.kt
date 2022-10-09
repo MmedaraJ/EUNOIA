@@ -44,18 +44,42 @@ object UserRoutineRelationshipBackend {
 
     fun createUserRoutineRelationshipObject(routine: RoutineData, completed: (userRoutineRelationship: UserRoutineRelationship) -> Unit){
         val userRoutineRelationshipModel = UserRoutineRelationshipObject.UserRoutineRelationshipModel(
-            UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
-            RoutineObject.Routine.from(routine),
-            0,
-            0
+            id = UUID.randomUUID().toString(),
+            userRoutineRelationshipOwner = UserObject.User.from(globalViewModel_!!.currentUser!!),
+            userRoutineRelationshipRoutine = RoutineObject.Routine.from(routine),
+            numberOfTimesPlayed = 0,
+            totalPlayTime = 0,
+            fullPlayTime = routine.fullPlayTime.toLong(),
+            numberOfSteps = routine.numberOfSteps,
+            currentlyListening = false,
+            playSoundDuringStretch = routine.playSoundDuringStretch,
+            playSoundDuringPrayer = routine.playSoundDuringPrayer,
+            playSoundDuringBreathing = routine.playSoundDuringBreathing,
+            playSoundDuringSelfLove = routine.playSoundDuringSelfLove,
+            playSoundDuringBedtimeStory = routine.playSoundDuringBedtimeStory,
+            playSoundDuringSleep = routine.playSoundDuringSleep,
+            eachSoundPlayTime = routine.eachSoundPlayTime,
+            prayerPlayTime = routine.prayerPlayTime,
+            bedtimeStoryPlayTime = routine.bedtimeStoryPlayTime,
+            selfLovePlayTime = routine.selfLovePlayTime,
+            stretchTime = routine.stretchTime,
+            breathingTime = routine.breathingTime,
+            currentBedtimeStoryPlayingIndex = routine.currentBedtimeStoryPlayingIndex,
+            currentBedtimeStoryContinuePlayingTime = routine.currentBedtimeStoryContinuePlayingTime,
+            currentSelfLovePlayingIndex = routine.currentSelfLovePlayingIndex,
+            currentSelfLoveContinuePlayingTime = routine.currentSelfLoveContinuePlayingTime,
+            currentPrayerPlayingIndex = routine.currentPrayerPlayingIndex,
+            currentPrayerContinuePlayingTime = routine.currentPrayerContinuePlayingTime,
+            usageTimeStamp = listOf(),
+            usagePlayTimes = listOf(),
+            playingOrder =  routine.playingOrder
         )
         createUserRoutineRelationship(userRoutineRelationshipModel){
             completed(it)
         }
     }
 
-    fun queryApprovedUserRoutineRelationshipBasedOnUser(
+    fun queryUserRoutineRelationshipBasedOnUser(
         userData: UserData,
         completed: (userRoutineRelationship: List<UserRoutineRelationship?>) -> Unit
     ) {
@@ -82,9 +106,9 @@ object UserRoutineRelationshipBackend {
         }
     }
 
-    fun queryUserRoutineRelationshipBasedOnUserAndRoutine(
+    fun queryUserRoutineRelationshipBasedOnUserAndUserRoutineRelationship(
         userData: UserData,
-        routine: RoutineData,
+        userRoutineRelationship: UserRoutineRelationship,
         completed: (userRoutineRelationship: List<UserRoutineRelationship?>) -> Unit
     ) {
         scope.launch {
@@ -93,7 +117,7 @@ object UserRoutineRelationshipBackend {
                 ModelQuery.list(
                     UserRoutineRelationship::class.java,
                     UserRoutineRelationship.USER_ROUTINE_RELATIONSHIP_OWNER.eq(userData.id)
-                        .and(UserRoutineRelationship.USER_ROUTINE_RELATIONSHIP_ROUTINE.eq(routine.id)),
+                        .and(UserRoutineRelationship.USER_ROUTINE_RELATIONSHIP_ROUTINE.eq(userRoutineRelationship.id)),
                 ),
                 { response ->
                     if(response.hasData()) {
@@ -107,6 +131,26 @@ object UserRoutineRelationshipBackend {
                     completed(userRoutineRelationshipList)
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun updateUserRoutineRelationship(
+        userRoutineRelationship: UserRoutineRelationship,
+        completed: (userRoutineRelationship: UserRoutineRelationship) -> Unit
+    ){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.update(userRoutineRelationship),
+                { response ->
+                    if(response.hasData()) {
+                        Log.i(TAG, "Successfully updated userRoutineRelationship: ${response.data}")
+                        completed(response.data)
+                    }
+                },
+                {
+                    Log.i(TAG, "Error while updating userRoutineRelationship: ", it)
+                }
             )
         }
     }

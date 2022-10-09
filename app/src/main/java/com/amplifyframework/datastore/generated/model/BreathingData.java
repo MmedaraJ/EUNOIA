@@ -38,6 +38,7 @@ public final class BreathingData implements Model {
   private final @ModelField(targetType="String") String breathingOwnerId;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="RoutineBreathing") @HasMany(associatedWith = "breathingData", type = RoutineBreathing.class) List<RoutineBreathing> routines = null;
+  private final @ModelField(targetType="UserRoutineRelationshipBreathing") @HasMany(associatedWith = "breathingData", type = UserRoutineRelationshipBreathing.class) List<UserRoutineRelationshipBreathing> userRoutineRelationships = null;
   private final @ModelField(targetType="UserBreathing") @HasMany(associatedWith = "breathingData", type = UserBreathing.class) List<UserBreathing> users = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
@@ -59,6 +60,10 @@ public final class BreathingData implements Model {
   
   public List<RoutineBreathing> getRoutines() {
       return routines;
+  }
+  
+  public List<UserRoutineRelationshipBreathing> getUserRoutineRelationships() {
+      return userRoutineRelationships;
   }
   
   public List<UserBreathing> getUsers() {

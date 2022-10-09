@@ -59,6 +59,7 @@ public final class BedtimeStoryInfoData implements Model {
   private final @ModelField(targetType="BedtimeStoryCreationStatus") BedtimeStoryCreationStatus creationStatus;
   private final @ModelField(targetType="UserBedtimeStoryInfoRelationship") @HasMany(associatedWith = "userBedtimeStoryInfoRelationshipBedtimeStoryInfo", type = UserBedtimeStoryInfoRelationship.class) List<UserBedtimeStoryInfoRelationship> userBedtimeStoryInfoRelationshipsOwnedByBedtimeStoryInfo = null;
   private final @ModelField(targetType="RoutineBedtimeStoryInfo") @HasMany(associatedWith = "bedtimeStoryInfoData", type = RoutineBedtimeStoryInfo.class) List<RoutineBedtimeStoryInfo> routines = null;
+  private final @ModelField(targetType="UserRoutineRelationshipBedtimeStoryInfo") @HasMany(associatedWith = "bedtimeStoryInfoData", type = UserRoutineRelationshipBedtimeStoryInfo.class) List<UserRoutineRelationshipBedtimeStoryInfo> userRoutineRelationships = null;
   private final @ModelField(targetType="UserBedtimeStoryInfo") @HasMany(associatedWith = "bedtimeStoryInfoData", type = UserBedtimeStoryInfo.class) List<UserBedtimeStoryInfo> users = null;
   private final @ModelField(targetType="BedtimeStoryInfoChapterData") @HasMany(associatedWith = "bedtimeStoryInfo", type = BedtimeStoryInfoChapterData.class) List<BedtimeStoryInfoChapterData> chapters = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
@@ -125,6 +126,10 @@ public final class BedtimeStoryInfoData implements Model {
   
   public List<RoutineBedtimeStoryInfo> getRoutines() {
       return routines;
+  }
+  
+  public List<UserRoutineRelationshipBedtimeStoryInfo> getUserRoutineRelationships() {
+      return userRoutineRelationships;
   }
   
   public List<UserBedtimeStoryInfo> getUsers() {

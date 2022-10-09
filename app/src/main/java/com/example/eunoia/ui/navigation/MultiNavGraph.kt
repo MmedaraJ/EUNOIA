@@ -29,7 +29,6 @@ import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.viewModels.GlobalViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.eunoia.create.createSound.NameSoundUI
 import com.example.eunoia.create.CreateUI
 import com.example.eunoia.create.createBedtimeStory.*
@@ -170,7 +169,7 @@ fun EunoiaApp(
                             }
                             "addToRoutine" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
-                                SelectRoutine(scope, state)
+                                SelectRoutineForSound(scope, state)
                             }
                             "inputRoutineName" -> {
                                 globalViewModel_!!.allowBottomSheetClose = true
@@ -553,15 +552,19 @@ fun DashboardTab(
             )
         }
         composable(
-            "${Screen.RoutineScreen.screen_route}/routine={routine}",
-            arguments = listOf(navArgument("routine") {type = RoutineObject.RoutineType()})
+            "${Screen.RoutineScreen.screen_route}/userRoutineRelationship={userRoutineRelationship}",
+            arguments = listOf(
+                navArgument("userRoutineRelationship") {
+                    type = UserRoutineRelationshipObject.UserRoutineRelationshipType()
+                }
+            )
         ) { backStackEntry ->
-            val routine = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routine")
-            Log.i("Routine Screen", "You are now on the ${routine!!.displayName} tab")
+            val userRoutineRelationship = backStackEntry.arguments?.getParcelable<UserRoutineRelationshipObject.UserRoutineRelationshipModel>("userRoutineRelationship")
+            Log.i("Routine Screen", "You are now on the ${userRoutineRelationship!!.userRoutineRelationshipRoutine.displayName} tab")
             RoutineScreen(
                 navController,
                 LocalContext.current,
-                routine.data,
+                userRoutineRelationship!!.data,
                 scope,
                 state
             )
@@ -627,69 +630,69 @@ fun DashboardTab(
             )
         }
         composable(
-            "${Screen.RoutinePresetScreen.screen_route}/routineData={routineData}",
+            "${Screen.RoutinePresetScreen.screen_route}/userRoutineRelationship={userRoutineRelationship}",
             arguments = listOf(
-                navArgument("routineData") {
-                    type = RoutineObject.RoutineType()
+                navArgument("userRoutineRelationship") {
+                    type = UserRoutineRelationshipObject.UserRoutineRelationshipType()
                 }
             )
         ) { backStackEntry ->
-            val routineData = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routineData")
+            val userRoutineRelationship = backStackEntry.arguments?.getParcelable<UserRoutineRelationshipObject.UserRoutineRelationshipModel>("userRoutineRelationship")
             RoutinePresetScreen(
                 navController,
                 LocalContext.current,
-                routineData!!.data,
+                userRoutineRelationship!!.data,
                 scope,
                 state
             )
         }
         composable(
-            "${Screen.RoutinePrayerScreen.screen_route}/routineData={routineData}",
+            "${Screen.RoutinePrayerScreen.screen_route}/userRoutineRelationship={userRoutineRelationship}",
             arguments = listOf(
-                navArgument("routineData") {
-                    type = RoutineObject.RoutineType()
+                navArgument("userRoutineRelationship") {
+                    type = UserRoutineRelationshipObject.UserRoutineRelationshipType()
                 }
             )
         ) { backStackEntry ->
-            val routineData = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routineData")
+            val userRoutineRelationship = backStackEntry.arguments?.getParcelable<UserRoutineRelationshipObject.UserRoutineRelationshipModel>("userRoutineRelationship")
             RoutinePrayerScreen(
                 navController,
                 LocalContext.current,
-                routineData!!.data,
+                userRoutineRelationship!!.data,
                 scope,
                 state
             )
         }
         composable(
-            "${Screen.RoutineBedtimeStoryScreen.screen_route}/routineData={routineData}",
+            "${Screen.RoutineBedtimeStoryScreen.screen_route}/userRoutineRelationship={userRoutineRelationship}",
             arguments = listOf(
-                navArgument("routineData") {
-                    type = RoutineObject.RoutineType()
+                navArgument("userRoutineRelationship") {
+                    type = UserRoutineRelationshipObject.UserRoutineRelationshipType()
                 }
             )
         ) { backStackEntry ->
-            val routineData = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routineData")
+            val userRoutineRelationship = backStackEntry.arguments?.getParcelable<UserRoutineRelationshipObject.UserRoutineRelationshipModel>("userRoutineRelationship")
             RoutineBedtimeStoryScreen(
                 navController,
                 LocalContext.current,
-                routineData!!.data,
+                userRoutineRelationship!!.data,
                 scope,
                 state
             )
         }
         composable(
-            "${Screen.RoutineSelfLoveScreen.screen_route}/routineData={routineData}",
+            "${Screen.RoutineSelfLoveScreen.screen_route}/userRoutineRelationship={userRoutineRelationship}",
             arguments = listOf(
-                navArgument("routineData") {
-                    type = RoutineObject.RoutineType()
+                navArgument("userRoutineRelationship") {
+                    type = UserRoutineRelationshipObject.UserRoutineRelationshipType()
                 }
             )
         ) { backStackEntry ->
-            val routineData = backStackEntry.arguments?.getParcelable<RoutineObject.Routine>("routineData")
+            val userRoutineRelationship = backStackEntry.arguments?.getParcelable<UserRoutineRelationshipObject.UserRoutineRelationshipModel>("userRoutineRelationship")
             RoutineSelfLoveScreen(
                 navController,
                 LocalContext.current,
-                routineData!!.data,
+                userRoutineRelationship!!.data,
                 scope,
                 state
             )

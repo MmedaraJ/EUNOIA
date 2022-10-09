@@ -1,6 +1,6 @@
 package com.example.eunoia.utils
 
-import com.amplifyframework.datastore.generated.model.UserRoutine
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 
 fun formatMilliSecond(milliseconds: Long): String{
     var finalTimerString = ""
@@ -32,10 +32,10 @@ fun timerFormatMS(milliseconds: Long): String{
         "%02d:%02d.%02d".format(minutes, seconds, millis/10)
 }
 
-fun displayRoutineNameForBottomSheet(userRoutine: UserRoutine): String{
+fun displayRoutineNameForBottomSheet(userRoutineRelationship: UserRoutineRelationship): String{
     var goodDisplayName = ""
-    if(userRoutine.routineData.displayName != null){
-        val displayName = userRoutine.routineData.displayName
+    if(userRoutineRelationship.userRoutineRelationshipRoutine.displayName != null){
+        val displayName = userRoutineRelationship.userRoutineRelationshipRoutine.displayName
         var textSize = displayName.length
         var i = 0
         val maxLength = 12
