@@ -86,7 +86,9 @@ class GlobalViewModel: ViewModel(){
 
     var currentRoutinePlayingSoundCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingPrayerCountDownTimer: CountDownTimer? = null
+    var currentRoutinePlayingNextPrayerCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingSelfLoveCountDownTimer: CountDownTimer? = null
+    var currentRoutinePlayingNextSelfLoveCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingBedtimeStoryCountDownTimer: CountDownTimer? = null
 
 

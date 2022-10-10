@@ -12,6 +12,8 @@ import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.prayer.activatePrayerGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.prayer.deActivatePrayerGlobalControlButton
+import com.example.eunoia.ui.bottomSheets.selfLove.activateSelfLoveGlobalControlButton
+import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.navigation.globalViewModel_
 
 object PrayerForRoutine{
@@ -271,6 +273,75 @@ object PrayerForRoutine{
         index: Int,
         context: Context
     ) {
+        generalPrayerTimer(
+            soundMediaPlayerService,
+            generalMediaPlayerService,
+            index,
+            context
+        )
+
+        individualPrayerTimer(
+            soundMediaPlayerService,
+            generalMediaPlayerService,
+            index,
+            context
+        )
+    }
+
+    private fun individualPrayerTimer(
+        soundMediaPlayerService: SoundMediaPlayerService,
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        index: Int,
+        context: Context
+    ) {
+        startNextPrayerCountDownTimer(
+            context,
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!![
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!
+            ]!!.prayerData.fullPlayTime.toLong(),
+            generalMediaPlayerService
+        ) {
+            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
+                generalMediaPlayerService.onDestroy()
+            }
+
+            deActivateSelfLoveGlobalControlButton(0)
+            activateSelfLoveGlobalControlButton(2)
+
+            globalViewModel_!!.isCurrentPrayerPlaying = false
+            globalViewModel_!!.currentPrayerPlaying = null
+            globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = null
+
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex =
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!! + 1
+            if (globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!! > globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!.indices.last) {
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = 0
+            }
+
+            val routine =
+                globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
+                    .currentPrayerPlayingIndex(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex)
+                    .build()
+
+            UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {}
+
+            routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
+
+            playOrPausePrayerAccordingly(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
+        }
+    }
+
+    private fun generalPrayerTimer(
+        soundMediaPlayerService: SoundMediaPlayerService,
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        index: Int,
+        context: Context
+    ) {
         startPrayerCountDownTimer(
             context,
             globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.prayerPlayTime.toLong(),
@@ -325,6 +396,26 @@ object PrayerForRoutine{
             }
         }
         globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer!!.start()
+    }
+
+    private fun startNextPrayerCountDownTimer(
+        context: Context,
+        time: Long,
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        completed: () -> Unit
+    ){
+        if(globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer == null){
+            globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = object : CountDownTimer(time, 10000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    Log.i(TAG, "Prayer routine timer: $millisUntilFinished")
+                }
+                override fun onFinish() {
+                    completed()
+                    Log.i(TAG, "Timer stopped")
+                }
+            }
+        }
+        globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer!!.start()
     }
 
     private fun setGlobalPropertiesAfterPlayingPrayer(index: Int){
