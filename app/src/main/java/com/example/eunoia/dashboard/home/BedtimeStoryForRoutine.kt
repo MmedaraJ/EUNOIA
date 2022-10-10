@@ -193,7 +193,7 @@ object BedtimeStoryForRoutine{
         }
     }
 
-    fun startBedtimeStory(
+    private fun startBedtimeStory(
         generalMediaPlayerService: GeneralMediaPlayerService,
         soundMediaPlayerService: SoundMediaPlayerService,
         index: Int,
@@ -227,6 +227,13 @@ object BedtimeStoryForRoutine{
             //globalViewModel_!!.previouslyPlayedUserSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]
             //globalViewModel_!!.generalPlaytimeTimer.start()
             setGlobalPropertiesAfterPlayingBedtimeStory(index)
+        }else{
+            retrieveBedtimeStoryUris(
+                generalMediaPlayerService,
+                soundMediaPlayerService,
+                index,
+                context
+            )
         }
     }
 
@@ -256,7 +263,30 @@ object BedtimeStoryForRoutine{
         globalViewModel_!!.bedtimeStoryTimer.setDuration(globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentBedtimeStoryContinuePlayingTime.toLong())
         resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
 
-        startBedtimeStoryCDT(
+        if(globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer == null) {
+            startBedtimeStoryCDT(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
+        }
+    }
+
+    private fun startBedtimeStoryCDT(
+        soundMediaPlayerService: SoundMediaPlayerService,
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        index: Int,
+        context: Context
+    ) {
+        generalBedtimeStoryTimer(
+            soundMediaPlayerService,
+            generalMediaPlayerService,
+            index,
+            context
+        )
+
+        individualBedtimeStoryTimer(
             soundMediaPlayerService,
             generalMediaPlayerService,
             index,
@@ -264,7 +294,59 @@ object BedtimeStoryForRoutine{
         )
     }
 
-    private fun startBedtimeStoryCDT(
+    private fun individualBedtimeStoryTimer(
+        soundMediaPlayerService: SoundMediaPlayerService,
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        index: Int,
+        context: Context
+    ) {
+        startNextBedtimeStoryCountDownTimer(
+            context,
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!![
+                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!
+            ]!!.bedtimeStoryInfoData.fullPlayTime.toLong(),
+            generalMediaPlayerService
+        ) {
+            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
+                generalMediaPlayerService.onDestroy()
+            }
+
+            deActivateBedtimeStoryGlobalControlButton(0)
+            activateBedtimeStoryGlobalControlButton(2)
+
+            globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+            globalViewModel_!!.currentBedtimeStoryPlaying = null
+            globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer = null
+
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex =
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!! + 1
+            if (globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!! >
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!.indices.last) {
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex = 0
+            }
+
+            val routine = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
+                .currentBedtimeStoryPlayingIndex(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex)
+                .build()
+
+            UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {}
+
+            routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
+
+            Log.i(
+                TAG,
+                "About to go play bedtime story with index ${globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex}"
+            )
+            playOrPauseBedtimeStoryAccordingly(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
+        }
+    }
+
+    private fun generalBedtimeStoryTimer(
         soundMediaPlayerService: SoundMediaPlayerService,
         generalMediaPlayerService: GeneralMediaPlayerService,
         index: Int,
@@ -274,9 +356,9 @@ object BedtimeStoryForRoutine{
             context,
             globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.bedtimeStoryPlayTime.toLong(),
             generalMediaPlayerService
-        ){
+        ) {
             var continuePlayingTime = -1
-            if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
                 continuePlayingTime = generalMediaPlayerService.getMediaPlayer()!!.currentPosition
                 generalMediaPlayerService.onDestroy()
             }
@@ -284,13 +366,20 @@ object BedtimeStoryForRoutine{
             activateBedtimeStoryGlobalControlButton(2)
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
             globalViewModel_!!.currentBedtimeStoryPlaying = null
+            globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer!!.cancel()
             globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer = null
+            if (globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer != null) {
+                globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer!!.cancel()
+                globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer = null
+            }
 
-            val routine = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
-                .currentBedtimeStoryContinuePlayingTime(continuePlayingTime)
-                .build()
+            val routine =
+                globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
+                    .currentBedtimeStoryContinuePlayingTime(continuePlayingTime)
+                    .build()
 
-            UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine){
+            //update routine with new BedtimeStory info
+            UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {
                 globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
             }
 
@@ -323,6 +412,26 @@ object BedtimeStoryForRoutine{
             }
         }
         globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer!!.start()
+    }
+
+    private fun startNextBedtimeStoryCountDownTimer(
+        context: Context,
+        time: Long,
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        completed: () -> Unit
+    ){
+        if(globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer == null){
+            globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer = object : CountDownTimer(time, 10000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    Log.i(TAG, "Next BedtimeStory routine timer: $millisUntilFinished")
+                }
+                override fun onFinish() {
+                    completed()
+                    Log.i(TAG, "Timer stopped")
+                }
+            }
+        }
+        globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer!!.start()
     }
 
     private fun setGlobalPropertiesAfterPlayingBedtimeStory(index: Int){

@@ -807,7 +807,8 @@ private fun retrieveSoundAudio(
                 soundData.soundOwner.amplifyAuthUserId
             ) { uri ->
                 soundUris.add(uri)
-                if(i == s3List.items.size - 1){
+                if(soundUris.size == s3List.items.size){
+                    Log.i(TAG, "Sound list size is ${soundUris.size}")
                     startSoundScreenSounds(
                         soundMediaPlayerService,
                         context,

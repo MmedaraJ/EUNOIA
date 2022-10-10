@@ -102,6 +102,7 @@ object PrayerForRoutine{
                             .prayerData.id
                 ] != "".toUri()
             ) {
+                Log.i(TAG, "that prayer uriz is null")
                 if(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!.isEmpty()) {
                     getRoutinePrayers(index) {
                         retrievePrayerUris(
@@ -112,6 +113,7 @@ object PrayerForRoutine{
                         )
                     }
                 }else{
+                    Log.i(TAG, "needs presets for null prayer")
                     retrievePrayerUris(
                         generalMediaPlayerService,
                         soundMediaPlayerService,
@@ -120,6 +122,7 @@ object PrayerForRoutine{
                     )
                 }
             }else{
+                Log.i(TAG, "that prayer uriz is noooooot null")
                 startPrayer(
                     generalMediaPlayerService,
                     soundMediaPlayerService,
@@ -166,11 +169,14 @@ object PrayerForRoutine{
         index: Int,
         context: Context
     ) {
-        if(
+        /*if(
             globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
                     [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                 .prayerData.audioSource == PrayerAudioSource.UPLOADED
-        ) {
+        ) {*/
+        Log.i(TAG, "About to retrieve prayera uris for: ${globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
+            .prayerData.displayName}")
             SoundBackend.retrieveAudio(
                 globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
                         [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
@@ -192,9 +198,9 @@ object PrayerForRoutine{
                     context
                 )
             }
-        }else{
+        /*}else{
             //if recorded
-        }
+        }*/
     }
 
     private fun startPrayer(
@@ -215,8 +221,14 @@ object PrayerForRoutine{
                 globalViewModel_!!.currentBedtimeStoryPlaying == null &&
                 globalViewModel_!!.currentSelfLovePlaying == null
             ){
+                Log.i(TAG, "About to start prayera: ${globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!.prayerData.displayName}")
+
                 generalMediaPlayerService.startMediaPlayer()
             }else{
+                Log.i(TAG, "About to initialize prayera: ${globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!.prayerData.displayName}")
+
                 initializePrayerMediaPlayers(
                     generalMediaPlayerService,
                     soundMediaPlayerService,
@@ -230,6 +242,13 @@ object PrayerForRoutine{
             //globalViewModel_!!.previouslyPlayedUserSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]
             //globalViewModel_!!.generalPlaytimeTimer.start()
             setGlobalPropertiesAfterPlayingPrayer(index)
+        }else{
+            retrievePrayerUris(
+                generalMediaPlayerService,
+                soundMediaPlayerService,
+                index,
+                context
+            )
         }
     }
 
@@ -259,12 +278,14 @@ object PrayerForRoutine{
         globalViewModel_!!.prayerTimer.setDuration(globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentPrayerContinuePlayingTime.toLong())
         resetOtherGeneralMediaPlayerUsersExceptPrayer()
 
-        startPrayerCDT(
-            soundMediaPlayerService,
-            generalMediaPlayerService,
-            index,
-            context
-        )
+        if(globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer == null) {
+            startPrayerCDT(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
+        }
     }
 
     private fun startPrayerCDT(
@@ -327,6 +348,7 @@ object PrayerForRoutine{
 
             routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
 
+            Log.i(TAG, "About to go play prayer with index ${globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex}")
             playOrPausePrayerAccordingly(
                 soundMediaPlayerService,
                 generalMediaPlayerService,
@@ -356,7 +378,12 @@ object PrayerForRoutine{
             activatePrayerGlobalControlButton(2)
             globalViewModel_!!.isCurrentPrayerPlaying = false
             globalViewModel_!!.currentPrayerPlaying = null
+            globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer!!.cancel()
             globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer = null
+            if(globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer != null) {
+                globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer!!.cancel()
+                globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = null
+            }
 
             val routine = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
                 .currentPrayerContinuePlayingTime(continuePlayingTime)
@@ -407,7 +434,7 @@ object PrayerForRoutine{
         if(globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer == null){
             globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = object : CountDownTimer(time, 10000) {
                 override fun onTick(millisUntilFinished: Long) {
-                    Log.i(TAG, "Prayer routine timer: $millisUntilFinished")
+                    Log.i(TAG, "next Prayer routine timer: $millisUntilFinished")
                 }
                 override fun onFinish() {
                     completed()

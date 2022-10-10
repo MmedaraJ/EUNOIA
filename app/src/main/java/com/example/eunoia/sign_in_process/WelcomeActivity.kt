@@ -92,8 +92,10 @@ class WelcomeActivity : ComponentActivity() {
     }
 
     private fun getSignedInUser(completed: (userData: com.amplifyframework.datastore.generated.model.UserData?) -> Unit){
-        UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){userData ->
-            completed(userData)
+        if(Amplify.Auth.currentUser != null) {
+            UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username) { userData ->
+                completed(userData)
+            }
         }
     }
 

@@ -584,9 +584,44 @@ private fun resetRoutineMediaPlayerServicesIfNecessary(
             globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories = null
             globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentSelfLovePlayingIndex
             globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = null
+            //countdown timers
+            resetGlobalRoutineCountdownTimers()
+
             soundMediaPlayerService.onDestroy()
             generalMediaPlayerService.onDestroy()
         }
+    }
+}
+
+fun resetGlobalRoutineCountdownTimers() {
+    if(globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer != null) {
+        globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer!!.cancel()
+        globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer = null
+    }
+
+    if(globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer != null) {
+        globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer!!.cancel()
+        globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer = null
+    }
+
+    if(globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer != null) {
+        globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer!!.cancel()
+        globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = null
+    }
+
+    if(globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer != null) {
+        globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer!!.cancel()
+        globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer = null
+    }
+
+    if(globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer != null) {
+        globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer!!.cancel()
+        globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = null
+    }
+
+    if(globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer != null) {
+        globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer!!.cancel()
+        globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer = null
     }
 }
 

@@ -90,6 +90,7 @@ class GlobalViewModel: ViewModel(){
     var currentRoutinePlayingSelfLoveCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingNextSelfLoveCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingBedtimeStoryCountDownTimer: CountDownTimer? = null
+    var currentRoutinePlayingNextBedtimeStoryCountDownTimer: CountDownTimer? = null
 
 
     var bottomSheetOpenFor by mutableStateOf("")

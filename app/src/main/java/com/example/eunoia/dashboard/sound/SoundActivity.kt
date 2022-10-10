@@ -354,6 +354,7 @@ private fun retrieveSoundAudio(
     index: Int,
     context: Context
 ) {
+    soundActivityUris[index].clear()
     SoundBackend.listS3Sounds(
         globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.audioKeyS3,
         globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.soundOwner.amplifyAuthUserId
@@ -364,7 +365,7 @@ private fun retrieveSoundAudio(
                 globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.soundOwner.amplifyAuthUserId
             ) { uri ->
                 soundActivityUris[index].add(uri)
-                if(i == s3List.items.size - 1){
+                if(soundActivityUris[index].size == s3List.items.size){
                     startSound(
                         soundMediaPlayerService,
                         index,
@@ -472,36 +473,32 @@ private fun updateCurrentUserSoundRelationshipUsageTimeStamp(index: Int, complet
 }
 
 fun updatePreviousUserSoundRelationship(completed: () -> Unit) {
-    if(globalViewModel_!!.previouslyPlayedUserSoundRelationship != null){
-        val playTime = globalViewModel_!!.generalPlaytimeTimer.getDuration()
-        globalViewModel_!!.generalPlaytimeTimer.stop()
+    val playTime = globalViewModel_!!.generalPlaytimeTimer.getDuration()
+    globalViewModel_!!.generalPlaytimeTimer.stop()
 
-        Log.i(TAG, "Total play time = ${globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime}")
-        Log.i(TAG, "play time = $playTime")
-        val totalPlayTime = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime + playTime
-        Log.i(TAG, "final total play time = $totalPlayTime")
+    Log.i(TAG, "Total play time = ${globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime}")
+    Log.i(TAG, "play time = $playTime")
+    val totalPlayTime = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime + playTime
+    Log.i(TAG, "final total play time = $totalPlayTime")
 
-        var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.usagePlayTimes
-        if(usagePlayTimes != null) {
-            usagePlayTimes.add(playTime.toInt())
-        }else{
-            usagePlayTimes = listOf(playTime.toInt())
-        }
+    var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.usagePlayTimes
+    if(usagePlayTimes != null) {
+        usagePlayTimes.add(playTime.toInt())
+    }else{
+        usagePlayTimes = listOf(playTime.toInt())
+    }
 
-        val numberOfTimesPlayed = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.numberOfTimesPlayed
-        Log.i(TAG, "number of times played = $numberOfTimesPlayed")
+    val numberOfTimesPlayed = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.numberOfTimesPlayed
+    Log.i(TAG, "number of times played = $numberOfTimesPlayed")
 
-        if(totalPlayTime > 0){
-            val userSoundRelationship = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.copyOfBuilder()
-                .numberOfTimesPlayed(numberOfTimesPlayed)
-                .totalPlayTime(totalPlayTime.toInt())
-                .usagePlayTimes(usagePlayTimes)
-                .build()
+    if(totalPlayTime > 0){
+        val userSoundRelationship = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.copyOfBuilder()
+            .numberOfTimesPlayed(numberOfTimesPlayed)
+            .totalPlayTime(totalPlayTime.toInt())
+            .usagePlayTimes(usagePlayTimes)
+            .build()
 
-            UserSoundRelationshipBackend.updateUserSoundRelationship(userSoundRelationship){
-                completed()
-            }
-        }else{
+        UserSoundRelationshipBackend.updateUserSoundRelationship(userSoundRelationship){
             completed()
         }
     }else{
