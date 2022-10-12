@@ -21,11 +21,13 @@ import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
+import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
@@ -54,13 +56,17 @@ fun UploadSelfLoveUI(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService,
     generalMediaPlayerService: GeneralMediaPlayerService
 ){
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    generalMediaPlayerService.onDestroy()
-    globalViewModel_!!.currentBedtimeStoryPlaying = null
+    resetEverythingBeforeCreatingAnything(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    )
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Self Love Saved")

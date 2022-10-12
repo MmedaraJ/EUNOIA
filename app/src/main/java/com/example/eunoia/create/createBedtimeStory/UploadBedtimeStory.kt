@@ -25,10 +25,12 @@ import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
+import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
@@ -57,13 +59,17 @@ fun UploadBedtimeStoryUI(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService,
     generalMediaPlayerService: GeneralMediaPlayerService
 ){
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    generalMediaPlayerService.onDestroy()
-    globalViewModel_!!.currentBedtimeStoryPlaying = null
+    resetEverythingBeforeCreatingAnything(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    )
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Bedtime Story Saved. We will send you an email when it is approved")

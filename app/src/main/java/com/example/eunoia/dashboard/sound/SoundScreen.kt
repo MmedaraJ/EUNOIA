@@ -98,7 +98,6 @@ var soundScreenBackgroundControlColor2 = arrayOf(
 )
 
 var associatedPreset: SoundPresetData? = null
-var currentUserSoundRelationship: UserSoundRelationship? = null
 var mergedPresets = mutableSetOf<SoundPresetData>()
 
 

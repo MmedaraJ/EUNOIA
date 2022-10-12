@@ -33,13 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
-import com.amazonaws.util.DateUtils
-import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserSoundRelationshipBackend
+import com.example.eunoia.dashboard.home.SoundForRoutine.updateRecentlyPlayedUserSoundRelationshipWithSound
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -48,7 +45,6 @@ import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
 import java.lang.Math.*
-import java.util.*
 import kotlin.concurrent.fixedRateTimer
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -845,8 +841,7 @@ private fun startSoundScreenSounds(
         }
         deActivateLocalControlButton(3)
         deActivateLocalControlButton(1)
-        globalViewModel_!!.previouslyPlayedUserSoundRelationship = currentUserSoundRelationship
-        globalViewModel_!!.generalPlaytimeTimer.start()
+        globalViewModel_!!.soundPlaytimeTimer.start()
         setGlobalPropertiesAfterPlayingSound(soundData, context)
     }
 }
@@ -856,10 +851,8 @@ private fun initializeMediaPlayers(
     context: Context,
     soundData: SoundData
 ){
-    /*updatePreviousUserSoundRelationship {
-        createOrUpdateUserSoundRelationship(soundData) {}
-        globalViewModel_!!.previouslyPlayedUserSoundRelationship = null
-    }*/
+    updatePreviousUserSoundRelationship {}
+    updateRecentlyPlayedUserSoundRelationshipWithSound(soundData) {}
 
     soundMediaPlayerService.onDestroy()
     soundMediaPlayerService.setAudioUris(soundUris)
@@ -884,53 +877,6 @@ private fun initializeMediaPlayers(
     }
 
     createMeditationBellMediaPlayer(context)
-
-}
-
-fun createOrUpdateUserSoundRelationship(soundData: SoundData, completed: () -> Unit) {
-    UserSoundRelationshipBackend.queryUserSoundRelationshipBasedOnUserAndSound(
-        globalViewModel_!!.currentUser!!,
-        soundData
-    ){
-        if(it.isEmpty()){
-            UserSoundRelationshipBackend.createUserSoundRelationshipObject(soundData){ userSoundRelationship ->
-                currentUserSoundRelationship = userSoundRelationship
-                updateUserSoundRelationshipUsageTimeStamp(currentUserSoundRelationship!!){
-                    completed()
-                }
-            }
-        }else{
-            currentUserSoundRelationship = it[0]
-            updateUserSoundRelationshipUsageTimeStamp(currentUserSoundRelationship!!){
-                completed()
-            }
-        }
-    }
-}
-
-fun updateUserSoundRelationshipUsageTimeStamp(
-    userSoundRelationship: UserSoundRelationship,
-    completed: () -> Unit
-) {
-    var usageTimeStamp = userSoundRelationship.usageTimestamps
-    val currentDateTime = DateUtils.formatISO8601Date(Date())
-
-    if(usageTimeStamp != null) {
-        usageTimeStamp.add(Temporal.DateTime(currentDateTime))
-    }else{
-        usageTimeStamp = listOf(Temporal.DateTime(currentDateTime))
-    }
-
-    val numberOfTimesPlayed = userSoundRelationship.numberOfTimesPlayed + 1
-
-    val updatedUserSoundRelationship = userSoundRelationship.copyOfBuilder()
-        .numberOfTimesPlayed(numberOfTimesPlayed)
-        .usageTimestamps(usageTimeStamp)
-        .build()
-
-    UserSoundRelationshipBackend.updateUserSoundRelationship(updatedUserSoundRelationship){
-        completed()
-    }
 }
 
 private fun setGlobalPropertiesAfterPlayingSound(soundData: SoundData, context: Context) {
@@ -951,7 +897,7 @@ private fun pauseSoundScreenSounds(
 ) {
     if(soundMediaPlayerService.areMediaPlayersInitialized()) {
         if(soundMediaPlayerService.areMediaPlayersPlaying()) {
-            globalViewModel_!!.generalPlaytimeTimer.pause()
+            globalViewModel_!!.soundPlaytimeTimer.pause()
             soundMediaPlayerService.pauseMediaPlayers()
             activateLocalControlButton(3)
             activateGlobalControlButton(3)

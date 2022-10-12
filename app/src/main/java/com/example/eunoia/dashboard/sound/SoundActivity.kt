@@ -25,6 +25,7 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSoundRelationshipBackend
 import com.example.eunoia.dashboard.home.*
+import com.example.eunoia.dashboard.home.SoundForRoutine.updateRecentlyPlayedUserSoundRelationshipWithUserSoundRelationship
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -392,8 +393,7 @@ private fun startSound(
                 context
             )
         }
-        globalViewModel_!!.previouslyPlayedUserSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]
-        globalViewModel_!!.generalPlaytimeTimer.start()
+        globalViewModel_!!.soundPlaytimeTimer.start()
         setGlobalPropertiesAfterPlayingSound(index, context)
     }
 }
@@ -403,9 +403,11 @@ private fun getNecessaryPresets(index: Int, completed: () -> Unit){
         globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound,
         globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.soundOwner,
     ) { presetData ->
-        soundActivityPresets[index]!!.value = presetData[0]
-        soundActivityUriVolumes[index] = presetData[0].volumes
-        completed()
+        if(presetData.isNotEmpty()) {
+            soundActivityPresets[index]!!.value = presetData[0]
+            soundActivityUriVolumes[index] = presetData[0].volumes
+            completed()
+        }
     }
 }
 
@@ -432,10 +434,12 @@ private fun initializeMediaPlayers(
     index: Int,
     context: Context,
 ) {
-    /*updatePreviousUserSoundRelationship {
-        updateCurrentUserSoundRelationshipUsageTimeStamp(index) {}
-        globalViewModel_!!.previouslyPlayedUserSoundRelationship = null
-    }*/
+    updatePreviousUserSoundRelationship {}
+    updateRecentlyPlayedUserSoundRelationshipWithUserSoundRelationship(
+        globalViewModel_!!.currentUsersSoundRelationships!![index]!!
+    ){
+        globalViewModel_!!.currentUsersSoundRelationships!![index] = it
+    }
     soundMediaPlayerService.onDestroy()
     soundMediaPlayerService.setAudioUris(soundActivityUris[index])
     soundMediaPlayerService.setVolumes(soundActivityUriVolumes[index])
@@ -450,8 +454,11 @@ private fun initializeMediaPlayers(
 /**
  * Keep track of the date time a user starts listening to a sound
  */
-private fun updateCurrentUserSoundRelationshipUsageTimeStamp(index: Int, completed: () -> Unit) {
-    var usageTimeStamp = globalViewModel_!!.currentUsersSoundRelationships!![index]!!.usageTimestamps
+fun updateCurrentUserSoundRelationshipUsageTimeStamp(
+    userSoundRelationship: UserSoundRelationship,
+    completed: (updatedUserSoundRelationship: UserSoundRelationship) -> Unit
+) {
+    var usageTimeStamp = userSoundRelationship.usageTimestamps
     val currentDateTime = DateUtils.formatISO8601Date(Date())
 
     if(usageTimeStamp != null) {
@@ -460,49 +467,53 @@ private fun updateCurrentUserSoundRelationshipUsageTimeStamp(index: Int, complet
         usageTimeStamp = listOf(Temporal.DateTime(currentDateTime))
     }
 
-    val numberOfTimesPlayed = globalViewModel_!!.currentUsersSoundRelationships!![index]!!.numberOfTimesPlayed + 1
+    val numberOfTimesPlayed = userSoundRelationship.numberOfTimesPlayed + 1
 
-    val userSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]!!.copyOfBuilder()
+    val newUserSoundRelationship = userSoundRelationship.copyOfBuilder()
         .numberOfTimesPlayed(numberOfTimesPlayed)
         .usageTimestamps(usageTimeStamp)
         .build()
 
-    UserSoundRelationshipBackend.updateUserSoundRelationship(userSoundRelationship){
-        completed()
+    UserSoundRelationshipBackend.updateUserSoundRelationship(newUserSoundRelationship){
+        completed(it)
     }
 }
 
-fun updatePreviousUserSoundRelationship(completed: () -> Unit) {
-    val playTime = globalViewModel_!!.generalPlaytimeTimer.getDuration()
-    globalViewModel_!!.generalPlaytimeTimer.stop()
+fun updatePreviousUserSoundRelationship(
+    completed: (updatedUserSoundRelationship: UserSoundRelationship?) -> Unit
+) {
+    if(globalViewModel_!!.previouslyPlayedUserSoundRelationship != null){
+        Log.i(TAG, "Duration of general timer is ${globalViewModel_!!.soundPlaytimeTimer.getDuration()}")
+        val playTime = globalViewModel_!!.soundPlaytimeTimer.getDuration()
+        globalViewModel_!!.soundPlaytimeTimer.stop()
 
-    Log.i(TAG, "Total play time = ${globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime}")
-    Log.i(TAG, "play time = $playTime")
-    val totalPlayTime = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime + playTime
-    Log.i(TAG, "final total play time = $totalPlayTime")
+        Log.i(TAG, "Total play time = ${globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime}")
+        Log.i(TAG, "play time = $playTime")
+        val totalPlayTime = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime + playTime
+        Log.i(TAG, "final total play time = $totalPlayTime")
 
-    var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.usagePlayTimes
-    if(usagePlayTimes != null) {
-        usagePlayTimes.add(playTime.toInt())
-    }else{
-        usagePlayTimes = listOf(playTime.toInt())
-    }
-
-    val numberOfTimesPlayed = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.numberOfTimesPlayed
-    Log.i(TAG, "number of times played = $numberOfTimesPlayed")
-
-    if(totalPlayTime > 0){
-        val userSoundRelationship = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.copyOfBuilder()
-            .numberOfTimesPlayed(numberOfTimesPlayed)
-            .totalPlayTime(totalPlayTime.toInt())
-            .usagePlayTimes(usagePlayTimes)
-            .build()
-
-        UserSoundRelationshipBackend.updateUserSoundRelationship(userSoundRelationship){
-            completed()
+        var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.usagePlayTimes
+        if(usagePlayTimes != null) {
+            usagePlayTimes.add(playTime.toInt())
+        }else{
+            usagePlayTimes = listOf(playTime.toInt())
         }
-    }else{
-        completed()
+
+        val numberOfTimesPlayed = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.numberOfTimesPlayed
+        Log.i(TAG, "number of times played = $numberOfTimesPlayed")
+
+        if(totalPlayTime > 0){
+            val userSoundRelationship = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.copyOfBuilder()
+                .numberOfTimesPlayed(numberOfTimesPlayed)
+                .totalPlayTime(totalPlayTime.toInt())
+                .usagePlayTimes(usagePlayTimes)
+                .build()
+
+            UserSoundRelationshipBackend.updateUserSoundRelationship(userSoundRelationship){
+                globalViewModel_!!.previouslyPlayedUserSoundRelationship = null
+                completed(it)
+            }
+        }
     }
 }
 
@@ -512,7 +523,7 @@ private fun pauseSound(
 ) {
     if(soundMediaPlayerService.areMediaPlayersInitialized()) {
         if(soundMediaPlayerService.areMediaPlayersPlaying()) {
-            globalViewModel_!!.generalPlaytimeTimer.pause()
+            globalViewModel_!!.soundPlaytimeTimer.pause()
             soundMediaPlayerService.pauseMediaPlayers()
             soundActivityPlayButtonTexts[index]!!.value = START_SOUND
             com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(3)

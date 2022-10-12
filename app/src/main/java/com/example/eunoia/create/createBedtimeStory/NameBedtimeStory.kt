@@ -50,7 +50,6 @@ private const val MAX_BEDTIME_STORY_SHORT_DESCRIPTION = 50
 private const val MAX_BEDTIME_STORY_LONG_DESCRIPTION = 200
 private const val MAX_BEDTIME_STORY_TAGS = 50
 var incompleteBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?>()
-//private var shortDescriptionTitleTopMargin by mutableStateOf(16)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

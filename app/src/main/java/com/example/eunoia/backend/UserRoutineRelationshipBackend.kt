@@ -106,9 +106,9 @@ object UserRoutineRelationshipBackend {
         }
     }
 
-    fun queryUserRoutineRelationshipBasedOnUserAndUserRoutineRelationship(
+    fun queryUserRoutineRelationshipBasedOnUserAndRoutine(
         userData: UserData,
-        userRoutineRelationship: UserRoutineRelationship,
+        routineData: RoutineData,
         completed: (userRoutineRelationship: List<UserRoutineRelationship?>) -> Unit
     ) {
         scope.launch {
@@ -117,7 +117,7 @@ object UserRoutineRelationshipBackend {
                 ModelQuery.list(
                     UserRoutineRelationship::class.java,
                     UserRoutineRelationship.USER_ROUTINE_RELATIONSHIP_OWNER.eq(userData.id)
-                        .and(UserRoutineRelationship.USER_ROUTINE_RELATIONSHIP_ROUTINE.eq(userRoutineRelationship.id)),
+                        .and(UserRoutineRelationship.USER_ROUTINE_RELATIONSHIP_ROUTINE.eq(routineData.id)),
                 ),
                 { response ->
                     if(response.hasData()) {

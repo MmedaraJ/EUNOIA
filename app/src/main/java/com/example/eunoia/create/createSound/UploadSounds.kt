@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
+import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
 import com.example.eunoia.models.SoundPresetObject
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -47,13 +49,16 @@ fun UploadSoundsUI(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    soundMediaPlayerService: SoundMediaPlayerService
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService
 ){
     val context = LocalContext.current
 
-    //updatePreviousUserSoundRelationship {}
-    soundMediaPlayerService.onDestroy()
-    com.example.eunoia.dashboard.sound.resetAll(context, soundMediaPlayerService)
+    resetEverythingBeforeCreatingAnything(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    )
 
     var numberOfFiles by rememberSaveable{ mutableStateOf(0) }
     val scrollState = rememberScrollState()

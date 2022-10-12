@@ -1,5 +1,6 @@
 package com.example.eunoia.create
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,6 +15,15 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.eunoia.create.createBedtimeStory.resetAllBedtimeStoryCreationObjects
+import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
+import com.example.eunoia.dashboard.home.resetRoutineGlobalProperties
+import com.example.eunoia.dashboard.home.updatePreviousUserRoutineRelationship
+import com.example.eunoia.dashboard.prayer.resetPrayerGlobalProperties
+import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
+import com.example.eunoia.dashboard.sound.updatePreviousUserSoundRelationship
+import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
@@ -36,6 +46,8 @@ fun CreateUI(
     globalViewModel_!!.navController = navController
     createSoundViewModel =  viewModel()
     openSavedElementDialogBox = false
+    resetAllBedtimeStoryCreationObjects()
+
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -114,6 +126,25 @@ fun CreateUI(
             Spacer(modifier = Modifier.height(40.dp))
         }
     }
+}
+
+fun resetEverythingBeforeCreatingAnything(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context
+){
+    updatePreviousUserSoundRelationship {}
+    //update previous routine elements also
+    updatePreviousUserRoutineRelationship {}
+
+    soundMediaPlayerService.onDestroy()
+    generalMediaPlayerService.onDestroy()
+
+    com.example.eunoia.dashboard.sound.resetAll(context, soundMediaPlayerService)
+    resetSelfLoveGlobalProperties()
+    resetPrayerGlobalProperties()
+    resetBedtimeStoryGlobalProperties()
+    resetRoutineGlobalProperties()
 }
 
 @OptIn(ExperimentalMaterialApi::class)

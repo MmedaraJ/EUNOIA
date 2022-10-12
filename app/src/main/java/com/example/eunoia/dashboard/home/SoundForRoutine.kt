@@ -6,10 +6,11 @@ import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.amplifyframework.datastore.generated.model.*
-import com.example.eunoia.backend.RoutineSoundPresetBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserRoutineRelationshipSoundPresetBackend
+import com.example.eunoia.backend.UserSoundRelationshipBackend
 import com.example.eunoia.dashboard.sound.resetAll
+import com.example.eunoia.dashboard.sound.updateCurrentUserSoundRelationshipUsageTimeStamp
 import com.example.eunoia.dashboard.sound.updatePreviousUserSoundRelationship
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -18,7 +19,6 @@ import com.example.eunoia.ui.navigation.globalViewModel_
 
 object SoundForRoutine{
     private const val TAG = "SoundForRoutine"
-    var playingSoundNow: SoundData? = null
 
     fun playSound(
         soundMediaPlayerService: SoundMediaPlayerService,
@@ -77,7 +77,7 @@ object SoundForRoutine{
     ) {
         if(soundMediaPlayerService.areMediaPlayersInitialized()) {
             if(soundMediaPlayerService.areMediaPlayersPlaying()) {
-                globalViewModel_!!.generalPlaytimeTimer.pause()
+                globalViewModel_!!.soundPlaytimeTimer.pause()
                 soundMediaPlayerService.pauseMediaPlayers()
                 com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(3)
                 globalViewModel_!!.isCurrentSoundPlaying = false
@@ -124,7 +124,6 @@ object SoundForRoutine{
                 .soundPresetData.soundId
         ){
             if(it.isNotEmpty()) {
-                playingSoundNow = it[0]
                 SoundBackend.listS3Sounds(
                     it[0]!!.audioKeyS3,
                     it[0]!!.soundOwner.amplifyAuthUserId
@@ -187,8 +186,7 @@ object SoundForRoutine{
 
             routineActivityPlayButtonTexts[index]!!.value = PAUSE_ROUTINE
             soundMediaPlayerService.loopMediaPlayers()
-            //globalViewModel_!!.previouslyPlayedUserSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]
-            //globalViewModel_!!.generalPlaytimeTimer.start()
+            globalViewModel_!!.soundPlaytimeTimer.start()
             setGlobalPropertiesAfterPlayingSound(index, context)
         }else{
             retrieveSoundUris(
@@ -206,10 +204,9 @@ object SoundForRoutine{
         index: Int,
         context: Context,
     ) {
-        updatePreviousUserSoundRelationship {
-            //updateCurrentUserSoundRelationshipUsageTimeStamp(index) {}
-            globalViewModel_!!.previouslyPlayedUserSoundRelationship = null
-        }
+        updatePreviousUserSoundRelationship {}
+        getSoundAssociatedWithUserSoundRelationship()
+
         soundMediaPlayerService.onDestroy()
         soundMediaPlayerService.setAudioUris(
             routineActivitySoundUrisMapList[index][
@@ -297,9 +294,19 @@ object SoundForRoutine{
         globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer!!.start()
     }
 
-    private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
-        globalViewModel_!!.currentSoundPlaying = playingSoundNow
+    private fun getSoundAssociatedWithUserSoundRelationship(){
+        SoundBackend.querySoundBasedOnId(
+            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+                    [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!]!!
+                .soundPresetData.soundId
+        ){
+            if(it.isNotEmpty()){
+                updateRecentlyPlayedUserSoundRelationshipWithSound(it[0]!!){}
+            }
+        }
+    }
 
+    private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
         globalViewModel_!!.currentSoundPlayingPreset =
             globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!![
                     globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!
@@ -328,10 +335,46 @@ object SoundForRoutine{
         globalViewModel_!!.currentSoundPlayingContext = context
         globalViewModel_!!.isCurrentSoundPlaying = true
         globalViewModel_!!.isCurrentRoutinePlaying = true
-        //globalViewModel_!!.previouslyPlayedUserSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]
-        //globalViewModel_!!.generalPlaytimeTimer.start()
+
         com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(3)
         com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(1)
         com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(0)
+    }
+
+    fun updateRecentlyPlayedUserSoundRelationshipWithSound(
+        soundData: SoundData,
+        completed: (userSoundRelationship: UserSoundRelationship) -> Unit
+    ){
+        globalViewModel_!!.currentSoundPlaying = soundData
+        UserSoundRelationshipBackend.queryUserSoundRelationshipBasedOnUserAndSound(
+            globalViewModel_!!.currentUser!!,
+            soundData
+        ) { userSoundRelationship ->
+            if(userSoundRelationship.isNotEmpty()) {
+                updateCurrentUserSoundRelationshipUsageTimeStamp(userSoundRelationship[0]!!) {
+                    globalViewModel_!!.previouslyPlayedUserSoundRelationship = it
+                    completed(it)
+                }
+            }else{
+                UserSoundRelationshipBackend.createUserSoundRelationshipObject(
+                    soundData
+                ){ newUserSoundRelationship ->
+                    updateCurrentUserSoundRelationshipUsageTimeStamp(newUserSoundRelationship) {
+                        globalViewModel_!!.previouslyPlayedUserSoundRelationship = it
+                        completed(it)
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateRecentlyPlayedUserSoundRelationshipWithUserSoundRelationship(
+        userSoundRelationship: UserSoundRelationship,
+        completed: (userSoundRelationship: UserSoundRelationship) -> Unit
+    ){
+        updateCurrentUserSoundRelationshipUsageTimeStamp(userSoundRelationship) {
+            globalViewModel_!!.previouslyPlayedUserSoundRelationship = it
+            completed(it)
+        }
     }
 }

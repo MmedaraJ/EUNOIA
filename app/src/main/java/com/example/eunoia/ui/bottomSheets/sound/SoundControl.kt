@@ -30,6 +30,7 @@ import com.amplifyframework.datastore.generated.model.SoundPresetData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.home.SoundForRoutine.updateRecentlyPlayedUserSoundRelationshipWithSound
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -474,7 +475,7 @@ private fun startSoundScreenSounds(
         }
         deActivateGlobalControlButton(3)
         deActivateGlobalControlButton(1)
-        globalViewModel_!!.generalPlaytimeTimer.start()
+        globalViewModel_!!.soundPlaytimeTimer.start()
         globalViewModel_!!.isCurrentSoundPlaying = true
     }
 }
@@ -485,6 +486,9 @@ private fun initializeMediaPlayers(
     context: Context,
     soundData: SoundData
 ){
+    updatePreviousUserSoundRelationship {}
+    updateRecentlyPlayedUserSoundRelationshipWithSound(soundData) {}
+
     generalMediaPlayerService.onDestroy()
     soundMediaPlayerService.onDestroy()
     soundMediaPlayerService.setAudioUris(globalViewModel_!!.currentSoundPlayingUris!!)
@@ -510,7 +514,7 @@ private fun pauseSoundScreenSounds(
 ) {
     if(soundMediaPlayerService.areMediaPlayersInitialized()) {
         if(soundMediaPlayerService.areMediaPlayersPlaying()) {
-            globalViewModel_!!.generalPlaytimeTimer.pause()
+            globalViewModel_!!.soundPlaytimeTimer.pause()
             soundMediaPlayerService.pauseMediaPlayers()
             activateGlobalControlButton(3)
             globalViewModel_!!.isCurrentSoundPlaying = false

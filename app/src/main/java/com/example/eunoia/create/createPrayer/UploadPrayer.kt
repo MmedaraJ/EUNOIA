@@ -23,11 +23,14 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
 import com.example.eunoia.create.createSelfLove.resetSelfLoveUploadUI
 import com.example.eunoia.create.createSelfLove.uploadedFileMediaPlayerSelfLove
+import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
 import com.example.eunoia.dashboard.home.UserDashboardActivity
+import com.example.eunoia.dashboard.sound.updatePreviousUserSoundRelationship
 import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
@@ -56,13 +59,17 @@ fun UploadPrayerUI(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService,
     generalMediaPlayerService: GeneralMediaPlayerService
 ){
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    generalMediaPlayerService.onDestroy()
-    globalViewModel_!!.currentBedtimeStoryPlaying = null
+    resetEverythingBeforeCreatingAnything(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    )
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Prayer Saved")

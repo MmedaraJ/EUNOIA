@@ -21,9 +21,11 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.SelfLoveBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.recordAudio.deleteRecordingFile
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -54,13 +56,17 @@ fun RecordSelfLoveUI(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService,
     generalMediaPlayerService: GeneralMediaPlayerService
 ){
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    generalMediaPlayerService.onDestroy()
-    globalViewModel_!!.currentBedtimeStoryPlaying = null
+    resetEverythingBeforeCreatingAnything(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    )
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Self Love Saved")

@@ -776,7 +776,8 @@ fun CreateTab(
                 globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
-                soundMediaPlayerService
+                soundMediaPlayerService,
+                generalMediaPlayerService
             )
         }
         composable(Screen.CreatePreset.screen_route) {
@@ -825,7 +826,8 @@ fun CreateTab(
                 globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
-                generalMediaPlayerService
+                soundMediaPlayerService,
+                generalMediaPlayerService,
             )
         }
         composable(
@@ -869,7 +871,9 @@ fun CreateTab(
                 backStackEntry.arguments?.getString("pageIndex")!!.toInt(),
                 globalViewModel = globalViewModel,
                 scope = scope,
-                state = state
+                state = state,
+                soundMediaPlayerService,
+                generalMediaPlayerService
             )
         }
         composable(
@@ -915,6 +919,7 @@ fun CreateTab(
                 globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
+                soundMediaPlayerService,
                 generalMediaPlayerService
             )
         }
@@ -925,6 +930,7 @@ fun CreateTab(
                 globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
+                soundMediaPlayerService,
                 generalMediaPlayerService
             )
         }
@@ -944,6 +950,7 @@ fun CreateTab(
                 globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
+                soundMediaPlayerService,
                 generalMediaPlayerService
             )
         }
@@ -954,6 +961,7 @@ fun CreateTab(
                 globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
+                soundMediaPlayerService,
                 generalMediaPlayerService
             )
         }

@@ -31,7 +31,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.amazonaws.util.DateUtils
 import com.amplifyframework.core.Amplify
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
@@ -40,13 +42,13 @@ import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.create.createSound.*
 import com.example.eunoia.create.createSound.selectedIndex
-import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserRoutineRelationshipObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.bottomSheets.*
+import com.example.eunoia.ui.bottomSheets.bedtimeStory.resetGlobalControlButtons
 import com.example.eunoia.ui.bottomSheets.recordAudio.recorder
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingFile
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingTimeDisplay
@@ -57,12 +59,14 @@ import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.*
+import com.example.eunoia.utils.Timer
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.lang.ref.WeakReference
+import java.util.*
 
 var routineActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
 
@@ -85,7 +89,9 @@ class UserDashboardActivity :
     BedtimeStoryTimer.OnBedtimeStoryTimerTickListener,
     SelfLoveTimer.OnSelfLoveTimerTickListener,
     PrayerTimer.OnPrayerTimerTickListener,
-    GeneralPlaytimeTimer.OnGeneralPlaytimeTimerTickListener
+    GeneralPlaytimeTimer.OnGeneralPlaytimeTimerTickListener,
+    SoundPlaytimeTimer.OnSoundPlaytimeTimerTickListener,
+    RoutinePlaytimeTimer.OnRoutinePlaytimeTimerTickListener
 {
     private val _currentUser = MutableLiveData<UserData>(null)
     var currentUser: LiveData<UserData> = _currentUser
@@ -348,6 +354,14 @@ class UserDashboardActivity :
     override fun onGeneralPlaytimeTimerTick(durationString: String, durationMilliSeconds: Long) {
         //Log.i(TAG, "duration: $durationString")
     }
+
+    override fun onRoutinePlaytimeTimerTick(durationString: String, durationMilliSeconds: Long) {
+
+    }
+
+    override fun onSoundPlaytimeTimerTick(durationString: String, durationMilliSeconds: Long) {
+
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -367,7 +381,7 @@ fun UserDashboardActivityUI(
     var retrievedUserRoutineRelationships by rememberSaveable{ mutableStateOf(false) }
     globalViewModel_!!.currentUser?.let {
         UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUser(it) { userRoutineRelationships ->
-            if(soundActivityUris.size < userRoutineRelationships.size) {
+            if(routineActivitySoundUrisMapList.size < userRoutineRelationships.size) {
                 for (i in userRoutineRelationships.indices) {
                     routineActivityPlayButtonTexts.add(mutableStateOf(START_ROUTINE))
                     routineActivitySoundUriVolumes.add(mutableMapOf())
@@ -715,18 +729,113 @@ private fun selectNextRoutineElement(
 
 fun updateRoutineOncePlayIsClicked(index: Int) {
     if (globalViewModel_!!.currentRoutinePlayingOrderIndex == 0) {
-        Log.i(TAG, "Zero manz")
-        val numberOfTimesPlayed = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.numberOfTimesPlayed + 1
-        val userRoutineRelationship = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
-            .numberOfTimesPlayed(numberOfTimesPlayed)
-            .build()
-
-        UserRoutineRelationshipBackend.updateUserRoutineRelationship(userRoutineRelationship) {
+        updatePreviousUserRoutineRelationship {}
+        updateRecentlyPlayedUserRoutineRelationshipWithUserRoutineRelationship(
+            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!
+        ) {
             globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
+        }
+        globalViewModel_!!.routinePlaytimeTimer.start()
+    }
+}
+
+fun updatePreviousUserRoutineRelationship(
+    completed: (updatedUserRoutineRelationship: UserRoutineRelationship?) -> Unit
+) {
+    if(globalViewModel_!!.previouslyPlayedUserRoutineRelationship != null){
+        val playTime = globalViewModel_!!.routinePlaytimeTimer.getDuration()
+        globalViewModel_!!.routinePlaytimeTimer.stop()
+
+        val totalPlayTime = globalViewModel_!!.previouslyPlayedUserRoutineRelationship!!.totalPlayTime + playTime
+
+        var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserRoutineRelationship!!.usagePlayTimes
+        if(usagePlayTimes != null) {
+            usagePlayTimes.add(playTime.toInt())
+        }else{
+            usagePlayTimes = listOf(playTime.toInt())
+        }
+
+        val numberOfTimesPlayed = globalViewModel_!!.previouslyPlayedUserRoutineRelationship!!.numberOfTimesPlayed
+
+        if(totalPlayTime > 0){
+            val userRoutineRelationship = globalViewModel_!!.previouslyPlayedUserRoutineRelationship!!.copyOfBuilder()
+                .numberOfTimesPlayed(numberOfTimesPlayed)
+                .totalPlayTime(totalPlayTime.toInt())
+                .usagePlayTimes(usagePlayTimes)
+                .build()
+
+            UserRoutineRelationshipBackend.updateUserRoutineRelationship(userRoutineRelationship){
+                globalViewModel_!!.previouslyPlayedUserRoutineRelationship = null
+                completed(it)
+            }
         }
     }
 }
 
+/**
+ * Keep track of the date time a user starts listening to a routine
+ */
+fun updateCurrentUserRoutineRelationshipUsageTimeStamp(
+    userRoutineRelationship: UserRoutineRelationship,
+    completed: (updatedUserRoutineRelationship: UserRoutineRelationship) -> Unit
+) {
+    var usageTimeStamp = userRoutineRelationship.usageTimestamps
+    val currentDateTime = DateUtils.formatISO8601Date(Date())
+
+    if(usageTimeStamp != null) {
+        usageTimeStamp.add(Temporal.DateTime(currentDateTime))
+    }else{
+        usageTimeStamp = listOf(Temporal.DateTime(currentDateTime))
+    }
+
+    val numberOfTimesPlayed = userRoutineRelationship.numberOfTimesPlayed + 1
+
+    val newUserRoutineRelationship = userRoutineRelationship.copyOfBuilder()
+        .numberOfTimesPlayed(numberOfTimesPlayed)
+        .usageTimestamps(usageTimeStamp)
+        .build()
+
+    UserRoutineRelationshipBackend.updateUserRoutineRelationship(newUserRoutineRelationship){
+        completed(it)
+    }
+}
+
+fun updateRecentlyPlayedUserRoutineRelationshipWithUserRoutineRelationship(
+    userRoutineRelationship: UserRoutineRelationship,
+    completed: (userRoutineRelationship: UserRoutineRelationship) -> Unit
+){
+    updateCurrentUserRoutineRelationshipUsageTimeStamp(userRoutineRelationship) {
+        globalViewModel_!!.previouslyPlayedUserRoutineRelationship = it
+        completed(it)
+    }
+}
+
+fun updateRecentlyPlayedUserRoutineRelationshipWithRoutine(
+    routineData: RoutineData,
+    completed: (userRoutineRelationship: UserRoutineRelationship) -> Unit
+){
+    globalViewModel_!!.currentRoutinePlaying = routineData
+    UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUserAndRoutine(
+        globalViewModel_!!.currentUser!!,
+        routineData
+    ) { userRoutineRelationship ->
+        if(userRoutineRelationship.isNotEmpty()) {
+            updateCurrentUserRoutineRelationshipUsageTimeStamp(userRoutineRelationship[0]!!) {
+                globalViewModel_!!.previouslyPlayedUserRoutineRelationship = it
+                completed(it)
+            }
+        }else{
+            UserRoutineRelationshipBackend.createUserRoutineRelationshipObject(
+                routineData
+            ){ newUserRoutineRelationship ->
+                updateCurrentUserRoutineRelationshipUsageTimeStamp(newUserRoutineRelationship) {
+                    globalViewModel_!!.previouslyPlayedUserRoutineRelationship = it
+                    completed(it)
+                }
+            }
+        }
+    }
+}
 
 private fun observeGeneralMediaPlayerIsCompleted(
     soundMediaPlayerService: SoundMediaPlayerService,
@@ -775,10 +884,11 @@ fun incrementPlayingOrderIndex(
     Log.i(TAG, "plahing order index before increment is ${globalViewModel_!!.currentRoutinePlayingOrderIndex}")
     globalViewModel_!!.currentRoutinePlayingOrderIndex = globalViewModel_!!.currentRoutinePlayingOrderIndex!! + 1
     if(globalViewModel_!!.currentRoutinePlayingOrderIndex!! > globalViewModel_!!.currentRoutinePlayingOrder!!.indices.last){
-        //end routine
-        Log.i(TAG, "Routine is endedz")
-        globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
-        routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
+        updateUserRoutineRelationshipWhenRoutineIsDonePlaying(index){
+            Log.i(TAG, "Routine is endedz")
+            globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
+            routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
+        }
     }else{
         selectNextRoutineElement(
             soundMediaPlayerService,
@@ -787,6 +897,46 @@ fun incrementPlayingOrderIndex(
             context
         )
     }
+}
+
+fun updateUserRoutineRelationshipWhenRoutineIsDonePlaying(
+    index: Int,
+    completed: (updatedUserRoutineRelationship: UserRoutineRelationship?) -> Unit
+) {
+    if(globalViewModel_!!.currentUsersRoutineRelationships!![index] != null){
+        val playTime = globalViewModel_!!.routinePlaytimeTimer.getDuration()
+        globalViewModel_!!.routinePlaytimeTimer.stop()
+
+        val totalPlayTime = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.totalPlayTime + playTime
+
+        var usagePlayTimes = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.usagePlayTimes
+        if(usagePlayTimes != null) {
+            usagePlayTimes.add(playTime.toInt())
+        }else{
+            usagePlayTimes = listOf(playTime.toInt())
+        }
+
+        val numberOfTimesPlayed = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.numberOfTimesPlayed
+
+        if(totalPlayTime > 0){
+            val userRoutineRelationship = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
+                .numberOfTimesPlayed(numberOfTimesPlayed)
+                .totalPlayTime(totalPlayTime.toInt())
+                .usagePlayTimes(usagePlayTimes)
+                .build()
+
+            UserRoutineRelationshipBackend.updateUserRoutineRelationship(userRoutineRelationship){
+                globalViewModel_!!.previouslyPlayedUserRoutineRelationship = null
+                completed(it)
+            }
+        }
+    }
+}
+
+fun resetRoutineGlobalProperties(){
+    globalViewModel_!!.currentRoutinePlaying = null
+    globalViewModel_!!.currentUserRoutineRelationshipPlaying = null
+    globalViewModel_!!.isCurrentRoutinePlaying = false
 }
 
 private val allElements = listOf(

@@ -4,9 +4,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 
-class GeneralPlaytimeTimer(listener: OnGeneralPlaytimeTimerTickListener) {
-    interface OnGeneralPlaytimeTimerTickListener{
-        fun onGeneralPlaytimeTimerTick(
+class RoutinePlaytimeTimer(listener: OnRoutinePlaytimeTimerTickListener) {
+    interface OnRoutinePlaytimeTimerTickListener{
+        fun onRoutinePlaytimeTimerTick(
             durationString: String,
             durationMilliSeconds: Long,
         )
@@ -25,8 +25,8 @@ class GeneralPlaytimeTimer(listener: OnGeneralPlaytimeTimerTickListener) {
             if(duration > maxDuration){
                 stop()
             }else {*/
-                handler.postDelayed(runnable, delay)
-                listener.onGeneralPlaytimeTimerTick(format(), duration)
+            handler.postDelayed(runnable, delay)
+            listener.onRoutinePlaytimeTimerTick(format(), duration)
             //}
         }
     }

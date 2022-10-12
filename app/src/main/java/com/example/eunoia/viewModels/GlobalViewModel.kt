@@ -13,10 +13,7 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.ui.theme.*
-import com.example.eunoia.utils.BedtimeStoryTimer
-import com.example.eunoia.utils.GeneralPlaytimeTimer
-import com.example.eunoia.utils.PrayerTimer
-import com.example.eunoia.utils.SelfLoveTimer
+import com.example.eunoia.utils.*
 
 class GlobalViewModel: ViewModel(){
     //general media player
@@ -54,6 +51,7 @@ class GlobalViewModel: ViewModel(){
     /**
      * routine
      */
+    var currentRoutinePlaying by mutableStateOf<RoutineData?>(null)
     var currentUserRoutineRelationshipPlaying by mutableStateOf<UserRoutineRelationship?>(null)
     var isCurrentRoutinePlaying by mutableStateOf(false)
     var routineNameToBeAdded by mutableStateOf("")
@@ -63,6 +61,7 @@ class GlobalViewModel: ViewModel(){
     var currentUsersRoutineRelationships by mutableStateOf<MutableList<UserRoutineRelationship?>?>(null)
     var currentRoutinePlayingOrderIndex by mutableStateOf<Int?>(0)
     var currentRoutinePlayingOrder by mutableStateOf<MutableList<String?>?>(null)
+    var previouslyPlayedUserRoutineRelationship: UserRoutineRelationship? = null
 
     var currentRoutinePlayingRoutinePresets by mutableStateOf<MutableList<RoutineSoundPreset?>?>(null)
     var currentRoutinePlayingUserRoutineRelationshipPresets by mutableStateOf<MutableList<UserRoutineRelationshipSoundPreset?>?>(null)
@@ -159,6 +158,8 @@ class GlobalViewModel: ViewModel(){
      * General playtime timer
      */
     var generalPlaytimeTimer = GeneralPlaytimeTimer(UserDashboardActivity.getInstanceActivity())
+    var soundPlaytimeTimer = SoundPlaytimeTimer(UserDashboardActivity.getInstanceActivity())
+    var routinePlaytimeTimer = RoutinePlaytimeTimer(UserDashboardActivity.getInstanceActivity())
 
     /**
      * bedtime story
@@ -172,6 +173,7 @@ class GlobalViewModel: ViewModel(){
     var bedtimeStoryCircularSliderAngle by mutableStateOf(0f)
     var bedtimeStoryCircularSliderClicked by mutableStateOf(false)
     var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
+    var previouslyPlayedUserBedtimeStoryRelationship: UserBedtimeStoryInfoRelationship? = null
 
     var currentBedtimeStoryToBeAdded by mutableStateOf<BedtimeStoryInfoData?>(null)
 
@@ -216,6 +218,7 @@ class GlobalViewModel: ViewModel(){
     var selfLoveCircularSliderAngle by mutableStateOf(0f)
     var selfLoveCircularSliderClicked by mutableStateOf(false)
     var selfLoveTimer = SelfLoveTimer(UserDashboardActivity.getInstanceActivity())
+    var previouslyPlayedUserSelfLoveRelationship: UserSelfLoveRelationship? = null
 
     var currentSelfLoveToBeAdded by mutableStateOf<SelfLoveData?>(null)
     var currentSelfLoveLyricsToBeShown by mutableStateOf<SelfLoveData?>(null)
@@ -261,6 +264,7 @@ class GlobalViewModel: ViewModel(){
     var prayerCircularSliderAngle by mutableStateOf(0f)
     var prayerCircularSliderClicked by mutableStateOf(false)
     var prayerTimer = PrayerTimer(UserDashboardActivity.getInstanceActivity())
+    var previouslyPlayedUserPrayerRelationship: UserPrayerRelationship? = null
 
     var currentPrayerToBeAdded by mutableStateOf<PrayerData?>(null)
 
