@@ -886,6 +886,7 @@ fun incrementPlayingOrderIndex(
     if(globalViewModel_!!.currentRoutinePlayingOrderIndex!! > globalViewModel_!!.currentRoutinePlayingOrder!!.indices.last){
         updateUserRoutineRelationshipWhenRoutineIsDonePlaying(index){
             Log.i(TAG, "Routine is endedz")
+            globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
             globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
             routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
         }

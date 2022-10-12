@@ -496,6 +496,7 @@ private fun initializeMediaPlayers(
     val intent = Intent()
     intent.action = "PLAY"
     soundMediaPlayerService.onStartCommand(intent, 0, 0)
+    soundMediaPlayerService.loopMediaPlayers()
 
     globalViewModel_!!.soundMeditationBellInterval = 0
     resetGlobalControlButtons()
@@ -601,7 +602,7 @@ fun ringMeditationBell(
 }
 
 fun resetGlobalControlButtons(){
-    deActivateGlobalControlButton(0)
+    activateGlobalControlButton(0)
     deActivateGlobalControlButton(1)
     deActivateGlobalControlButton(2)
     activateGlobalControlButton(3)

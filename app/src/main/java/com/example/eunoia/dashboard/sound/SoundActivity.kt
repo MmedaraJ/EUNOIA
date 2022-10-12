@@ -446,6 +446,7 @@ private fun initializeMediaPlayers(
     val intent = Intent()
     intent.action = "PLAY"
     soundMediaPlayerService.onStartCommand(intent, 0, 0)
+    soundMediaPlayerService.loopMediaPlayers()
     resetAll(context, soundMediaPlayerService)
     createMeditationBellMediaPlayer(context)
     resetGlobalControlButtons()

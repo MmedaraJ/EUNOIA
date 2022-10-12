@@ -112,7 +112,7 @@ class GlobalViewModel: ViewModel(){
     val addIcon = mutableStateOf(R.drawable.add_sound_icon)
 
     var soundScreenBorderControlColors = arrayOf(
-        mutableStateOf(Bizarre),
+        mutableStateOf(Black),
         mutableStateOf(Bizarre),
         mutableStateOf(Bizarre),
         mutableStateOf(Black),
@@ -122,7 +122,7 @@ class GlobalViewModel: ViewModel(){
         mutableStateOf(Bizarre),
     )
     var soundScreenBackgroundControlColor1 = arrayOf(
-        mutableStateOf(White),
+        mutableStateOf(SoftPeach),
         mutableStateOf(White),
         mutableStateOf(White),
         mutableStateOf(SoftPeach),
@@ -131,7 +131,7 @@ class GlobalViewModel: ViewModel(){
         mutableStateOf(White),
     )
     var soundScreenBackgroundControlColor2 = arrayOf(
-        mutableStateOf(White),
+        mutableStateOf(Solitude),
         mutableStateOf(White),
         mutableStateOf(White),
         mutableStateOf(Solitude),

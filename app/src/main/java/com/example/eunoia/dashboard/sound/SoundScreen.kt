@@ -59,6 +59,7 @@ var commentsForThisSound = mutableListOf<CommentData>()
 var soundUris = mutableListOf<Uri?>()
 var defaultVolumes: MutableList<Int>? = null
 var countDownTimer: CountDownTimer? = null
+
 var soundScreenIcons = arrayOf(
     mutableStateOf(R.drawable.replay_sound_icon),
     mutableStateOf(R.drawable.reset_sliders_icon),
@@ -69,7 +70,7 @@ var soundScreenIcons = arrayOf(
     mutableStateOf(R.drawable.meditation_bell_icon),
 )
 var soundScreenBorderControlColors = arrayOf(
-    mutableStateOf(Bizarre),
+    mutableStateOf(Black),
     mutableStateOf(Bizarre),
     mutableStateOf(Bizarre),
     mutableStateOf(Black),
@@ -79,7 +80,7 @@ var soundScreenBorderControlColors = arrayOf(
     mutableStateOf(Bizarre),
 )
 var soundScreenBackgroundControlColor1 = arrayOf(
-    mutableStateOf(White),
+    mutableStateOf(SoftPeach),
     mutableStateOf(White),
     mutableStateOf(White),
     mutableStateOf(SoftPeach),
@@ -88,7 +89,7 @@ var soundScreenBackgroundControlColor1 = arrayOf(
     mutableStateOf(White),
 )
 var soundScreenBackgroundControlColor2 = arrayOf(
-    mutableStateOf(White),
+    mutableStateOf(Solitude),
     mutableStateOf(White),
     mutableStateOf(White),
     mutableStateOf(Solitude),

@@ -587,7 +587,7 @@ fun ringMeditationBell(
 }
 
 fun resetBothLocalAndGlobalControlButtonsAfterReset(){
-    deActivateLocalControlButton(0)
+    activateLocalControlButton(0)
     activateLocalControlButton(1)
     deActivateLocalControlButton(2)
     activateLocalControlButton(3)
@@ -595,7 +595,7 @@ fun resetBothLocalAndGlobalControlButtonsAfterReset(){
     deActivateLocalControlButton(5)
     deActivateLocalControlButton(6)
 
-    deActivateGlobalControlButton(0)
+    activateGlobalControlButton(0)
     activateGlobalControlButton(1)
     deActivateGlobalControlButton(2)
     activateGlobalControlButton(3)
@@ -605,7 +605,7 @@ fun resetBothLocalAndGlobalControlButtonsAfterReset(){
 }
 
 fun resetBothLocalAndGlobalControlButtons(){
-    deActivateLocalControlButton(0)
+    activateLocalControlButton(0)
     deActivateLocalControlButton(1)
     deActivateLocalControlButton(2)
     activateLocalControlButton(3)
@@ -613,7 +613,7 @@ fun resetBothLocalAndGlobalControlButtons(){
     deActivateLocalControlButton(5)
     deActivateLocalControlButton(6)
 
-    deActivateGlobalControlButton(0)
+    activateGlobalControlButton(0)
     deActivateGlobalControlButton(1)
     deActivateGlobalControlButton(2)
     activateGlobalControlButton(3)
@@ -860,6 +860,7 @@ private fun initializeMediaPlayers(
     val intent = Intent()
     intent.action = "PLAY"
     soundMediaPlayerService.onStartCommand(intent, 0, 0)
+    soundMediaPlayerService.loopMediaPlayers()
 
     meditationBellInterval.value = 0
     globalViewModel_!!.soundMeditationBellInterval = 0
