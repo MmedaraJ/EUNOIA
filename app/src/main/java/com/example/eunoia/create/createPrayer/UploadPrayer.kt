@@ -65,7 +65,7 @@ fun UploadPrayerUI(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context
-    )
+    ){}
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Prayer Saved")

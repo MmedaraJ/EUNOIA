@@ -47,7 +47,7 @@ fun PageScreenUI(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context
-    )
+    ){}
 
     if(pageIndex >= pageRecordings.size){
         for(i in 0..pageIndex){

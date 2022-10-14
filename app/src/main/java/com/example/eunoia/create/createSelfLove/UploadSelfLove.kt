@@ -65,7 +65,7 @@ fun UploadSelfLoveUI(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context
-    )
+    ){}
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Self Love Saved")

@@ -80,6 +80,8 @@ var openUserAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
 var openTooManyIncompleteBedtimeStoryDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
 
+var openRoutineIsCurrentlyPlayingDialogBox by mutableStateOf(false)
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MultiBottomNavApp(
@@ -470,10 +472,10 @@ fun DashboardTab(
             Log.i("Sound", "You are now on the Sound tab")
             SoundActivityUI(
                 navController,
-                LocalContext.current,
                 scope,
                 state,
-                soundMediaPlayerService
+                soundMediaPlayerService,
+                generalMediaPlayerService
             )
         }
         composable(
@@ -482,7 +484,6 @@ fun DashboardTab(
             Log.i("BedtimeStory", "You are now on the BedtimeStory tab")
             BedtimeStoryActivityUI(
                 navController,
-                LocalContext.current,
                 scope,
                 state,
                 generalMediaPlayerService,
@@ -498,10 +499,10 @@ fun DashboardTab(
             SoundScreen(
                 navController,
                 sound.data,
-                LocalContext.current,
                 scope,
                 state,
-                soundMediaPlayerService
+                soundMediaPlayerService,
+                generalMediaPlayerService
             )
         }
         composable(
@@ -519,7 +520,8 @@ fun DashboardTab(
                 bedtimeStoryInfoData = bedtimeStoryData.data,
                 scope = scope,
                 state = state,
-                generalMediaPlayerService = generalMediaPlayerService
+                generalMediaPlayerService = generalMediaPlayerService,
+                soundMediaPlayerService = soundMediaPlayerService
             )
         }
         composable(Screen.Settings.screen_route) {
@@ -596,7 +598,8 @@ fun DashboardTab(
                 selfLoveData = selfLoveData.data,
                 scope = scope,
                 state = state,
-                generalMediaPlayerService = generalMediaPlayerService
+                generalMediaPlayerService = generalMediaPlayerService,
+                soundMediaPlayerService = soundMediaPlayerService
             )
         }
         composable(
@@ -626,7 +629,8 @@ fun DashboardTab(
                 prayerData = prayerData.data,
                 scope = scope,
                 state = state,
-                generalMediaPlayerService = generalMediaPlayerService
+                generalMediaPlayerService = generalMediaPlayerService,
+                soundMediaPlayerService = soundMediaPlayerService
             )
         }
         composable(
@@ -754,10 +758,10 @@ fun CreateTab(
             SoundScreen(
                 navController,
                 sound.data,
-                LocalContext.current,
                 scope,
                 state,
-                soundMediaPlayerService
+                soundMediaPlayerService,
+                generalMediaPlayerService
             )
         }
         composable(Screen.NameSound.screen_route) {
@@ -888,10 +892,11 @@ fun CreateTab(
             Log.i("BedtimeStoryScreen", "You are now on the BedtimeStoryScreen tab")
             BedtimeStoryScreen(
                 navController = navController,
-                bedtimeStoryData!!.data,
+                bedtimeStoryInfoData = bedtimeStoryData!!.data,
                 scope = scope,
                 state = state,
-                generalMediaPlayerService = generalMediaPlayerService
+                generalMediaPlayerService = generalMediaPlayerService,
+                soundMediaPlayerService = soundMediaPlayerService
             )
         }
         composable(Screen.IncompleteBedtimeStories.screen_route) {
@@ -980,7 +985,8 @@ fun CreateTab(
                 prayerData = prayerData.data,
                 scope = scope,
                 state = state,
-                generalMediaPlayerService = generalMediaPlayerService
+                generalMediaPlayerService = generalMediaPlayerService,
+                soundMediaPlayerService = soundMediaPlayerService
             )
         }
         composable(
@@ -998,7 +1004,8 @@ fun CreateTab(
                 selfLoveData = selfLoveData.data,
                 scope = scope,
                 state = state,
-                generalMediaPlayerService = generalMediaPlayerService
+                generalMediaPlayerService = generalMediaPlayerService,
+                soundMediaPlayerService = soundMediaPlayerService
             )
         }
     }
@@ -1049,10 +1056,10 @@ fun SearchTab(
             SoundScreen(
                 navController,
                 sound.data,
-                LocalContext.current,
                 scope,
                 state,
-                soundMediaPlayerService
+                soundMediaPlayerService,
+                generalMediaPlayerService
             )
         }
     }
@@ -1113,10 +1120,10 @@ fun FeedbackTab(
             SoundScreen(
                 navController,
                 sound.data,
-                LocalContext.current,
                 scope,
                 state,
-                soundMediaPlayerService
+                soundMediaPlayerService,
+                generalMediaPlayerService
             )
         }
     }
@@ -1177,10 +1184,10 @@ fun AccountTab(
             SoundScreen(
                 navController,
                 sound.data,
-                LocalContext.current,
                 scope,
                 state,
-                soundMediaPlayerService
+                soundMediaPlayerService,
+                generalMediaPlayerService
             )
         }
     }

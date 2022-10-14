@@ -1,5 +1,6 @@
 package com.example.eunoia.dashboard.selfLove
 
+import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -24,20 +25,25 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
+import com.amplifyframework.datastore.generated.model.PrayerData
 import com.amplifyframework.datastore.generated.model.SelfLoveData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
-import com.example.eunoia.dashboard.home.PrayerForRoutine
 import com.example.eunoia.dashboard.home.SelfLoveForRoutine
+import com.example.eunoia.dashboard.home.updatePreviousUserRoutineRelationship
+import com.example.eunoia.dashboard.prayer.pauseOrPlayPrayerAccordingly
 import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.selfLove.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.formatMilliSecond
 import com.example.eunoia.utils.timerFormatMS
@@ -170,7 +176,9 @@ fun PurpleBackgroundSelfLoveControls(
     selfLoveData: SelfLoveData,
     generalMediaPlayerService: GeneralMediaPlayerService,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    context: Context,
 ){
     Card(
         modifier = Modifier
@@ -245,7 +253,9 @@ fun PurpleBackgroundSelfLoveControls(
                     generalMediaPlayerService,
                     true,
                     scope,
-                    state
+                    state,
+                    soundMediaPlayerService,
+                    context,
                 )
             }
         }
@@ -265,6 +275,8 @@ fun BottomSheetSelfLoveControls(
     showAddIcon: Boolean,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    context: Context,
 ){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -341,6 +353,8 @@ fun BottomSheetSelfLoveControls(
                         selfLoveData,
                         index,
                         generalMediaPlayerService,
+                        soundMediaPlayerService,
+                        context,
                     )
                 }
             }
@@ -401,6 +415,8 @@ private fun activateControls(
     selfLoveData: SelfLoveData,
     index: Int,
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    context: Context,
 ){
     when(index){
         0 -> resetSelfLove(
@@ -412,9 +428,11 @@ private fun activateControls(
             generalMediaPlayerService,
         )
         2 -> {
-            pauseOrPlaySelfLoveAccordingly(
-                selfLoveData,
+            resetCurrentlyPlayingRoutineIfNecessarySelfLoveUI(
+                soundMediaPlayerService,
                 generalMediaPlayerService,
+                context,
+                selfLoveData
             )
         }
         3 -> seekForward15(
@@ -521,6 +539,52 @@ fun seekForward15(
     }
 }
 
+@Composable
+fun SetUpRoutineCurrentlyPlayingAlertDialogSelfLoveUI(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+    selfLoveData: SelfLoveData
+){
+    if(openRoutineIsCurrentlyPlayingDialogBox){
+        ConfirmStopRoutineAlertDialog(
+            {
+                updatePreviousUserRoutineRelationship {
+                    resetEverything(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        context
+                    ){
+                        pauseOrPlaySelfLoveAccordingly(
+                            selfLoveData,
+                            generalMediaPlayerService,
+                        )
+                    }
+                }
+            },
+            {
+                openRoutineIsCurrentlyPlayingDialogBox = false
+            }
+        )
+    }
+}
+
+fun resetCurrentlyPlayingRoutineIfNecessarySelfLoveUI(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+    selfLoveData: SelfLoveData
+) {
+    if(globalViewModel_!!.currentRoutinePlaying != null){
+        openRoutineIsCurrentlyPlayingDialogBox = true
+    }else{
+        pauseOrPlaySelfLoveAccordingly(
+            selfLoveData,
+            generalMediaPlayerService,
+        )
+    }
+}
+
 fun pauseOrPlaySelfLoveAccordingly(
     selfLoveData: SelfLoveData,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -592,6 +656,7 @@ private fun startSelfLove(
         ){
             if(globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id){
                 generalMediaPlayerService.startMediaPlayer()
+                afterPlayingSelfLove(selfLoveData)
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
@@ -604,8 +669,6 @@ private fun startSelfLove(
                 selfLoveData
             )
         }
-
-        afterPlayingSelfLove(selfLoveData)
     }
 }
 
@@ -649,9 +712,10 @@ private fun initializeMediaPlayer(
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
         selfLoveTimer.setMaxDuration(selfLoveData.fullPlayTime.toLong())
         globalViewModel_!!.selfLoveTimer = selfLoveTimer
-        resetBothLocalAndGlobalControlButtons()
         resetOtherGeneralMediaPlayerUsersExceptSelfLove()
     }
+    resetBothLocalAndGlobalControlButtons()
+    afterPlayingSelfLove(selfLoveData)
 }
 
 private fun setGlobalPropertiesAfterPlayingSelfLove(

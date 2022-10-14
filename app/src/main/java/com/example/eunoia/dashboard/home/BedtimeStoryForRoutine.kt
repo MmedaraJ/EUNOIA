@@ -219,6 +219,10 @@ object BedtimeStoryForRoutine{
                 globalViewModel_!!.currentSelfLovePlaying == null
             ){
                 generalMediaPlayerService.startMediaPlayer()
+                afterPlayingBedtimeStory(
+                    index,
+                    generalMediaPlayerService
+                )
             }else{
                 initializeBedtimeStoryMediaPlayers(
                     generalMediaPlayerService,
@@ -227,12 +231,6 @@ object BedtimeStoryForRoutine{
                     context
                 )
             }
-
-            afterPlayingBedtimeStory(
-                index,
-                generalMediaPlayerService
-            )
-
         }else{
             retrieveBedtimeStoryUris(
                 generalMediaPlayerService,
@@ -300,6 +298,11 @@ object BedtimeStoryForRoutine{
                 )
             }
         }
+
+        afterPlayingBedtimeStory(
+            index,
+            generalMediaPlayerService
+        )
     }
 
     private fun startBedtimeStoryCDT(

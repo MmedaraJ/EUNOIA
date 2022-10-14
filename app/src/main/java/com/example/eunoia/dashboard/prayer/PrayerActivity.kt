@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amazonaws.util.DateUtils
 import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.PrayerData
@@ -26,19 +25,23 @@ import com.amplifyframework.datastore.generated.model.UserPrayerRelationship
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserPrayerRelationshipBackend
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.OptionItem
 import com.example.eunoia.dashboard.home.PrayerForRoutine
+import com.example.eunoia.dashboard.home.updatePreviousUserRoutineRelationship
 import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
 import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.prayer.deActivatePrayerGlobalControlButton
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.screens.Screen
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
@@ -49,6 +52,8 @@ var prayerActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
 private const val START_PRAYER = "start"
 private const val PAUSE_PRAYER = "pause"
 private const val WAIT_FOR_PRAYER = "wait"
+
+var keepGoing by mutableStateOf(false)
 
 private val allElements = listOf(
     "pouring\nrain",
@@ -92,6 +97,14 @@ fun PrayerActivityUI(
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
+    val context = LocalContext.current
+
+    SetUpRoutineCurrentlyPlayingAlertDialogPrayerUI(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    )
+
     resetPrayerActivityPlayButtonTexts()
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
@@ -215,13 +228,13 @@ fun PrayerActivityUI(
                         DisplayUsersPrayers(
                             globalViewModel_!!.currentUsersPrayerRelationships!![i]!!.userPrayerRelationshipPrayer,
                             i,
+                            generalMediaPlayerService,
+                            soundMediaPlayerService,
                             { index ->
-                                resetGeneralMediaPlayerServiceIfNecessary(generalMediaPlayerService, index)
-                                resetPlayButtonTextsIfNecessary(index)
-                                playOrPauseMediaPlayerAccordingly(
-                                    generalMediaPlayerService,
+                                prayerIndex = index
+                                resetCurrentlyPlayingRoutineIfNecessary(
                                     soundMediaPlayerService,
-                                    index,
+                                    generalMediaPlayerService,
                                     context
                                 )
                             },
@@ -268,6 +281,73 @@ fun PrayerActivityUI(
         ){
             Spacer(modifier = Modifier.height(20.dp))
         }
+    }
+}
+
+private var prayerIndex = -1
+
+@Composable
+private fun SetUpRoutineCurrentlyPlayingAlertDialogPrayerUI(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+){
+    if(openRoutineIsCurrentlyPlayingDialogBox){
+        ConfirmStopRoutineAlertDialog(
+            {
+                updatePreviousUserRoutineRelationship {
+                    resetEverything(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        context
+                    ){
+                        startPrayerConfirmed(
+                            soundMediaPlayerService,
+                            generalMediaPlayerService,
+                            context
+                        )
+                    }
+                }
+            },
+            {
+                openRoutineIsCurrentlyPlayingDialogBox = false
+            }
+        )
+    }
+}
+
+private fun startPrayerConfirmed(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+){
+    resetGeneralMediaPlayerServiceIfNecessary(
+        generalMediaPlayerService,
+        prayerIndex
+    )
+    resetPlayButtonTextsIfNecessary(prayerIndex)
+    playOrPauseMediaPlayerAccordingly(
+        generalMediaPlayerService,
+        soundMediaPlayerService,
+        prayerIndex,
+        context
+    )
+    openRoutineIsCurrentlyPlayingDialogBox = false
+}
+
+private fun resetCurrentlyPlayingRoutineIfNecessary(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+) {
+    if(globalViewModel_!!.currentRoutinePlaying != null){
+        openRoutineIsCurrentlyPlayingDialogBox = true
+    }else{
+        startPrayerConfirmed(
+            soundMediaPlayerService,
+            generalMediaPlayerService,
+            context
+        )
     }
 }
 
@@ -344,6 +424,7 @@ private fun startPrayer(
             globalViewModel_!!.currentSelfLovePlaying == null
         ){
             generalMediaPlayerService.startMediaPlayer()
+            afterPlayingPrayer(index)
         }else{
             initializeMediaPlayer(
                 generalMediaPlayerService,
@@ -352,8 +433,6 @@ private fun startPrayer(
                 context
             )
         }
-
-        afterPlayingPrayer(index)
     }
 }
 
@@ -447,6 +526,7 @@ private fun initializeMediaPlayer(
         globalViewModel_!!.prayerTimer.setMaxDuration(globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer.fullPlayTime.toLong())
         resetOtherGeneralMediaPlayerUsersExceptPrayer()
     }
+    afterPlayingPrayer(index)
 }
 
 /**

@@ -136,22 +136,30 @@ fun CreateUI(
 fun resetEverything(
     soundMediaPlayerService: SoundMediaPlayerService,
     generalMediaPlayerService: GeneralMediaPlayerService,
-    context: Context
+    context: Context,
+    completed: () -> Unit
 ){
-    updatePreviousUserSoundRelationship {}
-    updatePreviousUserBedtimeStoryRelationship {}
-    updatePreviousUserPrayerRelationship {}
-    updatePreviousUserSelfLoveRelationship {}
-    updatePreviousUserRoutineRelationship {}
-
-    soundMediaPlayerService.onDestroy()
-    generalMediaPlayerService.onDestroy()
-
-    com.example.eunoia.dashboard.sound.resetAll(context, soundMediaPlayerService)
-    resetSelfLoveGlobalProperties()
-    resetPrayerGlobalProperties()
-    resetBedtimeStoryGlobalProperties()
-    resetRoutineGlobalProperties()
+    updatePreviousUserSoundRelationship {
+        updatePreviousUserBedtimeStoryRelationship {
+            updatePreviousUserPrayerRelationship {
+                updatePreviousUserSelfLoveRelationship {
+                    updatePreviousUserRoutineRelationship {
+                        soundMediaPlayerService.onDestroy()
+                        generalMediaPlayerService.onDestroy()
+                        com.example.eunoia.dashboard.sound.resetAll(
+                            context,
+                            soundMediaPlayerService
+                        )
+                        resetSelfLoveGlobalProperties()
+                        resetPrayerGlobalProperties()
+                        resetBedtimeStoryGlobalProperties()
+                        resetRoutineGlobalProperties()
+                        completed()
+                    }
+                }
+            }
+        }
+    }
 }
 
 fun resetEverythingExceptRoutine(
@@ -160,7 +168,6 @@ fun resetEverythingExceptRoutine(
     context: Context,
     completed: () -> Unit
 ){
-    Log.i("Create pagez", "About to reset eritn xcpt rutn")
     updatePreviousUserSoundRelationship {
         updatePreviousUserBedtimeStoryRelationship {
             updatePreviousUserPrayerRelationship {
@@ -171,7 +178,6 @@ fun resetEverythingExceptRoutine(
                     resetSelfLoveGlobalProperties()
                     resetPrayerGlobalProperties()
                     resetBedtimeStoryGlobalProperties()
-                    resetRoutineGlobalProperties()
                     completed()
                 }
             }

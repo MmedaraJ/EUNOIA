@@ -36,11 +36,16 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.home.SoundForRoutine.updateRecentlyPlayedUserSoundRelationshipWithSound
+import com.example.eunoia.dashboard.home.updatePreviousUserRoutineRelationship
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
@@ -677,7 +682,7 @@ fun changeTimerTime(
                     activateLocalControlButton(index)
                     activateGlobalControlButton(index)
                     if (!soundMediaPlayerService.areMediaPlayersPlaying()) {
-                        playOrPauseAccordingly(
+                        pauseOrPlaySoundAccordingly(
                             soundData,
                             soundMediaPlayerService,
                             context
@@ -722,10 +727,10 @@ private fun activateControls(
                 soundMediaPlayerService,
             )
         3 -> {
-            playOrPauseAccordingly(
-                soundData,
+            resetCurrentlyPlayingRoutineIfNecessarySoundUI(
                 soundMediaPlayerService,
-                context
+                soundData,
+                context,
             )
         }
         4 -> increaseSliderLevels(
@@ -746,7 +751,54 @@ private fun activateControls(
     }
 }
 
-fun playOrPauseAccordingly(
+@Composable
+fun SetUpRoutineCurrentlyPlayingAlertDialogSoundUI(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+    soundData: SoundData
+){
+    if(openRoutineIsCurrentlyPlayingDialogBox){
+        ConfirmStopRoutineAlertDialog(
+            {
+                updatePreviousUserRoutineRelationship {
+                    resetEverything(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        context
+                    ){
+                        pauseOrPlaySoundAccordingly(
+                            soundData,
+                            soundMediaPlayerService,
+                            context
+                        )
+                    }
+                }
+            },
+            {
+                openRoutineIsCurrentlyPlayingDialogBox = false
+            }
+        )
+    }
+}
+
+fun resetCurrentlyPlayingRoutineIfNecessarySoundUI(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    soundData: SoundData,
+    context: Context
+) {
+    if(globalViewModel_!!.currentRoutinePlaying != null){
+        openRoutineIsCurrentlyPlayingDialogBox = true
+    }else{
+        pauseOrPlaySoundAccordingly(
+            soundData,
+            soundMediaPlayerService,
+            context
+        )
+    }
+}
+
+fun pauseOrPlaySoundAccordingly(
     soundData: SoundData,
     soundMediaPlayerService: SoundMediaPlayerService,
     context: Context

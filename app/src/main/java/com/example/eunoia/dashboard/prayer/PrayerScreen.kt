@@ -32,6 +32,7 @@ import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.LightText
@@ -84,7 +85,17 @@ fun PrayerScreen(
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ){
+    val context = LocalContext.current
+
+    SetUpRoutineCurrentlyPlayingAlertDialogPrayerUI(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context,
+        prayerData
+    )
+
     globalViewModel_!!.navController = navController
     var retrievedUris by rememberSaveable{ mutableStateOf(false) }
 
@@ -212,9 +223,11 @@ fun PrayerScreen(
                             )
                             .border(1.dp, Black, CircleShape)
                             .clickable {
-                                pauseOrPlayPrayerAccordingly(
-                                    prayerData,
+                                resetCurrentlyPlayingRoutineIfNecessaryPrayerUI(
+                                    soundMediaPlayerService,
                                     generalMediaPlayerService,
+                                    context,
+                                    prayerData
                                 )
                             }
                     ) {
@@ -240,8 +253,10 @@ fun PrayerScreen(
                 PurpleBackgroundPrayerControls(
                     prayerData = prayerData,
                     generalMediaPlayerService = generalMediaPlayerService,
+                    soundMediaPlayerService = soundMediaPlayerService,
                     scope = scope,
-                    state = state
+                    state = state,
+                    context = context,
                 )
             }
             Column(
@@ -297,26 +312,31 @@ private const val TAG = "prayerScreen"
 fun setUpParameters(
     completed: () -> Unit
 ) {
-    prayerUri = globalViewModel_!!.currentPrayerPlayingUri!!
+    if(globalViewModel_!!.currentPrayerPlayingUri != null) {
+        prayerUri = globalViewModel_!!.currentPrayerPlayingUri!!
 
-    for(i in prayerScreenIcons.indices){
-        prayerScreenIcons[i].value = globalViewModel_!!.prayerScreenIcons[i].value
-    }
-    for(i in prayerScreenBorderControlColors.indices){
-        prayerScreenBorderControlColors[i].value = globalViewModel_!!.prayerScreenBorderControlColors[i].value
-    }
-    for(i in prayerScreenBackgroundControlColor1.indices){
-        prayerScreenBackgroundControlColor1[i].value = globalViewModel_!!.prayerScreenBackgroundControlColor1[i].value
-    }
-    for(i in prayerScreenBackgroundControlColor2.indices){
-        prayerScreenBackgroundControlColor2[i].value = globalViewModel_!!.prayerScreenBackgroundControlColor2[i].value
-    }
+        for (i in prayerScreenIcons.indices) {
+            prayerScreenIcons[i].value = globalViewModel_!!.prayerScreenIcons[i].value
+        }
+        for (i in prayerScreenBorderControlColors.indices) {
+            prayerScreenBorderControlColors[i].value =
+                globalViewModel_!!.prayerScreenBorderControlColors[i].value
+        }
+        for (i in prayerScreenBackgroundControlColor1.indices) {
+            prayerScreenBackgroundControlColor1[i].value =
+                globalViewModel_!!.prayerScreenBackgroundControlColor1[i].value
+        }
+        for (i in prayerScreenBackgroundControlColor2.indices) {
+            prayerScreenBackgroundControlColor2[i].value =
+                globalViewModel_!!.prayerScreenBackgroundControlColor2[i].value
+        }
 
-    prayerTimeDisplay = globalViewModel_!!.prayerTimeDisplay
-    prayerTimer = globalViewModel_!!.prayerTimer
-    prayerAngle.value = globalViewModel_!!.prayerCircularSliderAngle
-    prayerClicked.value = globalViewModel_!!.prayerCircularSliderClicked
-    completed()
+        prayerTimeDisplay = globalViewModel_!!.prayerTimeDisplay
+        prayerTimer = globalViewModel_!!.prayerTimer
+        prayerAngle.value = globalViewModel_!!.prayerCircularSliderAngle
+        prayerClicked.value = globalViewModel_!!.prayerCircularSliderClicked
+        completed()
+    }
 }
 
 fun resetPrayerControlsUI(){

@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amazonaws.util.DateUtils
 import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.SelfLoveData
@@ -26,19 +25,23 @@ import com.amplifyframework.datastore.generated.model.UserSelfLoveRelationship
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSelfLoveRelationshipBackend
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.OptionItem
 import com.example.eunoia.dashboard.home.SelfLoveForRoutine
+import com.example.eunoia.dashboard.home.updatePreviousUserRoutineRelationship
 import com.example.eunoia.dashboard.prayer.resetPrayerGlobalProperties
 import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.screens.Screen
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
@@ -92,6 +95,14 @@ fun SelfLoveActivityUI(
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
+    val context = LocalContext.current
+
+    SetUpRoutineCurrentlyPlayingAlertDialogSelfLove(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    )
+
     resetSelfLoveActivityPlayButtonTexts()
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
@@ -216,12 +227,10 @@ fun SelfLoveActivityUI(
                             globalViewModel_!!.currentUsersSelfLoveRelationships!![i]!!.userSelfLoveRelationshipSelfLove,
                             i,
                             { index ->
-                                resetGeneralMediaPlayerServiceIfNecessary(generalMediaPlayerService, index)
-                                resetPlayButtonTextsIfNecessary(index)
-                                playOrPauseMediaPlayerAccordingly(
-                                    generalMediaPlayerService,
+                                selfLoveIndex = index
+                                resetCurrentlyPlayingRoutineIfNecessary(
                                     soundMediaPlayerService,
-                                    index,
+                                    generalMediaPlayerService,
                                     context
                                 )
                             },
@@ -268,6 +277,73 @@ fun SelfLoveActivityUI(
         ){
             Spacer(modifier = Modifier.height(20.dp))
         }
+    }
+}
+
+var selfLoveIndex = -1
+
+@Composable
+private fun SetUpRoutineCurrentlyPlayingAlertDialogSelfLove(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+){
+    if(openRoutineIsCurrentlyPlayingDialogBox){
+        ConfirmStopRoutineAlertDialog(
+            {
+                updatePreviousUserRoutineRelationship {
+                    resetEverything(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        context
+                    ){
+                        startSelfLoveConfirmed(
+                            soundMediaPlayerService,
+                            generalMediaPlayerService,
+                            context
+                        )
+                    }
+                }
+            },
+            {
+                openRoutineIsCurrentlyPlayingDialogBox = false
+            }
+        )
+    }
+}
+
+private fun startSelfLoveConfirmed(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+){
+    resetGeneralMediaPlayerServiceIfNecessary(
+        generalMediaPlayerService,
+        selfLoveIndex
+    )
+    resetPlayButtonTextsIfNecessary(selfLoveIndex)
+    playOrPauseMediaPlayerAccordingly(
+        generalMediaPlayerService,
+        soundMediaPlayerService,
+        selfLoveIndex,
+        context
+    )
+    openRoutineIsCurrentlyPlayingDialogBox = false
+}
+
+private fun resetCurrentlyPlayingRoutineIfNecessary(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+) {
+    if(globalViewModel_!!.currentRoutinePlaying != null){
+        openRoutineIsCurrentlyPlayingDialogBox = true
+    }else{
+        startSelfLoveConfirmed(
+            soundMediaPlayerService,
+            generalMediaPlayerService,
+            context
+        )
     }
 }
 
@@ -344,6 +420,7 @@ private fun startSelfLove(
             globalViewModel_!!.currentPrayerPlaying == null
         ){
             generalMediaPlayerService.startMediaPlayer()
+            afterPlayingSelfLove(index)
         }else{
             initializeMediaPlayer(
                 generalMediaPlayerService,
@@ -352,8 +429,6 @@ private fun startSelfLove(
                 context
             )
         }
-
-        afterPlayingSelfLove(index)
     }
 }
 
@@ -446,6 +521,7 @@ private fun initializeMediaPlayer(
         globalViewModel_!!.selfLoveTimer.setMaxDuration(globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.fullPlayTime.toLong())
         resetOtherGeneralMediaPlayerUsersExceptSelfLove()
     }
+    afterPlayingSelfLove(index)
 }
 
 /**

@@ -66,7 +66,7 @@ fun RecordSelfLoveUI(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context
-    )
+    ){}
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Self Love Saved")

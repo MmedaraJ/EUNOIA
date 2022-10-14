@@ -32,6 +32,7 @@ import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.LightText
@@ -84,7 +85,17 @@ fun SelfLoveScreen(
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ){
+    val context = LocalContext.current
+
+    SetUpRoutineCurrentlyPlayingAlertDialogSelfLoveUI(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context,
+        selfLoveData
+    )
+
     globalViewModel_!!.navController = navController
     var retrievedUris by rememberSaveable{ mutableStateOf(false) }
 
@@ -110,7 +121,7 @@ fun SelfLoveScreen(
 
     if(retrievedUris) {
         val scrollState = rememberScrollState()
-        val context = LocalContext.current
+
         ConstraintLayout(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -217,9 +228,11 @@ fun SelfLoveScreen(
                             )
                             .border(1.dp, Black, CircleShape)
                             .clickable {
-                                pauseOrPlaySelfLoveAccordingly(
-                                    selfLoveData,
+                                resetCurrentlyPlayingRoutineIfNecessarySelfLoveUI(
+                                    soundMediaPlayerService,
                                     generalMediaPlayerService,
+                                    context,
+                                    selfLoveData
                                 )
                             }
                     ) {
@@ -246,7 +259,9 @@ fun SelfLoveScreen(
                     selfLoveData = selfLoveData,
                     generalMediaPlayerService = generalMediaPlayerService,
                     scope = scope,
-                    state = state
+                    state = state,
+                    soundMediaPlayerService = soundMediaPlayerService,
+                    context = context
                 )
             }
             Column(

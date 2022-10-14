@@ -69,7 +69,7 @@ fun UploadBedtimeStoryUI(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context
-    )
+    ){}
 
     if(openSavedElementDialogBox){
         AlertDialogBox(text = "Bedtime Story Saved. We will send you an email when it is approved")

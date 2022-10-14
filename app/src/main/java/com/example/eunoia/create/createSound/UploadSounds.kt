@@ -58,7 +58,7 @@ fun UploadSoundsUI(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context
-    )
+    ){}
 
     var numberOfFiles by rememberSaveable{ mutableStateOf(0) }
     val scrollState = rememberScrollState()

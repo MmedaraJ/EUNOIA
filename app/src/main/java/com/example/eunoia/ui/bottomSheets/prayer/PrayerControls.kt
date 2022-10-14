@@ -372,6 +372,7 @@ private fun startPrayer(
         if(generalMediaPlayerService.isMediaPlayerInitialized()){
             if(globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id){
                 generalMediaPlayerService.startMediaPlayer()
+                afterPlayingPrayer()
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
@@ -384,8 +385,6 @@ private fun startPrayer(
                 prayerData
             )
         }
-
-        afterPlayingPrayer()
     }
 }
 
@@ -425,9 +424,10 @@ private fun initializeMediaPlayer(
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
         globalViewModel_!!.prayerTimer.setMaxDuration(prayerData.fullPlayTime.toLong())
-        resetGlobalControlButtons()
         resetOtherGeneralMediaPlayerUsersExceptPrayer()
     }
+    resetGlobalControlButtons()
+    afterPlayingPrayer()
 }
 
 private fun retrievePrayerAudio(

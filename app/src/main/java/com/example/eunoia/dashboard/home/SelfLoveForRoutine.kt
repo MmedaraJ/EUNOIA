@@ -224,6 +224,10 @@ object SelfLoveForRoutine {
                 globalViewModel_!!.currentPrayerPlaying == null
             ){
                 generalMediaPlayerService.startMediaPlayer()
+                afterPlayingSelfLove(
+                    index,
+                    generalMediaPlayerService
+                )
             }else{
                 initializeSelfLoveMediaPlayers(
                     generalMediaPlayerService,
@@ -232,12 +236,6 @@ object SelfLoveForRoutine {
                     context
                 )
             }
-
-            afterPlayingSelfLove(
-                index,
-                generalMediaPlayerService
-            )
-
         }else{
             retrieveSelfLoveUris(
                 generalMediaPlayerService,
@@ -305,6 +303,11 @@ object SelfLoveForRoutine {
                 )
             }
         }
+
+        afterPlayingSelfLove(
+            index,
+            generalMediaPlayerService
+        )
     }
 
     private fun startSelfLoveCDT(

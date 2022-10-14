@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -24,14 +25,18 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSoundRelationshipBackend
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.home.*
 import com.example.eunoia.dashboard.home.SoundForRoutine.updateRecentlyPlayedUserSoundRelationshipWithUserSoundRelationship
 import com.example.eunoia.models.SoundObject
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.sound.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -84,11 +89,19 @@ private val allPros = listOf(
 @Composable
 fun SoundActivityUI(
     navController: NavController,
-    context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
 ) {
+    val context = LocalContext.current
+
+    SetUpRoutineCurrentlyPlayingAlertDialogSoundUI(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    )
+
     resetSoundActivityPlayButtonTexts()
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
@@ -216,11 +229,9 @@ fun SoundActivityUI(
                             globalViewModel_!!.currentUsersSoundRelationships!![i]!!.userSoundRelationshipSound,
                             i,
                             { index ->
-                                resetSoundMediaPlayerServiceIfNecessary(soundMediaPlayerService, index)
-                                resetPlayButtonTextsIfNecessary(index)
-                                playOrPauseMediaPlayerAccordingly(
+                                soundIndex = index
+                                resetCurrentlyPlayingRoutineIfNecessary(
                                     soundMediaPlayerService,
-                                    index,
                                     context
                                 )
                             },
@@ -271,6 +282,68 @@ fun SoundActivityUI(
         ){
             Spacer(modifier = Modifier.height(20.dp))
         }
+    }
+}
+
+private var soundIndex = -1
+
+@Composable
+private fun SetUpRoutineCurrentlyPlayingAlertDialogSoundUI(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+){
+    if(openRoutineIsCurrentlyPlayingDialogBox){
+        ConfirmStopRoutineAlertDialog(
+            {
+                updatePreviousUserRoutineRelationship {
+                    resetEverything(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        context
+                    ){
+                        startSoundConfirmed(
+                            soundMediaPlayerService,
+                            context
+                        )
+                    }
+                }
+            },
+            {
+                openRoutineIsCurrentlyPlayingDialogBox = false
+            }
+        )
+    }
+}
+
+private fun startSoundConfirmed(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    context: Context,
+){
+    resetSoundMediaPlayerServiceIfNecessary(
+        soundMediaPlayerService,
+        soundIndex
+    )
+    resetPlayButtonTextsIfNecessary(soundIndex)
+    playOrPauseMediaPlayerAccordingly(
+        soundMediaPlayerService,
+        soundIndex,
+        context
+    )
+    openRoutineIsCurrentlyPlayingDialogBox = false
+}
+
+private fun resetCurrentlyPlayingRoutineIfNecessary(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    context: Context,
+) {
+    if(globalViewModel_!!.currentRoutinePlaying != null){
+        openRoutineIsCurrentlyPlayingDialogBox = true
+    }else{
+        startSoundConfirmed(
+            soundMediaPlayerService,
+            context
+        )
     }
 }
 

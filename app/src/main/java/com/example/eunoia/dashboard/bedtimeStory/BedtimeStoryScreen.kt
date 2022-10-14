@@ -25,9 +25,9 @@ import com.example.eunoia.R
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.generalMediaPlayerService_
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.BedtimeStoryTimer
@@ -75,7 +75,17 @@ fun BedtimeStoryScreen(
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ){
+    val context = LocalContext.current
+
+    SetUpRoutineCurrentlyPlayingAlertDialogBedtimeStoryUI(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context,
+        bedtimeStoryInfoData
+    )
+
     globalViewModel_!!.navController = navController
     var retrievedUris by rememberSaveable{ mutableStateOf(false) }
 
@@ -103,7 +113,6 @@ fun BedtimeStoryScreen(
 
     if(retrievedUris) {
         val scrollState = rememberScrollState()
-        val context = LocalContext.current
         ConstraintLayout(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -205,9 +214,11 @@ fun BedtimeStoryScreen(
                             )
                             .border(1.dp, Black, CircleShape)
                             .clickable {
-                                pauseOrPlayBedtimeStoryAccordingly(
-                                    bedtimeStoryInfoData,
+                                resetCurrentlyPlayingRoutineIfNecessaryBedtimeStoryUI(
+                                    soundMediaPlayerService,
                                     generalMediaPlayerService,
+                                    context,
+                                    bedtimeStoryInfoData
                                 )
                             }
                     ) {
@@ -234,7 +245,8 @@ fun BedtimeStoryScreen(
                     bedtimeStoryInfoData = bedtimeStoryInfoData,
                     generalMediaPlayerService = generalMediaPlayerService,
                     scope = scope,
-                    state = state
+                    state = state,
+                    soundMediaPlayerService = soundMediaPlayerService
                 )
             }
             Column(

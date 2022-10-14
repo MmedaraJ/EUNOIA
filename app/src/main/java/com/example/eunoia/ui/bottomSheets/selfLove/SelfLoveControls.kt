@@ -33,6 +33,7 @@ import com.example.eunoia.dashboard.home.SelfLoveForRoutine
 import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.dashboard.selfLove.navigateToSelfLoveScreen
 import com.example.eunoia.dashboard.selfLove.resetBothLocalAndGlobalControlButtonsAfterReset
+import com.example.eunoia.dashboard.selfLove.resetOtherGeneralMediaPlayerUsersExceptSelfLove
 import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -427,6 +428,7 @@ private fun initializeMediaPlayer(
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
         globalViewModel_!!.selfLoveTimer.setMaxDuration(selfLoveData.fullPlayTime.toLong())
+        resetOtherGeneralMediaPlayerUsersExceptSelfLove()
         resetGlobalControlButtons()
     }
 }

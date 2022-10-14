@@ -372,6 +372,7 @@ private fun startBedtimeStory(
         if(generalMediaPlayerService.isMediaPlayerInitialized()){
             if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
                 generalMediaPlayerService.startMediaPlayer()
+                afterPlayingBedtimeStory()
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
@@ -384,8 +385,6 @@ private fun startBedtimeStory(
                 bedtimeStoryInfoData
             )
         }
-
-        afterPlayingBedtimeStory()
     }
 }
 
@@ -425,9 +424,10 @@ private fun initializeMediaPlayer(
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
         globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
-        resetGlobalControlButtons()
         resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
     }
+    resetGlobalControlButtons()
+    afterPlayingBedtimeStory()
 }
 
 private fun retrieveBedtimeStoryAudio(

@@ -26,6 +26,7 @@ import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
 import com.example.eunoia.models.*
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -115,11 +116,20 @@ private fun SetUpAlertDialogs(){
 fun SoundScreen(
     navController: NavController,
     soundData: SoundData,
-    context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
 ){
+    val context = LocalContext.current
+
+    SetUpRoutineCurrentlyPlayingAlertDialogSoundUI(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context,
+        soundData
+    )
+
     SetUpAlertDialogs()
     globalViewModel_!!.navController = navController
     showCommentBox = false

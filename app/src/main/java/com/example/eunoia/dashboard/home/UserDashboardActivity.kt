@@ -42,6 +42,7 @@ import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.create.createSound.*
 import com.example.eunoia.create.createSound.selectedIndex
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.create.resetEverythingExceptRoutine
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserRoutineRelationshipObject
@@ -660,6 +661,11 @@ fun resetGlobalRoutineCountdownTimers() {
         globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer!!.cancel()
         globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer = null
     }
+
+    if(globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer != null) {
+        globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer!!.cancel()
+        globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer = null
+    }
 }
 
 private fun resetRoutinePlayButtonTextsIfNecessary(index: Int) {
@@ -964,9 +970,21 @@ fun updateUserRoutineRelationshipWhenRoutineIsDonePlaying(
 }
 
 fun resetRoutineGlobalProperties(){
+    resetGlobalRoutineCountdownTimers()
     globalViewModel_!!.currentRoutinePlaying = null
     globalViewModel_!!.currentUserRoutineRelationshipPlaying = null
     globalViewModel_!!.isCurrentRoutinePlaying = false
+
+    globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
+    globalViewModel_!!.currentRoutinePlayingOrder = null
+    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = 0
+    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets = null
+    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = 0
+    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers = null
+    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex = 0
+    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories = null
+    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = 0
+    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = null
 }
 
 private val allElements = listOf(

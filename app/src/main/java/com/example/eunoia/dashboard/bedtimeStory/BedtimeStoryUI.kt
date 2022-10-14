@@ -1,5 +1,6 @@
 package com.example.eunoia.dashboard.bedtimeStory
 
+import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -19,21 +20,27 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.home.BedtimeStoryForRoutine.updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo
+import com.example.eunoia.dashboard.home.updatePreviousUserRoutineRelationship
 import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
 import com.example.eunoia.ui.bottomSheets.bedtimeStory.resetGlobalControlButtons
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.timerFormatMS
 import kotlinx.coroutines.CoroutineScope
@@ -44,8 +51,10 @@ fun PurpleBackgroundControls(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
     generalMediaPlayerService: GeneralMediaPlayerService,
     scope: CoroutineScope,
-    state: ModalBottomSheetState
+    state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ){
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)
@@ -119,7 +128,9 @@ fun PurpleBackgroundControls(
                     generalMediaPlayerService,
                     true,
                     scope,
-                    state
+                    state,
+                    soundMediaPlayerService,
+                    context
                 )
             }
         }
@@ -134,6 +145,8 @@ fun BottomSheetBedtimeStoryControls(
     showAddIcon: Boolean,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    context: Context,
 ){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -173,6 +186,8 @@ fun BottomSheetBedtimeStoryControls(
                         bedtimeStoryInfoData,
                         index,
                         generalMediaPlayerService,
+                        soundMediaPlayerService,
+                        context
                     )
                 }
             }
@@ -208,6 +223,8 @@ private fun activateControls(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
     index: Int,
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    context: Context
 ){
     when(index){
         0 -> resetBedtimeStory(
@@ -219,9 +236,11 @@ private fun activateControls(
             generalMediaPlayerService,
         )
         2 -> {
-            pauseOrPlayBedtimeStoryAccordingly(
-                bedtimeStoryInfoData,
+            resetCurrentlyPlayingRoutineIfNecessaryBedtimeStoryUI(
+                soundMediaPlayerService,
                 generalMediaPlayerService,
+                context,
+                bedtimeStoryInfoData
             )
         }
         3 -> seekForward15(
@@ -328,6 +347,52 @@ fun seekForward15(
     }
 }
 
+@Composable
+fun SetUpRoutineCurrentlyPlayingAlertDialogBedtimeStoryUI(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+    bedtimeStoryData: BedtimeStoryInfoData
+){
+    if(openRoutineIsCurrentlyPlayingDialogBox){
+        ConfirmStopRoutineAlertDialog(
+            {
+                updatePreviousUserRoutineRelationship {
+                    resetEverything(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        context
+                    ){
+                        pauseOrPlayBedtimeStoryAccordingly(
+                            bedtimeStoryData,
+                            generalMediaPlayerService,
+                        )
+                    }
+                }
+            },
+            {
+                openRoutineIsCurrentlyPlayingDialogBox = false
+            }
+        )
+    }
+}
+
+fun resetCurrentlyPlayingRoutineIfNecessaryBedtimeStoryUI(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+    bedtimeStoryData: BedtimeStoryInfoData
+) {
+    if(globalViewModel_!!.currentRoutinePlaying != null){
+        openRoutineIsCurrentlyPlayingDialogBox = true
+    }else{
+        pauseOrPlayBedtimeStoryAccordingly(
+            bedtimeStoryData,
+            generalMediaPlayerService,
+        )
+    }
+}
+
 fun pauseOrPlayBedtimeStoryAccordingly(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -399,6 +464,7 @@ private fun startBedtimeStory(
         ){
             if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
                 generalMediaPlayerService.startMediaPlayer()
+                afterPlayingBedtimeStory(bedtimeStoryInfoData)
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
@@ -411,7 +477,6 @@ private fun startBedtimeStory(
                 bedtimeStoryInfoData
             )
         }
-        afterPlayingBedtimeStory(bedtimeStoryInfoData)
     }
 }
 
@@ -453,9 +518,10 @@ private fun initializeMediaPlayer(
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
         bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
         globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
-        resetBothLocalAndGlobalControlButtons()
         resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
     }
+    resetBothLocalAndGlobalControlButtons()
+    afterPlayingBedtimeStory(bedtimeStoryInfoData)
 }
 
 private fun setGlobalPropertiesAfterPlayingBedtimeStory(

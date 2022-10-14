@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
@@ -25,6 +26,7 @@ import com.amplifyframework.datastore.generated.model.UserBedtimeStoryInfoRelati
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.home.*
 import com.example.eunoia.dashboard.home.BedtimeStoryForRoutine.updateRecentlyPlayedUserBedtimeStoryRelationshipWithUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.prayer.resetPrayerGlobalProperties
@@ -34,10 +36,12 @@ import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelations
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
 import com.example.eunoia.ui.bottomSheets.bedtimeStory.deActivateBedtimeStoryGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.screens.Screen
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
@@ -86,12 +90,19 @@ private val allPros = listOf(
 @Composable
 fun BedtimeStoryActivityUI(
     navController: NavController,
-    context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
 ) {
+    val context = LocalContext.current
+
+    SetUpRoutineCurrentlyPlayingAlertDialog(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    )
+
     resetBedtimeStoryActivityPlayButtonTexts()
     globalViewModel_!!.navController = navController
     val scrollState = rememberScrollState()
@@ -215,9 +226,12 @@ fun BedtimeStoryActivityUI(
                             globalViewModel_!!.currentUsersBedtimeStoryRelationships!![i]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo,
                             i,
                             { index ->
-                                resetGeneralMediaPlayerServiceIfNecessary(generalMediaPlayerService, index)
-                                resetPlayButtonTextsIfNecessary(index)
-                                playOrPauseMediaPlayerAccordingly(generalMediaPlayerService, soundMediaPlayerService, index, context)
+                                bedtimeStoryIndex = index
+                                resetCurrentlyPlayingRoutineIfNecessary(
+                                    soundMediaPlayerService,
+                                    generalMediaPlayerService,
+                                    context
+                                )
                             },
                             { index ->
                                 navigateToBedtimeStoryScreen(
@@ -262,6 +276,73 @@ fun BedtimeStoryActivityUI(
         ){
             Spacer(modifier = Modifier.height(20.dp))
         }
+    }
+}
+
+private var bedtimeStoryIndex = -1
+
+@Composable
+private fun SetUpRoutineCurrentlyPlayingAlertDialog(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+){
+    if(openRoutineIsCurrentlyPlayingDialogBox){
+        ConfirmStopRoutineAlertDialog(
+            {
+                updatePreviousUserRoutineRelationship {
+                    resetEverything(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        context
+                    ){
+                        startBedtimeStoryConfirmed(
+                            soundMediaPlayerService,
+                            generalMediaPlayerService,
+                            context
+                        )
+                    }
+                }
+            },
+            {
+                openRoutineIsCurrentlyPlayingDialogBox = false
+            }
+        )
+    }
+}
+
+private fun startBedtimeStoryConfirmed(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+){
+    resetGeneralMediaPlayerServiceIfNecessary(
+        generalMediaPlayerService,
+        bedtimeStoryIndex
+    )
+    resetPlayButtonTextsIfNecessary(bedtimeStoryIndex)
+    playOrPauseMediaPlayerAccordingly(
+        generalMediaPlayerService,
+        soundMediaPlayerService,
+        bedtimeStoryIndex,
+        context
+    )
+    openRoutineIsCurrentlyPlayingDialogBox = false
+}
+
+private fun resetCurrentlyPlayingRoutineIfNecessary(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+) {
+    if(globalViewModel_!!.currentRoutinePlaying != null){
+        openRoutineIsCurrentlyPlayingDialogBox = true
+    }else{
+        startBedtimeStoryConfirmed(
+            soundMediaPlayerService,
+            generalMediaPlayerService,
+            context
+        )
     }
 }
 
@@ -338,6 +419,7 @@ private fun startBedtimeStory(
             globalViewModel_!!.currentPrayerPlaying == null
         ){
             generalMediaPlayerService.startMediaPlayer()
+            afterPlayingBedtimeStory(index)
         }else{
             initializeMediaPlayer(
                 generalMediaPlayerService,
@@ -346,8 +428,6 @@ private fun startBedtimeStory(
                 context
             )
         }
-
-        afterPlayingBedtimeStory(index)
     }
 }
 
@@ -447,6 +527,7 @@ private fun initializeMediaPlayer(
         globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.fullPlayTime.toLong())
         resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
     }
+    afterPlayingBedtimeStory(index)
 }
 
 /**
