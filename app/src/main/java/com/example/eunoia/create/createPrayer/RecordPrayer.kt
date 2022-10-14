@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.PrayerBackend
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -62,7 +62,7 @@ fun RecordPrayerUI(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    resetEverythingBeforeCreatingAnything(
+    resetEverything(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context

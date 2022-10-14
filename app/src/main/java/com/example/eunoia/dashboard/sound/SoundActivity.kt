@@ -386,6 +386,10 @@ private fun startSound(
     if(soundActivityUris[index].isNotEmpty()){
         if(soundMediaPlayerService.areMediaPlayersInitialized()){
             soundMediaPlayerService.startMediaPlayers()
+            afterPlayingSound(
+                index,
+                context
+            )
         }else{
             initializeMediaPlayers(
                 soundMediaPlayerService,
@@ -393,9 +397,15 @@ private fun startSound(
                 context
             )
         }
-        globalViewModel_!!.soundPlaytimeTimer.start()
-        setGlobalPropertiesAfterPlayingSound(index, context)
     }
+}
+
+private fun afterPlayingSound(
+    index: Int,
+    context: Context
+){
+    globalViewModel_!!.soundPlaytimeTimer.start()
+    setGlobalPropertiesAfterPlayingSound(index, context)
 }
 
 private fun getNecessaryPresets(index: Int, completed: () -> Unit){
@@ -413,6 +423,7 @@ private fun getNecessaryPresets(index: Int, completed: () -> Unit){
 
 private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
     globalViewModel_!!.currentSoundPlaying = globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound
+    Log.i(TAG, "globalViewModel_!!.currentSoundPlaying is ${globalViewModel_!!.currentSoundPlaying}")
     globalViewModel_!!.currentSoundPlayingPreset = soundActivityPresets[index]!!.value
     globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
     globalViewModel_!!.soundSliderVolumes = globalViewModel_!!.currentSoundPlayingPreset!!.volumes
@@ -427,29 +438,45 @@ private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
     globalViewModel_!!.isCurrentSoundPlaying = true
     com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(3)
     com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(1)
+    com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(0)
+}
+
+private fun updatePreviousAndCurrentSoundRelationship(
+    index: Int,
+    completed: () -> Unit
+){
+    updatePreviousUserSoundRelationship {
+        updateRecentlyPlayedUserSoundRelationshipWithUserSoundRelationship(
+            globalViewModel_!!.currentUsersSoundRelationships!![index]!!
+        ){
+            globalViewModel_!!.currentUsersSoundRelationships!![index] = it
+            completed()
+        }
+    }
 }
 
 private fun initializeMediaPlayers(
     soundMediaPlayerService: SoundMediaPlayerService,
     index: Int,
-    context: Context,
+    context: Context
 ) {
-    updatePreviousUserSoundRelationship {}
-    updateRecentlyPlayedUserSoundRelationshipWithUserSoundRelationship(
-        globalViewModel_!!.currentUsersSoundRelationships!![index]!!
-    ){
-        globalViewModel_!!.currentUsersSoundRelationships!![index] = it
+    updatePreviousAndCurrentSoundRelationship(index) {
+        resetGlobalControlButtons()
+        soundMediaPlayerService.onDestroy()
+        soundMediaPlayerService.setAudioUris(soundActivityUris[index])
+        soundMediaPlayerService.setVolumes(soundActivityUriVolumes[index])
+        resetAll(context, soundMediaPlayerService)
+        createMeditationBellMediaPlayer(context)
+        val intent = Intent()
+        intent.action = "PLAY"
+        soundMediaPlayerService.onStartCommand(intent, 0, 0)
+        soundMediaPlayerService.loopMediaPlayers()
+
+        afterPlayingSound(
+            index,
+            context
+        )
     }
-    soundMediaPlayerService.onDestroy()
-    soundMediaPlayerService.setAudioUris(soundActivityUris[index])
-    soundMediaPlayerService.setVolumes(soundActivityUriVolumes[index])
-    val intent = Intent()
-    intent.action = "PLAY"
-    soundMediaPlayerService.onStartCommand(intent, 0, 0)
-    soundMediaPlayerService.loopMediaPlayers()
-    resetAll(context, soundMediaPlayerService)
-    createMeditationBellMediaPlayer(context)
-    resetGlobalControlButtons()
 }
 
 /**
@@ -514,7 +541,11 @@ fun updatePreviousUserSoundRelationship(
                 globalViewModel_!!.previouslyPlayedUserSoundRelationship = null
                 completed(it)
             }
+        }else{
+            completed(null)
         }
+    }else{
+        completed(null)
     }
 }
 

@@ -4,10 +4,7 @@ import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
-import com.amplifyframework.datastore.generated.model.PrayerApprovalStatus
-import com.amplifyframework.datastore.generated.model.PrayerData
-import com.amplifyframework.datastore.generated.model.UserData
-import com.amplifyframework.datastore.generated.model.UserPrayerRelationship
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserPrayerRelationshipObject
@@ -21,6 +18,7 @@ import java.util.*
 object UserPrayerRelationshipBackend {
     private const val TAG = "UserPrayerRelationshipBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserPrayerRelationship(
         userPrayerRelationshipModel: UserPrayerRelationshipObject.UserPrayerRelationshipModel,
@@ -35,7 +33,9 @@ object UserPrayerRelationshipBackend {
                         Log.e(TAG, "Error from create userPrayerRelationshipModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userPrayerRelationshipModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -55,7 +55,31 @@ object UserPrayerRelationshipBackend {
             listOf()
         )
         createUserPrayerRelationship(userPrayerRelationshipModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
+        }
+    }
+
+    fun updateUserPrayerRelationship(
+        userPrayerRelationship: UserPrayerRelationship,
+        completed: (userPrayerRelationship: UserPrayerRelationship) -> Unit
+    ){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.update(userPrayerRelationship),
+                { response ->
+                    if(response.hasData()) {
+                        Log.i(TAG, "Successfully updated userPrayerRelationship: ${response.data}")
+                        mainScope.launch {
+                            completed(response.data)
+                        }
+                    }
+                },
+                {
+                    Log.i(TAG, "Error while updating userPrayerRelationship: ", it)
+                }
+            )
         }
     }
 
@@ -82,7 +106,9 @@ object UserPrayerRelationshipBackend {
                             }
                         }
                     }
-                    completed(userPrayerRelationshipList)
+                    mainScope.launch {
+                        completed(userPrayerRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -111,7 +137,9 @@ object UserPrayerRelationshipBackend {
                             }
                         }
                     }
-                    completed(userPrayerRelationshipList)
+                    mainScope.launch {
+                        completed(userPrayerRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

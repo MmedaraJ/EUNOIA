@@ -13,6 +13,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,11 +23,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.SelfLoveData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
+import com.example.eunoia.dashboard.home.PrayerForRoutine
+import com.example.eunoia.dashboard.home.SelfLoveForRoutine
+import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.dashboard.selfLove.navigateToSelfLoveScreen
 import com.example.eunoia.dashboard.selfLove.resetBothLocalAndGlobalControlButtonsAfterReset
+import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
@@ -351,6 +358,7 @@ private fun pauseSelfLove(
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
             globalViewModel_!!.selfLoveTimer.pause()
+            globalViewModel_!!.generalPlaytimeTimer.pause()
             activateSelfLoveGlobalControlButton(2)
             activateSelfLoveGlobalControlButton(2)
             globalViewModel_!!.isCurrentSelfLovePlaying = false
@@ -378,26 +386,49 @@ private fun startSelfLove(
                 selfLoveData
             )
         }
-        globalViewModel_!!.selfLoveTimer.start()
-        globalViewModel_!!.isCurrentSelfLovePlaying = true
-        deActivateSelfLoveGlobalControlButton(2)
-        deActivateSelfLoveGlobalControlButton(0)
+
+        afterPlayingSelfLove()
+    }
+}
+
+private fun afterPlayingSelfLove(){
+    globalViewModel_!!.selfLoveTimer.start()
+    globalViewModel_!!.generalPlaytimeTimer.start()
+    globalViewModel_!!.isCurrentSelfLovePlaying = true
+    deActivateSelfLoveGlobalControlButton(2)
+    deActivateSelfLoveGlobalControlButton(0)
+}
+
+private fun updatePreviousAndCurrentSelfLoveRelationship(
+    selfLoveData: SelfLoveData,
+    completed: () -> Unit
+){
+    updatePreviousUserSelfLoveRelationship {
+        SelfLoveForRoutine.updateRecentlyPlayedUserSelfLoveRelationshipWithSelfLove(
+            selfLoveData
+        ) {
+            updatePreviousUserPrayerRelationship {
+                updatePreviousUserBedtimeStoryRelationship {
+                    completed()
+                }
+            }
+        }
     }
 }
 
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    selfLoveData: SelfLoveData
+    selfLoveData: SelfLoveData,
 ){
-    generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentSelfLovePlayingUri!!)
-    val intent = Intent()
-    intent.action = "PLAY"
-    generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    globalViewModel_!!.selfLoveTimer.setMaxDuration(selfLoveData.fullPlayTime.toLong())
-    globalViewModel_!!.selfLoveTimer.setDuration(0L)
-    resetGlobalControlButtons()
-    //resetAll(context, soundMediaPlayerService)
+    updatePreviousAndCurrentSelfLoveRelationship(selfLoveData) {
+        generalMediaPlayerService.onDestroy()
+        generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentSelfLovePlayingUri!!)
+        val intent = Intent()
+        intent.action = "PLAY"
+        generalMediaPlayerService.onStartCommand(intent, 0, 0)
+        globalViewModel_!!.selfLoveTimer.setMaxDuration(selfLoveData.fullPlayTime.toLong())
+        resetGlobalControlButtons()
+    }
 }
 
 private fun retrieveSelfLoveAudio(

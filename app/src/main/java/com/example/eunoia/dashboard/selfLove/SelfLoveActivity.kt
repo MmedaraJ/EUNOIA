@@ -3,6 +3,7 @@ package com.example.eunoia.dashboard.selfLove
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,13 +18,20 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
+import com.amazonaws.util.DateUtils
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.SelfLoveData
+import com.amplifyframework.datastore.generated.model.UserSelfLoveRelationship
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserSelfLoveBackend
+import com.example.eunoia.backend.UserSelfLoveRelationshipBackend
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
+import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.OptionItem
+import com.example.eunoia.dashboard.home.SelfLoveForRoutine
 import com.example.eunoia.dashboard.prayer.resetPrayerGlobalProperties
+import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -33,6 +41,7 @@ import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import kotlinx.coroutines.CoroutineScope
+import java.util.*
 
 private const val TAG = "Self Love Activity"
 var selfLoveActivityUris = mutableListOf<MutableState<Uri>?>()
@@ -88,14 +97,14 @@ fun SelfLoveActivityUI(
     val scrollState = rememberScrollState()
     var retrievedSelfLove by rememberSaveable{ mutableStateOf(false) }
     globalViewModel_!!.currentUser?.let {
-        UserSelfLoveBackend.queryApprovedUserSelfLoveBasedOnUser(it) { userSelfLove ->
-            if(selfLoveActivityUris.size < userSelfLove.size) {
-                for (i in userSelfLove.indices) {
+        UserSelfLoveRelationshipBackend.queryApprovedUserSelfLoveRelationshipBasedOnUser(it) { userSelfLoveRelationships ->
+            if(selfLoveActivityUris.size < userSelfLoveRelationships.size) {
+                for (i in userSelfLoveRelationships.indices) {
                     selfLoveActivityUris.add(mutableStateOf("".toUri()))
                     selfLoveActivityPlayButtonTexts.add(mutableStateOf(START_SELF_LOVE))
                 }
             }
-            globalViewModel_!!.currentUsersSelfLoves = userSelfLove.toMutableList()
+            globalViewModel_!!.currentUsersSelfLoveRelationships = userSelfLoveRelationships.toMutableList()
             retrievedSelfLove = true
         }
     }
@@ -198,13 +207,13 @@ fun SelfLoveActivityUI(
         ){
             if(
                 retrievedSelfLove &&
-                globalViewModel_!!.currentUsersSelfLoves != null
+                globalViewModel_!!.currentUsersSelfLoveRelationships != null
             ){
-                if(globalViewModel_!!.currentUsersSelfLoves!!.size > 0){
-                    for(i in globalViewModel_!!.currentUsersSelfLoves!!.indices){
+                if(globalViewModel_!!.currentUsersSelfLoveRelationships!!.size > 0){
+                    for(i in globalViewModel_!!.currentUsersSelfLoveRelationships!!.indices){
                         setSelfLoveActivityPlayButtonTextsCorrectly(i)
                         DisplayUsersSelfLoves(
-                            globalViewModel_!!.currentUsersSelfLoves!![i]!!.selfLoveData,
+                            globalViewModel_!!.currentUsersSelfLoveRelationships!![i]!!.userSelfLoveRelationshipSelfLove,
                             i,
                             { index ->
                                 resetGeneralMediaPlayerServiceIfNecessary(generalMediaPlayerService, index)
@@ -219,7 +228,7 @@ fun SelfLoveActivityUI(
                             { index ->
                                 navigateToSelfLoveScreen(
                                     navController,
-                                    globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData
+                                    globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove
                                 )
                             }
                         )
@@ -266,7 +275,7 @@ private fun setSelfLoveActivityPlayButtonTextsCorrectly(i: Int) {
     if (globalViewModel_!!.currentSelfLovePlaying != null) {
         if (
             globalViewModel_!!.currentSelfLovePlaying!!.id ==
-            globalViewModel_!!.currentUsersSelfLoves!![i]!!.selfLoveData.id
+            globalViewModel_!!.currentUsersSelfLoveRelationships!![i]!!.userSelfLoveRelationshipSelfLove.id
         ) {
             if(globalViewModel_!!.isCurrentSelfLovePlaying){
                 selfLoveActivityPlayButtonTexts[i]!!.value = PAUSE_SELF_LOVE
@@ -315,6 +324,7 @@ private fun pauseSelfLove(
             generalMediaPlayerService.pauseMediaPlayer()
             selfLoveActivityPlayButtonTexts[index]!!.value = START_SELF_LOVE
             globalViewModel_!!.selfLoveTimer.pause()
+            globalViewModel_!!.generalPlaytimeTimer.pause()
             globalViewModel_!!.isCurrentSelfLovePlaying = false
             deActivateSelfLoveGlobalControlButton(2)
         }
@@ -342,13 +352,19 @@ private fun startSelfLove(
                 context
             )
         }
-        globalViewModel_!!.selfLoveTimer.start()
-        setGlobalPropertiesAfterPlayingSelfLove(index)
+
+        afterPlayingSelfLove(index)
     }
 }
 
+private fun afterPlayingSelfLove(index: Int){
+    globalViewModel_!!.selfLoveTimer.start()
+    globalViewModel_!!.generalPlaytimeTimer.start()
+    setGlobalPropertiesAfterPlayingSelfLove(index)
+}
+
 private fun setGlobalPropertiesAfterPlayingSelfLove(index: Int){
-    globalViewModel_!!.currentSelfLovePlaying = globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData
+    globalViewModel_!!.currentSelfLovePlaying = globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove
     globalViewModel_!!.currentSelfLovePlayingUri = selfLoveActivityUris[index]!!.value
     selfLoveActivityPlayButtonTexts[index]!!.value = PAUSE_SELF_LOVE
     globalViewModel_!!.isCurrentSelfLovePlaying = true
@@ -363,8 +379,8 @@ private fun retrieveSelfLoveAudio(
     context: Context
 ) {
     SoundBackend.retrieveAudio(
-        globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData.audioKeyS3,
-        globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData.selfLoveOwner.amplifyAuthUserId
+        globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.audioKeyS3,
+        globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.selfLoveOwner.amplifyAuthUserId
     ) {
         selfLoveActivityUris[index]!!.value = it
         startSelfLove(
@@ -381,7 +397,7 @@ private fun resetGeneralMediaPlayerServiceIfNecessary(
     index: Int
 ) {
     if(globalViewModel_!!.currentSelfLovePlaying != null) {
-        if (globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData.id != globalViewModel_!!.currentSelfLovePlaying!!.id) {
+        if (globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.id != globalViewModel_!!.currentSelfLovePlaying!!.id) {
             generalMediaPlayerService.onDestroy()
         }
     }
@@ -397,21 +413,109 @@ private fun resetPlayButtonTextsIfNecessary(index: Int) {
     }
 }
 
+private fun updatePreviousAndCurrentSelfLoveRelationship(
+    index: Int,
+    completed: () -> Unit
+){
+    updatePreviousUserSelfLoveRelationship{
+        SelfLoveForRoutine.updateRecentlyPlayedUserSelfLoveRelationshipWithUserSelfLoveRelationship(
+            globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!
+        ) {
+            globalViewModel_!!.currentUsersSelfLoveRelationships!![index] = it
+            updatePreviousUserPrayerRelationship {
+                updatePreviousUserBedtimeStoryRelationship {
+                    completed()
+                }
+            }
+        }
+    }
+}
+
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
     index: Int,
     context: Context
 ){
-    generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(selfLoveActivityUris[index]!!.value)
-    val intent = Intent()
-    intent.action = "PLAY"
-    generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    globalViewModel_!!.selfLoveTimer.setMaxDuration(globalViewModel_!!.currentUsersSelfLoves!![index]!!.selfLoveData.fullPlayTime.toLong())
-    globalViewModel_!!.selfLoveTimer.setDuration(0L)
-    resetOtherGeneralMediaPlayerUsersExceptSelfLove()
-    //resetAll(context, soundMediaPlayerService)
+    updatePreviousAndCurrentSelfLoveRelationship(index) {
+        generalMediaPlayerService.onDestroy()
+        generalMediaPlayerService.setAudioUri(selfLoveActivityUris[index]!!.value)
+        val intent = Intent()
+        intent.action = "PLAY"
+        generalMediaPlayerService.onStartCommand(intent, 0, 0)
+        globalViewModel_!!.selfLoveTimer.setMaxDuration(globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.fullPlayTime.toLong())
+        resetOtherGeneralMediaPlayerUsersExceptSelfLove()
+    }
+}
+
+/**
+ * Keep track of the date time a user starts listening to a self love
+ */
+fun updateCurrentUserSelfLoveRelationshipUsageTimeStamp(
+    userSelfLoveRelationship: UserSelfLoveRelationship,
+    completed: (updatedUserSelfLoveRelationship: UserSelfLoveRelationship) -> Unit
+) {
+    var usageTimeStamp = userSelfLoveRelationship.usageTimestamps
+    val currentDateTime = DateUtils.formatISO8601Date(Date())
+
+    if(usageTimeStamp != null) {
+        usageTimeStamp.add(Temporal.DateTime(currentDateTime))
+    }else{
+        usageTimeStamp = listOf(Temporal.DateTime(currentDateTime))
+    }
+
+    val numberOfTimesPlayed = userSelfLoveRelationship.numberOfTimesPlayed + 1
+
+    val newUserSelfLoveRelationship = userSelfLoveRelationship.copyOfBuilder()
+        .numberOfTimesPlayed(numberOfTimesPlayed)
+        .usageTimestamps(usageTimeStamp)
+        .build()
+
+    UserSelfLoveRelationshipBackend.updateUserSelfLoveRelationship(newUserSelfLoveRelationship){
+        completed(it)
+    }
+}
+
+fun updatePreviousUserSelfLoveRelationship(
+    completed: (updatedUserSelfLoveRelationship: UserSelfLoveRelationship?) -> Unit
+) {
+    if(globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship != null){
+        Log.i(TAG, "Duration of SelfLove general timer is ${globalViewModel_!!.generalPlaytimeTimer.getDuration()}")
+        val playTime = globalViewModel_!!.generalPlaytimeTimer.getDuration()
+        globalViewModel_!!.generalPlaytimeTimer.stop()
+
+        Log.i(TAG, "Total bts play time = ${globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.totalPlayTime}")
+        Log.i(TAG, "play time = $playTime")
+        val totalPlayTime = globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.totalPlayTime + playTime
+        Log.i(TAG, "final total play time = $totalPlayTime")
+
+        var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.usagePlayTimes
+        if(usagePlayTimes != null) {
+            usagePlayTimes.add(playTime.toInt())
+        }else{
+            usagePlayTimes = listOf(playTime.toInt())
+        }
+
+        val numberOfTimesPlayed = globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.numberOfTimesPlayed
+        Log.i(TAG, "number of times played = $numberOfTimesPlayed")
+
+        if(totalPlayTime > 0){
+            val userSelfLoveRelationship = globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.copyOfBuilder()
+                .numberOfTimesPlayed(numberOfTimesPlayed)
+                .totalPlayTime(totalPlayTime.toInt())
+                .usagePlayTimes(usagePlayTimes)
+                .build()
+
+            UserSelfLoveRelationshipBackend.updateUserSelfLoveRelationship(userSelfLoveRelationship){
+                globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship = null
+                completed(it)
+            }
+        }else{
+            completed(null)
+        }
+    }else{
+        completed(null)
+    }
 }
 
 fun resetOtherGeneralMediaPlayerUsersExceptSelfLove(){

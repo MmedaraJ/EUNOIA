@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
-import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.models.SoundPresetObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -54,7 +54,7 @@ fun UploadSoundsUI(
 ){
     val context = LocalContext.current
 
-    resetEverythingBeforeCreatingAnything(
+    resetEverything(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context

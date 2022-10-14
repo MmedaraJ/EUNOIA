@@ -4,10 +4,7 @@ import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
-import com.amplifyframework.datastore.generated.model.BedtimeStoryApprovalStatus
-import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
-import com.amplifyframework.datastore.generated.model.UserData
-import com.amplifyframework.datastore.generated.model.UserBedtimeStoryInfoRelationship
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserBedtimeStoryInfoRelationshipObject
@@ -21,6 +18,7 @@ import java.util.*
 object UserBedtimeStoryInfoRelationshipBackend {
     private const val TAG = "UserBedtimeStoryInfoRelationshipBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserBedtimeStoryInfoRelationship(
         userBedtimeStoryInfoRelationshipModel: UserBedtimeStoryInfoRelationshipObject.UserBedtimeStoryInfoRelationshipModel,
@@ -35,7 +33,9 @@ object UserBedtimeStoryInfoRelationshipBackend {
                         Log.e(TAG, "Error from create userBedtimeStoryInfoRelationshipModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userBedtimeStoryInfoRelationshipModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -58,7 +58,31 @@ object UserBedtimeStoryInfoRelationshipBackend {
             usagePlayTimes = listOf()
         )
         createUserBedtimeStoryInfoRelationship(userBedtimeStoryInfoRelationshipModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
+        }
+    }
+
+    fun updateUserBedtimeStoryInfoRelationship(
+        userBedtimeStoryInfoRelationship: UserBedtimeStoryInfoRelationship,
+        completed: (userBedtimeStoryInfoRelationship: UserBedtimeStoryInfoRelationship) -> Unit
+    ){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.update(userBedtimeStoryInfoRelationship),
+                { response ->
+                    if(response.hasData()) {
+                        Log.i(TAG, "Successfully updated userBedtimeStoryInfoRelationship: ${response.data}")
+                        mainScope.launch {
+                            completed(response.data)
+                        }
+                    }
+                },
+                {
+                    Log.i(TAG, "Error while updating userBedtimeStoryInfoRelationship: ", it)
+                }
+            )
         }
     }
 
@@ -85,7 +109,9 @@ object UserBedtimeStoryInfoRelationshipBackend {
                             }
                         }
                     }
-                    completed(userBedtimeStoryInfoRelationshipList)
+                    mainScope.launch {
+                        completed(userBedtimeStoryInfoRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -114,7 +140,9 @@ object UserBedtimeStoryInfoRelationshipBackend {
                             }
                         }
                     }
-                    completed(userBedtimeStoryInfoRelationshipList)
+                    mainScope.launch {
+                        completed(userBedtimeStoryInfoRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

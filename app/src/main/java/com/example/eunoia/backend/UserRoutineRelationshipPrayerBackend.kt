@@ -19,6 +19,7 @@ import java.util.*
 object UserRoutineRelationshipPrayerBackend {
     private const val TAG = "UserRoutineRelationshipPrayerBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private fun createUserRoutineRelationshipPrayer(
         userRoutineRelationshipPrayerModel: UserRoutineRelationshipPrayerObject.UserRoutineRelationshipPrayerModel,
@@ -33,7 +34,9 @@ object UserRoutineRelationshipPrayerBackend {
                         Log.e(TAG, "Error from create UserRoutineRelationshipPrayerModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created UserRoutineRelationshipPrayerModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -52,7 +55,9 @@ object UserRoutineRelationshipPrayerBackend {
             PrayerObject.Prayer.from(prayerData),
         )
         createUserRoutineRelationshipPrayer(userRoutineRelationshipPrayerModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -76,7 +81,9 @@ object UserRoutineRelationshipPrayerBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipPrayerList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipPrayerList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -105,7 +112,9 @@ object UserRoutineRelationshipPrayerBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipPrayerList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipPrayerList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

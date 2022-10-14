@@ -25,7 +25,7 @@ import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
-import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
@@ -65,7 +65,7 @@ fun UploadBedtimeStoryUI(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    resetEverythingBeforeCreatingAnything(
+    resetEverything(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context

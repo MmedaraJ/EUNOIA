@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 object UserBackend {
     private const val TAG = "UserBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUser(user: UserObject.User, completed: (user: UserData) -> Unit){
         scope.launch{
@@ -23,7 +24,9 @@ object UserBackend {
                 { response ->
                     if(response.hasData()){
                         Log.i(TAG, "Created user: ${response.data}")
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }else{
                         Log.i(TAG, response.toString())
                     }
@@ -46,7 +49,9 @@ object UserBackend {
                         }
                         else {
                             Log.i(TAG, "No user has the username: $username ${response.data.items}")
-                            completed(null)
+                            mainScope.launch {
+                                completed(null)
+                            }
                         }
                     }
                 },
@@ -62,7 +67,9 @@ object UserBackend {
                 { response ->
                     if(response.hasData()) {
                         Log.i(TAG, "Successfully updated user: ${response.data}")
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 {

@@ -15,6 +15,7 @@ import java.util.*
 object RoutineSoundPresetBackend {
     private const val TAG = "RoutineSoundPresetBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private fun createRoutineSoundPreset(
         routineSoundPresetModel: RoutineSoundPresetObject.RoutineSoundPresetModel,
@@ -29,7 +30,9 @@ object RoutineSoundPresetBackend {
                         Log.e(TAG, "Error from create routineSoundPresetModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created routineSoundPresetModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -48,7 +51,9 @@ object RoutineSoundPresetBackend {
             RoutineObject.Routine.from(routineData)
         )
         createRoutineSoundPreset(routineSoundPresetModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -72,7 +77,9 @@ object RoutineSoundPresetBackend {
                             }
                         }
                     }
-                    completed(routineSoundPresetList)
+                    mainScope.launch {
+                        completed(routineSoundPresetList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -101,7 +108,9 @@ object RoutineSoundPresetBackend {
                             }
                         }
                     }
-                    completed(routineSoundPresetList)
+                    mainScope.launch {
+                        completed(routineSoundPresetList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

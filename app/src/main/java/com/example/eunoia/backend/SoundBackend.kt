@@ -24,13 +24,16 @@ import java.io.File
 object SoundBackend{
     private const val TAG = "SoundBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun getSoundWithID(id: String, completed: (sound: SoundData) -> Unit){
         scope.launch {
             Amplify.API.query(ModelQuery.get(SoundData::class.java, id),
                 { response ->
                     Log.i(TAG, "Query results = ${(response.data as SoundData).displayName}")
-                    completed(response.data)
+                    mainScope.launch {
+                        completed(response.data)
+                    }
                 },
                 { Log.e("MyAmplifyApp", "Query failed", it) }
             )
@@ -57,7 +60,9 @@ object SoundBackend{
                             }
                         }
                     }
-                    completed(soundList)
+                    mainScope.launch {
+                        completed(soundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -82,7 +87,9 @@ object SoundBackend{
                                 sounds.add(soundData)
                             }
                         }
-                        completed(sounds)
+                        mainScope.launch {
+                            completed(sounds)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
@@ -110,7 +117,9 @@ object SoundBackend{
                                 sounds.add(soundData)
                             }
                         }
-                        completed(sounds)
+                        mainScope.launch {
+                            completed(sounds)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
@@ -142,7 +151,9 @@ object SoundBackend{
                             }
                         }
                     }
-                    completed(soundList)
+                    mainScope.launch {
+                        completed(soundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -170,14 +181,16 @@ object SoundBackend{
                             }
                         }
                     }
-                    completed(soundList)
+                    mainScope.launch {
+                        completed(soundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
         }
     }
 
-    fun querySound(context: Context) {
+    fun querySound() {
         Log.i(TAG, "Querying sounds")
         scope.launch {
             Amplify.API.query(
@@ -207,7 +220,9 @@ object SoundBackend{
                         Log.e(TAG, "Error from create sound ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created sound with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -301,7 +316,9 @@ object SoundBackend{
                 { progress -> Log.i(TAG, "Fraction completed: ${progress.fractionCompleted}") },
                 { result ->
                     Log.i(TAG, "Successfully downloaded: ${result.file.name}")
-                    completed(result.file.toUri())
+                    mainScope.launch {
+                        completed(result.file.toUri())
+                    }
                 },
                 { error -> Log.e(TAG, "Download Failure", error) }
             )
@@ -325,7 +342,9 @@ object SoundBackend{
                 options,
                 { result ->
                     Log.i(TAG, "Successfully listed files ${result.items}")
-                    completed(result)
+                    mainScope.launch {
+                        completed(result)
+                    }
                 },
                 { Log.e(TAG, "List failure", it) }
             )

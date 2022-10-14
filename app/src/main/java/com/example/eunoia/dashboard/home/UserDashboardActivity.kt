@@ -42,13 +42,13 @@ import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.create.createSound.*
 import com.example.eunoia.create.createSound.selectedIndex
+import com.example.eunoia.create.resetEverythingExceptRoutine
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserRoutineRelationshipObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.bottomSheets.*
-import com.example.eunoia.ui.bottomSheets.bedtimeStory.resetGlobalControlButtons
 import com.example.eunoia.ui.bottomSheets.recordAudio.recorder
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingFile
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingTimeDisplay
@@ -95,6 +95,7 @@ class UserDashboardActivity :
 {
     private val _currentUser = MutableLiveData<UserData>(null)
     var currentUser: LiveData<UserData> = _currentUser
+   // private const var TAG = "UserDashboardActivity"
 
     companion object{
         val TAG = "UserDashboardActivity"
@@ -317,7 +318,10 @@ class UserDashboardActivity :
     }
 
     override fun onBedtimeStoryTimerTick(durationString: String, durationMilliSeconds: Long) {
-        if(generalMediaPlayerService_!!.isMediaPlayerInitialized()){
+        if(
+            generalMediaPlayerService_!!.isMediaPlayerInitialized() &&
+            globalViewModel_!!.currentBedtimeStoryPlaying != null
+        ){
             globalViewModel_!!.bedtimeStoryTimeDisplay = durationString
             globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
             globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
@@ -330,7 +334,10 @@ class UserDashboardActivity :
     }
 
     override fun onSelfLoveTimerTick(durationString: String, durationMilliSeconds: Long) {
-        if (generalMediaPlayerService_!!.isMediaPlayerInitialized()) {
+        if (
+            generalMediaPlayerService_!!.isMediaPlayerInitialized() &&
+            globalViewModel_!!.currentSelfLovePlaying != null
+        ) {
             globalViewModel_!!.selfLoveTimeDisplay = durationString
             globalViewModel_!!.selfLoveCircularSliderClicked = false
             globalViewModel_!!.selfLoveCircularSliderAngle = (
@@ -341,7 +348,10 @@ class UserDashboardActivity :
     }
 
     override fun onPrayerTimerTick(durationString: String, durationMilliSeconds: Long) {
-        if (generalMediaPlayerService_!!.isMediaPlayerInitialized()) {
+        if (
+            generalMediaPlayerService_!!.isMediaPlayerInitialized() &&
+            globalViewModel_!!.currentPrayerPlaying != null
+        ) {
             globalViewModel_!!.prayerTimeDisplay = durationString
             globalViewModel_!!.prayerCircularSliderClicked = false
             globalViewModel_!!.prayerCircularSliderAngle = (
@@ -510,15 +520,17 @@ fun UserDashboardActivityUI(
                                 resetRoutineMediaPlayerServicesIfNecessary(
                                     soundMediaPlayerService,
                                     generalMediaPlayerService,
-                                    index
-                                )
-                                resetRoutinePlayButtonTextsIfNecessary(index)
-                                selectNextRoutineElement(
-                                    soundMediaPlayerService,
-                                    generalMediaPlayerService,
                                     index,
                                     context
-                                )
+                                ){
+                                    resetRoutinePlayButtonTextsIfNecessary(index)
+                                    selectNextRoutineElement(
+                                        soundMediaPlayerService,
+                                        generalMediaPlayerService,
+                                        index,
+                                        context
+                                    )
+                                }
                             },
                             {
                                 navigateToRoutineScreen(navController, globalViewModel_!!.currentUsersRoutineRelationships!![i]!!)
@@ -584,26 +596,37 @@ private fun setRoutineActivityPlayButtonTextsCorrectly(i: Int) {
 private fun resetRoutineMediaPlayerServicesIfNecessary(
     soundMediaPlayerService: SoundMediaPlayerService,
     generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int
+    index: Int,
+    context: Context,
+    completed: () -> Unit
 ) {
-    if(globalViewModel_!!.currentUserRoutineRelationshipPlaying != null) {
-        if (globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.id != globalViewModel_!!.currentUserRoutineRelationshipPlaying!!.id) {
-            globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
-            globalViewModel_!!.currentRoutinePlayingOrder = null
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = 0
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets = null
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentPrayerPlayingIndex
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers = null
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentBedtimeStoryPlayingIndex
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories = null
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentSelfLovePlayingIndex
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = null
-            //countdown timers
-            resetGlobalRoutineCountdownTimers()
+    //reset other elements
+    Log.i(TAG, "About to reset ecerything except routine")
+    resetEverythingExceptRoutine(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    ){
+        if(globalViewModel_!!.currentUserRoutineRelationshipPlaying != null) {
+            if (globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.id != globalViewModel_!!.currentUserRoutineRelationshipPlaying!!.id) {
+                globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
+                globalViewModel_!!.currentRoutinePlayingOrder = null
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = 0
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets = null
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentPrayerPlayingIndex
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers = null
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentBedtimeStoryPlayingIndex
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories = null
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentSelfLovePlayingIndex
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = null
+                //countdown timers
+                resetGlobalRoutineCountdownTimers()
 
-            soundMediaPlayerService.onDestroy()
-            generalMediaPlayerService.onDestroy()
+                soundMediaPlayerService.onDestroy()
+                generalMediaPlayerService.onDestroy()
+            }
         }
+        completed()
     }
 }
 
@@ -662,80 +685,82 @@ private fun selectNextRoutineElement(
         context
     )*/
 
-    updateRoutineOncePlayIsClicked(index)
-
-    globalViewModel_!!.currentRoutinePlayingOrder = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.playingOrder
-    globalViewModel_!!.currentUserRoutineRelationshipPlaying = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!
-    Log.i(TAG, "Our routine playing orderz is ${globalViewModel_!!.currentRoutinePlayingOrder!![globalViewModel_!!.currentRoutinePlayingOrderIndex!!]}")
-    when(globalViewModel_!!.currentRoutinePlayingOrder!![globalViewModel_!!.currentRoutinePlayingOrderIndex!!]){
-        "sound" -> {
-            /*if(globalViewModel_!!.currentRoutinePlayingOrderIndex!! == 1) {
-                SoundForRoutine.playSound(
+    updateRoutineOncePlayIsClicked(index) {
+        globalViewModel_!!.currentRoutinePlayingOrder =
+            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.playingOrder
+        globalViewModel_!!.currentUserRoutineRelationshipPlaying =
+            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!
+        Log.i(
+            TAG,
+            "Our routine playing orderz is ${globalViewModel_!!.currentRoutinePlayingOrder!![globalViewModel_!!.currentRoutinePlayingOrderIndex!!]}"
+        )
+        when (globalViewModel_!!.currentRoutinePlayingOrder!![globalViewModel_!!.currentRoutinePlayingOrderIndex!!]) {
+            "sound" -> {
+                incrementPlayingOrderIndex(
                     soundMediaPlayerService,
                     generalMediaPlayerService,
                     index,
                     context
                 )
-            }*/
-            incrementPlayingOrderIndex(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
-        }
-        "sleep" -> {
-            incrementPlayingOrderIndex(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
-        }
-        "prayer" -> {
-            PrayerForRoutine.playOrPausePrayerAccordingly(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
-        }
-        "bedtimeStory" -> {
-            BedtimeStoryForRoutine.playOrPauseBedtimeStoryAccordingly(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
-        }
-        "self-love" -> {
-            SelfLoveForRoutine.playOrPauseSelfLoveAccordingly(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
-        }
-        else -> {
-            incrementPlayingOrderIndex(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
+            }
+            "sleep" -> {
+                incrementPlayingOrderIndex(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    index,
+                    context
+                )
+            }
+            "prayer" -> {
+                PrayerForRoutine.playOrPausePrayerAccordingly(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    index,
+                    context
+                )
+            }
+            "bedtimeStory" -> {
+                BedtimeStoryForRoutine.playOrPauseBedtimeStoryAccordingly(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    index,
+                    context
+                )
+            }
+            "self-love" -> {
+                SelfLoveForRoutine.playOrPauseSelfLoveAccordingly(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    index,
+                    context
+                )
+            }
+            else -> {
+                incrementPlayingOrderIndex(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    index,
+                    context
+                )
+            }
         }
     }
 }
 
-fun updateRoutineOncePlayIsClicked(index: Int) {
+fun updateRoutineOncePlayIsClicked(index: Int, completed: () -> Unit) {
     if (globalViewModel_!!.currentRoutinePlayingOrderIndex == 0) {
-        updatePreviousUserRoutineRelationship {}
-        updateRecentlyPlayedUserRoutineRelationshipWithUserRoutineRelationship(
-            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!
-        ) {
-            globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
+        updatePreviousUserRoutineRelationship {
+            updateRecentlyPlayedUserRoutineRelationshipWithUserRoutineRelationship(
+                globalViewModel_!!.currentUsersRoutineRelationships!![index]!!
+            ) {
+                globalViewModel_!!.currentRoutinePlaying = it.userRoutineRelationshipRoutine
+                globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
+                globalViewModel_!!.routinePlaytimeTimer.start()
+                completed()
+            }
         }
-        globalViewModel_!!.routinePlaytimeTimer.start()
+    }else{
+        completed()
     }
 }
 
@@ -768,7 +793,11 @@ fun updatePreviousUserRoutineRelationship(
                 globalViewModel_!!.previouslyPlayedUserRoutineRelationship = null
                 completed(it)
             }
+        }else{
+            completed(null)
         }
+    }else{
+        completed(null)
     }
 }
 

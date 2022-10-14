@@ -17,6 +17,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +31,7 @@ import com.amplifyframework.datastore.generated.model.SoundPresetData
 import com.amplifyframework.datastore.generated.model.SoundData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.home.SoundForRoutine
 import com.example.eunoia.dashboard.home.SoundForRoutine.updateRecentlyPlayedUserSoundRelationshipWithSound
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.SoundObject
@@ -58,6 +60,7 @@ fun bottomSheetSoundControlPanel(
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
 ): Boolean{
+    Log.i(TAG, "currentSoundPlayingbottomsheet is ${globalViewModel.currentSoundPlaying}")
     var showing = false
     if(globalViewModel.currentSoundPlaying != null &&
         globalViewModel.currentSoundPlayingPreset != null &&
@@ -457,6 +460,7 @@ private fun startSoundScreenSounds(
         if(soundMediaPlayerService.areMediaPlayersInitialized()){
             if(globalViewModel_!!.currentSoundPlaying!!.id == soundData.id){
                 soundMediaPlayerService.startMediaPlayers()
+                afterPlayingSound()
             }else{
                 initializeMediaPlayers(
                     soundMediaPlayerService,
@@ -473,10 +477,24 @@ private fun startSoundScreenSounds(
                 soundData
             )
         }
-        deActivateGlobalControlButton(3)
-        deActivateGlobalControlButton(1)
-        globalViewModel_!!.soundPlaytimeTimer.start()
-        globalViewModel_!!.isCurrentSoundPlaying = true
+    }
+}
+
+private fun afterPlayingSound(){
+    deActivateGlobalControlButton(3)
+    deActivateGlobalControlButton(1)
+    globalViewModel_!!.soundPlaytimeTimer.start()
+    globalViewModel_!!.isCurrentSoundPlaying = true
+}
+
+private fun updatePreviousAndCurrentSoundRelationship(
+    soundData: SoundData,
+    completed: () -> Unit
+){
+    updatePreviousUserSoundRelationship {
+        updateRecentlyPlayedUserSoundRelationshipWithSound(soundData) {
+            completed()
+        }
     }
 }
 
@@ -486,28 +504,29 @@ private fun initializeMediaPlayers(
     context: Context,
     soundData: SoundData
 ){
-    updatePreviousUserSoundRelationship {}
-    updateRecentlyPlayedUserSoundRelationshipWithSound(soundData) {}
+    updatePreviousAndCurrentSoundRelationship(soundData) {
+        generalMediaPlayerService.onDestroy()
+        soundMediaPlayerService.onDestroy()
+        soundMediaPlayerService.setAudioUris(globalViewModel_!!.currentSoundPlayingUris!!)
+        soundMediaPlayerService.setVolumes(globalViewModel_!!.soundSliderVolumes!!)
+        val intent = Intent()
+        intent.action = "PLAY"
+        soundMediaPlayerService.onStartCommand(intent, 0, 0)
+        soundMediaPlayerService.loopMediaPlayers()
 
-    generalMediaPlayerService.onDestroy()
-    soundMediaPlayerService.onDestroy()
-    soundMediaPlayerService.setAudioUris(globalViewModel_!!.currentSoundPlayingUris!!)
-    soundMediaPlayerService.setVolumes(globalViewModel_!!.soundSliderVolumes!!)
-    val intent = Intent()
-    intent.action = "PLAY"
-    soundMediaPlayerService.onStartCommand(intent, 0, 0)
-    soundMediaPlayerService.loopMediaPlayers()
+        globalViewModel_!!.soundMeditationBellInterval = 0
+        resetGlobalControlButtons()
+        globalViewModel_!!.soundTimerTime = 0
+        startCountDownTimer(
+            context,
+            globalViewModel_!!.soundTimerTime,
+            soundMediaPlayerService
+        )
 
-    globalViewModel_!!.soundMeditationBellInterval = 0
-    resetGlobalControlButtons()
-    globalViewModel_!!.soundTimerTime = 0
-    startCountDownTimer(
-        context,
-        globalViewModel_!!.soundTimerTime,
-        soundMediaPlayerService
-    )
+        createMeditationBellMediaPlayer(context)
 
-    createMeditationBellMediaPlayer(context)
+        afterPlayingSound()
+    }
 }
 
 private fun pauseSoundScreenSounds(

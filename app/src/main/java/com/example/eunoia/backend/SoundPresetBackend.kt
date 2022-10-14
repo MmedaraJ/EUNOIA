@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 object SoundPresetBackend {
     private const val TAG = "SoundPresetBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createSoundPreset(preset: SoundPresetObject.SoundPreset, completed: (presetData: SoundPresetData) -> Unit){
         scope.launch{
@@ -25,7 +26,9 @@ object SoundPresetBackend {
                         Log.e(TAG, response.errors.first().message)
                     } else {
                         Log.i(TAG, "Created preset with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -59,7 +62,9 @@ object SoundPresetBackend {
                                 }
                             }
                         }
-                        completed(presetList)
+                        mainScope.launch {
+                            completed(presetList)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
@@ -94,7 +99,9 @@ object SoundPresetBackend {
                                 }
                             }
                         }
-                        completed(presetList)
+                        mainScope.launch {
+                            completed(presetList)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
@@ -128,7 +135,9 @@ object SoundPresetBackend {
                                 }
                             }
                         }
-                        completed(presetList)
+                        mainScope.launch {
+                            completed(presetList)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
@@ -143,7 +152,9 @@ object SoundPresetBackend {
                 { response ->
                     if(response.hasData()) {
                         Log.i(TAG, "Query results = ${(response.data as SoundPresetData).id}")
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { Log.e("MyAmplifyApp", "Query failed", it) }

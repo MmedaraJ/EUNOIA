@@ -15,6 +15,7 @@ import java.util.*
 object RoutinePrayerBackend {
     private const val TAG = "RoutinePrayerBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createRoutinePrayer(
         routinePrayerModel: RoutinePrayerObject.RoutinePrayerModel,
@@ -29,7 +30,9 @@ object RoutinePrayerBackend {
                         Log.e(TAG, "Error from create routinePrayerModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created routinePrayerModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -48,7 +51,9 @@ object RoutinePrayerBackend {
             PrayerObject.Prayer.from(prayerData),
         )
         createRoutinePrayer(routinePrayerModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -72,7 +77,9 @@ object RoutinePrayerBackend {
                             }
                         }
                     }
-                    completed(routinePrayerList)
+                    mainScope.launch {
+                        completed(routinePrayerList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -101,7 +108,9 @@ object RoutinePrayerBackend {
                             }
                         }
                     }
-                    completed(routinePrayerList)
+                    mainScope.launch {
+                        completed(routinePrayerList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

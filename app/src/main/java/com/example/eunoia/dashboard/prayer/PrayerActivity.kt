@@ -3,6 +3,7 @@ package com.example.eunoia.dashboard.prayer
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,13 +18,20 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
+import com.amazonaws.util.DateUtils
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.PrayerData
+import com.amplifyframework.datastore.generated.model.UserPrayerRelationship
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.backend.UserPrayerBackend
+import com.example.eunoia.backend.UserPrayerRelationshipBackend
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
+import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.OptionItem
+import com.example.eunoia.dashboard.home.PrayerForRoutine
 import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
+import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -33,6 +41,7 @@ import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.screens.Screen
 import kotlinx.coroutines.CoroutineScope
+import java.util.*
 
 private const val TAG = "Prayer Activity"
 var prayerActivityUris = mutableListOf<MutableState<Uri>?>()
@@ -88,14 +97,14 @@ fun PrayerActivityUI(
     val scrollState = rememberScrollState()
     var retrievedPrayer by rememberSaveable{ mutableStateOf(false) }
     globalViewModel_!!.currentUser?.let {
-        UserPrayerBackend.queryApprovedUserPrayerBasedOnUser(it) { userPrayer ->
-            if(prayerActivityUris.size < userPrayer.size) {
-                for (i in userPrayer.indices) {
+        UserPrayerRelationshipBackend.queryApprovedUserPrayerRelationshipBasedOnUser(it) { userPrayerRelationships ->
+            if(prayerActivityUris.size < userPrayerRelationships.size) {
+                for (i in userPrayerRelationships.indices) {
                     prayerActivityUris.add(mutableStateOf("".toUri()))
                     prayerActivityPlayButtonTexts.add(mutableStateOf(START_PRAYER))
                 }
             }
-            globalViewModel_!!.currentUsersPrayers = userPrayer.toMutableList()
+            globalViewModel_!!.currentUsersPrayerRelationships = userPrayerRelationships.toMutableList()
             retrievedPrayer = true
         }
     }
@@ -198,13 +207,13 @@ fun PrayerActivityUI(
         ){
             if(
                 retrievedPrayer &&
-                globalViewModel_!!.currentUsersPrayers != null
+                globalViewModel_!!.currentUsersPrayerRelationships != null
             ){
-                if(globalViewModel_!!.currentUsersPrayers!!.size > 0){
-                    for(i in globalViewModel_!!.currentUsersPrayers!!.indices){
+                if(globalViewModel_!!.currentUsersPrayerRelationships!!.size > 0){
+                    for(i in globalViewModel_!!.currentUsersPrayerRelationships!!.indices){
                         setPrayerActivityPlayButtonTextsCorrectly(i)
                         DisplayUsersPrayers(
-                            globalViewModel_!!.currentUsersPrayers!![i]!!.prayerData,
+                            globalViewModel_!!.currentUsersPrayerRelationships!![i]!!.userPrayerRelationshipPrayer,
                             i,
                             { index ->
                                 resetGeneralMediaPlayerServiceIfNecessary(generalMediaPlayerService, index)
@@ -219,7 +228,7 @@ fun PrayerActivityUI(
                             { index ->
                                 navigateToPrayerScreen(
                                     navController,
-                                    globalViewModel_!!.currentUsersPrayers!![index]!!.prayerData
+                                    globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer
                                 )
                             }
                         )
@@ -266,7 +275,7 @@ private fun setPrayerActivityPlayButtonTextsCorrectly(i: Int) {
     if (globalViewModel_!!.currentPrayerPlaying != null) {
         if (
             globalViewModel_!!.currentPrayerPlaying!!.id ==
-            globalViewModel_!!.currentUsersPrayers!![i]!!.prayerData.id
+            globalViewModel_!!.currentUsersPrayerRelationships!![i]!!.userPrayerRelationshipPrayer.id
         ) {
             if(globalViewModel_!!.isCurrentPrayerPlaying){
                 prayerActivityPlayButtonTexts[i]!!.value = PAUSE_PRAYER
@@ -315,6 +324,7 @@ private fun pausePrayer(
             generalMediaPlayerService.pauseMediaPlayer()
             prayerActivityPlayButtonTexts[index]!!.value = START_PRAYER
             globalViewModel_!!.prayerTimer.pause()
+            globalViewModel_!!.generalPlaytimeTimer.pause()
             globalViewModel_!!.isCurrentPrayerPlaying = false
             deActivatePrayerGlobalControlButton(2)
         }
@@ -342,13 +352,20 @@ private fun startPrayer(
                 context
             )
         }
-        globalViewModel_!!.prayerTimer.start()
-        setGlobalPropertiesAfterPlayingPrayer(index)
+
+        afterPlayingPrayer(index)
     }
 }
 
+private fun afterPlayingPrayer(index: Int){
+    globalViewModel_!!.prayerTimer.start()
+    globalViewModel_!!.generalPlaytimeTimer.start()
+    setGlobalPropertiesAfterPlayingPrayer(index)
+}
+
 private fun setGlobalPropertiesAfterPlayingPrayer(index: Int){
-    globalViewModel_!!.currentPrayerPlaying = globalViewModel_!!.currentUsersPrayers!![index]!!.prayerData
+    globalViewModel_!!.currentPrayerPlaying = globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer
+    Log.i(TAG, "Prayer is ff ${globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer.displayName}")
     globalViewModel_!!.currentPrayerPlayingUri = prayerActivityUris[index]!!.value
     prayerActivityPlayButtonTexts[index]!!.value = PAUSE_PRAYER
     globalViewModel_!!.isCurrentPrayerPlaying = true
@@ -363,8 +380,8 @@ private fun retrievePrayerAudio(
     context: Context
 ) {
     SoundBackend.retrieveAudio(
-        globalViewModel_!!.currentUsersPrayers!![index]!!.prayerData.audioKeyS3,
-        globalViewModel_!!.currentUsersPrayers!![index]!!.prayerData.prayerOwner.amplifyAuthUserId
+        globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer.audioKeyS3,
+        globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer.prayerOwner.amplifyAuthUserId
     ) {
         prayerActivityUris[index]!!.value = it
         startPrayer(
@@ -381,7 +398,7 @@ private fun resetGeneralMediaPlayerServiceIfNecessary(
     index: Int
 ) {
     if(globalViewModel_!!.currentPrayerPlaying != null) {
-        if (globalViewModel_!!.currentUsersPrayers!![index]!!.prayerData.id != globalViewModel_!!.currentPrayerPlaying!!.id) {
+        if (globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer.id != globalViewModel_!!.currentPrayerPlaying!!.id) {
             generalMediaPlayerService.onDestroy()
         }
     }
@@ -397,21 +414,105 @@ private fun resetPlayButtonTextsIfNecessary(index: Int) {
     }
 }
 
+private fun updatePreviousAndCurrentPrayerRelationship(
+    index: Int,
+    completed: () -> Unit
+){
+    updatePreviousUserPrayerRelationship{
+        PrayerForRoutine.updateRecentlyPlayedUserPrayerRelationshipWithUserPrayerRelationship(
+            globalViewModel_!!.currentUsersPrayerRelationships!![index]!!
+        ) {
+            globalViewModel_!!.currentUsersPrayerRelationships!![index] = it
+            updatePreviousUserBedtimeStoryRelationship {
+                updatePreviousUserSelfLoveRelationship {
+                    completed()
+                }
+            }
+        }
+    }
+}
+
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
     index: Int,
     context: Context
 ){
-    generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(prayerActivityUris[index]!!.value)
-    val intent = Intent()
-    intent.action = "PLAY"
-    generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    globalViewModel_!!.prayerTimer.setMaxDuration(globalViewModel_!!.currentUsersPrayers!![index]!!.prayerData.fullPlayTime.toLong())
-    globalViewModel_!!.prayerTimer.setDuration(0L)
-    resetOtherGeneralMediaPlayerUsersExceptPrayer()
-    //resetAll(context, soundMediaPlayerService)
+    updatePreviousAndCurrentPrayerRelationship(index) {
+        generalMediaPlayerService.onDestroy()
+        generalMediaPlayerService.setAudioUri(prayerActivityUris[index]!!.value)
+        val intent = Intent()
+        intent.action = "PLAY"
+        generalMediaPlayerService.onStartCommand(intent, 0, 0)
+        globalViewModel_!!.prayerTimer.setMaxDuration(globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer.fullPlayTime.toLong())
+        resetOtherGeneralMediaPlayerUsersExceptPrayer()
+    }
+}
+
+/**
+ * Keep track of the date time a user starts listening to a prayer
+ */
+fun updateCurrentUserPrayerRelationshipUsageTimeStamp(
+    userPrayerRelationship: UserPrayerRelationship,
+    completed: (updatedUserPrayerRelationship: UserPrayerRelationship) -> Unit
+) {
+    var usageTimeStamp = userPrayerRelationship.usageTimestamps
+    val currentDateTime = DateUtils.formatISO8601Date(Date())
+
+    if(usageTimeStamp != null) {
+        usageTimeStamp.add(Temporal.DateTime(currentDateTime))
+    }else{
+        usageTimeStamp = listOf(Temporal.DateTime(currentDateTime))
+    }
+
+    val numberOfTimesPlayed = userPrayerRelationship.numberOfTimesPlayed + 1
+
+    val newUserPrayerRelationship = userPrayerRelationship.copyOfBuilder()
+        .numberOfTimesPlayed(numberOfTimesPlayed)
+        .usageTimestamps(usageTimeStamp)
+        .build()
+
+    UserPrayerRelationshipBackend.updateUserPrayerRelationship(newUserPrayerRelationship){
+        completed(it)
+    }
+}
+
+fun updatePreviousUserPrayerRelationship(
+    completed: (updatedUserPrayerRelationship: UserPrayerRelationship?) -> Unit
+) {
+    if(globalViewModel_!!.previouslyPlayedUserPrayerRelationship != null){
+        Log.i(TAG, "Duration of prayer general timer is ${globalViewModel_!!.generalPlaytimeTimer.getDuration()}")
+        val playTime = globalViewModel_!!.generalPlaytimeTimer.getDuration()
+        globalViewModel_!!.generalPlaytimeTimer.stop()
+
+        Log.i(TAG, "Total bts play time = ${globalViewModel_!!.previouslyPlayedUserPrayerRelationship!!.totalPlayTime}")
+        Log.i(TAG, "play time = $playTime")
+        val totalPlayTime = globalViewModel_!!.previouslyPlayedUserPrayerRelationship!!.totalPlayTime + playTime
+        Log.i(TAG, "final total play time = $totalPlayTime")
+
+        var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserPrayerRelationship!!.usagePlayTimes
+        if(usagePlayTimes != null) {
+            usagePlayTimes.add(playTime.toInt())
+        }else{
+            usagePlayTimes = listOf(playTime.toInt())
+        }
+
+        if(totalPlayTime > 0){
+            val userPrayerRelationship = globalViewModel_!!.previouslyPlayedUserPrayerRelationship!!.copyOfBuilder()
+                .totalPlayTime(totalPlayTime.toInt())
+                .usagePlayTimes(usagePlayTimes)
+                .build()
+
+            UserPrayerRelationshipBackend.updateUserPrayerRelationship(userPrayerRelationship){
+                globalViewModel_!!.previouslyPlayedUserPrayerRelationship = null
+                completed(it)
+            }
+        }else{
+            completed(null)
+        }
+    }else{
+        completed(null)
+    }
 }
 
 fun resetOtherGeneralMediaPlayerUsersExceptPrayer(){

@@ -21,6 +21,7 @@ import java.util.*
 object UserSoundBackend {
     private const val TAG = "UserSoundBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserSound(
         userSoundModel: UserSoundObject.UserSoundModel,
@@ -35,7 +36,9 @@ object UserSoundBackend {
                         Log.e(TAG, "Error from create userSoundModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userSoundModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -50,7 +53,9 @@ object UserSoundBackend {
             UserObject.User.from(globalViewModel_!!.currentUser!!)
         )
         createUserSound(userSoundModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -80,7 +85,9 @@ object UserSoundBackend {
                             }
                         }
                     }
-                    completed(userSoundList)
+                    mainScope.launch {
+                        completed(userSoundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -111,7 +118,9 @@ object UserSoundBackend {
                             }
                         }
                     }
-                    completed(userSoundList)
+                    mainScope.launch {
+                        completed(userSoundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -138,7 +147,9 @@ object UserSoundBackend {
                             }
                         }
                     }
-                    completed(userSoundList)
+                    mainScope.launch {
+                        completed(userSoundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

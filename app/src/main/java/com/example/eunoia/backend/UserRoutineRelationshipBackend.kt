@@ -20,6 +20,7 @@ import java.util.*
 object UserRoutineRelationshipBackend {
     private const val TAG = "UserRoutineRelationshipBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserRoutineRelationship(
         userRoutineRelationshipModel: UserRoutineRelationshipObject.UserRoutineRelationshipModel,
@@ -34,7 +35,9 @@ object UserRoutineRelationshipBackend {
                         Log.e(TAG, "Error from create userRoutineRelationshipModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userRoutineRelationshipModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -75,7 +78,9 @@ object UserRoutineRelationshipBackend {
             playingOrder =  routine.playingOrder
         )
         createUserRoutineRelationship(userRoutineRelationshipModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -99,7 +104,9 @@ object UserRoutineRelationshipBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -128,7 +135,9 @@ object UserRoutineRelationshipBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -145,7 +154,9 @@ object UserRoutineRelationshipBackend {
                 { response ->
                     if(response.hasData()) {
                         Log.i(TAG, "Successfully updated userRoutineRelationship: ${response.data}")
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 {

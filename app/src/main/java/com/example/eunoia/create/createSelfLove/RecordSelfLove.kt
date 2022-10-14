@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.SelfLoveBackend
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -62,7 +62,7 @@ fun RecordSelfLoveUI(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    resetEverythingBeforeCreatingAnything(
+    resetEverything(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context

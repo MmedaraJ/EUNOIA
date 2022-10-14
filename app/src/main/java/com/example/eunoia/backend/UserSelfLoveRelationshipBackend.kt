@@ -4,10 +4,7 @@ import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
-import com.amplifyframework.datastore.generated.model.SelfLoveApprovalStatus
-import com.amplifyframework.datastore.generated.model.SelfLoveData
-import com.amplifyframework.datastore.generated.model.UserData
-import com.amplifyframework.datastore.generated.model.UserSelfLoveRelationship
+import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserSelfLoveRelationshipObject
@@ -21,6 +18,7 @@ import java.util.*
 object UserSelfLoveRelationshipBackend {
     private const val TAG = "UserSelfLoveRelationshipBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserSelfLoveRelationship(
         userSelfLoveRelationshipModel: UserSelfLoveRelationshipObject.UserSelfLoveRelationshipModel,
@@ -35,7 +33,9 @@ object UserSelfLoveRelationshipBackend {
                         Log.e(TAG, "Error from create userSelfLoveRelationshipModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userSelfLoveRelationshipModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -55,7 +55,31 @@ object UserSelfLoveRelationshipBackend {
             usagePlayTimes = listOf()
         )
         createUserSelfLoveRelationship(userSelfLoveRelationshipModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
+        }
+    }
+
+    fun updateUserSelfLoveRelationship(
+        userSelfLoveRelationship: UserSelfLoveRelationship,
+        completed: (userSelfLoveRelationship: UserSelfLoveRelationship) -> Unit
+    ){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.update(userSelfLoveRelationship),
+                { response ->
+                    if(response.hasData()) {
+                        Log.i(TAG, "Successfully updated userSelfLoveRelationship: ${response.data}")
+                        mainScope.launch {
+                            completed(response.data)
+                        }
+                    }
+                },
+                {
+                    Log.i(TAG, "Error while updating userSelfLoveRelationship: ", it)
+                }
+            )
         }
     }
 
@@ -82,7 +106,9 @@ object UserSelfLoveRelationshipBackend {
                             }
                         }
                     }
-                    completed(userSelfLoveRelationshipList)
+                    mainScope.launch {
+                        completed(userSelfLoveRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -111,7 +137,9 @@ object UserSelfLoveRelationshipBackend {
                             }
                         }
                     }
-                    completed(userSelfLoveRelationshipList)
+                    mainScope.launch {
+                        completed(userSelfLoveRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

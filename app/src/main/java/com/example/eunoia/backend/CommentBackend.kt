@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 object CommentBackend {
     private const val TAG = "CommentBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createComment(comment: CommentObject.Comment, completed: (commentData: CommentData) -> Unit){
         scope.launch{
@@ -28,7 +29,9 @@ object CommentBackend {
                         Log.e(TAG, response.errors.first().message)
                     } else {
                         Log.i(TAG, "Created comment with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -62,7 +65,9 @@ object CommentBackend {
                             }
                         }
                     }
-                    completed(commentList)
+                    mainScope.launch {
+                        completed(commentList)
+                    }
                 },
                 {
                     error -> Log.e(TAG, "Query failure", error)
@@ -89,7 +94,9 @@ object CommentBackend {
                             for (commentData in response.data) {
                                 if(commentData != null) {
                                     Log.i(TAG, commentData.toString())
-                                    completed(commentData)
+                                    mainScope.launch {
+                                        completed(commentData)
+                                    }
                                     break
                                 }
                             }
@@ -108,7 +115,9 @@ object CommentBackend {
                 { response ->
                     if(response.hasData()) {
                         Log.i(TAG, "Query results = ${(response.data as CommentData).id}")
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { Log.e(TAG, "Query failed", it) }

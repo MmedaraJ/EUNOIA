@@ -17,6 +17,7 @@ import java.util.*
 object UserRoutineBackend {
     private const val TAG = "UserRoutineBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserRoutine(
         userRoutineModel: UserRoutineObject.UserRoutineModel,
@@ -31,7 +32,9 @@ object UserRoutineBackend {
                         Log.e(TAG, "Error from create userRoutineModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userRoutineModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -46,7 +49,9 @@ object UserRoutineBackend {
             RoutineObject.Routine.from(routineData),
         )
         createUserRoutine(userRoutineModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -71,7 +76,9 @@ object UserRoutineBackend {
                             }
                         }
                     }
-                    completed(userRoutineList)
+                    mainScope.launch {
+                        completed(userRoutineList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -100,7 +107,9 @@ object UserRoutineBackend {
                             }
                         }
                     }
-                    completed(userRoutineList)
+                    mainScope.launch {
+                        completed(userRoutineList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -114,7 +123,9 @@ object UserRoutineBackend {
                 { response ->
                     if(response.hasData()) {
                         Log.i(TAG, "Successfully updated user routine: ${response.data}")
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 {

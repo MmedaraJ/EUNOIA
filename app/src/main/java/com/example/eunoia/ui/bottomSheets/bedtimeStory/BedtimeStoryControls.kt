@@ -13,6 +13,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,11 +23,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.dashboard.bedtimeStory.*
+import com.example.eunoia.dashboard.home.BedtimeStoryForRoutine
+import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
+import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
@@ -351,6 +356,7 @@ private fun pauseBedtimeStory(
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
             globalViewModel_!!.bedtimeStoryTimer.pause()
+            globalViewModel_!!.generalPlaytimeTimer.pause()
             activateBedtimeStoryGlobalControlButton(2)
             activateBedtimeStoryGlobalControlButton(2)
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
@@ -378,27 +384,50 @@ private fun startBedtimeStory(
                 bedtimeStoryInfoData
             )
         }
-        globalViewModel_!!.bedtimeStoryTimer.start()
-        globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
-        deActivateBedtimeStoryGlobalControlButton(2)
-        deActivateBedtimeStoryGlobalControlButton(0)
+
+        afterPlayingBedtimeStory()
+    }
+}
+
+private fun afterPlayingBedtimeStory(){
+    globalViewModel_!!.bedtimeStoryTimer.start()
+    globalViewModel_!!.generalPlaytimeTimer.start()
+    globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
+    deActivateBedtimeStoryGlobalControlButton(2)
+    deActivateBedtimeStoryGlobalControlButton(0)
+}
+
+private fun updatePreviousAndCurrentBedtimeStoryRelationship(
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    completed: () -> Unit
+){
+    updatePreviousUserBedtimeStoryRelationship {
+        BedtimeStoryForRoutine.updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo(
+            bedtimeStoryInfoData
+        ) {
+            updatePreviousUserPrayerRelationship {
+                updatePreviousUserSelfLoveRelationship {
+                    completed()
+                }
+            }
+        }
     }
 }
 
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
 ){
-    generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentBedtimeStoryPlayingUri!!)
-    val intent = Intent()
-    intent.action = "PLAY"
-    generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
-    globalViewModel_!!.bedtimeStoryTimer.setDuration(0L)
-    resetGlobalControlButtons()
-    resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
-    //resetAll(context, soundMediaPlayerService)
+    updatePreviousAndCurrentBedtimeStoryRelationship(bedtimeStoryInfoData) {
+        generalMediaPlayerService.onDestroy()
+        generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentBedtimeStoryPlayingUri!!)
+        val intent = Intent()
+        intent.action = "PLAY"
+        generalMediaPlayerService.onStartCommand(intent, 0, 0)
+        globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
+        resetGlobalControlButtons()
+        resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
+    }
 }
 
 private fun retrieveBedtimeStoryAudio(

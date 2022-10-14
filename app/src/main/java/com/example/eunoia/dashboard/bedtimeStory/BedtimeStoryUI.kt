@@ -25,7 +25,9 @@ import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
+import com.example.eunoia.dashboard.home.BedtimeStoryForRoutine.updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo
+import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
+import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.bedtimeStory.resetGlobalControlButtons
@@ -379,6 +381,7 @@ private fun pauseBedtimeStory(
             globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
             activateLocalBedtimeStoryControlButton(2)
             activateGlobalBedtimeStoryControlButton(2)
+            globalViewModel_!!.generalPlaytimeTimer.pause()
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
         }
     }
@@ -408,29 +411,51 @@ private fun startBedtimeStory(
                 bedtimeStoryInfoData
             )
         }
-        bedtimeStoryTimer.start()
-        globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
-        deActivateLocalBedtimeStoryControlButton(2)
-        deActivateLocalBedtimeStoryControlButton(0)
-        setGlobalPropertiesAfterPlayingBedtimeStory(bedtimeStoryInfoData)
+        afterPlayingBedtimeStory(bedtimeStoryInfoData)
+    }
+}
+
+private fun afterPlayingBedtimeStory(
+    bedtimeStoryInfoData: BedtimeStoryInfoData
+){
+    bedtimeStoryTimer.start()
+    globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
+    deActivateLocalBedtimeStoryControlButton(2)
+    deActivateLocalBedtimeStoryControlButton(0)
+    globalViewModel_!!.generalPlaytimeTimer.start()
+    setGlobalPropertiesAfterPlayingBedtimeStory(bedtimeStoryInfoData)
+}
+
+private fun updatePreviousAndCurrentBedtimeStoryRelationship(
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    completed: () -> Unit
+){
+    updatePreviousUserBedtimeStoryRelationship {
+        updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo(bedtimeStoryInfoData) {
+            updatePreviousUserPrayerRelationship {
+                updatePreviousUserSelfLoveRelationship {
+                    completed()
+                }
+            }
+        }
     }
 }
 
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
 ){
-    generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(bedtimeStoryUri!!)
-    val intent = Intent()
-    intent.action = "PLAY"
-    generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
-    bedtimeStoryTimer.setDuration(0L)
-    globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
-    resetBothLocalAndGlobalControlButtons()
-    resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
-    //resetAll(context, soundMediaPlayerService)
+    updatePreviousAndCurrentBedtimeStoryRelationship(bedtimeStoryInfoData) {
+        generalMediaPlayerService.onDestroy()
+        generalMediaPlayerService.setAudioUri(bedtimeStoryUri!!)
+        val intent = Intent()
+        intent.action = "PLAY"
+        generalMediaPlayerService.onStartCommand(intent, 0, 0)
+        bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
+        globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
+        resetBothLocalAndGlobalControlButtons()
+        resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
+    }
 }
 
 private fun setGlobalPropertiesAfterPlayingBedtimeStory(

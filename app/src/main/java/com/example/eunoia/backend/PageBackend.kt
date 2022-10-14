@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 object PageBackend {
     private const val TAG = "PageBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createPage(
         page: PageObject.Page,
@@ -29,35 +30,14 @@ object PageBackend {
                         Log.e(TAG, "Error from create Page ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created Page with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
             )
         }
-
-        /*scope.launch {
-            try {
-                listOf(Page, Page)
-                    .forEach {
-                        val response = Amplify.API.mutate(
-                            ModelMutation.create(it.data),
-                            { response ->
-                                Log.i(TAG, "Created $response")
-                                if (response.hasErrors()) {
-                                    Log.e(TAG, "Error from create Page ${response.errors.first().message}")
-                                } else {
-                                    Log.i(TAG, "Created Page with id: " + response.data.id)
-                                    completed(response.data)
-                                }
-                            },
-                            { error -> Log.e(TAG, "Create failed", error) }
-                        )
-                    }
-            } catch (failure: ApiException){
-                Log.e("MyAmplifyApp", "Create failed", failure)
-            }
-        }*/
     }
 
     fun updatePage(
@@ -73,7 +53,9 @@ object PageBackend {
                         Log.e(TAG, "Error from update Page ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Updated Page with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Update failed", error) }
@@ -104,7 +86,9 @@ object PageBackend {
                                     result.add(page)
                                 }
                             }
-                            completed(result)
+                            mainScope.launch {
+                                completed(result)
+                            }
                         }
                     }
                 },

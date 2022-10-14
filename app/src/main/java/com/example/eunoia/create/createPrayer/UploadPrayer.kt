@@ -21,13 +21,9 @@ import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
-import com.example.eunoia.create.createSelfLove.resetSelfLoveUploadUI
-import com.example.eunoia.create.createSelfLove.uploadedFileMediaPlayerSelfLove
-import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.home.UserDashboardActivity
-import com.example.eunoia.dashboard.sound.updatePreviousUserSoundRelationship
 import com.example.eunoia.models.PrayerObject
-import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -65,7 +61,7 @@ fun UploadPrayerUI(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    resetEverythingBeforeCreatingAnything(
+    resetEverything(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context

@@ -20,6 +20,7 @@ import java.util.*
 object UserRoutineRelationshipBedtimeStoryInfoBackend {
     private const val TAG = "UserRoutineRelationshipBedtimeStoryInfoBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private fun createUserRoutineRelationshipBedtimeStoryInfo(
         userRoutineRelationshipBedtimeStoryInfoModel: UserRoutineRelationshipBedtimeStoryInfoObject.UserRoutineRelationshipBedtimeStoryInfoModel,
@@ -34,7 +35,9 @@ object UserRoutineRelationshipBedtimeStoryInfoBackend {
                         Log.e(TAG, "Error from create UserRoutineRelationshipBedtimeStoryInfoModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created UserRoutineRelationshipBedtimeStoryInfoModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -53,7 +56,9 @@ object UserRoutineRelationshipBedtimeStoryInfoBackend {
             UserRoutineRelationshipObject.UserRoutineRelationshipModel.from(userRoutineRelationship),
         )
         createUserRoutineRelationshipBedtimeStoryInfo(userRoutineRelationshipBedtimeStoryInfoModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -77,7 +82,9 @@ object UserRoutineRelationshipBedtimeStoryInfoBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipBedtimeStoryInfoList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipBedtimeStoryInfoList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -104,7 +111,9 @@ object UserRoutineRelationshipBedtimeStoryInfoBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipBedtimeStoryInfoList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipBedtimeStoryInfoList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -133,7 +142,9 @@ object UserRoutineRelationshipBedtimeStoryInfoBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipBedtimeStoryInfoList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipBedtimeStoryInfoList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

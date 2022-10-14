@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 object BedtimeStoryChapterBackend {
     private const val TAG = "BedtimeStoryChapterBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createBedtimeStoryInfoChapter(
         bedtimeStoryChapter: BedtimeStoryChapterObject.BedtimeStoryChapter,
@@ -28,7 +29,9 @@ object BedtimeStoryChapterBackend {
                         Log.e(TAG, "Error from create bedtimeStoryChapter ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created bedtimeStoryChapter with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -59,7 +62,9 @@ object BedtimeStoryChapterBackend {
                                     result.add(bedtimeStory)
                                 }
                             }
-                            completed(result)
+                            mainScope.launch {
+                                completed(result)
+                            }
                         }
                     }
                 },
@@ -91,7 +96,9 @@ object BedtimeStoryChapterBackend {
                                     result.add(bedtimeStory)
                                 }
                             }
-                            completed(result)
+                            mainScope.launch {
+                                completed(result)
+                            }
                         }
                     }
                 },

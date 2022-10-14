@@ -19,6 +19,7 @@ import java.util.*
 object UserRoutineRelationshipSelfLoveBackend {
     private const val TAG = "UserRoutineRelationshipSelfLoveBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private fun createUserRoutineRelationshipSelfLove(
         userRoutineRelationshipSelfLoveModel: UserRoutineRelationshipSelfLoveObject.UserRoutineRelationshipSelfLoveModel,
@@ -33,7 +34,9 @@ object UserRoutineRelationshipSelfLoveBackend {
                         Log.e(TAG, "Error from create UserRoutineRelationshipSelfLoveModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created UserRoutineRelationshipSelfLoveModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -52,7 +55,9 @@ object UserRoutineRelationshipSelfLoveBackend {
             SelfLoveObject.SelfLove.from(selfLoveData),
         )
         createUserRoutineRelationshipSelfLove(userRoutineRelationshipSelfLoveModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -76,7 +81,9 @@ object UserRoutineRelationshipSelfLoveBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipSelfLoveList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipSelfLoveList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -105,7 +112,9 @@ object UserRoutineRelationshipSelfLoveBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipSelfLoveList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipSelfLoveList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

@@ -627,11 +627,11 @@ fun startCountDownTimer(
     time: Long,
     soundMediaPlayerService: SoundMediaPlayerService
 ){
-    if(countDownTimer != null){
+    if (countDownTimer != null) {
         countDownTimer!!.cancel()
     }
 
-    if(globalViewModel_!!.soundCountDownTimer != null){
+    if (globalViewModel_!!.soundCountDownTimer != null) {
         globalViewModel_!!.soundCountDownTimer!!.cancel()
     }
 
@@ -639,15 +639,16 @@ fun startCountDownTimer(
         override fun onTick(millisUntilFinished: Long) {
             Log.i(TAG, "Timer has been going for $millisUntilFinished")
         }
+
         override fun onFinish() {
-            if(soundMediaPlayerService.areMediaPlayersInitialized()) {
+            if (soundMediaPlayerService.areMediaPlayersInitialized()) {
                 soundMediaPlayerService.onDestroy()
             }
             meditationBellInterval.value = 0
             globalViewModel_!!.soundMeditationBellInterval = 0
             resetBothLocalAndGlobalControlButtons()
             globalViewModel_!!.isCurrentSoundPlaying = false
-            Toast.makeText(context, "Sound: timer stopped", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "Sound: timer stopped", Toast.LENGTH_SHORT).show()
             Log.i(TAG, "Timer stopped")
             timerTime.value = 0
             globalViewModel_!!.soundTimerTime = 0
@@ -825,6 +826,10 @@ private fun startSoundScreenSounds(
         if(soundMediaPlayerService.areMediaPlayersInitialized()){
             if(globalViewModel_!!.currentSoundPlaying!!.id == soundData.id){
                 soundMediaPlayerService.startMediaPlayers()
+                afterPlayingSound(
+                    soundData,
+                    context
+                )
             }else{
                 initializeMediaPlayers(
                     soundMediaPlayerService,
@@ -839,10 +844,27 @@ private fun startSoundScreenSounds(
                 soundData
             )
         }
-        deActivateLocalControlButton(3)
-        deActivateLocalControlButton(1)
-        globalViewModel_!!.soundPlaytimeTimer.start()
-        setGlobalPropertiesAfterPlayingSound(soundData, context)
+    }
+}
+
+private fun afterPlayingSound(
+    soundData: SoundData,
+    context: Context
+){
+    deActivateLocalControlButton(3)
+    deActivateLocalControlButton(1)
+    globalViewModel_!!.soundPlaytimeTimer.start()
+    setGlobalPropertiesAfterPlayingSound(soundData, context)
+}
+
+private fun updatePreviousAndCurrentSoundRelationship(
+    soundData: SoundData,
+    completed: () -> Unit
+){
+    updatePreviousUserSoundRelationship {
+        updateRecentlyPlayedUserSoundRelationshipWithSound(soundData) {
+            completed()
+        }
     }
 }
 
@@ -851,33 +873,37 @@ private fun initializeMediaPlayers(
     context: Context,
     soundData: SoundData
 ){
-    updatePreviousUserSoundRelationship {}
-    updateRecentlyPlayedUserSoundRelationshipWithSound(soundData) {}
+    updatePreviousAndCurrentSoundRelationship(soundData) {
+        soundMediaPlayerService.onDestroy()
+        soundMediaPlayerService.setAudioUris(soundUris)
+        soundMediaPlayerService.setVolumes(sliderVolumes!!)
+        val intent = Intent()
+        intent.action = "PLAY"
+        soundMediaPlayerService.onStartCommand(intent, 0, 0)
+        soundMediaPlayerService.loopMediaPlayers()
 
-    soundMediaPlayerService.onDestroy()
-    soundMediaPlayerService.setAudioUris(soundUris)
-    soundMediaPlayerService.setVolumes(sliderVolumes!!)
-    val intent = Intent()
-    intent.action = "PLAY"
-    soundMediaPlayerService.onStartCommand(intent, 0, 0)
-    soundMediaPlayerService.loopMediaPlayers()
+        meditationBellInterval.value = 0
+        globalViewModel_!!.soundMeditationBellInterval = 0
+        resetBothLocalAndGlobalControlButtons()
+        timerTime.value = 0
+        globalViewModel_!!.soundTimerTime = 0
+        startCountDownTimer(context, timerTime.value, soundMediaPlayerService)
 
-    meditationBellInterval.value = 0
-    globalViewModel_!!.soundMeditationBellInterval = 0
-    resetBothLocalAndGlobalControlButtons()
-    timerTime.value = 0
-    globalViewModel_!!.soundTimerTime = 0
-    startCountDownTimer(context, timerTime.value, soundMediaPlayerService)
+        globalViewModel_!!.currentSoundPlayingPreset = soundPreset
+        globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
+        for (volume in globalViewModel_!!.currentSoundPlayingPreset!!.volumes) {
+            globalViewModel_!!.currentSoundPlayingSliderPositions.add(
+                mutableStateOf(volume.toFloat())
+            )
+        }
 
-    globalViewModel_!!.currentSoundPlayingPreset = soundPreset
-    globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-    for (volume in globalViewModel_!!.currentSoundPlayingPreset!!.volumes) {
-        globalViewModel_!!.currentSoundPlayingSliderPositions.add(
-            mutableStateOf(volume.toFloat())
+        createMeditationBellMediaPlayer(context)
+
+        afterPlayingSound(
+            soundData,
+            context
         )
     }
-
-    createMeditationBellMediaPlayer(context)
 }
 
 private fun setGlobalPropertiesAfterPlayingSound(soundData: SoundData, context: Context) {
@@ -1361,7 +1387,6 @@ fun changePreset(
 ){
     sliderVolumes = preset.volumes
     globalViewModel_!!.soundSliderVolumes = preset.volumes
-    defaultVolumes = preset.volumes
     soundPreset = preset
     globalViewModel_!!.currentSoundPlayingPreset = preset
     /*globalViewModel_!!.currentAllOriginalSoundPreset = allOriginalSoundPresets

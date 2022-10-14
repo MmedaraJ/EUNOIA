@@ -17,6 +17,7 @@ import java.util.*
 object UserSoundPresetBackend {
     private const val TAG = "UserSoundPresetBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserSoundPreset(
         userSoundPresetModel: UserSoundPresetObject.UserSoundPresetModel,
@@ -31,7 +32,9 @@ object UserSoundPresetBackend {
                         Log.e(TAG, "Error from create userSoundPresetModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userSoundPresetModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -46,7 +49,9 @@ object UserSoundPresetBackend {
             SoundPresetObject.SoundPreset.from(presetData),
         )
         createUserSoundPreset(userSoundPresetModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -72,7 +77,9 @@ object UserSoundPresetBackend {
                             }
                         }
                     }
-                    completed(userSoundPresetList)
+                    mainScope.launch {
+                        completed(userSoundPresetList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

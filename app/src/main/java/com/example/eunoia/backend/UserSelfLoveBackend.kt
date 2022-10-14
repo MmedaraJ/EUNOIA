@@ -18,6 +18,7 @@ import java.util.*
 object UserSelfLoveBackend {
     private const val TAG = "UserSelfLoveBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserSelfLove(
         userSelfLoveModel: UserSelfLoveObject.UserSelfLoveModel,
@@ -32,7 +33,9 @@ object UserSelfLoveBackend {
                         Log.e(TAG, "Error from create userSelfLoveModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userSelfLoveModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -47,7 +50,9 @@ object UserSelfLoveBackend {
             SelfLoveObject.SelfLove.from(SelfLove),
         )
         createUserSelfLove(userSelfLoveModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -74,7 +79,9 @@ object UserSelfLoveBackend {
                             }
                         }
                     }
-                    completed(userSelfLoveList)
+                    mainScope.launch {
+                        completed(userSelfLoveList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -103,7 +110,9 @@ object UserSelfLoveBackend {
                             }
                         }
                     }
-                    completed(userSelfLoveList)
+                    mainScope.launch {
+                        completed(userSelfLoveList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

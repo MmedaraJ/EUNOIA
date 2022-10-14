@@ -25,7 +25,6 @@ import com.amplifyframework.datastore.generated.model.*
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
-import com.example.eunoia.dashboard.bedtimeStory.bedtimeStoryScreenBackgroundControlColor2
 import com.example.eunoia.models.*
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
@@ -57,7 +56,6 @@ var allUserSoundPresets: MutableSet<SoundPresetData>? = null
 var otherPresetsThatOriginatedFromThisSound: MutableList<SoundPresetData>? = null
 var commentsForThisSound = mutableListOf<CommentData>()
 var soundUris = mutableListOf<Uri?>()
-var defaultVolumes: MutableList<Int>? = null
 var countDownTimer: CountDownTimer? = null
 
 var soundScreenIcons = arrayOf(
@@ -434,31 +432,34 @@ private fun setParametersFromGlobalVariables(completed: () -> Unit) {
 }
 
 fun setUpParameters(completed: () -> Unit) {
-    soundPreset = globalViewModel_!!.currentSoundPlayingPreset
-    sliderPositions = globalViewModel_!!.currentSoundPlayingSliderPositions
-    sliderVolumes = globalViewModel_!!.soundSliderVolumes
-    defaultVolumes = globalViewModel_!!.currentSoundPlayingPreset!!.volumes
-    soundUris = globalViewModel_!!.currentSoundPlayingUris!!
+    if(globalViewModel_!!.currentSoundPlayingUris != null) {
+        soundPreset = globalViewModel_!!.currentSoundPlayingPreset
+        sliderPositions = globalViewModel_!!.currentSoundPlayingSliderPositions
+        sliderVolumes = globalViewModel_!!.soundSliderVolumes
+        soundUris = globalViewModel_!!.currentSoundPlayingUris!!
 
-    for(i in soundScreenIcons.indices){
-        soundScreenIcons[i] = globalViewModel_!!.soundScreenIcons[i]
-    }
-    for(i in soundScreenBorderControlColors.indices){
-        soundScreenBorderControlColors[i] = globalViewModel_!!.soundScreenBorderControlColors[i]
-    }
-    for(i in soundScreenBackgroundControlColor1.indices){
-        soundScreenBackgroundControlColor1[i] = globalViewModel_!!.soundScreenBackgroundControlColor1[i]
-    }
-    for(i in soundScreenBackgroundControlColor2.indices){
-        soundScreenBackgroundControlColor2[i] = globalViewModel_!!.soundScreenBackgroundControlColor2[i]
-    }
+        for (i in soundScreenIcons.indices) {
+            soundScreenIcons[i] = globalViewModel_!!.soundScreenIcons[i]
+        }
+        for (i in soundScreenBorderControlColors.indices) {
+            soundScreenBorderControlColors[i] = globalViewModel_!!.soundScreenBorderControlColors[i]
+        }
+        for (i in soundScreenBackgroundControlColor1.indices) {
+            soundScreenBackgroundControlColor1[i] =
+                globalViewModel_!!.soundScreenBackgroundControlColor1[i]
+        }
+        for (i in soundScreenBackgroundControlColor2.indices) {
+            soundScreenBackgroundControlColor2[i] =
+                globalViewModel_!!.soundScreenBackgroundControlColor2[i]
+        }
 
-    meditationBellInterval.value = globalViewModel_!!.soundMeditationBellInterval
-    timerTime.value = globalViewModel_!!.soundTimerTime
-    associatedPreset = soundPreset
-    countDownTimer = globalViewModel_!!.soundCountDownTimer
-    showAssociatedSoundWithSameVolume.value = false
-    otherPresetsThatOriginatedFromThisSound = mutableListOf()
+        meditationBellInterval.value = globalViewModel_!!.soundMeditationBellInterval
+        timerTime.value = globalViewModel_!!.soundTimerTime
+        associatedPreset = soundPreset
+        countDownTimer = globalViewModel_!!.soundCountDownTimer
+        showAssociatedSoundWithSameVolume.value = false
+        otherPresetsThatOriginatedFromThisSound = mutableListOf()
+    }
     completed()
 }
 
@@ -525,7 +526,6 @@ private fun getNecessaryPresets(soundData: SoundData, completed: () -> Unit){
         if(presets.isNotEmpty()){
             sliderPositions = mutableListOf()
             sliderVolumes = mutableListOf()
-            defaultVolumes = mutableListOf()
             allOriginalSoundPresets = mutableSetOf()
             allUserSoundPresets = mutableSetOf()
             otherPresetsThatOriginatedFromThisSound = mutableListOf()
@@ -535,11 +535,9 @@ private fun getNecessaryPresets(soundData: SoundData, completed: () -> Unit){
             for(volume in presets[0].volumes){
                 if(
                     sliderVolumes!!.size < presets[0].volumes!!.size &&
-                    defaultVolumes!!.size < presets[0].volumes!!.size &&
                     sliderPositions!!.size < presets[0].volumes!!.size
                 ) {
                     sliderVolumes!!.add(volume)
-                    defaultVolumes!!.add(volume)
                     sliderPositions!!.add(mutableStateOf(volume!!.toFloat()))
                 }
             }

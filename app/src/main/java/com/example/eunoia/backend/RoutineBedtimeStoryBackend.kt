@@ -17,6 +17,7 @@ import java.util.*
 object RoutineBedtimeStoryBackend {
     private const val TAG = "RoutineBedtimeStoryBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private fun createRoutineBedtimeStory(
         routineBedtimeStoryModel: RoutineBedtimeStoryObject.RoutineBedtimeStoryModel,
@@ -31,7 +32,9 @@ object RoutineBedtimeStoryBackend {
                         Log.e(TAG, "Error from create routineBedtimeStoryModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created routineBedtimeStoryModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -50,7 +53,9 @@ object RoutineBedtimeStoryBackend {
             BedtimeStoryObject.BedtimeStory.from(bedtimeStoryData),
         )
         createRoutineBedtimeStory(routineBedtimeStoryModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -74,7 +79,9 @@ object RoutineBedtimeStoryBackend {
                             }
                         }
                     }
-                    completed(routineBedtimeStoryList)
+                    mainScope.launch {
+                        completed(routineBedtimeStoryList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -101,7 +108,9 @@ object RoutineBedtimeStoryBackend {
                             }
                         }
                     }
-                    completed(routineBedtimeStoryList)
+                    mainScope.launch {
+                        completed(routineBedtimeStoryList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -130,7 +139,9 @@ object RoutineBedtimeStoryBackend {
                             }
                         }
                     }
-                    completed(routineBedtimeStoryList)
+                    mainScope.launch {
+                        completed(routineBedtimeStoryList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

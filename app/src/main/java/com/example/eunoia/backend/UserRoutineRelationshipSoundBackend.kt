@@ -19,6 +19,7 @@ import java.util.*
 object UserRoutineRelationshipSoundBackend {
     private const val TAG = "UserRoutineRelationshipSoundBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserRoutineRelationshipSound(
         userRoutineRelationshipSoundModel: UserRoutineRelationshipSoundObject.UserRoutineRelationshipSoundModel,
@@ -33,7 +34,9 @@ object UserRoutineRelationshipSoundBackend {
                         Log.e(TAG, "Error from create UserRoutineRelationshipSoundModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created UserRoutineRelationshipSoundModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -52,7 +55,9 @@ object UserRoutineRelationshipSoundBackend {
             UserRoutineRelationshipObject.UserRoutineRelationshipModel.from(userRoutineRelationship)
         )
         createUserRoutineRelationshipSound(userRoutineRelationshipSoundModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -76,7 +81,9 @@ object UserRoutineRelationshipSoundBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipSoundList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipSoundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -105,7 +112,9 @@ object UserRoutineRelationshipSoundBackend {
                             }
                         }
                     }
-                    completed(userRoutineRelationshipSoundList)
+                    mainScope.launch {
+                        completed(userRoutineRelationshipSoundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

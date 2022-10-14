@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.PageData
-import com.example.eunoia.create.resetEverythingBeforeCreatingAnything
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -43,7 +43,7 @@ fun PageScreenUI(
 ){
     val context = LocalContext.current
 
-    resetEverythingBeforeCreatingAnything(
+    resetEverything(
         soundMediaPlayerService,
         generalMediaPlayerService,
         context

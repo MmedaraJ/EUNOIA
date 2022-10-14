@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 object BedtimeStoryBackend {
     private const val TAG = "BedtimeStoryBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createBedtimeStory(
         bedtimeStory: BedtimeStoryObject.BedtimeStory,
@@ -28,7 +29,9 @@ object BedtimeStoryBackend {
                         Log.e(TAG, "Error from create bedtimeStory ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created bedtimeStory with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -57,7 +60,9 @@ object BedtimeStoryBackend {
                             }
                         }
                     }
-                    completed(bedtimeStoryList)
+                    mainScope.launch {
+                        completed(bedtimeStoryList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -85,7 +90,9 @@ object BedtimeStoryBackend {
                             }
                         }
                     }
-                    completed(bedtimeStoryList)
+                    mainScope.launch {
+                        completed(bedtimeStoryList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -116,7 +123,9 @@ object BedtimeStoryBackend {
                             }
                         }
                     }
-                    completed(bedtimeStoryList)
+                    mainScope.launch {
+                        completed(bedtimeStoryList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -148,7 +157,9 @@ object BedtimeStoryBackend {
                             }
                         }
                     }
-                    completed(bedtimeStoryList)
+                    mainScope.launch {
+                        completed(bedtimeStoryList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

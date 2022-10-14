@@ -166,6 +166,7 @@ class GlobalViewModel: ViewModel(){
      *
      */
     var currentUsersBedtimeStories by mutableStateOf<MutableList<UserBedtimeStoryInfo?>?>(null)
+    var currentUsersBedtimeStoryRelationships by mutableStateOf<MutableList<UserBedtimeStoryInfoRelationship?>?>(null)
     var currentBedtimeStoryPlaying by mutableStateOf<BedtimeStoryInfoData?>(null)
     var isCurrentBedtimeStoryPlaying by mutableStateOf(false)
     var currentBedtimeStoryPlayingUri: Uri? = null
@@ -211,6 +212,7 @@ class GlobalViewModel: ViewModel(){
      * self love
      */
     var currentUsersSelfLoves by mutableStateOf<MutableList<UserSelfLove?>?>(null)
+    var currentUsersSelfLoveRelationships by mutableStateOf<MutableList<UserSelfLoveRelationship?>?>(null)
     var currentSelfLovePlaying by mutableStateOf<SelfLoveData?>(null)
     var isCurrentSelfLovePlaying by mutableStateOf(false)
     var currentSelfLovePlayingUri: Uri? = null
@@ -257,6 +259,7 @@ class GlobalViewModel: ViewModel(){
      * prayer
      */
     var currentUsersPrayers by mutableStateOf<MutableList<UserPrayer?>?>(null)
+    var currentUsersPrayerRelationships by mutableStateOf<MutableList<UserPrayerRelationship?>?>(null)
     var currentPrayerPlaying by mutableStateOf<PrayerData?>(null)
     var isCurrentPrayerPlaying by mutableStateOf(false)
     var currentPrayerPlayingUri: Uri? = null

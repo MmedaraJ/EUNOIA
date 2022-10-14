@@ -17,6 +17,7 @@ import java.util.*
 object UserBedtimeStoryBackend {
     private const val TAG = "UserBedtimeStoryBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserBedtimeStory(
         userBedtimeStoryModel: UserBedtimeStoryObject.UserBedtimeStoryModel,
@@ -31,7 +32,9 @@ object UserBedtimeStoryBackend {
                         Log.e(TAG, "Error from create userBedtimeStoryModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userBedtimeStoryModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -46,7 +49,9 @@ object UserBedtimeStoryBackend {
             BedtimeStoryObject.BedtimeStory.from(bedtimeStory),
         )
         createUserBedtimeStory(userBedtimeStoryModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -73,7 +78,9 @@ object UserBedtimeStoryBackend {
                             }
                         }
                     }
-                    completed(userBedtimeStoryList)
+                    mainScope.launch {
+                        completed(userBedtimeStoryList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -102,7 +109,9 @@ object UserBedtimeStoryBackend {
                             }
                         }
                     }
-                    completed(userBedtimeStoryList)
+                    mainScope.launch {
+                        completed(userBedtimeStoryList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

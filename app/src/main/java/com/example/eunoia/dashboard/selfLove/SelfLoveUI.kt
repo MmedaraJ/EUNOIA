@@ -24,9 +24,14 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.SelfLoveData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
+import com.example.eunoia.dashboard.home.PrayerForRoutine
+import com.example.eunoia.dashboard.home.SelfLoveForRoutine
+import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -569,6 +574,7 @@ private fun pauseSelfLove(
             globalViewModel_!!.selfLoveTimer = selfLoveTimer
             activateLocalSelfLoveControlButton(2)
             activateGlobalSelfLoveControlButton(2)
+            globalViewModel_!!.generalPlaytimeTimer.pause()
             globalViewModel_!!.isCurrentSelfLovePlaying = false
         }
     }
@@ -598,11 +604,36 @@ private fun startSelfLove(
                 selfLoveData
             )
         }
-        selfLoveTimer.start()
-        globalViewModel_!!.selfLoveTimer = selfLoveTimer
-        deActivateLocalSelfLoveControlButton(2)
-        deActivateLocalSelfLoveControlButton(0)
-        setGlobalPropertiesAfterPlayingSelfLove(selfLoveData)
+
+        afterPlayingSelfLove(selfLoveData)
+    }
+}
+
+private fun afterPlayingSelfLove(
+    selfLoveData: SelfLoveData
+){
+    selfLoveTimer.start()
+    globalViewModel_!!.selfLoveTimer = selfLoveTimer
+    deActivateLocalSelfLoveControlButton(2)
+    deActivateLocalSelfLoveControlButton(0)
+    globalViewModel_!!.generalPlaytimeTimer.start()
+    setGlobalPropertiesAfterPlayingSelfLove(selfLoveData)
+}
+
+private fun updatePreviousAndCurrentSelfLoveRelationship(
+    selfLoveData: SelfLoveData,
+    completed: () -> Unit
+){
+    updatePreviousUserSelfLoveRelationship {
+        SelfLoveForRoutine.updateRecentlyPlayedUserSelfLoveRelationshipWithSelfLove(
+            selfLoveData
+        ) {
+            updatePreviousUserPrayerRelationship {
+                updatePreviousUserBedtimeStoryRelationship {
+                    completed()
+                }
+            }
+        }
     }
 }
 
@@ -610,17 +641,17 @@ private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
     selfLoveData: SelfLoveData
 ){
-    generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(selfLoveUri!!)
-    val intent = Intent()
-    intent.action = "PLAY"
-    generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    selfLoveTimer.setMaxDuration(selfLoveData.fullPlayTime.toLong())
-    selfLoveTimer.setDuration(0L)
-    globalViewModel_!!.selfLoveTimer = selfLoveTimer
-    resetBothLocalAndGlobalControlButtons()
-    resetOtherGeneralMediaPlayerUsersExceptSelfLove()
-    //resetAll(context, soundMediaPlayerService)
+    updatePreviousAndCurrentSelfLoveRelationship(selfLoveData) {
+        generalMediaPlayerService.onDestroy()
+        generalMediaPlayerService.setAudioUri(selfLoveUri!!)
+        val intent = Intent()
+        intent.action = "PLAY"
+        generalMediaPlayerService.onStartCommand(intent, 0, 0)
+        selfLoveTimer.setMaxDuration(selfLoveData.fullPlayTime.toLong())
+        globalViewModel_!!.selfLoveTimer = selfLoveTimer
+        resetBothLocalAndGlobalControlButtons()
+        resetOtherGeneralMediaPlayerUsersExceptSelfLove()
+    }
 }
 
 private fun setGlobalPropertiesAfterPlayingSelfLove(

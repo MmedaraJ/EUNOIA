@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
-import com.example.eunoia.dashboard.prayer.resetOtherGeneralMediaPlayerUsersExceptPrayer
+import com.example.eunoia.dashboard.prayer.*
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.prayer.activatePrayerGlobalControlButton
@@ -82,6 +82,7 @@ object PrayerForRoutine{
             if(generalMediaPlayerService.isMediaPlayerPlaying()) {
                 generalMediaPlayerService.pauseMediaPlayer()
                 globalViewModel_!!.prayerTimer.pause()
+                globalViewModel_!!.generalPlaytimeTimer.pause()
                 globalViewModel_!!.isCurrentPrayerPlaying = false
                 activatePrayerGlobalControlButton(2)
             }
@@ -203,6 +204,17 @@ object PrayerForRoutine{
         }*/
     }
 
+    private fun afterPlayingPrayer(
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        index: Int
+    ){
+        routineActivityPlayButtonTexts[index]!!.value = PAUSE_ROUTINE
+        generalMediaPlayerService.loopMediaPlayer()
+        globalViewModel_!!.prayerTimer.start()
+        globalViewModel_!!.generalPlaytimeTimer.start()
+        setGlobalPropertiesAfterPlayingPrayer(index)
+    }
+
     private fun startPrayer(
         generalMediaPlayerService: GeneralMediaPlayerService,
         soundMediaPlayerService: SoundMediaPlayerService,
@@ -221,14 +233,8 @@ object PrayerForRoutine{
                 globalViewModel_!!.currentBedtimeStoryPlaying == null &&
                 globalViewModel_!!.currentSelfLovePlaying == null
             ){
-                Log.i(TAG, "About to start prayera: ${globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
-                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!.prayerData.displayName}")
-
                 generalMediaPlayerService.startMediaPlayer()
             }else{
-                Log.i(TAG, "About to initialize prayera: ${globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
-                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!.prayerData.displayName}")
-
                 initializePrayerMediaPlayers(
                     generalMediaPlayerService,
                     soundMediaPlayerService,
@@ -237,11 +243,11 @@ object PrayerForRoutine{
                 )
             }
 
-            routineActivityPlayButtonTexts[index]!!.value = PAUSE_ROUTINE
-            generalMediaPlayerService.loopMediaPlayer()
-            //globalViewModel_!!.previouslyPlayedUserSoundRelationship = globalViewModel_!!.currentUsersSoundRelationships!![index]
-            //globalViewModel_!!.generalPlaytimeTimer.start()
-            setGlobalPropertiesAfterPlayingPrayer(index)
+            afterPlayingPrayer(
+                generalMediaPlayerService,
+                index
+            )
+
         }else{
             retrievePrayerUris(
                 generalMediaPlayerService,
@@ -252,39 +258,52 @@ object PrayerForRoutine{
         }
     }
 
+    private fun updatePreviousAndCurrentPrayerRelationship(completed: () -> Unit){
+        updatePreviousUserPrayerRelationship {
+            updateRecentlyPlayedUserPrayerRelationshipWithPrayer(
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
+                    .prayerData
+            ) {
+                completed()
+            }
+        }
+    }
+
     private fun initializePrayerMediaPlayers(
         generalMediaPlayerService: GeneralMediaPlayerService,
         soundMediaPlayerService: SoundMediaPlayerService,
         index: Int,
         context: Context
     ){
-        generalMediaPlayerService.onDestroy()
-        generalMediaPlayerService.setAudioUri(
-            routineActivityPrayerUrisMapList[index][
-                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
-                            [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
-                        .prayerData.id
-            ]!!
-        )
-        val intent = Intent()
-        intent.action = "PLAY"
-        generalMediaPlayerService.onStartCommand(intent, 0, 0)
-        //generalMediaPlayerService.getMediaPlayer()!!.seekTo(globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.routineData.currentPrayerContinuePlayingTime)
-        globalViewModel_!!.prayerTimer.setMaxDuration(
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
-                    [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
-                .prayerData.fullPlayTime.toLong()
-        )
-        globalViewModel_!!.prayerTimer.setDuration(globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentPrayerContinuePlayingTime.toLong())
-        resetOtherGeneralMediaPlayerUsersExceptPrayer()
-
-        if(globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer == null) {
-            startPrayerCDT(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
+        updatePreviousAndCurrentPrayerRelationship {
+            generalMediaPlayerService.onDestroy()
+            generalMediaPlayerService.setAudioUri(
+                routineActivityPrayerUrisMapList[index][
+                        globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                                [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
+                            .prayerData.id
+                ]!!
             )
+            val intent = Intent()
+            intent.action = "PLAY"
+            generalMediaPlayerService.onStartCommand(intent, 0, 0)
+            Log.i(TAG, "prayer index = ${globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex}")
+            globalViewModel_!!.prayerTimer.setMaxDuration(
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
+                    .prayerData.fullPlayTime.toLong()
+            )
+            resetOtherGeneralMediaPlayerUsersExceptPrayer()
+
+            if (globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer == null) {
+                startPrayerCDT(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    index,
+                    context
+                )
+            }
         }
     }
 
@@ -344,17 +363,16 @@ object PrayerForRoutine{
                     .currentPrayerPlayingIndex(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex)
                     .build()
 
-            UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {}
-
-            routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
-
-            Log.i(TAG, "About to go play prayer with index ${globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex}")
-            playOrPausePrayerAccordingly(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
+            UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {
+                globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
+                routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
+                playOrPausePrayerAccordingly(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    index,
+                    context
+                )
+            }
         }
     }
 
@@ -389,19 +407,18 @@ object PrayerForRoutine{
                 .currentPrayerContinuePlayingTime(continuePlayingTime)
                 .build()
 
-            //update routine with new prayer info
-            UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine){
-                globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
+            updatePreviousUserPrayerRelationship {
+                UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {
+                    globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
+                    routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
+                    incrementPlayingOrderIndex(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        index,
+                        context
+                    )
+                }
             }
-
-            routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
-
-            incrementPlayingOrderIndex(
-                soundMediaPlayerService,
-                generalMediaPlayerService,
-                index,
-                context
-            )
         }
     }
 
@@ -462,5 +479,42 @@ object PrayerForRoutine{
         globalViewModel_!!.isCurrentRoutinePlaying = true
         deActivatePrayerGlobalControlButton(0)
         deActivatePrayerGlobalControlButton(2)
+    }
+
+    fun updateRecentlyPlayedUserPrayerRelationshipWithPrayer(
+        prayerData: PrayerData,
+        completed: (userPrayerRelationship: UserPrayerRelationship) -> Unit
+    ){
+        globalViewModel_!!.currentPrayerPlaying = prayerData
+        UserPrayerRelationshipBackend.queryUserPrayerRelationshipBasedOnUserAndPrayer(
+            globalViewModel_!!.currentUser!!,
+            prayerData
+        ) { userPrayerRelationship ->
+            if(userPrayerRelationship.isNotEmpty()) {
+                updateCurrentUserPrayerRelationshipUsageTimeStamp(userPrayerRelationship[0]!!) {
+                    globalViewModel_!!.previouslyPlayedUserPrayerRelationship = it
+                    completed(it)
+                }
+            }else{
+                UserPrayerRelationshipBackend.createUserPrayerRelationshipObject(
+                    prayerData
+                ){ newUserPrayerRelationship ->
+                    updateCurrentUserPrayerRelationshipUsageTimeStamp(newUserPrayerRelationship) {
+                        globalViewModel_!!.previouslyPlayedUserPrayerRelationship = it
+                        completed(it)
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateRecentlyPlayedUserPrayerRelationshipWithUserPrayerRelationship(
+        userPrayerRelationship: UserPrayerRelationship,
+        completed: (userPrayerRelationship: UserPrayerRelationship) -> Unit
+    ){
+        updateCurrentUserPrayerRelationshipUsageTimeStamp(userPrayerRelationship) {
+            globalViewModel_!!.previouslyPlayedUserPrayerRelationship = it
+            completed(it)
+        }
     }
 }

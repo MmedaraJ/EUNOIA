@@ -2,6 +2,7 @@ package com.example.eunoia.create
 
 import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,12 +16,16 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.example.eunoia.create.createBedtimeStory.resetAllBedtimeStoryCreationObjects
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
+import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.resetRoutineGlobalProperties
 import com.example.eunoia.dashboard.home.updatePreviousUserRoutineRelationship
 import com.example.eunoia.dashboard.prayer.resetPrayerGlobalProperties
+import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
+import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.dashboard.sound.updatePreviousUserSoundRelationship
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
@@ -128,13 +133,15 @@ fun CreateUI(
     }
 }
 
-fun resetEverythingBeforeCreatingAnything(
+fun resetEverything(
     soundMediaPlayerService: SoundMediaPlayerService,
     generalMediaPlayerService: GeneralMediaPlayerService,
     context: Context
 ){
     updatePreviousUserSoundRelationship {}
-    //update previous routine elements also
+    updatePreviousUserBedtimeStoryRelationship {}
+    updatePreviousUserPrayerRelationship {}
+    updatePreviousUserSelfLoveRelationship {}
     updatePreviousUserRoutineRelationship {}
 
     soundMediaPlayerService.onDestroy()
@@ -145,6 +152,31 @@ fun resetEverythingBeforeCreatingAnything(
     resetPrayerGlobalProperties()
     resetBedtimeStoryGlobalProperties()
     resetRoutineGlobalProperties()
+}
+
+fun resetEverythingExceptRoutine(
+    soundMediaPlayerService: SoundMediaPlayerService,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+    completed: () -> Unit
+){
+    Log.i("Create pagez", "About to reset eritn xcpt rutn")
+    updatePreviousUserSoundRelationship {
+        updatePreviousUserBedtimeStoryRelationship {
+            updatePreviousUserPrayerRelationship {
+                updatePreviousUserSelfLoveRelationship {
+                    soundMediaPlayerService.onDestroy()
+                    generalMediaPlayerService.onDestroy()
+                    com.example.eunoia.dashboard.sound.resetAll(context, soundMediaPlayerService)
+                    resetSelfLoveGlobalProperties()
+                    resetPrayerGlobalProperties()
+                    resetBedtimeStoryGlobalProperties()
+                    resetRoutineGlobalProperties()
+                    completed()
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)

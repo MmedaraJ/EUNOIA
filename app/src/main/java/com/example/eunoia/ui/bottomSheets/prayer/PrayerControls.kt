@@ -13,6 +13,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,11 +23,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.PrayerAudioSource
 import com.amplifyframework.datastore.generated.model.PrayerData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
+import com.example.eunoia.dashboard.home.PrayerForRoutine.updateRecentlyPlayedUserPrayerRelationshipWithPrayer
 import com.example.eunoia.dashboard.prayer.*
+import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
@@ -351,6 +356,7 @@ private fun pausePrayer(
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
             globalViewModel_!!.prayerTimer.pause()
+            globalViewModel_!!.generalPlaytimeTimer.pause()
             activatePrayerGlobalControlButton(2)
             activatePrayerGlobalControlButton(2)
             globalViewModel_!!.isCurrentPrayerPlaying = false
@@ -360,45 +366,68 @@ private fun pausePrayer(
 
 private fun startPrayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    PrayerData: PrayerData,
+    prayerData: PrayerData,
 ) {
     if(globalViewModel_!!.currentPrayerPlayingUri != null){
         if(generalMediaPlayerService.isMediaPlayerInitialized()){
-            if(globalViewModel_!!.currentPrayerPlaying!!.id == PrayerData.id){
+            if(globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id){
                 generalMediaPlayerService.startMediaPlayer()
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
-                    PrayerData
+                    prayerData
                 )
             }
         }else{
             initializeMediaPlayer(
                 generalMediaPlayerService,
-                PrayerData
+                prayerData
             )
         }
-        globalViewModel_!!.prayerTimer.start()
-        globalViewModel_!!.isCurrentPrayerPlaying = true
-        deActivatePrayerGlobalControlButton(2)
-        deActivatePrayerGlobalControlButton(0)
+
+        afterPlayingPrayer()
+    }
+}
+
+private fun afterPlayingPrayer(){
+    globalViewModel_!!.prayerTimer.start()
+    globalViewModel_!!.generalPlaytimeTimer.start()
+    globalViewModel_!!.isCurrentPrayerPlaying = true
+    deActivatePrayerGlobalControlButton(2)
+    deActivatePrayerGlobalControlButton(0)
+}
+
+private fun updatePreviousAndCurrentPrayerRelationship(
+    prayerData: PrayerData,
+    completed: () -> Unit
+){
+    updatePreviousUserPrayerRelationship {
+        updateRecentlyPlayedUserPrayerRelationshipWithPrayer(
+            prayerData
+        ) {
+            updatePreviousUserBedtimeStoryRelationship {
+                updatePreviousUserSelfLoveRelationship {
+                    completed()
+                }
+            }
+        }
     }
 }
 
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    PrayerData: PrayerData
+    prayerData: PrayerData,
 ){
-    generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentPrayerPlayingUri!!)
-    val intent = Intent()
-    intent.action = "PLAY"
-    generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    globalViewModel_!!.prayerTimer.setMaxDuration(PrayerData.fullPlayTime.toLong())
-    globalViewModel_!!.prayerTimer.setDuration(0L)
-    resetGlobalControlButtons()
-    resetOtherGeneralMediaPlayerUsersExceptPrayer()
-    //resetAll(context, soundMediaPlayerService)
+    updatePreviousAndCurrentPrayerRelationship(prayerData) {
+        generalMediaPlayerService.onDestroy()
+        generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentPrayerPlayingUri!!)
+        val intent = Intent()
+        intent.action = "PLAY"
+        generalMediaPlayerService.onStartCommand(intent, 0, 0)
+        globalViewModel_!!.prayerTimer.setMaxDuration(prayerData.fullPlayTime.toLong())
+        resetGlobalControlButtons()
+        resetOtherGeneralMediaPlayerUsersExceptPrayer()
+    }
 }
 
 private fun retrievePrayerAudio(

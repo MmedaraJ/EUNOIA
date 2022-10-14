@@ -15,6 +15,7 @@ import java.util.*
 object RoutineSelfLoveBackend {
     private const val TAG = "RoutineSelfLoveBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createRoutineSelfLove(
         routineSelfLoveModel: RoutineSelfLoveObject.RoutineSelfLoveModel,
@@ -29,7 +30,9 @@ object RoutineSelfLoveBackend {
                         Log.e(TAG, "Error from create routineSelfLoveModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created routineSelfLoveModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -48,7 +51,9 @@ object RoutineSelfLoveBackend {
             SelfLoveObject.SelfLove.from(selfLoveData),
         )
         createRoutineSelfLove(routineSelfLoveModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -72,7 +77,9 @@ object RoutineSelfLoveBackend {
                             }
                         }
                     }
-                    completed(routineSelfLoveList)
+                    mainScope.launch {
+                        completed(routineSelfLoveList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -101,7 +108,9 @@ object RoutineSelfLoveBackend {
                             }
                         }
                     }
-                    completed(routineSelfLoveList)
+                    mainScope.launch {
+                        completed(routineSelfLoveList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

@@ -15,6 +15,7 @@ import java.util.*
 object RoutineSoundBackend {
     private const val TAG = "RoutineSoundBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createRoutineSound(
         routineSoundModel: RoutineSoundObject.RoutineSoundModel,
@@ -29,7 +30,9 @@ object RoutineSoundBackend {
                         Log.e(TAG, "Error from create routineSoundModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created routineSoundModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -48,7 +51,9 @@ object RoutineSoundBackend {
             RoutineObject.Routine.from(routineData)
         )
         createRoutineSound(routineSoundModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -72,7 +77,9 @@ object RoutineSoundBackend {
                             }
                         }
                     }
-                    completed(routineSoundList)
+                    mainScope.launch {
+                        completed(routineSoundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -101,7 +108,9 @@ object RoutineSoundBackend {
                             }
                         }
                     }
-                    completed(routineSoundList)
+                    mainScope.launch {
+                        completed(routineSoundList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

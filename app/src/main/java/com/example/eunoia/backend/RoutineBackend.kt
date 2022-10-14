@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 object RoutineBackend {
     private const val TAG = "RoutineBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createRoutine(routine: RoutineObject.Routine, completed: (routine: RoutineData) -> Unit) {
         scope.launch {
@@ -25,7 +26,9 @@ object RoutineBackend {
                         Log.e(TAG, "Error from create routine ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created routine with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -40,7 +43,9 @@ object RoutineBackend {
                 { response ->
                     if(response.hasData()) {
                         Log.i(TAG, "Successfully updated routine: ${response.data}")
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 {
@@ -74,7 +79,9 @@ object RoutineBackend {
                                 }
                             }
                         }
-                        completed(routineList)
+                        mainScope.launch {
+                            completed(routineList)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }

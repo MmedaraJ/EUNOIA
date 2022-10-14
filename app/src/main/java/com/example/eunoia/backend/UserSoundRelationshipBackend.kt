@@ -17,6 +17,7 @@ import java.util.*
 object UserSoundRelationshipBackend {
     private const val TAG = "UserSoundRelationshipBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createUserSoundRelationship(
         userSoundRelationshipModel: UserSoundRelationshipObject.UserSoundRelationshipModel,
@@ -31,7 +32,9 @@ object UserSoundRelationshipBackend {
                         Log.e(TAG, "Error from create userSoundRelationshipModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userSoundRelationshipModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -51,7 +54,9 @@ object UserSoundRelationshipBackend {
             listOf()
         )
         createUserSoundRelationship(userSoundRelationshipModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -65,7 +70,9 @@ object UserSoundRelationshipBackend {
                 { response ->
                     if(response.hasData()) {
                         Log.i(TAG, "Successfully updated userSoundRelationship: ${response.data}")
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 {
@@ -98,7 +105,9 @@ object UserSoundRelationshipBackend {
                             }
                         }
                     }
-                    completed(userSoundRelationshipList)
+                    mainScope.launch {
+                        completed(userSoundRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -125,7 +134,9 @@ object UserSoundRelationshipBackend {
                             }
                         }
                     }
-                    completed(userSoundRelationshipList)
+                    mainScope.launch {
+                        completed(userSoundRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -154,7 +165,9 @@ object UserSoundRelationshipBackend {
                             }
                         }
                     }
-                    completed(userSoundRelationshipList)
+                    mainScope.launch {
+                        completed(userSoundRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

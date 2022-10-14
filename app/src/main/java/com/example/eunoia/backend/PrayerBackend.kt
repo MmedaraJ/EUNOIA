@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 object PrayerBackend {
     private const val TAG = "PrayerBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createPrayer(
         prayer: PrayerObject.Prayer,
@@ -28,7 +29,9 @@ object PrayerBackend {
                         Log.e(TAG, "Error from create prayer ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created prayer with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -57,7 +60,9 @@ object PrayerBackend {
                             }
                         }
                     }
-                    completed(prayerList)
+                    mainScope.launch {
+                        completed(prayerList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

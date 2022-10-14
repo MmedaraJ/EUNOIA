@@ -58,8 +58,8 @@ class SoundMediaPlayerService:
                                     audioUris[i]!!
                                 )
                                 setVolume(
-                                    volumes[i]!!.toFloat() / 10,
-                                    volumes[i]!!.toFloat() / 10
+                                    volumes[i].toFloat() / 10,
+                                    volumes[i].toFloat() / 10
                                 )
                                 setWakeMode(
                                     UserDashboardActivity.getInstanceActivity(),
@@ -93,8 +93,8 @@ class SoundMediaPlayerService:
     }
 
     fun startMediaPlayers(){
-        for(mediaPlayer in mediaPlayers) {
-            mediaPlayer!!.start()
+        for(i in mediaPlayers.indices) {
+            mediaPlayers[i]!!.start()
         }
         mediaPlayersArePlaying = true
     }
@@ -103,8 +103,8 @@ class SoundMediaPlayerService:
         if(mediaPlayersInitialized){
             for(i in mediaPlayers.indices){
                 mediaPlayers[i]!!.setVolume(
-                    volumes[i]!!.toFloat() / 10,
-                    volumes[i]!!.toFloat() / 10
+                    volumes[i].toFloat() / 10,
+                    volumes[i].toFloat() / 10
                 )
             }
         }

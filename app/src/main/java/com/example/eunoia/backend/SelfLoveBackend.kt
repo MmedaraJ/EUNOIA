@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 object SelfLoveBackend {
     private const val TAG = "SelfLoveBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun createSelfLove(
         selfLove: SelfLoveObject.SelfLove,
@@ -28,7 +29,9 @@ object SelfLoveBackend {
                         Log.e(TAG, "Error from create SelfLove ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created SelfLove with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -57,7 +60,9 @@ object SelfLoveBackend {
                             }
                         }
                     }
-                    completed(selfLoveList)
+                    mainScope.launch {
+                        completed(selfLoveList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )

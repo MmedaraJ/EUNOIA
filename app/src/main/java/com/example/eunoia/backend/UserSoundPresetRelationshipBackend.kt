@@ -17,6 +17,7 @@ import java.util.*
 object UserSoundPresetRelationshipBackend {
     private const val TAG = "UserSoundPresetRelationshipBackend"
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mainScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private fun createUserSoundPresetRelationship(
         userSoundPresetRelationshipModel: UserSoundPresetRelationshipObject.UserSoundPresetRelationshipModel,
@@ -31,7 +32,9 @@ object UserSoundPresetRelationshipBackend {
                         Log.e(TAG, "Error from create userSoundPresetRelationshipModel ${response.errors.first().message}")
                     } else {
                         Log.i(TAG, "Created userSoundPresetRelationshipModel with id: " + response.data.id)
-                        completed(response.data)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
                     }
                 },
                 { error -> Log.e(TAG, "Create failed", error) }
@@ -51,7 +54,9 @@ object UserSoundPresetRelationshipBackend {
             listOf()
         )
         createUserSoundPresetRelationship(userSoundPresetRelationshipModel){
-            completed(it)
+            mainScope.launch {
+                completed(it)
+            }
         }
     }
 
@@ -75,7 +80,9 @@ object UserSoundPresetRelationshipBackend {
                             }
                         }
                     }
-                    completed(userSoundPresetRelationshipList)
+                    mainScope.launch {
+                        completed(userSoundPresetRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
@@ -104,7 +111,9 @@ object UserSoundPresetRelationshipBackend {
                             }
                         }
                     }
-                    completed(userSoundPresetRelationshipList)
+                    mainScope.launch {
+                        completed(userSoundPresetRelationshipList)
+                    }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
             )
