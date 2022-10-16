@@ -39,7 +39,7 @@ object UserRoutineRelationshipObject {
         val currentSelfLoveContinuePlayingTime: Int?,
         val currentPrayerPlayingIndex: Int?,
         val currentPrayerContinuePlayingTime: Int?,
-        val usageTimeStamp: @RawValue List<Temporal.DateTime>?,
+        val usageTimeStamp: @RawValue List<Temporal.DateTime>,
         val usagePlayTimes: List<Int>?,
         val playingOrder: List<String>?
     ): Parcelable {

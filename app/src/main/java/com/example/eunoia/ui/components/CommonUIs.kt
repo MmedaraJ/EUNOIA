@@ -2061,7 +2061,8 @@ fun PurpleBackgroundStart(
 fun WrappedPurpleBackgroundStart(
     titleString: String,
     secondaryTitle: String,
-    lambda: () -> Unit
+    startButtonText: String,
+    startClicked: () -> Unit
 ){
     Card(
         modifier = Modifier
@@ -2097,7 +2098,7 @@ fun WrappedPurpleBackgroundStart(
                         top.linkTo(parent.top, margin = 0.dp)
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                         start.linkTo(parent.start, margin = 32.dp)
-                        //end.linkTo(button.start, margin = 32.dp)
+                        end.linkTo(button.start, margin = 32.dp)
                     }
             ) {
                 var textSize = titleString.length
@@ -2109,7 +2110,7 @@ fun WrappedPurpleBackgroundStart(
                         limit = titleString.length
                     }
                     if(titleString.substring(i, limit).isNotEmpty()) {
-                        NormalText(
+                        AlignedNormalText(
                             text = titleString.substring(i, limit),
                             color = Black,
                             fontSize = 12,
@@ -2150,12 +2151,12 @@ fun WrappedPurpleBackgroundStart(
                         end.linkTo(parent.end, margin = 48.dp)
                     }
                     .clickable {
-                        //startClicked(index)
+                        startClicked()
                     },
                 contentAlignment = Alignment.Center
             ){
                 MorgeNormalText(
-                    text = "start",
+                    text = startButtonText,
                     color = Color.White,
                     fontSize = 20,
                     xOffset = 0,

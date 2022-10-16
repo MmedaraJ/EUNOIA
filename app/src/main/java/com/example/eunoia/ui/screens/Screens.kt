@@ -94,6 +94,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
      * Routine
      */
     object RoutineScreen: Screen("Routine Screen", -1, "routine_screen")
+    object UserRoutineRelationshipScreen: Screen("User Routine Relationship Screen", -1, "user_routine_relationship_screen")
     object RoutinePresetScreen: Screen("Routine Preset Screen", -1, "routine_preset_screen")
     object RoutinePrayerScreen: Screen("Routine Prayer Screen", -1, "routine_prayer_screen")
     object RoutineBedtimeStoryScreen: Screen("Routine Bedtime Story Screen", -1, "routine_bedtime_story_screen")
@@ -175,102 +176,11 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                  * Routine
                  */
                 RoutineScreen.screen_route -> RoutineScreen
+                UserRoutineRelationshipScreen.screen_route -> UserRoutineRelationshipScreen
                 RoutinePresetScreen.screen_route -> RoutinePresetScreen
                 RoutinePrayerScreen.screen_route -> RoutinePrayerScreen
                 RoutineBedtimeStoryScreen.screen_route -> RoutineBedtimeStoryScreen
                 RoutineSelfLoveScreen.screen_route -> RoutineSelfLoveScreen
-
-                /**
-                 * Settings
-                 */
-                Settings.screen_route -> Settings
-                EightHourCountdown.screen_route -> EightHourCountdown
-
-                /**
-                 * Article
-                 */
-                Article.screen_route -> Article
-
-                /**
-                 * Pricing
-                 */
-                Pricing.screen_route -> Pricing
-
-                else -> Dashboard
-            }
-        }
-
-        fun getScreenFromRoute(route: String): Screen {
-            return when (route) {
-                /**
-                 * bottom nav bar
-                 */
-                Dashboard.screen_route -> Dashboard
-                Create.screen_route -> Create
-                Feedback.screen_route -> Feedback
-                Account.screen_route -> Account
-                Search.screen_route -> Search
-
-                /**
-                 * Create Sound
-                 */
-                NameSound.screen_route -> NameSound
-                CreatePreset.screen_route -> CreatePreset
-                UploadSounds.screen_route -> UploadSounds
-
-                /**
-                 * Create Bedtime Story
-                 */
-                NameBedtimeStory.screen_route -> NameBedtimeStory
-                RecordBedtimeStory.screen_route -> RecordBedtimeStory
-                UploadBedtimeStory.screen_route -> UploadBedtimeStory
-                BedtimeStoryChapterScreen.screen_route -> BedtimeStoryChapterScreen
-                IncompleteBedtimeStories.screen_route -> IncompleteBedtimeStories
-                PageScreen.screen_route -> PageScreen
-
-                /**
-                 * Create Prayer
-                 */
-                NamePrayer.screen_route -> NamePrayer
-                UploadPrayer.screen_route -> UploadPrayer
-                RecordPrayer.screen_route -> RecordPrayer
-
-                /**
-                 * Create Self Love
-                 */
-                NameSelfLove.screen_route -> NameSelfLove
-                UploadSelfLove.screen_route -> UploadSelfLove
-                RecordSelfLove.screen_route -> RecordSelfLove
-
-                /**
-                 * Sound
-                 */
-                Sound.screen_route -> Sound
-                SoundScreen.screen_route -> SoundScreen
-
-                /**
-                 * Self love
-                 */
-                SelfLove.screen_route -> SelfLove
-                SelfLoveScreen.screen_route -> SelfLoveScreen
-
-                /**
-                 * Bedtime story
-                 */
-                BedtimeStory.screen_route -> BedtimeStory
-                BedtimeStoryScreen.screen_route -> BedtimeStoryScreen
-
-                /**
-                 * Prayer
-                 */
-                Prayer.screen_route -> Prayer
-                PrayerScreen.screen_route -> PrayerScreen
-
-                /**
-                 * Routine
-                 */
-                RoutineScreen.screen_route -> RoutineScreen
-                RoutinePresetScreen.screen_route -> RoutinePresetScreen
 
                 /**
                  * Settings

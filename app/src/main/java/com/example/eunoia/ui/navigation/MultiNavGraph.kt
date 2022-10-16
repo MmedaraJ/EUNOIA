@@ -40,6 +40,7 @@ import com.example.eunoia.dashboard.bedtimeStory.BedtimeStoryScreen
 import com.example.eunoia.dashboard.prayer.PrayerActivityUI
 import com.example.eunoia.dashboard.prayer.PrayerScreen
 import com.example.eunoia.dashboard.routine.*
+import com.example.eunoia.dashboard.routine.userRoutineRelationshipScreen.UserRoutineRelationshipScreen
 import com.example.eunoia.dashboard.selfLove.SelfLoveActivityUI
 import com.example.eunoia.dashboard.selfLove.SelfLoveScreen
 import com.example.eunoia.models.*
@@ -552,7 +553,7 @@ fun DashboardTab(
                 state,
                 generalMediaPlayerService
             )
-        }
+        }/*
         composable(
             "${Screen.RoutineScreen.screen_route}/userRoutineRelationship={userRoutineRelationship}",
             arguments = listOf(
@@ -563,12 +564,32 @@ fun DashboardTab(
         ) { backStackEntry ->
             val userRoutineRelationship = backStackEntry.arguments?.getParcelable<UserRoutineRelationshipObject.UserRoutineRelationshipModel>("userRoutineRelationship")
             Log.i("Routine Screen", "You are now on the ${userRoutineRelationship!!.userRoutineRelationshipRoutine.displayName} tab")
-            RoutineScreen(
+            UserRoutineRelationshipScreen(
                 navController,
-                LocalContext.current,
                 userRoutineRelationship!!.data,
                 scope,
-                state
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
+            )
+        }*/
+        composable(
+            "${Screen.UserRoutineRelationshipScreen.screen_route}/userRoutineRelationship={userRoutineRelationship}",
+            arguments = listOf(
+                navArgument("userRoutineRelationship") {
+                    type = UserRoutineRelationshipObject.UserRoutineRelationshipType()
+                }
+            )
+        ) { backStackEntry ->
+            val userRoutineRelationship = backStackEntry.arguments?.getParcelable<UserRoutineRelationshipObject.UserRoutineRelationshipModel>("userRoutineRelationship")
+            Log.i("Routine Screen", "You are now on the ${userRoutineRelationship!!.userRoutineRelationshipRoutine.displayName} tab")
+            UserRoutineRelationshipScreen(
+                navController,
+                userRoutineRelationship.data,
+                scope,
+                state,
+                generalMediaPlayerService,
+                soundMediaPlayerService
             )
         }
         composable(

@@ -64,7 +64,8 @@ fun ChapterBlock(
             val pagesText = if (numberOfPages == 1) "page" else "pages"
             WrappedPurpleBackgroundStart(
                 chapterData.displayName,
-                "$numberOfPages $pagesText"
+                "$numberOfPages $pagesText",
+                "start"
             ) {
             }
         }
