@@ -394,7 +394,7 @@ object BedtimeStoryForRoutine{
             activateBedtimeStoryGlobalControlButton(2)
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
             globalViewModel_!!.currentBedtimeStoryPlaying = null
-            globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer!!.cancel()
+
             globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer = null
             if (globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer != null) {
                 globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer!!.cancel()

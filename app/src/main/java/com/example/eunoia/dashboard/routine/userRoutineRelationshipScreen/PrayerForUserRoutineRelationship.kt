@@ -282,7 +282,6 @@ object PrayerForUserRoutineRelationship{
 
             globalViewModel_!!.isCurrentPrayerPlaying = false
             globalViewModel_!!.currentPrayerPlaying = null
-            prayerCountDownTimer!!.cancel()
             prayerCountDownTimer = null
             globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = prayerCountDownTimer
 
@@ -336,8 +335,8 @@ object PrayerForUserRoutineRelationship{
 
             if(nextPrayerCountDownTimer != null) {
                 nextPrayerCountDownTimer = null
-                globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = nextPrayerCountDownTimer
             }
+            globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = nextPrayerCountDownTimer
 
             val routine = thisUserRoutineRelationship!!.copyOfBuilder()
                 .currentPrayerContinuePlayingTime(continuePlayingTime)

@@ -54,6 +54,7 @@ fun ConfirmStopRoutineAlertDialog(
                     Button(
                         onClick = {
                             openDialog.value = false
+                            openRoutineIsCurrentlyPlayingDialogBox = false
                             yes()
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = BeautyBush),
@@ -73,6 +74,7 @@ fun ConfirmStopRoutineAlertDialog(
                     Button(
                         onClick = {
                             openDialog.value = false
+                            openRoutineIsCurrentlyPlayingDialogBox = false
                             no()
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = BeautyBush),

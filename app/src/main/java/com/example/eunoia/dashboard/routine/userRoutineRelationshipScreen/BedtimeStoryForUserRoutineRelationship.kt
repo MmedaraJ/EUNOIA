@@ -265,19 +265,19 @@ object BedtimeStoryForUserRoutineRelationship {
             context
         )
 
-        individualbedtimeStoryTimer(
+        individualBedtimeStoryTimer(
             soundMediaPlayerService,
             generalMediaPlayerService,
             context
         )
     }
 
-    private fun individualbedtimeStoryTimer(
+    private fun individualBedtimeStoryTimer(
         soundMediaPlayerService: SoundMediaPlayerService,
         generalMediaPlayerService: GeneralMediaPlayerService,
         context: Context
     ) {
-        startnextBedtimeStoryCountDownTimer(
+        startNextBedtimeStoryCountDownTimer(
             context,
             bedtimeStories!![bedtimeStoriesIndex]!!.bedtimeStoryInfoData.fullPlayTime.toLong(),
             generalMediaPlayerService
@@ -291,8 +291,10 @@ object BedtimeStoryForUserRoutineRelationship {
 
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
             globalViewModel_!!.currentBedtimeStoryPlaying = null
-            bedtimeStoryCountDownTimer!!.cancel()
-            bedtimeStoryCountDownTimer = null
+            if(bedtimeStoryCountDownTimer != null) {
+                bedtimeStoryCountDownTimer!!.cancel()
+                bedtimeStoryCountDownTimer = null
+            }
             globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer = bedtimeStoryCountDownTimer
 
             bedtimeStoriesIndex += 1
@@ -389,7 +391,7 @@ object BedtimeStoryForUserRoutineRelationship {
         globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer = bedtimeStoryCountDownTimer
     }
 
-    private fun startnextBedtimeStoryCountDownTimer(
+    private fun startNextBedtimeStoryCountDownTimer(
         context: Context,
         time: Long,
         generalMediaPlayerService: GeneralMediaPlayerService,

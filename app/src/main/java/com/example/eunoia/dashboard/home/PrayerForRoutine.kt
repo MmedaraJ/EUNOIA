@@ -396,16 +396,15 @@ object PrayerForRoutine{
                 continuePlayingTime = generalMediaPlayerService.getMediaPlayer()!!.currentPosition
                 generalMediaPlayerService.onDestroy()
             }
+
             deActivatePrayerGlobalControlButton(0)
             activatePrayerGlobalControlButton(2)
+
             globalViewModel_!!.isCurrentPrayerPlaying = false
             globalViewModel_!!.currentPrayerPlaying = null
-            globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer!!.cancel()
+
             globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer = null
-            if(globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer != null) {
-                globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer!!.cancel()
-                globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = null
-            }
+            globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = null
 
             val routine = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
                 .currentPrayerContinuePlayingTime(continuePlayingTime)

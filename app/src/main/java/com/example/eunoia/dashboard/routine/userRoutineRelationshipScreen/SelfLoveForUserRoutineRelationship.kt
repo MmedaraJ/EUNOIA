@@ -286,7 +286,7 @@ object SelfLoveForUserRoutineRelationship {
 
             globalViewModel_!!.isCurrentSelfLovePlaying = false
             globalViewModel_!!.currentSelfLovePlaying = null
-            selfLoveCountDownTimer!!.cancel()
+
             selfLoveCountDownTimer = null
             globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = selfLoveCountDownTimer
 
@@ -338,10 +338,8 @@ object SelfLoveForUserRoutineRelationship {
             selfLoveCountDownTimer = null
             globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer = selfLoveCountDownTimer
 
-            if(nextSelfLoveCountDownTimer != null) {
-                nextSelfLoveCountDownTimer = null
-                globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = nextSelfLoveCountDownTimer
-            }
+            nextSelfLoveCountDownTimer = null
+            globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = nextSelfLoveCountDownTimer
 
             val routine = thisUserRoutineRelationship!!.copyOfBuilder()
                 .currentSelfLoveContinuePlayingTime(continuePlayingTime)

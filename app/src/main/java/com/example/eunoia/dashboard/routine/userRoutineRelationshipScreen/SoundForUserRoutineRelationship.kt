@@ -25,7 +25,7 @@ object SoundForUserRoutineRelationship{
         generalMediaPlayerService: GeneralMediaPlayerService,
         context: Context
     ) {
-        if(presets != null) {
+        if(presets != null && presetUris.isNotEmpty()) {
             if(presetUris[presets!![presetsIndex]!!.soundPresetData.id]!!.isEmpty()) {
                 if(presets!!.isEmpty()) {
                     getRoutinePresets {

@@ -398,12 +398,9 @@ object SelfLoveForRoutine {
             activateSelfLoveGlobalControlButton(2)
             globalViewModel_!!.isCurrentSelfLovePlaying = false
             globalViewModel_!!.currentSelfLovePlaying = null
-            globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer!!.cancel()
+
             globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer = null
-            if(globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer != null) {
-                globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer!!.cancel()
-                globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = null
-            }
+            globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = null
 
             val routine = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
                 .currentSelfLoveContinuePlayingTime(continuePlayingTime)
