@@ -582,7 +582,7 @@ fun DashboardTab(
             )
         ) { backStackEntry ->
             val userRoutineRelationship = backStackEntry.arguments?.getParcelable<UserRoutineRelationshipObject.UserRoutineRelationshipModel>("userRoutineRelationship")
-            Log.i("Routine Screen", "You are now on the ${userRoutineRelationship!!.userRoutineRelationshipRoutine.displayName} tab")
+            Log.i("UserRoutineRelationship Screen", "You are now on the ${userRoutineRelationship!!.userRoutineRelationshipRoutine.displayName} tab")
             UserRoutineRelationshipScreen(
                 navController,
                 userRoutineRelationship.data,

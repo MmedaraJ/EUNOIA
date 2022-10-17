@@ -241,7 +241,7 @@ fun SelectRoutineForSound(
     SetUpAlertDialogs()
     val userRoutineRelationships = remember{ mutableStateOf(mutableListOf<UserRoutineRelationship?>()) }
     UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUser(globalViewModel_!!.currentUser!!){
-        com.example.eunoia.ui.bottomSheets.prayer.userRoutinesSize = it.size
+        userRoutinesSize = it.size
         userRoutineRelationships.value = it.toMutableList()
     }
 

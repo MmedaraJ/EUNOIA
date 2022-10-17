@@ -537,6 +537,8 @@ fun UserDashboardActivityUI(
                                 )
                             },
                             {
+                                Log.i(TAG, "globalViewModel_!!.currentUsersRoutineRelationships!![i]!! = " +
+                                        "${globalViewModel_!!.currentUsersRoutineRelationships!![i]!!}")
                                 navigateToUserRoutineRelationshipScreen(navController, globalViewModel_!!.currentUsersRoutineRelationships!![i]!!)
                             }
                         )
@@ -1334,6 +1336,7 @@ fun navigateToRoutineScreen(navController: NavController, userRoutineRelationshi
 }
 
 fun navigateToUserRoutineRelationshipScreen(navController: NavController, userRoutineRelationship: UserRoutineRelationship){
+    Log.i(TAG, "userRoutineRelationshiz = $userRoutineRelationship")
     navController.navigate("${Screen.UserRoutineRelationshipScreen.screen_route}/userRoutineRelationship=${UserRoutineRelationshipObject.UserRoutineRelationshipModel.from(userRoutineRelationship)}")
 }
 

@@ -386,24 +386,14 @@ private fun selectNextRoutineElement(
                 )
             }
             "bedtimeStory" -> {
-                /*BedtimeStoryForRoutine.playOrPauseBedtimeStoryAccordingly(
-                    soundMediaPlayerService,
-                    generalMediaPlayerService,
-                    context
-                )*/
-                incrementPlayingOrderIndex(
+                BedtimeStoryForUserRoutineRelationship.playOrPauseBedtimeStoryAccordingly(
                     soundMediaPlayerService,
                     generalMediaPlayerService,
                     context
                 )
             }
             "self-love" -> {
-                /*SelfLoveForRoutine.playOrPauseSelfLoveAccordingly(
-                    soundMediaPlayerService,
-                    generalMediaPlayerService,
-                    context
-                )*/
-                incrementPlayingOrderIndex(
+                SelfLoveForUserRoutineRelationship.playOrPauseSelfLoveAccordingly(
                     soundMediaPlayerService,
                     generalMediaPlayerService,
                     context
