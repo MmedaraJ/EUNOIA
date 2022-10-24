@@ -4,14 +4,20 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.CountDownTimer
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -19,10 +25,14 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.PageData
+import com.example.eunoia.R
 import com.example.eunoia.backend.BedtimeStoryChapterBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.create.createSound.activateControls
+import com.example.eunoia.create.createSoundViewModel
 import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.home.UserDashboardActivity
+import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
@@ -44,6 +54,35 @@ var selectedPageRecordingIndex by mutableStateOf(0)
 var thisPageIndex by mutableStateOf(-1)
 var thisPageData by mutableStateOf<PageData?>(null)
 var recordingCDT: CountDownTimer? = null
+
+private var icons = arrayOf(
+    mutableStateOf(R.drawable.ic_baseline_delete),
+    mutableStateOf(R.drawable.back_arrow),
+    mutableStateOf(R.drawable.play_icon),
+    mutableStateOf(R.drawable.ic_baseline_arrow_right_alt),
+    mutableStateOf(R.drawable.ic_baseline_mic),
+)
+private var borderControlColors = arrayOf(
+    mutableStateOf(Bizarre),
+    mutableStateOf(Bizarre),
+    mutableStateOf(Black),
+    mutableStateOf(Bizarre),
+    mutableStateOf(Bizarre),
+)
+private var backgroundControlColor1 = arrayOf(
+    mutableStateOf(White),
+    mutableStateOf(White),
+    mutableStateOf(SoftPeach),
+    mutableStateOf(White),
+    mutableStateOf(White),
+)
+private var backgroundControlColor2 = arrayOf(
+    mutableStateOf(White),
+    mutableStateOf(White),
+    mutableStateOf(Solitude),
+    mutableStateOf(White),
+    mutableStateOf(White),
+)
 
 private var TAG = "Page Screen"
 
@@ -97,6 +136,7 @@ fun PageScreenUI(
         val (
             header,
             title,
+            controls,
             save1,
             page_column,
             all_recordings,
@@ -129,23 +169,125 @@ fun PageScreenUI(
                 }
             )
         }
-        Column(
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .constrainAs(title) {
+                .constrainAs(controls) {
                     top.linkTo(header.bottom, margin = 40.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
-        ) {
-            NormalText(
-                text = pageData.displayName,
-                color = Black,
-                fontSize = 16,
-                xOffset = 0,
-                yOffset = 0
-            )
+                .fillMaxWidth()
+        ){
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .gradientBackground(
+                        listOf(
+                            backgroundControlColor1[0].value,
+                            backgroundControlColor2[0].value
+                        ),
+                        angle = 45f
+                    )
+                    .border(
+                        BorderStroke(
+                            0.5.dp,
+                            borderControlColors[0].value
+                        ),
+                        RoundedCornerShape(50.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                AnImageWithColor(
+                    icons[0].value,
+                    "delete page icon",
+                    borderControlColors[0].value,
+                    12.dp,
+                    12.dp,
+                    0,
+                    0
+                ) {
+                    //delete page
+                }
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth(0.4f)
+            ){
+                icons.forEachIndexed { index, icon ->
+                    if(index == 1 || index == 2 || index == 3){
+                        Box(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(CircleShape)
+                                .gradientBackground(
+                                    listOf(
+                                        backgroundControlColor1[index].value,
+                                        backgroundControlColor2[index].value
+                                    ),
+                                    angle = 45f
+                                )
+                                .border(
+                                    BorderStroke(
+                                        0.5.dp,
+                                        borderControlColors[index].value
+                                    ),
+                                    RoundedCornerShape(50.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            AnImageWithColor(
+                                icon.value,
+                                "icon",
+                                borderControlColors[index].value,
+                                12.dp,
+                                12.dp,
+                                0,
+                                0
+                            ) {
+                                //activate controls
+                            }
+                        }
+                    }
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .gradientBackground(
+                        listOf(
+                            backgroundControlColor1[4].value,
+                            backgroundControlColor2[4].value
+                        ),
+                        angle = 45f
+                    )
+                    .border(
+                        BorderStroke(
+                            0.5.dp,
+                            borderControlColors[4].value
+                        ),
+                        RoundedCornerShape(50.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                AnImageWithColor(
+                    icons[4].value,
+                    "delete page icon",
+                    borderControlColors[4].value,
+                    12.dp,
+                    12.dp,
+                    0,
+                    0
+                ) {
+                    //delete page
+                }
+            }
         }
-        Column(
+        /*Column(
             modifier = Modifier
                 .constrainAs(delete) {
                     top.linkTo(title.bottom, margin = 32.dp)
@@ -201,11 +343,27 @@ fun PageScreenUI(
                 pageRecordings[pageIndex][newRecordingName] = newRecordingKeyS3
                 numberOfRecordings++
             }
+        }*/
+        Column(
+            modifier = Modifier
+                .constrainAs(title) {
+                    top.linkTo(controls.bottom, margin = 32.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ) {
+            NormalText(
+                text = pageData.displayName,
+                color = Black,
+                fontSize = 16,
+                xOffset = 0,
+                yOffset = 0
+            )
         }
         Column(
             modifier = Modifier
                 .constrainAs(page_column) {
-                    top.linkTo(save1.bottom, margin = 16.dp)
+                    top.linkTo(title.bottom, margin = 12.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
