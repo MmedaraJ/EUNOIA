@@ -1,5 +1,7 @@
 package com.example.eunoia.create
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,11 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.example.eunoia.ui.components.AlignedNormalText
-import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.SimpleFlowRow
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
@@ -25,6 +27,8 @@ import com.example.eunoia.ui.theme.SoftPeach
 
 @Composable
 fun Elements(navController: NavController){
+    val context = LocalContext.current
+
     val allElements = listOf(
         "sound",
         "prayer",

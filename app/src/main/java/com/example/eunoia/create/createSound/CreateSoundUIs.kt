@@ -57,7 +57,6 @@ import java.io.File
 import java.lang.IllegalStateException
 import kotlin.concurrent.fixedRateTimer
 
-var mediaPlayers = mutableListOf<MediaPlayer>()
 private val isPlaying = mutableStateOf(false)
 private val isLooping = mutableStateOf(false)
 private val meditationBellInterval = mutableStateOf(0)
@@ -239,7 +238,6 @@ fun SwipeToResetSoundUI(
                         fileMediaPlayers[index]!!.value.stop()
                         fileMediaPlayers[index]!!.value.reset()
                     }else {
-                        clearMainMediaPlayers()
                         fileMediaPlayers[index]!!.value.apply {
                             setAudioAttributes(
                                 AudioAttributes.Builder()
@@ -555,26 +553,12 @@ fun createMeditationBellMediaPlayer(context: Context){
     }
 }
 
-fun clearMainMediaPlayers(){
-    if(mediaPlayers.isNotEmpty()) {
-        mediaPlayers.forEach { mediaPlayer ->
-            if(mediaPlayer.isPlaying) {
-                mediaPlayer.stop()
-            }
-            mediaPlayer.reset()
-            mediaPlayer.release()
-        }
-        mediaPlayers.clear()
-    }
-}
-
 fun playSoundsPreset(
     applicationContext: Context,
     index: Int,
     soundMediaPlayerService: SoundMediaPlayerService
 ){
     globalViewModel_!!.bottomSheetOpenFor = ""
-    clearMainMediaPlayers()
     com.example.eunoia.dashboard.sound.resetAll(applicationContext, soundMediaPlayerService)
     fileMediaPlayers.forEachIndexed { i,  media ->
         try {

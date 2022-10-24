@@ -165,6 +165,7 @@ fun UploadSoundsUI(
             fileUris.clear()
             fileMediaPlayers.clear()
             audioFileLengthMilliSeconds.clear()
+
             if(numberOfFiles > 0) {
                 for (i in 0 until numberOfFiles) {
                     fileNames.add(remember{ mutableStateOf("") })

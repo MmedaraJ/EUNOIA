@@ -14,7 +14,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -28,30 +31,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.amazonaws.util.DateUtils
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.model.temporal.Temporal
-import com.amplifyframework.datastore.generated.model.*
+import com.amplifyframework.datastore.generated.model.RoutineData
+import com.amplifyframework.datastore.generated.model.UserData
+import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 import com.example.eunoia.R
-import com.example.eunoia.backend.*
+import com.example.eunoia.backend.AuthBackend
+import com.example.eunoia.backend.UserBackend
+import com.example.eunoia.backend.UserRoutineRelationshipBackend
 import com.example.eunoia.create.createBedtimeStory.*
-import com.example.eunoia.create.createPrayer.*
-import com.example.eunoia.create.createSelfLove.*
-import com.example.eunoia.create.createSound.*
+import com.example.eunoia.create.createPrayer.uploadedAudioFileLengthMilliSecondsPrayer
+import com.example.eunoia.create.createPrayer.uploadedFileColorPrayer
+import com.example.eunoia.create.createPrayer.uploadedFilePrayer
+import com.example.eunoia.create.createPrayer.uploadedFileUriPrayer
+import com.example.eunoia.create.createSelfLove.uploadedAudioFileLengthMilliSecondsSelfLove
+import com.example.eunoia.create.createSelfLove.uploadedFileColorSelfLove
+import com.example.eunoia.create.createSelfLove.uploadedFileSelfLove
+import com.example.eunoia.create.createSelfLove.uploadedFileUriSelfLove
+import com.example.eunoia.create.createSound.audioFileLengthMilliSeconds
+import com.example.eunoia.create.createSound.fileColors
+import com.example.eunoia.create.createSound.fileUris
 import com.example.eunoia.create.createSound.selectedIndex
+import com.example.eunoia.create.createSound.uploadedFiles
 import com.example.eunoia.create.resetEverything
 import com.example.eunoia.create.resetEverythingExceptRoutine
-import com.example.eunoia.dashboard.prayer.*
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserRoutineRelationshipObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
-import com.example.eunoia.ui.bottomSheets.*
+import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.recordAudio.recorder
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingFile
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingTimeDisplay
@@ -66,6 +83,7 @@ import com.example.eunoia.utils.*
 import com.example.eunoia.utils.Timer
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
+import java.io.DataOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -264,6 +282,52 @@ class UserDashboardActivity :
                 output.close()
             }
         }
+    }
+
+    fun convertUrisToAudioStreams(uris: List<Uri>): File{
+        val audioStreams = mutableListOf<InputStream>()
+        val tempFile = File.createTempFile("audio", ".aac")
+        for(uri in uris){
+            val audioStream = uri.let {
+                contentResolver.openInputStream(it)
+            }
+            Log.i(TAG, "audioStream is: $audioStream")
+            audioStreams.add(audioStream!!)
+        }
+
+        Log.i(TAG, "audioStreams is: $audioStreams")
+        Log.i(TAG, "audioStreams length: ${audioStreams.size}")
+        copyMultipleStreamsToAFile(audioStreams, tempFile)
+        return tempFile
+    }
+
+    private fun copyMultipleStreamsToAFile(inputStreams: List<InputStream>, outputFile: File) {
+        val fos = FileOutputStream(outputFile)
+        val dataOutputStream = DataOutputStream(fos)
+        Log.i(TAG, "outputFile name: ${outputFile.name}")
+        val finalByteList = mutableListOf<Byte>()
+        Log.i(TAG, "finalByteList is: $finalByteList")
+        Log.i(TAG, "inputStreams is: $inputStreams")
+        Log.i(TAG, "dataOutputStream is: $dataOutputStream")
+        inputStreams.forEach { inputStream ->
+            val buffer = ByteArray(4 * 1024) // buffer size
+            Log.i(TAG, "buffer is: $buffer")
+            while (true) {
+                val byteCount = inputStream.read(buffer)
+                Log.i(TAG, "byteCount is: $byteCount")
+                if (byteCount < 0) break
+                buffer.forEach {
+                    finalByteList.add(it)
+                    //Log.i(TAG, "Byte is: $it")
+                }
+            }
+        }
+        dataOutputStream.write(finalByteList.toByteArray())
+        Log.i(TAG, "finalByteList: ${finalByteList.toByteArray().size}")
+        Log.i(TAG, "dataOutputStream length: ${dataOutputStream.size()}")
+        Log.i(TAG, "outputFile length: ${outputFile.length()}")
+        dataOutputStream.flush()
+        dataOutputStream.close()
     }
 
     fun setCurrentUser(newValue: UserData) {
@@ -470,7 +534,7 @@ fun UserDashboardActivityUI(
         }
         Column(
             modifier = Modifier
-                .constrainAs(options){
+                .constrainAs(options) {
                     top.linkTo(introTitle.bottom, margin = 8.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)

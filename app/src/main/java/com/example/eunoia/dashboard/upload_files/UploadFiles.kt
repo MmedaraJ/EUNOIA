@@ -151,22 +151,6 @@ class UploadFilesActivity : ComponentActivity() {
         }
     }
 
-    private fun playTenSounds(){
-        tenSounds.forEach { audioUri ->
-            val mediaPlayer = MediaPlayer().apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-                setDataSource(applicationContext, audioUri)
-                prepare()
-                start()
-            }
-        }
-    }
-
     private fun createUserPreset(presetData: SoundPresetData){
         val userSoundPresetModel = UserSoundPresetObject.UserSoundPresetModel(
             UUID.randomUUID().toString(),

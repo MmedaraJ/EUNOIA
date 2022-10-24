@@ -261,6 +261,7 @@ type PageData
     pageNumber: Int!
     audioKeysS3: [String!]!
     audioNames: [String!]!
+    audioLength: [Int]
     bedtimeStoryInfoChapterId: String
 }
 
@@ -432,4 +433,8 @@ type UserData
     selfLoves: [SelfLoveData!] @manyToMany(relationName: "UserSelfLove")
     bedtimeStoriesOwnedByUser: [BedtimeStoryInfoData!] @hasMany(indexName: "BedtimeStoriesOwnedByUser", fields: ["id"])
     bedtimeStories: [BedtimeStoryInfoData!] @manyToMany(relationName: "UserBedtimeStoryInfo")
+    userSavedSoundRelationshipList: [UserSoundRelationship]
+    userSavedBedtimeStoryInfoRelationshipList: [UserBedtimeStoryInfoRelationship]
+    userSavedPrayerRelationshipList: [UserPrayerRelationship]
+    userSavedSelfLoveRelationshipList: [UserSelfLoveRelationship]
 }

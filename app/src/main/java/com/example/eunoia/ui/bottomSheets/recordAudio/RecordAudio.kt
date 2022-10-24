@@ -34,9 +34,7 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.BedtimeStoryChapterBackend
 import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.create.createBedtimeStory.AudioWaves
-import com.example.eunoia.create.createBedtimeStory.clearAmplitudes
-import com.example.eunoia.create.createBedtimeStory.getLastAmplitude
+import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSelfLove.*
 import com.example.eunoia.dashboard.home.UserDashboardActivity
@@ -129,8 +127,14 @@ fun RecordAudio(
                     ){
                         if(!isRecording.value) {
                             when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
-                                is ChapterPageData -> {
-                                    //closeRecordAudioAccordingly("special", context, scope, state)
+                                is PageData -> {
+                                    closeRecordAudioAccordingly(
+                                        "special",
+                                        context,
+                                        scope,
+                                        state,
+                                        generalMediaPlayerService
+                                    )
                                 }
                                 is String ->{
                                     when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
@@ -276,6 +280,7 @@ fun RecordAudioControls(generalMediaPlayerService: GeneralMediaPlayerService){
                         0
                     ) {
                         if(!isRecording.value && !generalMediaPlayerService.isMediaPlayerPlaying()) {
+                            clearRecordingForSomeElements(generalMediaPlayerService)
                             saveRecordedAudio(generalMediaPlayerService)
                         }
                     }
@@ -357,7 +362,7 @@ fun RecordAudioControls(generalMediaPlayerService: GeneralMediaPlayerService){
                                     .clip(RoundedCornerShape(14.91.dp))
                                     .background(SwansDown)
                                     .clickable {
-                                        if(!generalMediaPlayerService.isMediaPlayerPlaying()) {
+                                        if (!generalMediaPlayerService.isMediaPlayerPlaying()) {
                                             showPause.value = !showPause.value
                                             resumeRecorder(generalMediaPlayerService)
                                         }
@@ -522,6 +527,7 @@ fun setUpMediaRecorder(context: Context) {
             }
         }
         showRecordIcon.value = false
+        Log.i(TAG, "recording file length before recording is ${recordingFile!!.length()}")
         startRecorder(recordingFile!!)
     } else {
         ActivityCompat.requestPermissions(
@@ -533,45 +539,53 @@ fun setUpMediaRecorder(context: Context) {
 }
 
 fun saveRecordedAudio(generalMediaPlayerService: GeneralMediaPlayerService) {
-    var key = ""
     when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
         is PageData -> {
-            val chapterPageData = recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording as PageData
-            storeToS3IfChapterPage(chapterPageData)
+            val pageData = recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording as PageData
+            setPageRecordingsData()
+            storeToS3IfChapterPage(pageData)
         }
 
         is String ->{
             when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
-                "prayer" ->{
-                    recordedPrayerAbsolutePath.value = recordingFile!!.absolutePath
-                    recordedFilePrayer.value = recordingFile!!
-                    recordedFileUriPrayer.value = recordingFile!!.absolutePath.toUri()
-                    recordedAudioFileLengthMilliSecondsPrayer.value = recordingFile!!.length()
-                    recordedFileColorPrayer.value = Peach
-                    clearRecordingForSomeElements(generalMediaPlayerService)
+                "prayer" -> {
+                    setPrayerRecordingsData()
                 }
 
-                "selfLove" ->{
-                    recordedSelfLoveAbsolutePath.value = recordingFile!!.absolutePath
-                    recordedFileSelfLove.value = recordingFile!!
-                    recordedFileUriSelfLove.value = recordingFile!!.absolutePath.toUri()
-                    recordedAudioFileLengthMilliSecondsSelfLove.value = recordingFile!!.length()
-                    recordedFileColorSelfLove.value = Peach
-                    clearRecordingForSomeElements(generalMediaPlayerService)
+                "selfLove" -> {
+                    setSelfLoveRecordingsData()
                 }
             }
         }
     }
-
-    /*key = "Routine/BedtimeStories/${globalViewModel_!!.currentUser!!.username}/recorded/bedtimeStoryName/chapter/page/file1.aac"
-    SoundBackend.storeAudio(recordingFile!!.absolutePath, key){
-        Log.i(TAG, "Chapter Page's audio keys ==>> $it")
-        clearRecording(context)
-    }*/
 }
 
-fun storeToS3IfChapterPage(chapterPageData: PageData){
-    BedtimeStoryChapterBackend.queryBedtimeStoryChapterBasedOnId(chapterPageData.bedtimeStoryInfoChapterId){
+fun setPageRecordingsData() {
+    recordedPageRecordingAbsolutePath[selectedPageRecordingIndex]!!.value = recordingFile!!.absolutePath
+    pageRecordingFileColors[selectedPageRecordingIndex]!!.value = Peach
+    pageRecordingFileUris[selectedPageRecordingIndex]!!.value = recordingFile!!.absolutePath.toUri()
+    pageRecordingFileNames[selectedPageRecordingIndex]!!.value = "recording ${selectedPageRecordingIndex + 1}"
+    audioPageRecordingFileLengthMilliSeconds[selectedPageRecordingIndex]!!.value = recordingFile!!.length()
+}
+
+fun setPrayerRecordingsData() {
+    recordedPrayerAbsolutePath.value = recordingFile!!.absolutePath
+    recordedFilePrayer.value = recordingFile!!
+    recordedFileUriPrayer.value = recordingFile!!.absolutePath.toUri()
+    recordedAudioFileLengthMilliSecondsPrayer.value = recordingFile!!.length()
+    recordedFileColorPrayer.value = Peach
+}
+
+fun setSelfLoveRecordingsData() {
+    recordedSelfLoveAbsolutePath.value = recordingFile!!.absolutePath
+    recordedFileSelfLove.value = recordingFile!!
+    recordedFileUriSelfLove.value = recordingFile!!.absolutePath.toUri()
+    recordedAudioFileLengthMilliSecondsSelfLove.value = recordingFile!!.length()
+    recordedFileColorSelfLove.value = Peach
+}
+
+fun storeToS3IfChapterPage(pageData: PageData){
+    BedtimeStoryChapterBackend.queryBedtimeStoryChapterBasedOnId(thisPageData!!.bedtimeStoryInfoChapterId){
         if(it.isNotEmpty()) {
             val key = "Routine/" +
                     "BedtimeStories/" +
@@ -579,25 +593,55 @@ fun storeToS3IfChapterPage(chapterPageData: PageData){
                     "recorded/" +
                     "${it[0].bedtimeStoryInfo.displayName}/" +
                     "${it[0].displayName}/" +
-                    "${chapterPageData.displayName}/" +
-                    "recording_${chapterPageData.audioKeysS3.size + 1}.aac"
+                    "${thisPageData!!.displayName}/" +
+                    "recording_${selectedPageRecordingIndex + 1}.aac"
 
             SoundBackend.storeAudio(recordingFile!!.absolutePath, key) { s3key ->
                 updateChapterPageData(
                     s3key,
-                    chapterPageData
+                    thisPageData!!
                 )
             }
         }
     }
 }
 
-fun updateChapterPageData(s3Key: String, chapterPageData: PageData) {
-    chapterPageData.audioKeysS3.add(s3Key)
-    chapterPageData.audioNames.add("${chapterPageData.audioNames.size + 1}")
-    PageBackend.updatePage(chapterPageData){
-        Log.i(TAG, "${chapterPageData.displayName}'s audio names ==>> ${it.audioNames}")
-        Log.i(TAG, "${chapterPageData.displayName}'s audio keys ==>> ${it.audioKeysS3}")
+fun updateChapterPageData(s3Key: String, pageData: PageData) {
+    val audioNames = thisPageData!!.audioNames
+    val audioKeysS3 = thisPageData!!.audioKeysS3
+    val audioLength = thisPageData!!.audioLength
+
+    if(selectedPageRecordingIndex < audioLength.size){
+        if(selectedPageRecordingIndex > -1) {
+            audioNames.add(
+                selectedPageRecordingIndex,
+                pageRecordingFileNames[selectedPageRecordingIndex]!!.value
+            )
+            audioKeysS3.add(selectedPageRecordingIndex, s3Key)
+            audioLength.add(
+                selectedPageRecordingIndex,
+                audioPageRecordingFileLengthMilliSeconds[selectedPageRecordingIndex]!!.value.toInt()
+            )
+        }
+    }else {
+        audioNames.add(pageRecordingFileNames[selectedPageRecordingIndex]!!.value)
+        audioKeysS3.add(s3Key)
+        audioLength.add(audioPageRecordingFileLengthMilliSeconds[selectedPageRecordingIndex]!!.value.toInt())
+    }
+
+    val newPageData = thisPageData!!.copyOfBuilder()
+        .audioNames(audioNames)
+        .audioKeysS3(audioKeysS3)
+        .audioLength(audioLength)
+        .build()
+
+    PageBackend.updatePage(newPageData){
+        thisPageData = it
+        if(thisPageIndex > -1) {
+            pageRecordings[thisPageIndex][
+                    pageRecordingFileNames[selectedPageRecordingIndex]!!.value
+            ] = s3Key
+        }
     }
 }
 

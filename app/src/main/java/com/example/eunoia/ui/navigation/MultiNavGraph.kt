@@ -841,6 +841,7 @@ fun CreateTab(
                 globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
+                soundMediaPlayerService,
                 generalMediaPlayerService
             )
         }

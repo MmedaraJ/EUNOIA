@@ -17,7 +17,7 @@ object PageObject {
         val pageNumber: Int,
         val audioKeysS3: List<String>,
         val audioNames: List<String>,
-        //val bedtimeStoryChapter: @RawValue BedtimeStoryChapterObject.BedtimeStoryChapter,
+        val audioLength: List<Long>?,
         val bedtimeStoryChapterId: String?,
     ):Parcelable{
         override fun toString(): String {
@@ -30,7 +30,11 @@ object PageObject {
                 .pageNumber(this.pageNumber)
                 .audioKeysS3(this.audioKeysS3)
                 .audioNames(this.audioNames)
-                //.bedtimeStoryInfoChapter(this.bedtimeStoryChapter.data)
+                .audioLength(
+                    this.audioLength!!.map {
+                        it.toInt()
+                    }
+                )
                 .bedtimeStoryInfoChapterId(this.bedtimeStoryChapterId)
                 .id(this.id)
                 .build()
@@ -43,7 +47,9 @@ object PageObject {
                     PageData.pageNumber,
                     PageData.audioKeysS3,
                     PageData.audioNames,
-                    //BedtimeStoryChapterObject.BedtimeStoryChapter.from(PageData.bedtimeStoryInfoChapter),
+                    PageData.audioLength.map {
+                        it.toLong()
+                    },
                     PageData.bedtimeStoryInfoChapterId,
                 )
                 return result

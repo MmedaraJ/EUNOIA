@@ -41,13 +41,17 @@ fun BedtimeStoryChapterScreenUI(
     state: ModalBottomSheetState
 ){
     if(chapterIndex >= chapterPages.size){
-        for(i in 0..chapterIndex){
+        for(i in chapterPages.size..chapterIndex){
             chapterPages.add(mutableListOf())
         }
     }
+
     var numberOfPages by rememberSaveable { mutableStateOf(chapterPages[chapterIndex].size) }
+
     PageBackend.queryPageBasedOnChapter(bedtimeStoryChapterData) {
-        for (i in chapterPages[chapterIndex].size until it.size) {
+        chapterPages[chapterIndex].clear()
+        Log.i(TAG, "Received chpter pages ${it.size}")
+        for (i in it.indices) {
             chapterPages[chapterIndex].add(mutableStateOf(it[i]))
         }
         numberOfPages = chapterPages[chapterIndex].size
@@ -56,14 +60,14 @@ fun BedtimeStoryChapterScreenUI(
 
     ConstraintLayout(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxHeight(),
+            .padding(horizontal = 16.dp),
+            //.fillMaxHeight(),
     ) {
         val (
             header,
             title,
             save1,
-            save2,
+            page_column,
             all_pages,
             delete,
         ) = createRefs()
@@ -155,7 +159,7 @@ fun BedtimeStoryChapterScreenUI(
                     chapterPages[chapterIndex].size + 1,
                     listOf(),
                     listOf(),
-                    //BedtimeStoryChapterObject.BedtimeStoryChapter.from(bedtimeStoryChapterData),
+                    listOf(),
                     bedtimeStoryChapterData.id
                 )
                 PageBackend.createPage(page){
@@ -165,45 +169,42 @@ fun BedtimeStoryChapterScreenUI(
                 Thread.sleep(1_000)
             }
         }
-        ConstraintLayout(
+        Column(
             modifier = Modifier
-                .constrainAs(all_pages) {
+                .constrainAs(page_column) {
                     top.linkTo(save1.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
-                .padding(horizontal = 0.dp)
-                .verticalScroll(scrollState),
+                .fillMaxWidth()
+                .fillMaxHeight(0.6f)
         ) {
-            val (
-                pages,
-                spacer,
-            ) = createRefs()
-            Column(
+            ConstraintLayout(
                 modifier = Modifier
-                    .constrainAs(pages) {
-                        top.linkTo(parent.top, margin = 0.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                    }
-                    .fillMaxWidth()
+                    .padding(horizontal = 0.dp)
+                    .verticalScroll(scrollState),
             ) {
-                if(numberOfPages > 0){
-                    for(i in chapterPages[chapterIndex].indices){
-                        PageBlock(navController, chapterPages[chapterIndex][i]!!.value, i)
+                val (
+                    pages,
+                    spacer,
+                ) = createRefs()
+                Column(
+                    modifier = Modifier
+                        .constrainAs(pages) {
+                            top.linkTo(parent.top, margin = 0.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                            end.linkTo(parent.end, margin = 0.dp)
+                        }
+                        .fillMaxWidth()
+                ) {
+                    if(numberOfPages > 0){
+                        for(i in chapterPages[chapterIndex].indices){
+                            Log.i(TAG, "Page index before send is ${chapterPages[chapterIndex][i]!!.value.pageNumber}")
+                            PageBlock(navController, chapterPages[chapterIndex][i]!!.value, chapterPages[chapterIndex][i]!!.value.pageNumber - 1)
+                        }
                     }
+                    Spacer(modifier = Modifier.height(40.dp))
                 }
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(spacer) {
-                        top.linkTo(pages.bottom, margin = 60.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                    }
-                    .fillMaxWidth()
-            ) {
-                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }

@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.eunoia.R
 import com.example.eunoia.ui.theme.*
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 class CreateSoundViewModel: ViewModel() {
     var icons = arrayOf(

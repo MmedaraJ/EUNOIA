@@ -678,7 +678,7 @@ fun AnImage(
     lambda: () -> Unit
 ){
     val image = remember {
-        ContextCompat.getDrawable(context, id)?.toBitmap()?.asImageBitmap()!!
+        ContextCompat.getDrawable(context, id)?.toBitmap(width.toInt(), height.toInt())?.asImageBitmap()!!
     }
     Image(
         image,
@@ -688,6 +688,8 @@ fun AnImage(
             .offset(xOffset.dp, yOffset.dp)
             .clickable { lambda() }
     )
+
+    //painter = painterResource(id)
 }
 
 @Composable

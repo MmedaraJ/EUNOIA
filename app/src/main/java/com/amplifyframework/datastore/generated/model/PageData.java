@@ -31,12 +31,14 @@ public final class PageData implements Model {
   public static final QueryField PAGE_NUMBER = field("PageData", "pageNumber");
   public static final QueryField AUDIO_KEYS_S3 = field("PageData", "audioKeysS3");
   public static final QueryField AUDIO_NAMES = field("PageData", "audioNames");
+  public static final QueryField AUDIO_LENGTH = field("PageData", "audioLength");
   public static final QueryField BEDTIME_STORY_INFO_CHAPTER_ID = field("PageData", "bedtimeStoryInfoChapterId");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String display_name;
   private final @ModelField(targetType="Int", isRequired = true) Integer pageNumber;
   private final @ModelField(targetType="String", isRequired = true) List<String> audioKeysS3;
   private final @ModelField(targetType="String", isRequired = true) List<String> audioNames;
+  private final @ModelField(targetType="Int") List<Integer> audioLength;
   private final @ModelField(targetType="String") String bedtimeStoryInfoChapterId;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
@@ -60,6 +62,10 @@ public final class PageData implements Model {
       return audioNames;
   }
   
+  public List<Integer> getAudioLength() {
+      return audioLength;
+  }
+  
   public String getBedtimeStoryInfoChapterId() {
       return bedtimeStoryInfoChapterId;
   }
@@ -72,12 +78,13 @@ public final class PageData implements Model {
       return updatedAt;
   }
   
-  private PageData(String id, String display_name, Integer pageNumber, List<String> audioKeysS3, List<String> audioNames, String bedtimeStoryInfoChapterId) {
+  private PageData(String id, String display_name, Integer pageNumber, List<String> audioKeysS3, List<String> audioNames, List<Integer> audioLength, String bedtimeStoryInfoChapterId) {
     this.id = id;
     this.display_name = display_name;
     this.pageNumber = pageNumber;
     this.audioKeysS3 = audioKeysS3;
     this.audioNames = audioNames;
+    this.audioLength = audioLength;
     this.bedtimeStoryInfoChapterId = bedtimeStoryInfoChapterId;
   }
   
@@ -94,6 +101,7 @@ public final class PageData implements Model {
               ObjectsCompat.equals(getPageNumber(), pageData.getPageNumber()) &&
               ObjectsCompat.equals(getAudioKeysS3(), pageData.getAudioKeysS3()) &&
               ObjectsCompat.equals(getAudioNames(), pageData.getAudioNames()) &&
+              ObjectsCompat.equals(getAudioLength(), pageData.getAudioLength()) &&
               ObjectsCompat.equals(getBedtimeStoryInfoChapterId(), pageData.getBedtimeStoryInfoChapterId()) &&
               ObjectsCompat.equals(getCreatedAt(), pageData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), pageData.getUpdatedAt());
@@ -108,6 +116,7 @@ public final class PageData implements Model {
       .append(getPageNumber())
       .append(getAudioKeysS3())
       .append(getAudioNames())
+      .append(getAudioLength())
       .append(getBedtimeStoryInfoChapterId())
       .append(getCreatedAt())
       .append(getUpdatedAt())
@@ -124,6 +133,7 @@ public final class PageData implements Model {
       .append("pageNumber=" + String.valueOf(getPageNumber()) + ", ")
       .append("audioKeysS3=" + String.valueOf(getAudioKeysS3()) + ", ")
       .append("audioNames=" + String.valueOf(getAudioNames()) + ", ")
+      .append("audioLength=" + String.valueOf(getAudioLength()) + ", ")
       .append("bedtimeStoryInfoChapterId=" + String.valueOf(getBedtimeStoryInfoChapterId()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
@@ -150,6 +160,7 @@ public final class PageData implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -160,6 +171,7 @@ public final class PageData implements Model {
       pageNumber,
       audioKeysS3,
       audioNames,
+      audioLength,
       bedtimeStoryInfoChapterId);
   }
   public interface DisplayNameStep {
@@ -185,6 +197,7 @@ public final class PageData implements Model {
   public interface BuildStep {
     PageData build();
     BuildStep id(String id);
+    BuildStep audioLength(List<Integer> audioLength);
     BuildStep bedtimeStoryInfoChapterId(String bedtimeStoryInfoChapterId);
   }
   
@@ -195,6 +208,7 @@ public final class PageData implements Model {
     private Integer pageNumber;
     private List<String> audioKeysS3;
     private List<String> audioNames;
+    private List<Integer> audioLength;
     private String bedtimeStoryInfoChapterId;
     @Override
      public PageData build() {
@@ -206,6 +220,7 @@ public final class PageData implements Model {
           pageNumber,
           audioKeysS3,
           audioNames,
+          audioLength,
           bedtimeStoryInfoChapterId);
     }
     
@@ -238,6 +253,12 @@ public final class PageData implements Model {
     }
     
     @Override
+     public BuildStep audioLength(List<Integer> audioLength) {
+        this.audioLength = audioLength;
+        return this;
+    }
+    
+    @Override
      public BuildStep bedtimeStoryInfoChapterId(String bedtimeStoryInfoChapterId) {
         this.bedtimeStoryInfoChapterId = bedtimeStoryInfoChapterId;
         return this;
@@ -255,12 +276,13 @@ public final class PageData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String displayName, Integer pageNumber, List<String> audioKeysS3, List<String> audioNames, String bedtimeStoryInfoChapterId) {
+    private CopyOfBuilder(String id, String displayName, Integer pageNumber, List<String> audioKeysS3, List<String> audioNames, List<Integer> audioLength, String bedtimeStoryInfoChapterId) {
       super.id(id);
       super.displayName(displayName)
         .pageNumber(pageNumber)
         .audioKeysS3(audioKeysS3)
         .audioNames(audioNames)
+        .audioLength(audioLength)
         .bedtimeStoryInfoChapterId(bedtimeStoryInfoChapterId);
     }
     
@@ -282,6 +304,11 @@ public final class PageData implements Model {
     @Override
      public CopyOfBuilder audioNames(List<String> audioNames) {
       return (CopyOfBuilder) super.audioNames(audioNames);
+    }
+    
+    @Override
+     public CopyOfBuilder audioLength(List<Integer> audioLength) {
+      return (CopyOfBuilder) super.audioLength(audioLength);
     }
     
     @Override

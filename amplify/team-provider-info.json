@@ -15,6 +15,15 @@
       "auth": {
         "eunoia26cecbc6e": {},
         "true": {}
+      },
+      "api": {
+        "eunoia2": {}
+      },
+      "storage": {
+        "audio": {}
+      },
+      "analytics": {
+        "eunoiaPinpoint": {}
       }
     }
   }

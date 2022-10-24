@@ -9,6 +9,7 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -17,9 +18,11 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.backend.BedtimeStoryChapterBackend
+import com.example.eunoia.create.resetEverything
 import com.example.eunoia.models.BedtimeStoryChapterObject
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
@@ -42,10 +45,16 @@ fun RecordBedtimeStoryUI(
     globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    soundMediaPlayerService: SoundMediaPlayerService,
     generalMediaPlayerService: GeneralMediaPlayerService
 ){
-    generalMediaPlayerService.onDestroy()
-    globalViewModel_!!.currentBedtimeStoryPlaying = null
+    val context = LocalContext.current
+
+    resetEverything(
+        soundMediaPlayerService,
+        generalMediaPlayerService,
+        context
+    ){}
 
     var numberOfChapters by rememberSaveable { mutableStateOf(bedtimeStoryChapters.size) }
     BedtimeStoryChapterBackend.queryBedtimeStoryChapterBasedOnBedtimeStory(bedtimeStoryData) {
@@ -65,7 +74,8 @@ fun RecordBedtimeStoryUI(
             title,
             delete,
             save1,
-            save2,
+            chapter_column,
+            spacer,
             all_chapters,
         ) = createRefs()
         Column(
@@ -162,45 +172,41 @@ fun RecordBedtimeStoryUI(
                 Thread.sleep(1_000)
             }
         }
-        ConstraintLayout(
+        Column(
             modifier = Modifier
-                .constrainAs(all_chapters) {
+                .constrainAs(chapter_column) {
                     top.linkTo(save1.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
-                .padding(horizontal = 0.dp)
-                .verticalScroll(scrollState),
+                .fillMaxWidth()
+                .fillMaxHeight(0.6f)
         ) {
-            val (
-                chapters,
-                spacer,
-            ) = createRefs()
-            Column(
+            ConstraintLayout(
                 modifier = Modifier
-                    .constrainAs(chapters) {
-                        top.linkTo(parent.top, margin = 0.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                    }
-                    .fillMaxWidth()
+                    .padding(horizontal = 0.dp)
+                    //.fillMaxHeight(0.6f)
+                    .verticalScroll(scrollState),
             ) {
-                if(numberOfChapters > 0){
-                    for(i in bedtimeStoryChapters.indices){
-                        ChapterBlock(navController, bedtimeStoryChapters[i]!!.value, i)
+                val (
+                    chapters,
+                ) = createRefs()
+                Column(
+                    modifier = Modifier
+                        .constrainAs(chapters) {
+                            top.linkTo(parent.top, margin = 0.dp)
+                            start.linkTo(parent.start, margin = 0.dp)
+                            end.linkTo(parent.end, margin = 0.dp)
+                        }
+                        .fillMaxWidth()
+                ) {
+                    if(numberOfChapters > 0){
+                        for(i in bedtimeStoryChapters.indices){
+                            ChapterBlock(navController, bedtimeStoryChapters[i]!!.value, i)
+                        }
                     }
+                    Spacer(modifier = Modifier.height(40.dp))
                 }
-            }
-            Column(
-                modifier = Modifier
-                    .constrainAs(spacer) {
-                        top.linkTo(chapters.bottom, margin = 60.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        end.linkTo(parent.end, margin = 0.dp)
-                    }
-                    .fillMaxWidth()
-            ) {
-                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }
