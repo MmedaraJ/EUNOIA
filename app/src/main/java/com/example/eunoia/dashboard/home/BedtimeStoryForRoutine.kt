@@ -186,7 +186,7 @@ object BedtimeStoryForRoutine{
                         globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
                                 [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!]!!
                             .bedtimeStoryInfoData.id
-                ] = uri
+                ] = uri!!
 
                 startBedtimeStory(
                     generalMediaPlayerService,

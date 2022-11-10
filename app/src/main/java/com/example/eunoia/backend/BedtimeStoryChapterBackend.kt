@@ -74,7 +74,7 @@ object BedtimeStoryChapterBackend {
     }
 
     fun queryBedtimeStoryChapterBasedOnId(
-        bedtimeStoryDataId: String,
+        bedtimeStoryInfoChapterDataId: String,
         completed: (bedtimeStoryChapters: List<BedtimeStoryInfoChapterData>) -> Unit
     ) {
         val result = mutableListOf<BedtimeStoryInfoChapterData>()
@@ -82,7 +82,7 @@ object BedtimeStoryChapterBackend {
             Amplify.API.query(
                 ModelQuery.list(
                     BedtimeStoryInfoChapterData::class.java,
-                    BedtimeStoryInfoChapterData.ID.eq(bedtimeStoryDataId)
+                    BedtimeStoryInfoChapterData.ID.eq(bedtimeStoryInfoChapterDataId)
                 ),
                 { response ->
                     if(response.hasErrors()){
@@ -90,19 +90,71 @@ object BedtimeStoryChapterBackend {
                     }
                     else{
                         if(response.hasData()) {
-                            for (bedtimeStory in response.data) {
-                                if(bedtimeStory != null) {
-                                    Log.i(TAG, bedtimeStory.toString())
-                                    result.add(bedtimeStory)
+                            Log.i(TAG, "{response.data} ${response.data}")
+                            for (chapter in response.data) {
+                                if(chapter != null) {
+                                    Log.i(TAG, chapter.toString())
+                                    result.add(chapter)
+                                }else{
+                                    Log.i(TAG, "chapter.toString() is null")
                                 }
                             }
                             mainScope.launch {
+                                Log.i(TAG, "Completed = $result")
                                 completed(result)
                             }
+                        }else{
+                            Log.i(TAG, "{response.no.data} $response")
                         }
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun updateChapter(
+        bedtimeStoryInfoChapterData: BedtimeStoryInfoChapterData,
+        completed: (bedtimeStoryInfoChapterData: BedtimeStoryInfoChapterData) -> Unit
+    ) {
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.update(bedtimeStoryInfoChapterData),
+                { response ->
+                    Log.i(TAG, "Updated $response")
+                    if (response.hasErrors()) {
+                        Log.e(TAG, "Error from update BedtimeStoryInfoChapterData ${response.errors.first().message}")
+                    } else {
+                        Log.i(TAG, "Updated BedtimeStoryInfoChapterData with id: " + response.data.id)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
+                    }
+                },
+                { error -> Log.e(TAG, "Update failed", error) }
+            )
+        }
+    }
+
+    fun deleteChapter(
+        bedtimeStoryInfoChapterData: BedtimeStoryInfoChapterData,
+        completed: (successful: Boolean) -> Unit
+    ){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.delete(bedtimeStoryInfoChapterData),
+                { response ->
+                    Log.i(TAG, "Deleted $response")
+                    mainScope.launch {
+                        completed(true)
+                    }
+                },
+                { error ->
+                    Log.e(TAG, "Deletion failed", error)
+                    mainScope.launch {
+                        completed(false)
+                    }
+                }
             )
         }
     }

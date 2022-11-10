@@ -67,7 +67,7 @@ import com.example.eunoia.models.UserRoutineRelationshipObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.sign_in_process.SignInActivity
-import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.recordAudio.recorder
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingFile
@@ -82,6 +82,7 @@ import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.*
 import com.example.eunoia.utils.Timer
 import com.example.eunoia.viewModels.GlobalViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import java.io.DataOutputStream
 import java.io.File
@@ -105,6 +106,7 @@ const val WAIT_FOR_ROUTINE = "wait"
 
 private const val TAG = "UserDashboardActivity"
 
+@AndroidEntryPoint
 class UserDashboardActivity :
     ComponentActivity(),
     Timer.OnTimerTickListener,
@@ -653,7 +655,8 @@ private fun SetUpRoutineCurrentlyPlayingAlertDialogRoutineUI(
     context: Context,
 ){
     if(openRoutineIsCurrentlyPlayingDialogBox){
-        ConfirmStopRoutineAlertDialog(
+        ConfirmAlertDialog(
+            "Are you sure you want to stop your routine?",
             {
                 updatePreviousUserRoutineRelationship {
                     resetEverything(

@@ -13,16 +13,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.eunoia.R
 import com.example.eunoia.ui.components.AlignedNormalText
-import com.example.eunoia.ui.components.CustomizableLRButton
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.BeautyBush
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.EUNOIATheme
-import com.example.eunoia.ui.theme.WePeep
 
 @Composable
-fun ConfirmStopRoutineAlertDialog(
+fun ConfirmAlertDialog(
+    text: String,
     yes: () -> Unit,
     no: () -> Unit
 ){
@@ -31,12 +30,15 @@ fun ConfirmStopRoutineAlertDialog(
         AlertDialog(
             onDismissRequest = {
                 openDialog.value = false
+                openConfirmDeletePageDialogBox = false
+                openConfirmDeleteChapterDialogBox = false
                 openRoutineIsCurrentlyPlayingDialogBox = false
+                openConfirmDeleteBedtimeStoryDialogBox = false
             },
             text = {
                 Column{
                     AlignedNormalText(
-                        text = "Are you sure you want to stop your routine?",
+                        text = text,
                         color = Black,
                         fontSize = 13,
                         xOffset = 0,
@@ -54,7 +56,10 @@ fun ConfirmStopRoutineAlertDialog(
                     Button(
                         onClick = {
                             openDialog.value = false
+                            openConfirmDeletePageDialogBox = false
+                            openConfirmDeleteChapterDialogBox = false
                             openRoutineIsCurrentlyPlayingDialogBox = false
+                            openConfirmDeleteBedtimeStoryDialogBox = false
                             yes()
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = BeautyBush),
@@ -74,7 +79,10 @@ fun ConfirmStopRoutineAlertDialog(
                     Button(
                         onClick = {
                             openDialog.value = false
+                            openConfirmDeletePageDialogBox = false
+                            openConfirmDeleteChapterDialogBox = false
                             openRoutineIsCurrentlyPlayingDialogBox = false
+                            openConfirmDeleteBedtimeStoryDialogBox = false
                             no()
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = BeautyBush),
@@ -112,6 +120,10 @@ fun ConfirmStopRoutineAlertDialog(
 @Composable
 fun Preview() {
     EUNOIATheme {
-        ConfirmStopRoutineAlertDialog({}, {})
+        ConfirmAlertDialog(
+            "Are you sure you want to stop your routine?",
+            {},
+            {}
+        )
     }
 }

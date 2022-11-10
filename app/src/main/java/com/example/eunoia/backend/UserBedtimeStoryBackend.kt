@@ -117,4 +117,27 @@ object UserBedtimeStoryBackend {
             )
         }
     }
+
+    fun deleteUserBedtimeStory(
+        userBedtimeStory: UserBedtimeStoryInfo,
+        completed: (successful: Boolean) -> Unit
+    ){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.delete(userBedtimeStory),
+                { response ->
+                    Log.i(TAG, "Deleted $response")
+                    mainScope.launch {
+                        completed(true)
+                    }
+                },
+                { error ->
+                    Log.e(TAG, "Deletion failed", error)
+                    mainScope.launch {
+                        completed(false)
+                    }
+                }
+            )
+        }
+    }
 }

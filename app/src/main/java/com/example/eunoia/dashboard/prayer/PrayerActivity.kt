@@ -36,7 +36,7 @@ import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelations
 import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
-import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.prayer.deActivatePrayerGlobalControlButton
 import com.example.eunoia.ui.components.*
@@ -293,7 +293,8 @@ private fun SetUpRoutineCurrentlyPlayingAlertDialogPrayerUI(
     context: Context,
 ){
     if(openRoutineIsCurrentlyPlayingDialogBox){
-        ConfirmStopRoutineAlertDialog(
+        ConfirmAlertDialog(
+            "Are you sure you want to stop your routine?",
             {
                 updatePreviousUserRoutineRelationship {
                     resetEverything(
@@ -462,7 +463,7 @@ private fun retrievePrayerAudio(
         globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer.audioKeyS3,
         globalViewModel_!!.currentUsersPrayerRelationships!![index]!!.userPrayerRelationshipPrayer.prayerOwner.amplifyAuthUserId
     ) {
-        prayerActivityUris[index]!!.value = it
+        prayerActivityUris[index]!!.value = it!!
         startPrayer(
             generalMediaPlayerService,
             soundMediaPlayerService,

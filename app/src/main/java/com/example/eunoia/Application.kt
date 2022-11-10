@@ -3,7 +3,9 @@ package com.example.eunoia
 import android.app.Application
 import android.util.Log
 import com.example.eunoia.backend.AuthBackend
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class Eunoia : Application() {
     private val TAG = "Eunoia Application"
 

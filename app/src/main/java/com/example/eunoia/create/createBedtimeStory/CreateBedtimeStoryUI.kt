@@ -40,10 +40,7 @@ import com.example.eunoia.ui.components.CustomizableLRButton
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.WrappedPurpleBackgroundStart
 import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.theme.BeautyBush
-import com.example.eunoia.ui.theme.Black
-import com.example.eunoia.ui.theme.WePeep
-import com.example.eunoia.ui.theme.White
+import com.example.eunoia.ui.theme.*
 import java.io.File
 
 private var TAG = "Page Screen UIs"
@@ -52,7 +49,7 @@ private var TAG = "Page Screen UIs"
 fun ChapterBlock(
     navController: NavController,
     chapterData: BedtimeStoryInfoChapterData,
-    index: Int
+    chapterIndex: Int
 ){
     var numberOfPages by rememberSaveable { mutableStateOf(-1) }
     PageBackend.queryPageBasedOnChapter(chapterData){
@@ -65,7 +62,7 @@ fun ChapterBlock(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .clickable {
-                    navigateToBedtimeStoryChapterScreen(navController, chapterData, index)
+                    navigateToBedtimeStoryChapterScreen(navController, chapterData, chapterIndex)
                 }
         ) {
             val pagesText = if (numberOfPages == 1) "page" else "pages"
@@ -83,7 +80,9 @@ fun ChapterBlock(
 fun PageBlock(
     navController: NavController,
     pageData: PageData,
-    index: Int
+    pageIndex: Int,
+    chapterData: BedtimeStoryInfoChapterData,
+    chapterIndex: Int
 ){
     Column(
         modifier = Modifier
@@ -109,7 +108,12 @@ fun PageBlock(
             14,
             BeautyBush
         ) {
-            navigateToPageScreen(navController, pageData, index)
+            navigateToPageScreen(
+                navController,
+                pageData,
+                chapterData,
+                chapterIndex
+            )
         }
     }
     Spacer(modifier = Modifier.height(16.dp))
@@ -118,141 +122,129 @@ fun PageBlock(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecordingBlock(
-    pageData: PageData,
     index: Int,
-    context: Context,
     generalMediaPlayerService: GeneralMediaPlayerService,
     takeAction: (index: Int) -> Unit
 ){
-    val dismissState = rememberDismissState(
-        initialValue = DismissValue.Default,
-        confirmStateChange = {
-            if(it == DismissValue.DismissedToStart){
-                resetBedtimeStoryRecordUI(index)
-            }
-            true
-        }
-    )
-
-    if (dismissState.currentValue != DismissValue.Default) {
-        LaunchedEffect(Unit) {
-            dismissState.reset()
-        }
-    }
-
-    SwipeToDismiss(
-        state = dismissState,
-        /***  create dismiss alert Background */
-        background = {
-            val color by animateColorAsState(
-                targetValue = when (dismissState.dismissDirection) {
-                    DismissDirection.StartToEnd -> Color.Transparent
-                    DismissDirection.EndToStart -> Color.Red
-                    null -> Color.Transparent
-                }
-            )
-            val scale by animateFloatAsState(
-                targetValue = if(dismissState.targetValue == DismissValue.Default) 0.8f else 1.2f
-            )
-            val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
-            if (direction == DismissDirection.EndToStart) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color)
-                        .padding(8.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
+    if(index < pageRecordingFileNames.size) {
+        val dismissState = rememberDismissState(
+            initialValue = DismissValue.Default,
+            confirmStateChange = {
+                if (it == DismissValue.DismissedToStart) {
+                    if (
+                        generalMediaPlayerService.isMediaPlayerInitialized() &&
+                        generalMediaPlayerService.isMediaPlayerPlaying()
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.ResetTv,
-                            contentDescription = "reset",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .scale(scale)
-                        )
-                        NormalText(
-                            text = "Reset",
-                            color = White,
-                            fontSize = 13,
-                            xOffset = 0,
-                            yOffset = 0
-                        )
+                        //Toast
+                    }else {
+                        if(pageRecordingFileNames[index].value != "empty recording") {
+                            stopPlayingThisPage(generalMediaPlayerService)
+                            resetBedtimeStoryRecordUI(index)
+                        }
                     }
                 }
+                true
             }
-        },
-        /**** Dismiss Content */
-        dismissContent = {
-            CustomizableButton(
-                text = pageRecordingFileNames[index]!!.value,
-                height = 55,
-                fontSize = 16,
-                textColor = Black,
-                backgroundColor = pageRecordingFileColors[index]!!.value,
-                corner = 10,
-                borderStroke = 0.0,
-                borderColor = Black.copy(alpha = 0F),
-                textType = "light",
-                maxWidthFraction = 1F
-            ) {
-                if(pageRecordingFileNames[index]!!.value == "empty recording"){
-                    resetAllPageRecordBedtimeStoryUIMediaPlayers()
-                    generalMediaPlayerService.onDestroy()
-                    if(recordingCDT != null) {
-                        recordingCDT!!.cancel()
-                        recordingCDT = null
-                    }
-                    takeAction(index)
-                }else{
-                    startRecordedBedtimeStoryMediaPlayer(pageData, index, context)
-                }
-            }
-        },
-        dismissThresholds = { direction ->
-            FractionalThreshold(if (direction == DismissDirection.EndToStart) 0.1f else 0.05f)
-        },
-        /*** Set Direction to dismiss */
-        directions = setOf(DismissDirection.EndToStart),
-    )
-}
+        )
 
-fun startRecordedBedtimeStoryMediaPlayer(
-    pageData: PageData,
-    index: Int,
-    context: Context
-) {
-    if(pageRecordingFileMediaPlayers[index]!!.value.isPlaying){
-        pageRecordingFileMediaPlayers[index]!!.value.stop()
-    }else {
-        pageRecordingFileMediaPlayers[index]!!.value.reset()
-        if(pageRecordingFileUris[index]!!.value == "".toUri()){
-            retrieveThisUri(
-                pageData,
-                index
-            ) {
-                pageRecordingFileUris[index]!!.value = it
-                recordedPageRecordingAbsolutePath[index]!!.value = it.path!!
-                startMediaPlayerHere(index, context)
+        if (dismissState.currentValue != DismissValue.Default) {
+            LaunchedEffect(Unit) {
+                dismissState.reset()
             }
-        }else{
-            startMediaPlayerHere(index, context)
         }
+
+        SwipeToDismiss(
+            state = dismissState,
+            /***  create dismiss alert Background */
+            background = {
+                val color by animateColorAsState(
+                    targetValue = when (dismissState.dismissDirection) {
+                        DismissDirection.StartToEnd -> Color.Transparent
+                        DismissDirection.EndToStart -> Color.Red
+                        null -> Color.Transparent
+                    }
+                )
+                val scale by animateFloatAsState(
+                    targetValue = if (dismissState.targetValue == DismissValue.Default) 0.8f else 1.2f
+                )
+                val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
+                if (direction == DismissDirection.EndToStart) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(color)
+                            .padding(8.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ResetTv,
+                                contentDescription = "reset",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .scale(scale)
+                            )
+                            NormalText(
+                                text = "Reset",
+                                color = White,
+                                fontSize = 13,
+                                xOffset = 0,
+                                yOffset = 0
+                            )
+                        }
+                    }
+                }
+            },
+            /**** Dismiss Content */
+            dismissContent = {
+                CustomizableButton(
+                    text = pageRecordingFileNames[index].value,
+                    height = 55,
+                    fontSize = 16,
+                    textColor = Black,
+                    backgroundColor = pageRecordingFileColors[index].value,
+                    corner = 10,
+                    borderStroke = 0.0,
+                    borderColor = Black.copy(alpha = 0F),
+                    textType = "light",
+                    maxWidthFraction = 1F
+                ) {
+                    if (pageRecordingFileNames[index].value == "empty recording") {
+                        resetAllPageRecordBedtimeStoryUIMediaPlayers()
+                        generalMediaPlayerService.onDestroy()
+                        if (recordingCDT != null) {
+                            recordingCDT!!.cancel()
+                            recordingCDT = null
+                        }
+                        takeAction(index)
+                    } else {
+                        playingIndex = index
+                        getInitialUri(generalMediaPlayerService)
+                        //startRecordedBedtimeStoryMediaPlayer(pageData, index, context)
+                    }
+                }
+            },
+            dismissThresholds = { direction ->
+                FractionalThreshold(if (direction == DismissDirection.EndToStart) 0.1f else 0.05f)
+            },
+            /*** Set Direction to dismiss */
+            directions = setOf(DismissDirection.EndToStart),
+        )
     }
 }
 
 fun startMediaPlayerHere(index: Int, context: Context){
-    pageRecordingFileMediaPlayers[index]!!.value.apply {
+    pageRecordingFileMediaPlayers[index].value.apply {
         setAudioAttributes(
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .build()
         )
-        setDataSource(context, pageRecordingFileUris[index]!!.value)
+        setDataSource(context, pageRecordingFileUris[index].value)
         setVolume(1f, 1f)
         prepare()
         start()
@@ -260,55 +252,34 @@ fun startMediaPlayerHere(index: Int, context: Context){
 }
 
 fun resetBedtimeStoryRecordUI(index: Int) {
-    if(pageRecordingFileNames[index]!!.value != "empty recording"){
-        val audioNames = thisPageData!!.audioNames
-        val audioKeysS3 = thisPageData!!.audioKeysS3
-        val audioLength = thisPageData!!.audioLength
-
-        if(index < audioLength.size){
-            listOf(
-                audioLength, 
-                audioNames, 
-                audioKeysS3,
-                recordedPageRecordingAbsolutePath,
-                pageRecordingFileColors,
-                pageRecordingFileNames,
-                pageRecordingFileUris,
-                pageRecordingFileMediaPlayers,
-                audioPageRecordingFileLengthMilliSeconds,
-            ).forEach {
-                it.removeAt(index)
+    if(index < pageRecordingFileNames.size) {
+        if (pageRecordingFileNames[index].value != "empty recording") {
+            if(pageRecordingNames[index].value == pageRecordingFileNames[index].value) {
+                SoundBackend.deleteAudio(pageRecordingS3Keys[index].value)
+                pageRecordingS3Keys[index].value = ""
             }
 
-            val newPageData = thisPageData!!.copyOfBuilder()
-                .audioNames(audioNames)
-                .audioKeysS3(audioKeysS3)
-                .audioLength(audioLength)
-                .build()
+            recordedPageRecordingAbsolutePath[index].value = ""
+            pageRecordingFileColors[index].value = SoftPeach
+            pageRecordingFileNames[index].value = "empty recording"
+            pageRecordingFileUris[index].value = "".toUri()
+            resetRecordBedtimeStoryMediaPlayers(index)
+            val mediaPlayer = MediaPlayer()
+            pageRecordingFileMediaPlayers[index].value = mediaPlayer
+            audioPageRecordingFileLengthMilliSeconds[index].value = 0L
 
-            PageBackend.updatePage(newPageData) {
-                thisPageData = it
-                //pageRecordings[thisPageIndex].remove(pageRecordingFileNames[index]!!.value)
-            }
+            Log.i(TAG, "ff pageRecordingFileNames[index] ==> ${pageRecordingFileNames[index].value}")
         }
     }
-    recordedPageRecordingAbsolutePath[index]!!.value = ""
-    pageRecordingFileColors[index]!!.value = WePeep
-    pageRecordingFileNames[index]!!.value = "empty recording"
-    pageRecordingFileUris[index]!!.value = "".toUri()
-    resetRecordBedtimeStoryMediaPlayers(index)
-    val mediaPlayer = MediaPlayer()
-    pageRecordingFileMediaPlayers[index]!!.value = mediaPlayer
-    audioPageRecordingFileLengthMilliSeconds[index]!!.value = 0L
 }
 
 fun resetRecordBedtimeStoryMediaPlayers(index: Int){
     if(index < pageRecordingFileMediaPlayers.size) {
-        if (pageRecordingFileMediaPlayers[index]!!.value.isPlaying) {
-            pageRecordingFileMediaPlayers[index]!!.value.stop()
+        if (pageRecordingFileMediaPlayers[index].value.isPlaying) {
+            pageRecordingFileMediaPlayers[index].value.stop()
         }
-        pageRecordingFileMediaPlayers[index]!!.value.reset()
-        pageRecordingFileMediaPlayers[index]!!.value.release()
+        pageRecordingFileMediaPlayers[index].value.reset()
+        pageRecordingFileMediaPlayers[index].value.release()
     }
 }
 
@@ -452,16 +423,27 @@ var playingIndex by mutableStateOf(0)
  *
  * @param generalMediaPlayerService is the media player service that plays the audio
  */
-fun getFirstUri(generalMediaPlayerService: GeneralMediaPlayerService){
-    SoundBackend.retrieveAudio(
-        thisPageData!!.audioKeysS3[playingIndex],
-        globalViewModel_!!.currentUser!!.amplifyAuthUserId
-    ) {
-        //store and play the first uri
-        pageRecordingFileUris[playingIndex]!!.value = it
+fun getInitialUri(generalMediaPlayerService: GeneralMediaPlayerService){
+    if(playingIndex < pageRecordingFileNames.size) {
+        deActivatePageControls(2)
+        deActivatePageControls(3)
         playIt(generalMediaPlayerService)
-    }
 
+       /* SoundBackend.retrieveAudio(
+            thisPageData!!.audioKeysS3[playingIndex],
+            globalViewModel_!!.currentUser!!.amplifyAuthUserId
+        ) {
+            //store and play the first uri
+            if(playingIndex < pageRecordingFileUris.size) {
+                pageRecordingFileUris[playingIndex].value = it
+            }else{
+                pageRecordingFileUris.add(mutableStateOf(it))
+            }
+            deActivatePageControls(2)
+            deActivatePageControls(3)
+            playIt(generalMediaPlayerService)
+        }*/
+    }
 }
 
 /**
@@ -472,16 +454,22 @@ fun getFirstUri(generalMediaPlayerService: GeneralMediaPlayerService){
  * @param generalMediaPlayerService is the media player service that plays the audio
  */
 private fun getNextUri(generalMediaPlayerService: GeneralMediaPlayerService){
-    var nxtInd = playingIndex
-    nxtInd += 1
+    if(playingIndex < pageRecordingFileUris.size){
+        var nxtInd = playingIndex
+        nxtInd += 1
 
-    //if all uris have not been played yet
-    if(nxtInd < thisPageData!!.audioKeysS3.size) {
-        SoundBackend.retrieveAudio(
-            thisPageData!!.audioKeysS3[nxtInd],
-            globalViewModel_!!.currentUser!!.amplifyAuthUserId
-        ) {
-            pageRecordingFileUris[nxtInd]!!.value = it
+        //if all uris have not been played yet
+        if(nxtInd < thisPageData!!.audioKeysS3.size) {
+            SoundBackend.retrieveAudio(
+                thisPageData!!.audioKeysS3[nxtInd],
+                globalViewModel_!!.currentUser!!.amplifyAuthUserId
+            ) {
+                if(nxtInd < pageRecordingFileUris.size) {
+                    pageRecordingFileUris[nxtInd].value = it!!
+                }else{
+                    pageRecordingFileUris.add(mutableStateOf(it!!))
+                }
+            }
         }
     }
 }
@@ -491,11 +479,30 @@ private fun getNextUri(generalMediaPlayerService: GeneralMediaPlayerService){
  *
  * @param generalMediaPlayerService is the media player service that plays the audio
  */
-private fun playIt(generalMediaPlayerService: GeneralMediaPlayerService){
-    startPlaying(
-        pageRecordingFileUris[playingIndex]!!.value,
-        generalMediaPlayerService
-    )
+fun playIt(generalMediaPlayerService: GeneralMediaPlayerService){
+    if(playingIndex < pageRecordingFileUris.size) {
+        Log.i(TAG, "pageRecordingFileUris 00 = $pageRecordingFileUris")
+        Log.i(TAG, "pageRecordingFileNames 00 = $pageRecordingFileNames")
+        Log.i(TAG, "pageRecordingFileColors 00 = $pageRecordingFileColors")
+        Log.i(TAG, "pageRecordingS3Keys 00 = ${pageRecordingS3Keys}")
+        if(pageRecordingFileUris[playingIndex].value.toString().isEmpty()){
+            SoundBackend.retrieveAudio(
+                pageRecordingS3Keys[playingIndex].value,
+                globalViewModel_!!.currentUser!!.amplifyAuthUserId
+            ) {
+                pageRecordingFileUris[playingIndex].value = it!!
+                startPlaying(
+                    pageRecordingFileUris[playingIndex].value,
+                    generalMediaPlayerService
+                )
+            }
+        }else {
+            startPlaying(
+                pageRecordingFileUris[playingIndex].value,
+                generalMediaPlayerService
+            )
+        }
+    }
 }
 
 /**
@@ -509,20 +516,54 @@ private fun startPlaying(
     uri: Uri,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ){
-    generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(uri)
+    if(playingIndex < pageRecordingFileUris.size) {
+        if(pageRecordingFileUris[playingIndex].value != "".toUri()){
+            generalMediaPlayerService.onDestroy()
+            generalMediaPlayerService.setAudioUri(uri)
 
-    if(generalMediaPlayerService.isMediaPlayerInitialized()){
-        generalMediaPlayerService.startMediaPlayer()
-    }else{
-        val intent = Intent()
-        intent.action = "PLAY"
-        generalMediaPlayerService.onStartCommand(intent, 0, 0)
+            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
+                generalMediaPlayerService.startMediaPlayer()
+            } else {
+                val intent = Intent()
+                intent.action = "PLAY"
+                generalMediaPlayerService.onStartCommand(intent, 0, 0)
+            }
+
+            for(i in pageRecordingFileColors.indices) {
+                Log.i(TAG, "Peaching all")
+                pageRecordingFileColors[i].value = Peach
+            }
+            if(playingIndex < pageRecordingFileColors.size){
+                Log.i(TAG, "GHreening this $playingIndex")
+                pageRecordingFileColors[playingIndex].value = Color.Green
+            }
+
+            startTimer(generalMediaPlayerService)
+        }else{
+            playingIndex += 1
+            if(playingIndex >= pageRecordingFileUris.size){
+                if(recordingCDT != null) {
+                    recordingCDT!!.cancel()
+                    recordingCDT = null
+                }
+                playingIndex = 0
+                generalMediaPlayerService.onDestroy()
+                activatePageControls(2)
+                deActivatePageControls(3)
+            }else {
+                playIt(
+                    generalMediaPlayerService
+                )
+            }
+        }
     }
+}
 
-    startTimer(generalMediaPlayerService)
-    //get and store the next uri
-    getNextUri(generalMediaPlayerService)
+fun resetRecordingCDT(){
+    if (recordingCDT != null) {
+        recordingCDT!!.cancel()
+        recordingCDT = null
+    }
 }
 
 /**
@@ -534,24 +575,38 @@ private fun startPlaying(
 private fun startTimer(
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    startBedtimeStoryRecordingCountDownTimer(
-        audioPageRecordingFileLengthMilliSeconds[playingIndex]!!.value
-    ) {
-        //after a uri is done playing, play the next one
-        playingIndex += 1
-
-        //if all uris for this page have been played, stop media player
-        if(playingIndex >= thisPageData!!.audioKeysS3.size){
-            if(recordingCDT != null) {
-                recordingCDT!!.cancel()
-                recordingCDT = null
+    if(
+        playingIndex < pageRecordingFileUris.size &&
+        playingIndex < audioPageRecordingFileLengthMilliSeconds.size &&
+        playingIndex < pageRecordingFileColors.size
+    ){
+        startBedtimeStoryRecordingCountDownTimer(
+            audioPageRecordingFileLengthMilliSeconds[playingIndex].value
+        ) {
+            for(i in pageRecordingFileColors.indices) {
+                Log.i(TAG, "Peaching all")
+                pageRecordingFileColors[i].value = Peach
             }
-            playingIndex = 0
-            generalMediaPlayerService.onDestroy()
-        }else {
-            playIt(
-                generalMediaPlayerService
-            )
+
+            //after a uri is done playing, play the next one
+            playingIndex += 1
+
+            resetRecordingCDT()
+
+            //if all uris for this page have been played, stop media player
+            if(
+                playingIndex >= pageRecordingFileUris.size ||
+                pageRecordingFileUris[playingIndex].value == "".toUri()
+            ){
+                playingIndex = 0
+                generalMediaPlayerService.onDestroy()
+                activatePageControls(2)
+                deActivatePageControls(3)
+            }else {
+                playIt(
+                    generalMediaPlayerService
+                )
+            }
         }
     }
 }
@@ -563,7 +618,7 @@ fun resetAllPageRecordBedtimeStoryUIMediaPlayers() {
     pageRecordingFileMediaPlayers.forEachIndexed { index, mediaPlayer ->
         resetRecordBedtimeStoryMediaPlayers(index)
         val mp = MediaPlayer()
-        pageRecordingFileMediaPlayers[index]!!.value = mp
+        pageRecordingFileMediaPlayers[index].value = mp
     }
 }
 

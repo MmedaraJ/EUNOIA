@@ -36,7 +36,7 @@ import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
-import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.components.*
@@ -289,7 +289,8 @@ private fun SetUpRoutineCurrentlyPlayingAlertDialogSelfLove(
     context: Context,
 ){
     if(openRoutineIsCurrentlyPlayingDialogBox){
-        ConfirmStopRoutineAlertDialog(
+        ConfirmAlertDialog(
+            "Are you sure you want to stop your routine?",
             {
                 updatePreviousUserRoutineRelationship {
                     resetEverything(
@@ -457,7 +458,7 @@ private fun retrieveSelfLoveAudio(
         globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.audioKeyS3,
         globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.selfLoveOwner.amplifyAuthUserId
     ) {
-        selfLoveActivityUris[index]!!.value = it
+        selfLoveActivityUris[index]!!.value = it!!
         startSelfLove(
             generalMediaPlayerService,
             soundMediaPlayerService,

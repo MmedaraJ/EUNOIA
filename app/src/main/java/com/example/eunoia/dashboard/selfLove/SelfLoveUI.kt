@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amplifyframework.datastore.generated.model.PrayerData
 import com.amplifyframework.datastore.generated.model.SelfLoveData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
@@ -33,12 +32,11 @@ import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.SelfLoveForRoutine
 import com.example.eunoia.dashboard.home.updatePreviousUserRoutineRelationship
-import com.example.eunoia.dashboard.prayer.pauseOrPlayPrayerAccordingly
 import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
-import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.selfLove.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
@@ -547,7 +545,8 @@ fun SetUpRoutineCurrentlyPlayingAlertDialogSelfLoveUI(
     selfLoveData: SelfLoveData
 ){
     if(openRoutineIsCurrentlyPlayingDialogBox){
-        ConfirmStopRoutineAlertDialog(
+        ConfirmAlertDialog(
+            "Are you sure you want to stop your routine?",
             {
                 updatePreviousUserRoutineRelationship {
                     resetEverything(

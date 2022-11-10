@@ -73,20 +73,22 @@ fun RecordAudio(
     val context = LocalContext.current
     Card(
         modifier = Modifier
-            .height(370.dp)
+            .wrapContentHeight()
+            //.height(370.dp)
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
         elevation = 8.dp
     ) {
         BoxWithConstraints(
             modifier = Modifier
-                .height(370.dp)
+                //.wrapContentHeight()
+                //.height(370.dp)
                 .fillMaxWidth()
         ){
             val boxWithConstraintsScope = this
             ConstraintLayout(
                 modifier = Modifier
-                    .height(370.dp)
+                    //.height(370.dp)
                     .background(SoftPeach),
             ) {
                 val (
@@ -125,51 +127,12 @@ fun RecordAudio(
                         xOffset = 0,
                         yOffset = 0
                     ){
-                        if(!isRecording.value) {
-                            when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
-                                is PageData -> {
-                                    closeRecordAudioAccordingly(
-                                        "special",
-                                        context,
-                                        scope,
-                                        state,
-                                        generalMediaPlayerService
-                                    )
-                                }
-                                is String ->{
-                                    when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
-                                        "prayer" ->{
-                                            closeRecordAudioAccordingly(
-                                                "special",
-                                                context,
-                                                scope,
-                                                state,
-                                                generalMediaPlayerService
-                                            )
-                                        }
-                                        "selfLove" ->{
-                                            closeRecordAudioAccordingly(
-                                                "special",
-                                                context,
-                                                scope,
-                                                state,
-                                                generalMediaPlayerService
-                                            )
-                                        }
-                                        "page" ->{
-                                            closeRecordAudioAccordingly(
-                                                "special",
-                                                context,
-                                                scope,
-                                                state,
-                                                generalMediaPlayerService
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                            //closeRecordAudioAccordingly("special", context, scope, state)
-                        }
+                        processClosingRecordAudio(
+                            context,
+                            scope,
+                            state,
+                            generalMediaPlayerService
+                        )
                     }
                 }
                 Box(
@@ -197,19 +160,95 @@ fun RecordAudio(
                             start.linkTo(parent.start, margin = 16.dp)
                         }
                 ) {
-                    RecordAudioControls(generalMediaPlayerService)
+                    RecordAudioControls(
+                        scope,
+                        state,
+                        generalMediaPlayerService
+                    )
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+fun processClosingRecordAudio(
+    context: Context,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+) {
+    if(!isRecording.value) {
+        when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
+            is PageData -> {
+                closeRecordAudioAccordingly(
+                    "special",
+                    context,
+                    scope,
+                    state,
+                    generalMediaPlayerService
+                )
+            }
+            is String ->{
+                when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
+                    "prayer" ->{
+                        closeRecordAudioAccordingly(
+                            "special",
+                            context,
+                            scope,
+                            state,
+                            generalMediaPlayerService
+                        )
+                    }
+                    "selfLove" ->{
+                        closeRecordAudioAccordingly(
+                            "special",
+                            context,
+                            scope,
+                            state,
+                            generalMediaPlayerService
+                        )
+                    }
+                    "page" ->{
+                        closeRecordAudioAccordingly(
+                            "special",
+                            context,
+                            scope,
+                            state,
+                            generalMediaPlayerService
+                        )
+                    }
+                }
+            }
+        }
+        //closeRecordAudioAccordingly("special", context, scope, state)
+    }
+}
+
+fun resetRecordingFileWithoutDeleting(
+    context: Context
+){
+    Log.i(TAG, "resetRecordingFileWithoutDeleting")
+    recordingFile = File(context.externalCacheDir!!.absolutePath + "/${getRandomString(5)}_audio.aac")
+}
+
+fun getRandomString(length: Int) : String {
+    Log.i(TAG, "Getting random String")
+    val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+    return (1..length)
+        .map { allowedChars.random() }
+        .joinToString("")
+}
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun RecordAudioControls(generalMediaPlayerService: GeneralMediaPlayerService){
+fun RecordAudioControls(
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService
+){
     val context = LocalContext.current
-    recordingFile = File(context.externalCacheDir!!.absolutePath + "/${globalViewModel_!!.currentUser!!.username}_audio.aac")
-    Log.i(TAG, "Recording file length is: ${recordingFile!!.length()}")
-    Log.i(TAG, "Recording file absolute is: ${recordingFile!!.absolutePath}")
+    //recordingFile = File(context.externalCacheDir!!.absolutePath + "/${globalViewModel_!!.currentUser!!.username}_audio.aac")
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -241,7 +280,9 @@ fun RecordAudioControls(generalMediaPlayerService: GeneralMediaPlayerService){
                         if(!isRecording.value) {
                             if(recordingFile!!.length() > 0) {
                                 if(!generalMediaPlayerService.isMediaPlayerInitialized()){
-                                    initializeAudioRecordedMediaPlayer(generalMediaPlayerService)
+                                    initializeAudioRecordedMediaPlayer(
+                                        generalMediaPlayerService
+                                    )
                                 }else {
                                     if (!generalMediaPlayerService.isMediaPlayerPlaying()) {
                                         startAudioRecordedMediaPlayer(generalMediaPlayerService)
@@ -281,7 +322,12 @@ fun RecordAudioControls(generalMediaPlayerService: GeneralMediaPlayerService){
                     ) {
                         if(!isRecording.value && !generalMediaPlayerService.isMediaPlayerPlaying()) {
                             clearRecordingForSomeElements(generalMediaPlayerService)
-                            saveRecordedAudio(generalMediaPlayerService)
+                            saveRecordedAudio(
+                                context,
+                                scope,
+                                state,
+                                generalMediaPlayerService
+                            )
                         }
                     }
                 }
@@ -513,6 +559,9 @@ fun setUpMediaRecorder(context: Context) {
         ) == PackageManager.PERMISSION_GRANTED
     ) {
         Log.i(TAG, "About to prep recorder")
+        resetRecordingFileWithoutDeleting(context)
+        Log.i(TAG, "Recording file length is: ${recordingFile!!.length()}")
+        Log.i(TAG, "Recording file absolute is: ${recordingFile!!.absolutePath}")
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
@@ -538,12 +587,21 @@ fun setUpMediaRecorder(context: Context) {
     }
 }
 
-fun saveRecordedAudio(generalMediaPlayerService: GeneralMediaPlayerService) {
+@OptIn(ExperimentalMaterialApi::class)
+fun saveRecordedAudio(
+    context: Context,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService
+) {
     when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
         is PageData -> {
-            val pageData = recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording as PageData
-            setPageRecordingsData()
-            storeToS3IfChapterPage(pageData)
+            if(selectedPageRecordingIndex < recordedPageRecordingAbsolutePath.size) {
+                val pageData =
+                    recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording as PageData
+                setPageRecordingsData(context)
+                //storeToS3IfChapterPage(pageData)
+            }
         }
 
         is String ->{
@@ -558,14 +616,41 @@ fun saveRecordedAudio(generalMediaPlayerService: GeneralMediaPlayerService) {
             }
         }
     }
+
+    processClosingRecordAudio(
+        context,
+        scope,
+        state,
+        generalMediaPlayerService
+    )
 }
 
-fun setPageRecordingsData() {
-    recordedPageRecordingAbsolutePath[selectedPageRecordingIndex]!!.value = recordingFile!!.absolutePath
-    pageRecordingFileColors[selectedPageRecordingIndex]!!.value = Peach
-    pageRecordingFileUris[selectedPageRecordingIndex]!!.value = recordingFile!!.absolutePath.toUri()
-    pageRecordingFileNames[selectedPageRecordingIndex]!!.value = "recording ${selectedPageRecordingIndex + 1}"
-    audioPageRecordingFileLengthMilliSeconds[selectedPageRecordingIndex]!!.value = recordingFile!!.length()
+fun setPageRecordingsData(
+    context: Context
+) {
+    if(selectedPageRecordingIndex < pageRecordingFileUris.size) {
+        Log.i(TAG, "selectedPageRecordingIndex =-- $selectedPageRecordingIndex")
+        Log.i(TAG, "recordingFile =-- ${recordingFile}")
+        Log.i(TAG, "recordingFile.length() =-- ${recordingFile!!.length()}")
+        Log.i(TAG, "recordingFile.toString() =-- ${recordingFile.toString()}")
+        val recordedNames = mutableListOf<File>()
+        recordedNames.add(recordingFile!!)
+        Log.i(TAG, "recordedNames.last() =-- ${recordedNames.last()}")
+        recordedPageRecordingAbsolutePath[selectedPageRecordingIndex].value =
+            recordedNames.last().absolutePath
+        pageRecordingFileColors[selectedPageRecordingIndex].value = Peach
+        pageRecordingFileUris[selectedPageRecordingIndex].value =
+            recordedNames.last().absolutePath.toUri()
+        pageRecordingFileNames[selectedPageRecordingIndex].value =
+            pageRecordingNames[selectedPageRecordingIndex].value
+        audioPageRecordingFileLengthMilliSeconds[selectedPageRecordingIndex].value =
+            recordedNames.last().length()
+        pageRecordingS3Keys[selectedPageRecordingIndex].value = "open"
+        resetRecordingFileWithoutDeleting(context)
+        Log.i(TAG, "Saving page recording 0")
+        Log.i(TAG, "99 pageRecordingFileNames.seize => ${pageRecordingFileNames.size}")
+        Log.i(TAG, "99 pageRecordingFileNames--seize => ${pageRecordingFileNames}")
+    }
 }
 
 fun setPrayerRecordingsData() {
@@ -582,67 +667,6 @@ fun setSelfLoveRecordingsData() {
     recordedFileUriSelfLove.value = recordingFile!!.absolutePath.toUri()
     recordedAudioFileLengthMilliSecondsSelfLove.value = recordingFile!!.length()
     recordedFileColorSelfLove.value = Peach
-}
-
-fun storeToS3IfChapterPage(pageData: PageData){
-    BedtimeStoryChapterBackend.queryBedtimeStoryChapterBasedOnId(thisPageData!!.bedtimeStoryInfoChapterId){
-        if(it.isNotEmpty()) {
-            val key = "Routine/" +
-                    "BedtimeStories/" +
-                    "${globalViewModel_!!.currentUser!!.username}/" +
-                    "recorded/" +
-                    "${it[0].bedtimeStoryInfo.displayName}/" +
-                    "${it[0].displayName}/" +
-                    "${thisPageData!!.displayName}/" +
-                    "recording_${selectedPageRecordingIndex + 1}.aac"
-
-            SoundBackend.storeAudio(recordingFile!!.absolutePath, key) { s3key ->
-                updateChapterPageData(
-                    s3key,
-                    thisPageData!!
-                )
-            }
-        }
-    }
-}
-
-fun updateChapterPageData(s3Key: String, pageData: PageData) {
-    val audioNames = thisPageData!!.audioNames
-    val audioKeysS3 = thisPageData!!.audioKeysS3
-    val audioLength = thisPageData!!.audioLength
-
-    if(selectedPageRecordingIndex < audioLength.size){
-        if(selectedPageRecordingIndex > -1) {
-            audioNames.add(
-                selectedPageRecordingIndex,
-                pageRecordingFileNames[selectedPageRecordingIndex]!!.value
-            )
-            audioKeysS3.add(selectedPageRecordingIndex, s3Key)
-            audioLength.add(
-                selectedPageRecordingIndex,
-                audioPageRecordingFileLengthMilliSeconds[selectedPageRecordingIndex]!!.value.toInt()
-            )
-        }
-    }else {
-        audioNames.add(pageRecordingFileNames[selectedPageRecordingIndex]!!.value)
-        audioKeysS3.add(s3Key)
-        audioLength.add(audioPageRecordingFileLengthMilliSeconds[selectedPageRecordingIndex]!!.value.toInt())
-    }
-
-    val newPageData = thisPageData!!.copyOfBuilder()
-        .audioNames(audioNames)
-        .audioKeysS3(audioKeysS3)
-        .audioLength(audioLength)
-        .build()
-
-    PageBackend.updatePage(newPageData){
-        thisPageData = it
-        if(thisPageIndex > -1) {
-            pageRecordings[thisPageIndex][
-                    pageRecordingFileNames[selectedPageRecordingIndex]!!.value
-            ] = s3Key
-        }
-    }
 }
 
 fun clearRecordingForSomeElements(generalMediaPlayerService: GeneralMediaPlayerService) {
@@ -672,7 +696,9 @@ fun clearRecording(context: Context, generalMediaPlayerService: GeneralMediaPlay
     resetRecordingFile(context)
 }
 
-fun initializeAudioRecordedMediaPlayer(generalMediaPlayerService: GeneralMediaPlayerService){
+fun initializeAudioRecordedMediaPlayer(
+    generalMediaPlayerService: GeneralMediaPlayerService
+){
     generalMediaPlayerService.setAudioUri(recordingFile!!.absolutePath.toUri())
     val intent = Intent()
     intent.action = "PLAY"

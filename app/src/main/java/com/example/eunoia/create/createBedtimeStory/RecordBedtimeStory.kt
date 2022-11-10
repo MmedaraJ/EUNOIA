@@ -1,6 +1,7 @@
 package com.example.eunoia.create.createBedtimeStory
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,19 +14,25 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
-import com.example.eunoia.backend.BedtimeStoryChapterBackend
+import com.example.eunoia.R
+import com.example.eunoia.backend.*
 import com.example.eunoia.create.resetEverything
+import com.example.eunoia.lifecycle.CustomLifecycleEventListener
 import com.example.eunoia.models.BedtimeStoryChapterObject
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openConfirmDeleteBedtimeStoryDialogBox
+import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -33,9 +40,41 @@ import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
 var selectedIndex by mutableStateOf(0)
-var pageNumbersPerChapter = mutableListOf<MutableState<Int>?>()
-var bedtimeStoryChapters = mutableListOf<MutableState<BedtimeStoryInfoChapterData>?>()
+var bedtimeStoryChapters = mutableListOf<BedtimeStoryInfoChapterData?>()
 private var TAG = "Record Bedtime Story"
+
+private var icons = arrayOf(
+    mutableStateOf(R.drawable.ic_baseline_delete),
+    mutableStateOf(R.drawable.back_arrow),
+    mutableStateOf(R.drawable.play_icon),
+    mutableStateOf(R.drawable.ic_baseline_stop),
+    mutableStateOf(R.drawable.ic_baseline_arrow_right_alt),
+    mutableStateOf(R.drawable.ic_baseline_mic),
+)
+private var borderControlColors = arrayOf(
+    mutableStateOf(Bizarre),
+    mutableStateOf(Bizarre),
+    mutableStateOf(Black),
+    mutableStateOf(Bizarre),
+    mutableStateOf(Bizarre),
+    mutableStateOf(Bizarre),
+)
+private var backgroundControlColor1 = arrayOf(
+    mutableStateOf(White),
+    mutableStateOf(White),
+    mutableStateOf(SoftPeach),
+    mutableStateOf(White),
+    mutableStateOf(White),
+    mutableStateOf(White),
+)
+private var backgroundControlColor2 = arrayOf(
+    mutableStateOf(White),
+    mutableStateOf(White),
+    mutableStateOf(Solitude),
+    mutableStateOf(White),
+    mutableStateOf(White),
+    mutableStateOf(White),
+)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -58,12 +97,23 @@ fun RecordBedtimeStoryUI(
 
     var numberOfChapters by rememberSaveable { mutableStateOf(bedtimeStoryChapters.size) }
     BedtimeStoryChapterBackend.queryBedtimeStoryChapterBasedOnBedtimeStory(bedtimeStoryData) {
-        for (i in bedtimeStoryChapters.size until it.size) {
-            bedtimeStoryChapters.add(mutableStateOf(it[i]))
+        val itMutable = it.toMutableList()
+        itMutable.sortBy { chapterListItem ->
+            chapterListItem.chapterNumber
+        }
+        for (i in bedtimeStoryChapters.size until itMutable.size) {
+            bedtimeStoryChapters.add(itMutable[i])
         }
         numberOfChapters = bedtimeStoryChapters.size
     }
+
     val scrollState = rememberScrollState()
+
+    SetUpConfirmDeleteBedtimeStoryDialogBoxUI(
+        bedtimeStoryChapters,
+        bedtimeStoryData,
+        navController
+    )
 
     ConstraintLayout(
         modifier = Modifier
@@ -87,7 +137,6 @@ fun RecordBedtimeStoryUI(
         ) {
             BackArrowHeader(
                 {
-                    //TODO(reset whats necessary on back press)
                     navController.popBackStack()
                 },
                 {
@@ -135,7 +184,7 @@ fun RecordBedtimeStoryUI(
                 textType = "morge",
                 maxWidthFraction = 1F
             ) {
-                //delete chapter
+                openConfirmDeleteBedtimeStoryDialogBox = true
             }
         }
         Column(
@@ -166,7 +215,7 @@ fun RecordBedtimeStoryUI(
                     bedtimeStoryData.id
                 )
                 BedtimeStoryChapterBackend.createBedtimeStoryInfoChapter(chapter){
-                    bedtimeStoryChapters.add(mutableStateOf(it))
+                    bedtimeStoryChapters.add(it)
                     numberOfChapters ++
                 }
                 Thread.sleep(1_000)
@@ -202,10 +251,128 @@ fun RecordBedtimeStoryUI(
                 ) {
                     if(numberOfChapters > 0){
                         for(i in bedtimeStoryChapters.indices){
-                            ChapterBlock(navController, bedtimeStoryChapters[i]!!.value, i)
+                            ChapterBlock(
+                                navController,
+                                bedtimeStoryChapters[i]!!,
+                                bedtimeStoryChapters[i]!!.chapterNumber,
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(40.dp))
+                }
+            }
+        }
+    }
+}
+
+private fun deleteAllPagesAndChapters(
+    bedtimeStoryChapters: MutableList<BedtimeStoryInfoChapterData?>,
+    completed: () -> Unit
+) {
+    bedtimeStoryChapters.forEach { chapter ->
+        PageBackend.queryPageBasedOnChapter(chapter!!) {
+            if(it.isNotEmpty()){
+                it.forEach { page ->
+                    page.audioKeysS3.forEach { s3Key ->
+                        SoundBackend.deleteAudio(s3Key)
+                    }
+                    PageBackend.deletePage(page){ }
+                }
+            }
+            deleteChapter(chapter)
+        }
+    }
+    completed()
+}
+
+private fun deleteChapter(
+    chapter: BedtimeStoryInfoChapterData,
+) {
+    BedtimeStoryChapterBackend.deleteChapter(chapter){}
+}
+
+private fun deleteUserBedtimeStory(
+    bedtimeStoryData: BedtimeStoryInfoData,
+    completed: () -> Unit
+) {
+    UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
+        globalViewModel_!!.currentUser!!,
+        bedtimeStoryData
+    ){
+        if(it.isNotEmpty()){
+            UserBedtimeStoryBackend.deleteUserBedtimeStory(it[0]!!){
+                completed()
+            }
+        }else{
+            completed()
+        }
+    }
+}
+
+private fun deleteUserBedtimeStoryRelationship(
+    bedtimeStoryData: BedtimeStoryInfoData,
+    completed: () -> Unit
+) {
+    UserBedtimeStoryInfoRelationshipBackend.queryUserBedtimeStoryInfoRelationshipBasedOnUserAndBedtimeStoryInfo(
+        globalViewModel_!!.currentUser!!,
+        bedtimeStoryData
+    ){
+        if(it.isNotEmpty()){
+            UserBedtimeStoryInfoRelationshipBackend.deleteUserBedtimeStoryInfoRelationship(it[0]!!){
+                completed()
+            }
+        }else{
+            completed()
+        }
+    }
+}
+
+private fun deleteBedtimeStory(
+    bedtimeStoryData: BedtimeStoryInfoData,
+    completed: () -> Unit
+) {
+    BedtimeStoryBackend.deleteBedtimeStory(bedtimeStoryData){
+        completed()
+    }
+}
+
+@Composable
+private fun SetUpConfirmDeleteBedtimeStoryDialogBoxUI(
+    bedtimeStoryChapters: MutableList<BedtimeStoryInfoChapterData?>,
+    bedtimeStoryData: BedtimeStoryInfoData,
+    navController: NavController,
+){
+    if(openConfirmDeleteBedtimeStoryDialogBox){
+        ConfirmAlertDialog(
+            "Are you sure you want to delete this bedtime story?",
+            {
+                processBedtimeStoryDeletion(
+                    bedtimeStoryChapters,
+                    bedtimeStoryData,
+                    navController
+                )
+            },
+            {
+                openConfirmDeleteBedtimeStoryDialogBox = false
+            }
+        )
+    }
+}
+
+fun processBedtimeStoryDeletion(
+    bedtimeStoryChapters: MutableList<BedtimeStoryInfoChapterData?>,
+    bedtimeStoryData: BedtimeStoryInfoData,
+    navController: NavController
+) {
+    deleteAllPagesAndChapters(bedtimeStoryChapters){
+        deleteUserBedtimeStoryRelationship(bedtimeStoryData) {
+            deleteUserBedtimeStory(bedtimeStoryData) {
+                deleteBedtimeStory(bedtimeStoryData) {
+                    openConfirmDeleteBedtimeStoryDialogBox = false
+                    userBedtimeStories.removeIf {
+                        it!!.id == bedtimeStoryData.id
+                    }
+                    navController.popBackStack()
                 }
             }
         }

@@ -190,7 +190,7 @@ object PrayerForRoutine{
                         globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
                                 [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!]!!
                             .prayerData.id
-                ] = it
+                ] = it!!
 
                 startPrayer(
                     generalMediaPlayerService,

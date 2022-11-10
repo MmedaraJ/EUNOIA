@@ -31,7 +31,7 @@ import com.example.eunoia.dashboard.home.SoundForRoutine.updateRecentlyPlayedUse
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
-import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.sound.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
@@ -294,7 +294,8 @@ private fun SetUpRoutineCurrentlyPlayingAlertDialogSoundUI(
     context: Context,
 ){
     if(openRoutineIsCurrentlyPlayingDialogBox){
-        ConfirmStopRoutineAlertDialog(
+        ConfirmAlertDialog(
+            "Are you sure you want to stop your routine?",
             {
                 updatePreviousUserRoutineRelationship {
                     resetEverything(

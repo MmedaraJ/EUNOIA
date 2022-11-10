@@ -942,7 +942,7 @@ fun BackArrowHeader(backArrowClicked: () -> Unit, eunoiaLogoClicked: () -> Unit,
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .padding(horizontal = 12.dp)
+            .padding(horizontal = 0.dp)
             .fillMaxWidth()
     ){
         AnImageWithColor(

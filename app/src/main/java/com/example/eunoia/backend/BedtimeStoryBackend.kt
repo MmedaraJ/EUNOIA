@@ -83,7 +83,7 @@ object BedtimeStoryBackend {
                 { response ->
                     Log.i(TAG, "Response: $response")
                     if(response.hasData()) {
-                        for (bedtimeStoryData in response.data) {
+                        for (bedtimeStoryData in response.data.items) {
                             if(bedtimeStoryData != null) {
                                 Log.i(TAG, bedtimeStoryData.toString())
                                 bedtimeStoryList.add(bedtimeStoryData)
@@ -162,6 +162,29 @@ object BedtimeStoryBackend {
                     }
                 },
                 { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun deleteBedtimeStory(
+        bedtimeStoryData: BedtimeStoryInfoData,
+        completed: (successful: Boolean) -> Unit
+    ){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.delete(bedtimeStoryData),
+                { response ->
+                    Log.i(TAG, "Deleted $response")
+                    mainScope.launch {
+                        completed(true)
+                    }
+                },
+                { error ->
+                    Log.e(TAG, "Deletion failed", error)
+                    mainScope.launch {
+                        completed(true)
+                    }
+                }
             )
         }
     }

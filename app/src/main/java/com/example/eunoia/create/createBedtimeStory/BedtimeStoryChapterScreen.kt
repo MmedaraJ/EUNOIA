@@ -11,14 +11,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
+import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.amplifyframework.datastore.generated.model.PageData
+import com.example.eunoia.backend.BedtimeStoryBackend
+import com.example.eunoia.backend.BedtimeStoryChapterBackend
 import com.example.eunoia.backend.PageBackend
+import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.lifecycle.CustomLifecycleEventListener
+import com.example.eunoia.models.BedtimeStoryChapterObject
 import com.example.eunoia.models.PageObject
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.openConfirmDeleteBedtimeStoryDialogBox
+import com.example.eunoia.ui.navigation.openConfirmDeleteChapterDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.SwansDown
@@ -27,7 +37,7 @@ import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-var chapterPages = mutableListOf<MutableList<MutableState<PageData>?>>()
+var chapterPages = mutableListOf<MutableList<PageData?>>()
 private var TAG = "Chapter Pages"
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -40,29 +50,42 @@ fun BedtimeStoryChapterScreenUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    if(chapterIndex >= chapterPages.size){
-        for(i in chapterPages.size..chapterIndex){
+    if(chapterIndex >= chapterPages.size) {
+        for (i in chapterPages.size..chapterIndex) {
             chapterPages.add(mutableListOf())
         }
     }
 
-    var numberOfPages by rememberSaveable { mutableStateOf(chapterPages[chapterIndex].size) }
+    chapterPages[chapterIndex].clear()
+    var numberOfPages by rememberSaveable { mutableStateOf(0) }
 
     PageBackend.queryPageBasedOnChapter(bedtimeStoryChapterData) {
-        chapterPages[chapterIndex].clear()
-        Log.i(TAG, "Received chpter pages ${it.size}")
-        for (i in it.indices) {
-            chapterPages[chapterIndex].add(mutableStateOf(it[i]))
+        //chapterPages[chapterIndex].clear()
+        Log.i(TAG, "Received chpter pages the third time ${it.size}")
+        val itMutable = it.toMutableList()
+        itMutable.sortBy { pageList ->
+            pageList.pageNumber
         }
+        for (i in itMutable.indices) {
+            chapterPages[chapterIndex].add(itMutable[i])
+        }
+        Log.i(TAG, "chapterPages[chapterIndex].size ${chapterPages[chapterIndex].size}")
+        numberOfPages = 0
         numberOfPages = chapterPages[chapterIndex].size
     }
-    val scrollState = rememberScrollState()
 
+    SetUpConfirmDeleteChapterDialogBoxUI(
+        chapterPages[chapterIndex],
+        bedtimeStoryChapterData,
+        navController
+    )
+
+    val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
             .padding(horizontal = 16.dp),
-            //.fillMaxHeight(),
     ) {
+
         val (
             header,
             title,
@@ -128,8 +151,7 @@ fun BedtimeStoryChapterScreenUI(
                 maxWidthFraction = 1F
             ) {
                 //delete chapter
-                globalViewModel_!!.bottomSheetOpenFor = "recordAudio"
-                openBottomSheet(scope, state)
+                openConfirmDeleteChapterDialogBox = true
             }
         }
         Column(
@@ -163,7 +185,7 @@ fun BedtimeStoryChapterScreenUI(
                     bedtimeStoryChapterData.id
                 )
                 PageBackend.createPage(page){
-                    chapterPages[chapterIndex].add(mutableStateOf(it))
+                    chapterPages[chapterIndex].add(it)
                     numberOfPages ++
                 }
                 Thread.sleep(1_000)
@@ -199,8 +221,14 @@ fun BedtimeStoryChapterScreenUI(
                 ) {
                     if(numberOfPages > 0){
                         for(i in chapterPages[chapterIndex].indices){
-                            Log.i(TAG, "Page index before send is ${chapterPages[chapterIndex][i]!!.value.pageNumber}")
-                            PageBlock(navController, chapterPages[chapterIndex][i]!!.value, chapterPages[chapterIndex][i]!!.value.pageNumber - 1)
+                            Log.i(TAG, "Page index before send is ${chapterPages[chapterIndex][i]!!.pageNumber}")
+                            PageBlock(
+                                navController,
+                                chapterPages[chapterIndex][i]!!,
+                                chapterPages[chapterIndex][i]!!.pageNumber - 1,
+                                bedtimeStoryChapterData,
+                                chapterIndex
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(40.dp))
@@ -210,10 +238,119 @@ fun BedtimeStoryChapterScreenUI(
     }
 }
 
+@Composable
+fun SetUpConfirmDeleteChapterDialogBoxUI(
+    pages: MutableList<PageData?>,
+    bedtimeStoryChapterData: BedtimeStoryInfoChapterData,
+    navController: NavController
+) {
+    if(openConfirmDeleteChapterDialogBox){
+        ConfirmAlertDialog(
+            "Are you sure you want to delete this chapter?",
+            {
+                processChapterDeletion(
+                    pages,
+                    bedtimeStoryChapterData,
+                    navController
+                )
+            },
+            {
+                openConfirmDeleteChapterDialogBox = false
+            }
+        )
+    }
+}
+
+fun processChapterDeletion(
+    pages: MutableList<PageData?>,
+    bedtimeStoryChapterData: BedtimeStoryInfoChapterData,
+    navController: NavController
+) {
+    deleteAllPages(pages){
+        deleteChapter(bedtimeStoryChapterData) {
+            openConfirmDeleteChapterDialogBox = false
+            bedtimeStoryChapters.removeIf {
+                it!!.id == bedtimeStoryChapterData.id
+            }
+
+            //update chapter names. chapter 2 becomes chapter 1
+            for(i in bedtimeStoryChapterData.chapterNumber..bedtimeStoryChapters.size){
+                val newChapter = bedtimeStoryChapters[i - 1]!!.copyOfBuilder()
+                    .displayName("Chapter $i")
+                    .chapterNumber(i)
+                    .build()
+
+                BedtimeStoryChapterBackend.updateChapter(newChapter){
+                    bedtimeStoryChapters[i - 1] = it
+                    if(i == bedtimeStoryChapters.size){
+                        navController.popBackStack()
+                    }
+                }
+            }
+        }
+    }
+}
+
+fun deleteAllPages(
+    pages: MutableList<PageData?>,
+    completed: () -> Unit
+) {
+    if (pages.isNotEmpty()) {
+        pages.forEach { page ->
+            page!!.audioKeysS3.forEach { s3Key ->
+                SoundBackend.deleteAudio(s3Key)
+            }
+            PageBackend.deletePage(page) { }
+        }
+    }
+    completed()
+}
+
+private fun deleteChapter(
+    chapter: BedtimeStoryInfoChapterData,
+    completed: () -> Unit
+) {
+    BedtimeStoryChapterBackend.deleteChapter(chapter){
+        completed()
+    }
+}
+
+fun updateChapterIndexList(
+    newPage: PageData,
+    chapterIndex: Int,
+){
+    if(chapterIndex < chapterPages.size) {
+        for (i in chapterPages[chapterIndex].indices) {
+            if (chapterPages[chapterIndex][i]!!.id == newPage.id) {
+                Log.i(TAG, "Old page ==> ${chapterPages[chapterIndex][i]!!}")
+                chapterPages[chapterIndex][i] = newPage
+                Log.i(TAG, "new page ==> ${chapterPages[chapterIndex][i]!!}")
+                break
+            }
+        }
+    }
+}
+
+fun getChapterPageSize(
+    chapterIndex: Int,
+): Int{
+    return chapterPages[chapterIndex].size
+}
+
 fun clearPagesList(){
     chapterPages.clear()
 }
 
-fun navigateToPageScreen(navController: NavController, pageData: PageData, pageIndex: Int){
-    navController.navigate("${Screen.PageScreen.screen_route}/chapterPage=${PageObject.Page.from(pageData)}/$pageIndex")
+fun navigateToPageScreen(
+    navController: NavController,
+    pageData: PageData,
+    chapterData: BedtimeStoryInfoChapterData,
+    chapterIndex: Int
+){
+    navController.navigate(
+        "${Screen.PageScreen.screen_route}/" +
+                "chapterPage=${PageObject.Page.from(pageData)}/" +
+                "chapterData=${BedtimeStoryChapterObject.BedtimeStoryChapter.from(chapterData)}/" +
+                "$chapterIndex"
+    )
 }

@@ -1,6 +1,7 @@
 package com.example.eunoia.create.createBedtimeStory
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -19,6 +20,7 @@ import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
+import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
@@ -30,6 +32,8 @@ import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
+
+private var TAG = "NameBedtimeStoryUI"
 
 var bedtimeStoryIcon by mutableStateOf(-1)
 var bedtimeStoryName by mutableStateOf("")
@@ -64,7 +68,7 @@ fun NameBedtimeStoryUI(
     clearPageRecordingsList()
     SetupAlertDialogs()
 
-    var numberOfIncompleteBedtimeStories by rememberSaveable { mutableStateOf(-1) }
+    var numberOfIncompleteBedtimeStories by rememberSaveable { mutableStateOf(0) }
     BedtimeStoryBackend.queryIncompleteBedtimeStoryBasedOnUser(globalViewModel_!!.currentUser!!) {
         for (i in incompleteBedtimeStories.size until it.size) {
             incompleteBedtimeStories.add(mutableStateOf(it[i]!!))
@@ -492,6 +496,7 @@ fun NameBedtimeStoryUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
+                    Log.i(TAG, "Go create bts")
                     createBedtimeStory(numberOfIncompleteBedtimeStories, navController)
                 }
             }
@@ -588,15 +593,20 @@ private fun createBedtimeStory(
     numberOfIncompleteBedtimeStories: Int,
     navController: NavController
 ){
-    var otherBedtimeStoriesWithSameName by mutableStateOf(-1)
     BedtimeStoryBackend.queryBedtimeStoryBasedOnDisplayName(bedtimeStoryName){
-        otherBedtimeStoriesWithSameName = if(it.isEmpty()) 0 else it.size
-    }
-    Thread.sleep(1_000)
-    val tags = getBedtimeStoryTagsList()
-    if(numberOfIncompleteBedtimeStories != -1){
+        val tags = getBedtimeStoryTagsList()
+
+        Log.i(TAG, "numberOfIncompleteBedtimeStories -- $numberOfIncompleteBedtimeStories")
         if(numberOfIncompleteBedtimeStories < 3){
-            if (otherBedtimeStoriesWithSameName == 0) {
+            Log.i(TAG, "Nxt 1")
+            if (it.isEmpty()) {
+                Log.i(TAG, "Nxt 2")
+                val key = "Routine/" +
+                        "BedtimeStories/" +
+                        "${globalViewModel_!!.currentUser!!.username}/" +
+                        "recorded/" +
+                        "$bedtimeStoryName/"
+
                 val bedtimeStory = BedtimeStoryObject.BedtimeStory(
                     UUID.randomUUID().toString(),
                     UserObject.User.from(globalViewModel_!!.currentUser!!),
@@ -604,7 +614,7 @@ private fun createBedtimeStory(
                     bedtimeStoryName,
                     bedtimeStoryShortDescription,
                     bedtimeStoryLongDescription,
-                    "",
+                    key,
                     bedtimeStoryIcon,
                     0,
                     false,
@@ -614,34 +624,19 @@ private fun createBedtimeStory(
                     BedtimeStoryCreationStatus.INCOMPLETE
                 )
                 BedtimeStoryBackend.createBedtimeStory(bedtimeStory) { bedtimeStoryData ->
-                    if (globalViewModel_!!.currentUser != null) {
-                        var userAlreadyHasBedtimeStory = false
-                        for (userBedtimeStory in globalViewModel_!!.currentUser!!.bedtimeStories) {
-                            if (
-                                userBedtimeStory.bedtimeStoryInfoData.id == bedtimeStoryData.id &&
-                                userBedtimeStory.userData.id == globalViewModel_!!.currentUser!!.id
-                            ) {
-                                userAlreadyHasBedtimeStory = true
-                            }
-                        }
-                        if (!userAlreadyHasBedtimeStory) {
-                            UserBedtimeStoryBackend.createUserBedtimeStoryObject(
+                    UserBedtimeStoryInfoRelationshipBackend.createUserBedtimeStoryInfoRelationshipObject(bedtimeStoryData) {
+                        UserBedtimeStoryBackend.createUserBedtimeStoryObject(
+                            bedtimeStoryData
+                        ) {
+                            navigateToRecordBedtimeStory(
+                                navController,
                                 bedtimeStoryData
-                            ) {
-                                runOnUiThread {
-                                    navigateToRecordBedtimeStory(
-                                        navController,
-                                        bedtimeStoryData
-                                    )
-                                }
-                            }
+                            )
                         }
                     }
                 }
             }else{
-                if(otherBedtimeStoriesWithSameName > 0){
-                    openBedtimeStoryNameTakenDialogBox = true
-                }
+                openBedtimeStoryNameTakenDialogBox = true
             }
         }else{
             openTooManyIncompleteBedtimeStoryDialogBox = true

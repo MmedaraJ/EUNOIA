@@ -96,4 +96,63 @@ object PageBackend {
             )
         }
     }
+
+    fun queryPageBasedOnChapterAndPageNumber(
+        bedtimeStoryChapterDataId: String,
+        pageNumber: Int,
+        completed: (chaptersPages: List<PageData>) -> Unit
+    ) {
+        val result = mutableListOf<PageData>()
+        scope.launch {
+            Amplify.API.query(
+                ModelQuery.list(
+                    PageData::class.java,
+                    PageData.BEDTIME_STORY_INFO_CHAPTER_ID.eq(bedtimeStoryChapterDataId)
+                        .and(PageData.PAGE_NUMBER.eq(pageNumber)),
+                ),
+                { response ->
+                    if(response.hasErrors()){
+                        Log.e(TAG, response.errors.first().message)
+                    }
+                    else{
+                        if(response.hasData()) {
+                            for (page in response.data) {
+                                if(page != null) {
+                                    Log.i(TAG, page.toString())
+                                    result.add(page)
+                                }
+                            }
+                            mainScope.launch {
+                                completed(result)
+                            }
+                        }
+                    }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun deletePage(
+        pageData: PageData,
+        completed: (successful: Boolean) -> Unit
+    ){
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.delete(pageData),
+                { response ->
+                    Log.i(TAG, "Deleted $response")
+                    mainScope.launch {
+                        completed(true)
+                    }
+                },
+                { error ->
+                    Log.e(TAG, "Deletion failed", error)
+                    mainScope.launch {
+                        completed(false)
+                    }
+                }
+            )
+        }
+    }
 }

@@ -29,7 +29,7 @@ import com.example.eunoia.dashboard.routine.RoutineElements
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
-import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.WrappedPurpleBackgroundStart
@@ -297,7 +297,8 @@ private fun SetUpRoutineCurrentlyPlayingAlertDialogRoutineUI(
     context: Context,
 ){
     if(openRoutineIsCurrentlyPlayingDialogBox){
-        ConfirmStopRoutineAlertDialog(
+        ConfirmAlertDialog(
+            "Are you sure you want to stop your routine?",
             {
                 updatePreviousUserRoutineRelationship {
                     resetEverything(

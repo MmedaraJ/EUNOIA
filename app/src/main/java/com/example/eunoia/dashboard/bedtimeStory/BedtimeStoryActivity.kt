@@ -36,7 +36,7 @@ import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelations
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
-import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.bedtimeStory.deActivateBedtimeStoryGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
@@ -288,7 +288,8 @@ private fun SetUpRoutineCurrentlyPlayingAlertDialog(
     context: Context,
 ){
     if(openRoutineIsCurrentlyPlayingDialogBox){
-        ConfirmStopRoutineAlertDialog(
+        ConfirmAlertDialog(
+            "Are you sure you want to stop your routine?",
             {
                 updatePreviousUserRoutineRelationship {
                     resetEverything(
@@ -459,7 +460,7 @@ private fun retrieveBedtimeStoryAudio(
             globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.audioKeyS3,
             globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.bedtimeStoryOwner.amplifyAuthUserId
         ) {
-            bedtimeStoryActivityUris[index]!!.value = it
+            bedtimeStoryActivityUris[index]!!.value = it!!
             startBedtimeStory(
                 generalMediaPlayerService,
                 soundMediaPlayerService,

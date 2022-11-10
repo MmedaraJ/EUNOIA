@@ -191,7 +191,7 @@ object SelfLoveForRoutine {
                         globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!!
                                 [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!!]!!
                             .selfLoveData.id
-                ] = it
+                ] = it!!
 
                 startSelfLove(
                     generalMediaPlayerService,

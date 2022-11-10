@@ -54,6 +54,7 @@ import com.example.eunoia.ui.bottomSheets.recordAudio.RecordAudio
 import com.example.eunoia.ui.bottomSheets.selfLove.*
 import com.example.eunoia.ui.bottomSheets.sound.*
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.viewModels.PageViewModel
 import com.example.eunoia.viewModels.RecordAudioViewModel
 import kotlinx.coroutines.CoroutineScope
 
@@ -67,8 +68,10 @@ var openSoundNameTakenDialogBox by mutableStateOf(false)
 var openPrayerNameTakenDialogBox by mutableStateOf(false)
 var openPresetAlreadyExistsDialog by mutableStateOf(false)
 var openSelfLoveNameTakenDialogBox by mutableStateOf(false)
+var openConfirmDeletePageDialogBox by mutableStateOf(false)
 var openUserAlreadyHasSoundDialogBox by mutableStateOf(false)
 var openUserAlreadyHasPrayerDialogBox by mutableStateOf(false)
+var openConfirmDeleteChapterDialogBox by mutableStateOf(false)
 var openPresetNameIsAlreadyTakenDialog by mutableStateOf(false)
 var openBedtimeStoryNameTakenDialogBox by mutableStateOf(false)
 var openUserAlreadyHasSelfLoveDialogBox by mutableStateOf(false)
@@ -77,11 +80,11 @@ var openRoutineNameIsAlreadyTakenDialog by mutableStateOf(false)
 var openRoutineAlreadyHasPrayerDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasPresetDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasSelfLoveDialogBox by mutableStateOf(false)
+var openConfirmDeleteBedtimeStoryDialogBox by mutableStateOf(false)
+var openRoutineIsCurrentlyPlayingDialogBox by mutableStateOf(false)
 var openUserAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
 var openTooManyIncompleteBedtimeStoryDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
-
-var openRoutineIsCurrentlyPlayingDialogBox by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -879,25 +882,30 @@ fun CreateTab(
             )
         }
         composable(
-            "${Screen.PageScreen.screen_route}/chapterPage={chapterPage}/{pageIndex}",
+            "${Screen.PageScreen.screen_route}/chapterPage={chapterPage}/chapterData={chapterData}/{chapterIndex}",
             arguments = listOf(
                 navArgument("chapterPage") {
                     type = PageObject.PageType()
                 },
-                navArgument("pageIndex") {
+                navArgument("chapterData") {
+                    type = BedtimeStoryChapterObject.BedtimeStoryChapterType()
+                },
+                navArgument("chapterIndex") {
                     type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
             val chapterPage = backStackEntry.arguments?.getParcelable<PageObject.Page>("chapterPage")
+            val chapterData = backStackEntry.arguments?.getParcelable<BedtimeStoryChapterObject.BedtimeStoryChapter>("chapterData")
             Log.i("ChapterPageScreen", "You are now on the ${chapterPage!!.displayName} tab")
            PageScreenUI(
                 navController = navController,
-               chapterPage.data,
-                backStackEntry.arguments?.getString("pageIndex")!!.toInt(),
-                globalViewModel = globalViewModel,
+                chapterPage.data,
+                chapterData!!.data,
+                backStackEntry.arguments?.getString("chapterIndex")!!.toInt(),
                 scope = scope,
                 state = state,
+                PageViewModel(),
                 soundMediaPlayerService,
                 generalMediaPlayerService
             )

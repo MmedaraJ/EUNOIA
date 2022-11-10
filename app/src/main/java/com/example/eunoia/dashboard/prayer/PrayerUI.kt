@@ -36,7 +36,7 @@ import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelations
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
-import com.example.eunoia.ui.alertDialogs.ConfirmStopRoutineAlertDialog
+import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.prayer.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
@@ -482,7 +482,8 @@ fun SetUpRoutineCurrentlyPlayingAlertDialogPrayerUI(
     prayerData: PrayerData
 ){
     if(openRoutineIsCurrentlyPlayingDialogBox){
-        ConfirmStopRoutineAlertDialog(
+        ConfirmAlertDialog(
+            "Are you sure you want to stop your routine?",
             {
                 updatePreviousUserRoutineRelationship {
                     resetEverything(

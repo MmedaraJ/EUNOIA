@@ -1,5 +1,6 @@
 package com.example.eunoia.create.createBedtimeStory
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,9 +12,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
+import com.example.eunoia.lifecycle.CustomLifecycleEventListener
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.NormalText
@@ -22,7 +25,7 @@ import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 
-var userBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?>()
+var userBedtimeStories = mutableListOf<BedtimeStoryInfoData?>()
 private var TAG = "Incomplete Bedtime Story"
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -36,15 +39,14 @@ fun IncompleteBedtimeStoriesUI(
     clearPagesList()
     clearBedtimeStoryChaptersList()
     clearPageRecordingsList()
-    var numberOfBedtimeStories by rememberSaveable { mutableStateOf(userBedtimeStories.size) }
+    var numberOfBedtimeStories by rememberSaveable { mutableStateOf(0) }
     BedtimeStoryBackend.queryIncompleteBedtimeStoryBasedOnUser(globalViewModel_!!.currentUser!!) {
         for (i in userBedtimeStories.size until it.size) {
-            userBedtimeStories.add(mutableStateOf(it[i]!!))
+            userBedtimeStories.add(it[i]!!)
         }
         numberOfBedtimeStories = userBedtimeStories.size
     }
     val scrollState = rememberScrollState()
-
     ConstraintLayout(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -107,12 +109,12 @@ fun IncompleteBedtimeStoriesUI(
                             .clickable {
                                 navigateToRecordBedtimeStory(
                                     navController,
-                                    story!!.value
+                                    story!!
                                 )
                             }
                     ) {
                         NormalText(
-                            text = story!!.value.displayName,
+                            text = story!!.displayName,
                             color = Black,
                             fontSize = 16,
                             xOffset = 0,

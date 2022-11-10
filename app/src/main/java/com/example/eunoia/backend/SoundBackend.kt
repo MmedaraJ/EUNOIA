@@ -300,7 +300,7 @@ object SoundBackend{
     fun retrieveAudio(
         key: String,
         targetIdentityId: String,
-        completed : (audioUri: Uri) -> Unit
+        completed : (audioUri: Uri?) -> Unit
     ) {
         val options = StorageDownloadFileOptions.builder()
             .accessLevel(StorageAccessLevel.PROTECTED)
@@ -320,7 +320,10 @@ object SoundBackend{
                         completed(result.file.toUri())
                     }
                 },
-                { error -> Log.e(TAG, "Download Failure", error) }
+                { error ->
+                    Log.e(TAG, "Download Failure", error)
+                    completed(null)
+                }
             )
         }
         Amplify.Auth.currentUser.userId

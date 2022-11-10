@@ -10,7 +10,12 @@ import android.os.PowerManager
 import android.util.Log
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.ui.navigation.globalViewModel_
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ServiceComponent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.IOException
+import javax.inject.Inject
 
 private const val ACTION_PLAY: String = "PLAY"
 private const val TAG: String = "GeneralMediaPlayerService"
