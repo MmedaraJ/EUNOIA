@@ -166,6 +166,29 @@ object BedtimeStoryBackend {
         }
     }
 
+    fun updateBedtimeStory(
+        bedtimeStoryInfoData: BedtimeStoryInfoData,
+        completed: (bedtimeStoryInfoData: BedtimeStoryInfoData) -> Unit
+    ) {
+        scope.launch {
+            Amplify.API.mutate(
+                ModelMutation.update(bedtimeStoryInfoData),
+                { response ->
+                    Log.i(TAG, "Updated $response")
+                    if (response.hasErrors()) {
+                        Log.e(TAG, "Error from update BedtimeStoryInfoData ${response.errors.first().message}")
+                    } else {
+                        Log.i(TAG, "Updated BedtimeStoryInfoData with id: " + response.data.id)
+                        mainScope.launch {
+                            completed(response.data)
+                        }
+                    }
+                },
+                { error -> Log.e(TAG, "Update failed", error) }
+            )
+        }
+    }
+
     fun deleteBedtimeStory(
         bedtimeStoryData: BedtimeStoryInfoData,
         completed: (successful: Boolean) -> Unit

@@ -270,6 +270,7 @@ object BedtimeStoryForRoutine{
         index: Int,
         context: Context,
     ){
+        //TODO Seek to correct position to start playing
         updatePreviousAndCurrentBedtimeStoryRelationship {
             generalMediaPlayerService.onDestroy()
             generalMediaPlayerService.setAudioUri(
@@ -287,6 +288,7 @@ object BedtimeStoryForRoutine{
                         [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!]!!
                     .bedtimeStoryInfoData.fullPlayTime.toLong()
             )
+            
             resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
 
             if (globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer == null) {
@@ -297,6 +299,14 @@ object BedtimeStoryForRoutine{
                     context
                 )
             }
+
+            Log.i(TAG, "About to seeeeeek")
+
+            generalMediaPlayerService.seekToPos(
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
+                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!]!!
+                    .userRoutineRelationship.currentBedtimeStoryContinuePlayingTime
+            )
         }
 
         afterPlayingBedtimeStory(

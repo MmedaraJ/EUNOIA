@@ -2,14 +2,20 @@ package com.example.eunoia.create.createBedtimeStory
 
 import android.content.res.Configuration
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,22 +23,26 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.amplifyframework.datastore.generated.model.BedtimeStoryCreationStatus
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
 import com.example.eunoia.create.resetEverything
+import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.lifecycle.CustomLifecycleEventListener
 import com.example.eunoia.models.BedtimeStoryChapterObject
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
+import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.navigation.openConfirmDeleteBedtimeStoryDialogBox
 import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
+import com.example.eunoia.ui.navigation.openSavedElementDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -45,16 +55,10 @@ private var TAG = "Record Bedtime Story"
 
 private var icons = arrayOf(
     mutableStateOf(R.drawable.ic_baseline_delete),
-    mutableStateOf(R.drawable.back_arrow),
-    mutableStateOf(R.drawable.play_icon),
-    mutableStateOf(R.drawable.ic_baseline_stop),
-    mutableStateOf(R.drawable.ic_baseline_arrow_right_alt),
-    mutableStateOf(R.drawable.ic_baseline_mic),
+    mutableStateOf(R.drawable.ic_baseline_check),
+    mutableStateOf(R.drawable.ic_baseline_add),
 )
 private var borderControlColors = arrayOf(
-    mutableStateOf(Bizarre),
-    mutableStateOf(Bizarre),
-    mutableStateOf(Black),
     mutableStateOf(Bizarre),
     mutableStateOf(Bizarre),
     mutableStateOf(Bizarre),
@@ -62,15 +66,9 @@ private var borderControlColors = arrayOf(
 private var backgroundControlColor1 = arrayOf(
     mutableStateOf(White),
     mutableStateOf(White),
-    mutableStateOf(SoftPeach),
-    mutableStateOf(White),
-    mutableStateOf(White),
     mutableStateOf(White),
 )
 private var backgroundControlColor2 = arrayOf(
-    mutableStateOf(White),
-    mutableStateOf(White),
-    mutableStateOf(Solitude),
     mutableStateOf(White),
     mutableStateOf(White),
     mutableStateOf(White),
@@ -125,7 +123,7 @@ fun RecordBedtimeStoryUI(
             delete,
             save1,
             chapter_column,
-            spacer,
+            controls,
             all_chapters,
         ) = createRefs()
         Column(
@@ -164,7 +162,79 @@ fun RecordBedtimeStoryUI(
                 yOffset = 0
             )
         }
-        Column(
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .constrainAs(controls) {
+                    top.linkTo(title.bottom, margin = 32.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+                .fillMaxWidth()
+        ){
+            icons.forEachIndexed { index, icon ->
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .gradientBackground(
+                            listOf(
+                                backgroundControlColor1[index].value,
+                                backgroundControlColor2[index].value
+                            ),
+                            angle = 45f
+                        )
+                        .border(
+                            BorderStroke(
+                                1.dp,
+                                borderControlColors[index].value
+                            ),
+                            RoundedCornerShape(50.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AnImageWithColor(
+                        icon.value,
+                        "icon",
+                        borderControlColors[index].value,
+                        16.dp,
+                        16.dp,
+                        0,
+                        0
+                    ) {
+                        when(index){
+                            0 -> {
+                                openConfirmDeleteBedtimeStoryDialogBox = true
+                            }
+                            1 -> {
+                                completeBedtimeStory(bedtimeStoryData){ updatedBedtimeStoryData ->
+                                    userBedtimeStories.removeIf {
+                                        it!!.id == updatedBedtimeStoryData.id
+                                    }
+                                    openSavedElementDialogBox = true
+                                    navController.popBackStack()
+                                }
+                            }
+                            2 -> {
+                                val chapter = BedtimeStoryChapterObject.BedtimeStoryChapter(
+                                    UUID.randomUUID().toString(),
+                                    "Chapter ${bedtimeStoryChapters.size + 1}",
+                                    bedtimeStoryChapters.size + 1,
+                                    BedtimeStoryObject.BedtimeStory.from(bedtimeStoryData),
+                                    bedtimeStoryData.id
+                                )
+                                BedtimeStoryChapterBackend.createBedtimeStoryInfoChapter(chapter){
+                                    bedtimeStoryChapters.add(it)
+                                    numberOfChapters ++
+                                }
+                                Thread.sleep(1_000)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        /*Column(
             modifier = Modifier
                 .constrainAs(delete) {
                     top.linkTo(title.bottom, margin = 32.dp)
@@ -220,11 +290,11 @@ fun RecordBedtimeStoryUI(
                 }
                 Thread.sleep(1_000)
             }
-        }
+        }*/
         Column(
             modifier = Modifier
                 .constrainAs(chapter_column) {
-                    top.linkTo(save1.bottom, margin = 16.dp)
+                    top.linkTo(controls.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -262,6 +332,19 @@ fun RecordBedtimeStoryUI(
                 }
             }
         }
+    }
+}
+
+fun completeBedtimeStory(
+    bedtimeStoryData: BedtimeStoryInfoData,
+    completed: (bedtimeStoryData: BedtimeStoryInfoData) -> Unit
+) {
+    val newBedtimeStory = bedtimeStoryData.copyOfBuilder()
+        .creationStatus(BedtimeStoryCreationStatus.COMPLETED)
+        .build()
+
+    BedtimeStoryBackend.updateBedtimeStory(newBedtimeStory){
+        completed(it)
     }
 }
 
@@ -356,6 +439,13 @@ private fun SetUpConfirmDeleteBedtimeStoryDialogBoxUI(
                 openConfirmDeleteBedtimeStoryDialogBox = false
             }
         )
+    }
+}
+
+@Composable
+fun SetUpSavedBedtimeStoryDialogBoxUI(){
+    if(openSavedElementDialogBox){
+        AlertDialogBox(text = "Sound Saved. We will send you an email when it is approved")
     }
 }
 

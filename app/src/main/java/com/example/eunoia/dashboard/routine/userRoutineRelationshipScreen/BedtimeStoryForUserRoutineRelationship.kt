@@ -93,7 +93,7 @@ object BedtimeStoryForUserRoutineRelationship {
             if(bedtimeStoryUri[bedtimeStories!![bedtimeStoriesIndex]!!.bedtimeStoryInfoData.id] != "".toUri()) {
                 Log.i(TAG, "that BedtimeStory uriz is null")
                 if(bedtimeStories!!.isEmpty()) {
-                    getRoutinebedtimeStories{
+                    getRoutineBedtimeStories{
                         retrieveBedtimeStoryUris(
                             generalMediaPlayerService,
                             soundMediaPlayerService,
@@ -117,7 +117,7 @@ object BedtimeStoryForUserRoutineRelationship {
                 )
             }
         }else{
-            getRoutinebedtimeStories{
+            getRoutineBedtimeStories{
                 retrieveBedtimeStoryUris(
                     generalMediaPlayerService,
                     soundMediaPlayerService,
@@ -127,7 +127,7 @@ object BedtimeStoryForUserRoutineRelationship {
         }
     }
 
-    private fun getRoutinebedtimeStories(completed: () -> Unit){
+    private fun getRoutineBedtimeStories(completed: () -> Unit){
         getRoutinebedtimeStoriesBasedOnRoutine(
             thisUserRoutineRelationship!!
         ) { UserRoutineRelationshipBedtimeStoryInfos ->

@@ -116,7 +116,9 @@ class GeneralMediaPlayerService:
     fun seekToPos(pos: Int){
         if(mediaPlayerIsPlaying) {
             mediaPlayer!!.seekTo(pos)
+            Log.i(TAG, "seek to completed= ${mediaPlayer!!.currentPosition}")
         }
+        Log.i(TAG, "will not seek to")
     }
 
     override fun onPrepared(mediaPlayer: MediaPlayer?) {

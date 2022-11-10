@@ -102,7 +102,10 @@ object UserBedtimeStoryInfoRelationshipBackend {
                         for (userBedtimeStoryInfoRelationshipData in response.data) {
                             //TODO change pending to approved
                             if(userBedtimeStoryInfoRelationshipData != null) {
-                                if (userBedtimeStoryInfoRelationshipData.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.approvalStatus == BedtimeStoryApprovalStatus.PENDING) {
+                                if (
+                                    userBedtimeStoryInfoRelationshipData.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.approvalStatus == BedtimeStoryApprovalStatus.PENDING &&
+                                    userBedtimeStoryInfoRelationshipData.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.creationStatus == BedtimeStoryCreationStatus.COMPLETED
+                                ) {
                                     Log.i(TAG, userBedtimeStoryInfoRelationshipData.toString())
                                     userBedtimeStoryInfoRelationshipList.add(userBedtimeStoryInfoRelationshipData)
                                 }

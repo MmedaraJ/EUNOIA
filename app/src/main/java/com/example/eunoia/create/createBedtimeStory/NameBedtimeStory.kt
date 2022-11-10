@@ -607,6 +607,7 @@ private fun createBedtimeStory(
                         "recorded/" +
                         "$bedtimeStoryName/"
 
+                //TODO Compute full play time
                 val bedtimeStory = BedtimeStoryObject.BedtimeStory(
                     UUID.randomUUID().toString(),
                     UserObject.User.from(globalViewModel_!!.currentUser!!),
