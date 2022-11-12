@@ -342,6 +342,7 @@ object BedtimeStoryForRoutine{
         index: Int,
         context: Context
     ) {
+        //TODO update currently listening
         startNextBedtimeStoryCountDownTimer(
             context,
             globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!![

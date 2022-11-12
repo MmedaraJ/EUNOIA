@@ -65,7 +65,7 @@ object PageBackend {
 
     fun queryPageBasedOnChapter(
         bedtimeStoryChapterData: BedtimeStoryInfoChapterData,
-        completed: (chaptersPages: List<PageData>) -> Unit
+        completed: (chaptersPages: MutableList<PageData>) -> Unit
     ) {
         val result = mutableListOf<PageData>()
         scope.launch {
@@ -87,6 +87,10 @@ object PageBackend {
                                 }
                             }
                             mainScope.launch {
+                                //val mutableResult = result.toMutableList()
+                                result.sortBy {
+                                    it.pageNumber
+                                }
                                 completed(result)
                             }
                         }

@@ -41,7 +41,7 @@ object BedtimeStoryChapterBackend {
 
     fun queryBedtimeStoryChapterBasedOnBedtimeStory(
         bedtimeStoryData: BedtimeStoryInfoData,
-        completed: (bedtimeStoryChapters: List<BedtimeStoryInfoChapterData>) -> Unit
+        completed: (bedtimeStoryChapters: MutableList<BedtimeStoryInfoChapterData>) -> Unit
     ) {
         val result = mutableListOf<BedtimeStoryInfoChapterData>()
         scope.launch {
@@ -63,6 +63,11 @@ object BedtimeStoryChapterBackend {
                                 }
                             }
                             mainScope.launch {
+                                //val mutableResult = result.toMutableList()
+                                result.sortBy {
+                                    it.chapterNumber
+                                }
+                                Log.i(TAG, "Result sorted = $result")
                                 completed(result)
                             }
                         }

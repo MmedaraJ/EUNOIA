@@ -428,21 +428,6 @@ fun getInitialUri(generalMediaPlayerService: GeneralMediaPlayerService){
         deActivatePageControls(2)
         deActivatePageControls(3)
         playIt(generalMediaPlayerService)
-
-       /* SoundBackend.retrieveAudio(
-            thisPageData!!.audioKeysS3[playingIndex],
-            globalViewModel_!!.currentUser!!.amplifyAuthUserId
-        ) {
-            //store and play the first uri
-            if(playingIndex < pageRecordingFileUris.size) {
-                pageRecordingFileUris[playingIndex].value = it
-            }else{
-                pageRecordingFileUris.add(mutableStateOf(it))
-            }
-            deActivatePageControls(2)
-            deActivatePageControls(3)
-            playIt(generalMediaPlayerService)
-        }*/
     }
 }
 
@@ -481,10 +466,6 @@ private fun getNextUri(generalMediaPlayerService: GeneralMediaPlayerService){
  */
 fun playIt(generalMediaPlayerService: GeneralMediaPlayerService){
     if(playingIndex < pageRecordingFileUris.size) {
-        Log.i(TAG, "pageRecordingFileUris 00 = $pageRecordingFileUris")
-        Log.i(TAG, "pageRecordingFileNames 00 = $pageRecordingFileNames")
-        Log.i(TAG, "pageRecordingFileColors 00 = $pageRecordingFileColors")
-        Log.i(TAG, "pageRecordingS3Keys 00 = ${pageRecordingS3Keys}")
         if(pageRecordingFileUris[playingIndex].value.toString().isEmpty()){
             SoundBackend.retrieveAudio(
                 pageRecordingS3Keys[playingIndex].value,
