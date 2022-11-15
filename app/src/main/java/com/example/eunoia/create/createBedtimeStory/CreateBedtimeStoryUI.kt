@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -31,6 +32,11 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
 import com.amplifyframework.datastore.generated.model.PageData
+import com.arthenica.mobileffmpeg.Config
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
+import com.arthenica.mobileffmpeg.FFmpeg
+import com.chaquo.python.Python
 import com.example.eunoia.R
 import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.backend.SoundBackend
@@ -41,7 +47,9 @@ import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.WrappedPurpleBackgroundStart
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.retrieveUriDuration
 import java.io.File
+
 
 private var TAG = "Page Screen UIs"
 
@@ -126,6 +134,7 @@ fun RecordingBlock(
     generalMediaPlayerService: GeneralMediaPlayerService,
     takeAction: (index: Int) -> Unit
 ){
+    val context = LocalContext.current
     if(index < pageRecordingFileNames.size) {
         val dismissState = rememberDismissState(
             initialValue = DismissValue.Default,
@@ -215,15 +224,11 @@ fun RecordingBlock(
                     if (pageRecordingFileNames[index].value == "empty recording") {
                         resetAllPageRecordBedtimeStoryUIMediaPlayers()
                         generalMediaPlayerService.onDestroy()
-                        if (recordingCDT != null) {
-                            recordingCDT!!.cancel()
-                            recordingCDT = null
-                        }
+                        resetRecordingCDT()
                         takeAction(index)
                     } else {
                         playingIndex = index
                         getInitialUri(generalMediaPlayerService)
-                        //startRecordedBedtimeStoryMediaPlayer(pageData, index, context)
                     }
                 }
             },
@@ -233,21 +238,6 @@ fun RecordingBlock(
             /*** Set Direction to dismiss */
             directions = setOf(DismissDirection.EndToStart),
         )
-    }
-}
-
-fun startMediaPlayerHere(index: Int, context: Context){
-    pageRecordingFileMediaPlayers[index].value.apply {
-        setAudioAttributes(
-            AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .build()
-        )
-        setDataSource(context, pageRecordingFileUris[index].value)
-        setVolume(1f, 1f)
-        prepare()
-        start()
     }
 }
 
@@ -415,7 +405,7 @@ fun resetBedtimeStoryUploadUI() {
     audioFileLengthMilliSecondsBedtimeStory.value = 0L
 }
 
-var playingIndex by mutableStateOf(0)
+var playingIndex by mutableStateOf(-1)
 
 /**
  * Get the first uri for this page.
@@ -523,11 +513,8 @@ private fun startPlaying(
         }else{
             playingIndex += 1
             if(playingIndex >= pageRecordingFileUris.size){
-                if(recordingCDT != null) {
-                    recordingCDT!!.cancel()
-                    recordingCDT = null
-                }
-                playingIndex = 0
+                resetRecordingCDT()
+                playingIndex = -1
                 generalMediaPlayerService.onDestroy()
                 activatePageControls(2)
                 deActivatePageControls(3)
@@ -547,6 +534,13 @@ fun resetRecordingCDT(){
     }
 }
 
+fun resetIndividualCDT(){
+    if (individualCDT != null) {
+        individualCDT!!.cancel()
+        individualCDT = null
+    }
+}
+
 /**
  * Start the count down timer for the duration of the currently playing uri.
  * Play the next uri when count down timer is done
@@ -562,7 +556,8 @@ private fun startTimer(
         playingIndex < pageRecordingFileColors.size
     ){
         startBedtimeStoryRecordingCountDownTimer(
-            audioPageRecordingFileLengthMilliSeconds[playingIndex].value
+            audioPageRecordingFileLengthMilliSeconds[playingIndex].value,
+            generalMediaPlayerService
         ) {
             for(i in pageRecordingFileColors.indices) {
                 Log.i(TAG, "Peaching all")
@@ -579,7 +574,7 @@ private fun startTimer(
                 playingIndex >= pageRecordingFileUris.size ||
                 pageRecordingFileUris[playingIndex].value == "".toUri()
             ){
-                playingIndex = 0
+                playingIndex = -1
                 generalMediaPlayerService.onDestroy()
                 activatePageControls(2)
                 deActivatePageControls(3)
@@ -609,14 +604,28 @@ fun resetAllPageRecordBedtimeStoryUIMediaPlayers() {
  * @param time duration of the count down timer
  * @param completed runs when count down timer is finished
  */
-private fun startBedtimeStoryRecordingCountDownTimer(
+fun startBedtimeStoryRecordingCountDownTimer(
     time: Long,
+    generalMediaPlayerService: GeneralMediaPlayerService,
     completed: () -> Unit
 ) {
     if (recordingCDT == null) {
-        recordingCDT = object : CountDownTimer(time, 10000) {
+        recordingCDT = object : CountDownTimer(time, 1) {
             override fun onTick(millisUntilFinished: Long) {
-                Log.i(TAG, "Page recording timer: $millisUntilFinished")
+                if(generalMediaPlayerService.isMediaPlayerInitialized()){
+                    if(
+                        generalMediaPlayerService.getMediaPlayer()!!.currentPosition >=
+                                generalMediaPlayerService.getMediaPlayer()!!.duration
+                    ){
+                        Log.i(TAG, "Done with gmp3")
+                        generalMediaPlayerService.onDestroy()
+                        activatePageControls(2)
+                        deActivatePageControls(3)
+                    }
+                }
+                if(millisUntilFinished % 10000 == 0L) {
+                    Log.i(TAG, "Page recording timer: $millisUntilFinished")
+                }
             }
 
             override fun onFinish() {
@@ -627,3 +636,146 @@ private fun startBedtimeStoryRecordingCountDownTimer(
     }
     recordingCDT!!.start()
 }
+
+fun setColorToGreen(index: Int){
+    pageRecordingFileColors[index].value = Color.Green
+}
+
+fun startBedtimeStoryIndividualCountDownTimer(
+    time: Long,
+    index: Int,
+    completed: (index: Int) -> Unit
+) {
+    if (individualCDT == null) {
+        individualCDT = object : CountDownTimer(time, 1) {
+            override fun onTick(millisUntilFinished: Long) {
+                if(millisUntilFinished % 10000 == 0L) {
+                    Log.i(TAG, "individual recording timer: $millisUntilFinished")
+                }
+            }
+
+            override fun onFinish() {
+                Log.i(TAG, "individual stopped")
+                completed(index)
+            }
+        }
+    }
+    individualCDT!!.start()
+}
+
+var individualPlayingIndex = 0
+
+/*fun startIndividualCDT(
+    index: Int
+){
+    resetColors()
+
+    setColorToGreen(index)
+    startBedtimeStoryIndividualCountDownTimer(
+        remainingIndividualCDTTime.toLong(),
+        individualPlayingIndex
+    ){
+        resetColors()
+        if(index + 1 < pageRecordingFileColors.size) {
+            resetIndividualCDT()
+            individualPlayingIndex = index + 1
+            Log.i(TAG, "individualPlayingIndex = $individualPlayingIndex")
+            startIndividualCDT(individualPlayingIndex)
+        }
+    }
+}*/
+
+fun combineAudioFiles(
+    context: Context
+){
+    val py = Python.getInstance()
+    val pyObj = py.getModule("myscript")
+    val clipPaths = mutableListOf<String>()
+
+    pageRecordingFileUris.forEach { uri ->
+        clipPaths.add(uri.value.path!!)
+    }
+
+    val outFile = File(context.externalCacheDir!!.absolutePath + "/${globalViewModel_!!.currentUser!!.username}_audio.aac")
+    Log.i(TAG, "Output file before: 0. ${outFile.length()}")
+
+    pyObj.callAttr(
+        "concatenate_audio_pydub",
+        clipPaths.toTypedArray(),
+        outFile.absolutePath
+    )
+
+    Log.i(TAG, "Output file done: 1. ${outFile.length()}")
+    startMediaPlayerHere(
+        context,
+        outFile.toUri()
+    )
+}
+
+fun startMediaPlayerHere(
+    context: Context,
+    uri: Uri
+){
+    MediaPlayer().apply {
+        setAudioAttributes(
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build()
+        )
+        setDataSource(context, uri)
+        setVolume(1f, 1f)
+        prepare()
+        start()
+    }
+}
+
+/*
+fun resetColors(){
+    pageRecordingFileColors.forEach {
+        it.value = Peach
+    }
+}
+
+fun processIt(
+    uriStartIndex: Int,
+    context: Context,
+    completed: () -> Unit
+) {
+    var inputStr = ""
+    var concatStr = ""
+    var j = -1
+
+    val range = uriStartIndex until pageRecordingFileUris.size
+    for(i in range){
+        inputStr += "-i ${pageRecordingFileUris[i].value.path} "
+        j += 1
+        concatStr += "[$j:a]"
+    }
+
+    Log.i(TAG, "Output file before: 0. ${outFile!!.length()}")
+
+    val rc = FFmpeg.execute("$inputStr-filter_complex \"${concatStr}concat=n=${range.toList().size}:v=0:a=1\" -y ${outFile!!.absolutePath}")
+
+    when (rc) {
+        RETURN_CODE_SUCCESS -> {
+            Log.i(Config.TAG, "Command execution completed successfully.")
+            val len = retrieveUriDuration(
+                outFile!!.path,
+                context
+            )
+            Log.i(TAG, "Output file done: 1. $len")
+            completed()
+        }
+        RETURN_CODE_CANCEL -> {
+            Log.i(Config.TAG, "Command execution cancelled by user.")
+        }
+        else -> {
+            Log.i(
+                Config.TAG,
+                String.format("Command execution failed with rc=$rc and the output below.", rc)
+            )
+            Config.printLastCommandOutput(Log.INFO)
+        }
+    }
+}*/

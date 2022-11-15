@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -53,6 +54,7 @@ import com.example.eunoia.ui.bottomSheets.prayer.*
 import com.example.eunoia.ui.bottomSheets.recordAudio.RecordAudio
 import com.example.eunoia.ui.bottomSheets.selfLove.*
 import com.example.eunoia.ui.bottomSheets.sound.*
+import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.PageViewModel
 import com.example.eunoia.viewModels.RecordAudioViewModel
@@ -305,67 +307,86 @@ fun EunoiaApp(
                     Settings(navController = rememberNavController(), globalViewModel)
                 },*/
                     bottomBar = {
-                        val items = listOf(
-                            Screen.Dashboard,
-                            Screen.Search,
-                            Screen.Create,
-                            Screen.Feedback,
-                            Screen.Account
-                        )
-                        BottomNavigation(
-                            backgroundColor = MaterialTheme.colors.background,
-                            contentColor = MaterialTheme.colors.primary,
-                            modifier = Modifier.height(height = 50.dp)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
                         ) {
-                            /*val navBackStackEntry by navController.currentBackStackEntryAsState()
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                            ) {
+                                NormalText(
+                                    text = "uygrhtng dghsn giujhfn ",
+                                    color = Black,
+                                    fontSize = 14,
+                                    xOffset = 0,
+                                    yOffset = 0
+                                )
+                            }
+                            val items = listOf(
+                                Screen.Dashboard,
+                                Screen.Search,
+                                Screen.Create,
+                                Screen.Feedback,
+                                Screen.Account
+                            )
+                            BottomNavigation(
+                                backgroundColor = MaterialTheme.colors.background,
+                                contentColor = MaterialTheme.colors.primary,
+                                modifier = Modifier.height(height = 50.dp)
+                            ) {
+                                /*val navBackStackEntry by navController.currentBackStackEntryAsState()
                             val currentRoute = navBackStackEntry?.destination?.route*/
-                            items.forEach { item ->
-                                BottomNavigationItem(
-                                    icon = {
-                                        Icon(
-                                            painterResource(id = item.icon),
-                                            contentDescription = item.title,
-                                            modifier = Modifier.size(18.dp)
-                                        )
-                                    },
-                                    selectedContentColor = Color.Black,
-                                    unselectedContentColor = Grey,
-                                    alwaysShowLabel = true,
-                                    selected = currentTab == item,
-                                    onClick = {
-                                        if(currentTab == item){
-                                            when(item){
-                                                Screen.Dashboard -> {
-                                                    if(dashboardNavController != null){
-                                                        dashboardNavController!!.popBackStack()
+                                items.forEach { item ->
+                                    BottomNavigationItem(
+                                        icon = {
+                                            Icon(
+                                                painterResource(id = item.icon),
+                                                contentDescription = item.title,
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                        },
+                                        selectedContentColor = Color.Black,
+                                        unselectedContentColor = Grey,
+                                        alwaysShowLabel = true,
+                                        selected = currentTab == item,
+                                        onClick = {
+                                            if (currentTab == item) {
+                                                when (item) {
+                                                    Screen.Dashboard -> {
+                                                        if (dashboardNavController != null) {
+                                                            dashboardNavController!!.popBackStack()
+                                                        }
                                                     }
-                                                }
-                                                Screen.Search -> {
-                                                    if(searchNavController != null){
-                                                        searchNavController!!.popBackStack()
+                                                    Screen.Search -> {
+                                                        if (searchNavController != null) {
+                                                            searchNavController!!.popBackStack()
+                                                        }
                                                     }
-                                                }
-                                                Screen.Create -> {
-                                                    if(createNavController != null){
-                                                        createNavController!!.popBackStack()
+                                                    Screen.Create -> {
+                                                        if (createNavController != null) {
+                                                            createNavController!!.popBackStack()
+                                                        }
                                                     }
-                                                }
-                                                Screen.Feedback -> {
-                                                    if(feedbackNavController != null){
-                                                        feedbackNavController!!.popBackStack()
+                                                    Screen.Feedback -> {
+                                                        if (feedbackNavController != null) {
+                                                            feedbackNavController!!.popBackStack()
+                                                        }
                                                     }
-                                                }
-                                                Screen.Account -> {
-                                                    if(accountNavController != null){
-                                                        accountNavController!!.popBackStack()
+                                                    Screen.Account -> {
+                                                        if (accountNavController != null) {
+                                                            accountNavController!!.popBackStack()
+                                                        }
                                                     }
+                                                    else -> {}
                                                 }
-                                                else -> {}
                                             }
-                                        }
 
-                                        currentTab = item
-                                        /*navController.navigate(item.screen_route) {
+                                            currentTab = item
+                                            /*navController.navigate(item.screen_route) {
                                             navController.graph.startDestinationRoute?.let { screen_route ->
                                                 popUpTo(item.screen_route) {
                                                     saveState = true
@@ -374,9 +395,10 @@ fun EunoiaApp(
                                             launchSingleTop = true
                                             restoreState = true
                                         }*/
-                                    },
-                                    modifier = Modifier.size(50.dp)
-                                )
+                                        },
+                                        modifier = Modifier.size(50.dp)
+                                    )
+                                }
                             }
                         }
                     }

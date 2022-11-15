@@ -1,6 +1,12 @@
 package com.example.eunoia.utils
 
+import android.content.Context
+import android.media.MediaMetadataRetriever
+import android.net.Uri
+import android.util.Log
 import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
+
+private const val TAG = "Utils"
 
 fun formatMilliSecond(milliseconds: Long): String{
     var finalTimerString = ""
@@ -58,4 +64,25 @@ fun displayRoutineNameForBottomSheet(userRoutineRelationship: UserRoutineRelatio
         }
     }
     return goodDisplayName
+}
+
+fun getRandomString(length: Int) : String {
+    Log.i(TAG, "Getting random String")
+    val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+    return (1..length)
+        .map { allowedChars.random() }
+        .joinToString("")
+}
+
+
+
+fun retrieveUriDuration(
+    pathStr: String,
+    context: Context
+): Int {
+    val uri = Uri.parse(pathStr)
+    val mmr = MediaMetadataRetriever()
+    mmr.setDataSource(context, uri)
+    val durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+    return durationStr!!.toInt()
 }

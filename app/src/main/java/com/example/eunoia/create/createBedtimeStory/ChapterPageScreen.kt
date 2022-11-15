@@ -1,5 +1,7 @@
 package com.example.eunoia.create.createBedtimeStory
 
+import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.CountDownTimer
@@ -31,17 +33,22 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.BedtimeStoryChapterBackend
 import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.bedtimeStory.bedtimeStoryActivityUris
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.lifecycle.CustomLifecycleEventListener
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
+import com.example.eunoia.ui.bottomSheets.recordAudio.recordingFile
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.getRandomString
+import com.example.eunoia.utils.retrieveUriDuration
 import com.example.eunoia.viewModels.PageViewModel
 import kotlinx.coroutines.CoroutineScope
+import java.io.File
 
 var pageRecordingNames = mutableListOf<MutableState<String>>()
 var pageRecordingS3Keys = mutableListOf<MutableState<String>>()
@@ -57,6 +64,7 @@ var thisChapterIndex = -1
 var thisPageData: PageData? = null
 var thisChapterData: BedtimeStoryInfoChapterData? = null
 var recordingCDT: CountDownTimer? = null
+var individualCDT: CountDownTimer? = null
 
 val audioNames = mutableListOf<String>()
 val audioKeysS3 = mutableListOf<String>()
@@ -164,6 +172,7 @@ fun PageScreenUI(
                         generalMediaPlayerService,
                         context
                     )
+                    playingIndex = -1
                 }
                 Lifecycle.Event.ON_PAUSE -> {
                     Log.i(TAG, "ON_PAUSE here")
@@ -172,12 +181,14 @@ fun PageScreenUI(
                     Log.i(TAG, "ON_STOP here $pageData")
                     Log.i(TAG, "ON_STOP here thisPageData $thisPageData")
                     saveRecordingToS3AndDB(thisPageData!!) {
+                        playingIndex = -1
                         viewModel.onStop(generalMediaPlayerService)
                     }
                 }
                 Lifecycle.Event.ON_DESTROY -> {
                     Log.i(TAG, "ON_DESTROY here")
                     saveRecordingToS3AndDB(thisPageData!!) {
+                        playingIndex = -1
                         viewModel.onStop(generalMediaPlayerService)
                     }
                 }
@@ -206,6 +217,7 @@ fun PageScreenUI(
             BackArrowHeader(
                 {
                     saveRecordingToS3AndDB(thisPageData!!) {
+                        playingIndex = -1
                         navController.popBackStack()
                     }
                 },
@@ -309,7 +321,8 @@ fun PageScreenUI(
                                     2 -> {
                                         startPlayingThisPage(
                                             generalMediaPlayerService,
-                                            index
+                                            index,
+                                            //context
                                         )
                                     }
                                     //if next page button is clicked
@@ -437,14 +450,33 @@ fun PageScreenUI(
                                     if(i < pageRecordingFileNames.size){
                                         pageRecordingFileNames[i].value = "empty recording"
                                         recordedPageRecordingAbsolutePath[i].value = ""
-                                        pageRecordingFileColors[i].value = WePeep
+
+                                        if(playingIndex == i) {
+                                            pageRecordingFileColors[i].value = Color.Green
+                                        }else{
+                                            pageRecordingFileColors[i].value = WePeep
+                                        }
                                         pageRecordingFileUris[i].value = "".toUri()
                                         pageRecordingFileMediaPlayers[i].value = MediaPlayer()
                                         audioPageRecordingFileLengthMilliSeconds[i].value = 0L
                                     }else{
                                         pageRecordingFileNames.add(remember{mutableStateOf("empty recording")})
                                         recordedPageRecordingAbsolutePath.add(remember{mutableStateOf("")})
-                                        pageRecordingFileColors.add(remember{mutableStateOf(WePeep)})
+
+                                        if(playingIndex == i) {
+                                            pageRecordingFileColors.add(remember {
+                                                mutableStateOf(
+                                                    Color.Green
+                                                )
+                                            })
+                                        }else{
+                                            pageRecordingFileColors.add(remember {
+                                                mutableStateOf(
+                                                    WePeep
+                                                )
+                                            })
+                                        }
+
                                         pageRecordingFileUris.add(remember{mutableStateOf("".toUri())})
                                         pageRecordingFileMediaPlayers.add(remember{mutableStateOf(MediaPlayer())})
                                         audioPageRecordingFileLengthMilliSeconds.add(remember{mutableStateOf(0L)})
@@ -469,7 +501,13 @@ fun PageScreenUI(
                                             pageRecordingFileNames[i].value = pageData.audioNames[i]
                                             Log.i(TAG, "ff221 pageRecordingFileNames ==> ${pageRecordingFileNames}")
                                             recordedPageRecordingAbsolutePath[i].value = ""
-                                            pageRecordingFileColors[i].value = Peach
+
+                                            if(playingIndex == i) {
+                                                pageRecordingFileColors[i].value = Color.Green
+                                            }else{
+                                                pageRecordingFileColors[i].value = Peach
+                                            }
+
                                             pageRecordingFileMediaPlayers[i].value = MediaPlayer()
                                             audioPageRecordingFileLengthMilliSeconds[i].value = length
                                             //pageRecordingFileUris[i].value = "".toUri()
@@ -497,7 +535,21 @@ fun PageScreenUI(
                                             pageRecordingFileNames.add(remember{mutableStateOf(pageData.audioNames[i])})
                                             Log.i(TAG, "ff221 pageRecordingFileNames ==> $pageRecordingFileNames")
                                             recordedPageRecordingAbsolutePath.add(remember{mutableStateOf("")})
-                                            pageRecordingFileColors.add(remember{mutableStateOf(Peach)})
+
+                                            if(playingIndex == i) {
+                                                pageRecordingFileColors.add(remember {
+                                                    mutableStateOf(
+                                                        Color.Green
+                                                    )
+                                                })
+                                            }else{
+                                                pageRecordingFileColors.add(remember {
+                                                    mutableStateOf(
+                                                        Peach
+                                                    )
+                                                })
+                                            }
+
                                             pageRecordingFileMediaPlayers.add(remember{mutableStateOf(MediaPlayer())})
                                             audioPageRecordingFileLengthMilliSeconds.add(remember{mutableStateOf(length)})
 
@@ -671,11 +723,151 @@ fun stopPlayingThisPage(
             recordingCDT!!.cancel()
             recordingCDT = null
         }
-        playingIndex = 0
+        playingIndex = -1
         activatePageControls(3)
         activatePageControls(2)
     }
 }
+
+/*var remainingCDTTime: Int = 0
+var remainingIndividualCDTTime: Int = 0
+
+fun startPlayingThisPage(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    index: Int,
+    context: Context
+){
+    if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+        if (generalMediaPlayerService.isMediaPlayerPlaying()) {
+            generalMediaPlayerService.pauseMediaPlayer()
+            resetRecordingCDT()
+            resetIndividualCDT()
+            remainingCDTTime = generalMediaPlayerService.getMediaPlayer()!!.duration -
+                    generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+
+            var total = 0
+            for(i in 0..individualPlayingIndex){
+                total += audioPageRecordingFileLengthMilliSeconds[i].value.toInt()
+            }
+            remainingIndividualCDTTime = total - generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+
+            activatePageControls(2)
+            setColorToGreen(individualPlayingIndex)
+        }else{
+            if(pageRecordingNames.isNotEmpty()) {
+                //playIt(generalMediaPlayerService)
+                //combineAudioFiles(context)
+                generalMediaPlayerService.startMediaPlayer()
+                deActivatePageControls(index)
+                deActivatePageControls(index + 1)
+
+                startIndividualCDT(individualPlayingIndex)
+                startBedtimeStoryRecordingCountDownTimer(
+                    remainingCDTTime.toLong(),
+                    generalMediaPlayerService
+                ){
+                    Log.i(TAG, "Done with gmp")
+                    outFile!!.delete()
+                    resetRecordingCDT()
+                    resetIndividualCDT()
+                    resetColors()
+                    generalMediaPlayerService.onDestroy()
+                    activatePageControls(2)
+                    deActivatePageControls(3)
+                    individualPlayingIndex = 0
+                }
+                //startIndividualCDT(individualPlayingIndex)
+                setColorToGreen(individualPlayingIndex)
+            }
+        }
+    }else {
+        if(pageRecordingNames.isNotEmpty()) {
+            processAndPlayUris(
+                generalMediaPlayerService,
+                context,
+                0
+            )
+        }
+    }
+}
+
+var outFile: File? = null
+
+fun resetRecordingFile(
+    context: Context,
+): File {
+    if(outFile != null) {
+        if(outFile!!.length() > 0) {
+            outFile!!.delete()
+        }
+    }
+    outFile = File(context.externalCacheDir!!.absolutePath + "/${getRandomString(5)}_audio.aac")
+    Log.i(TAG, "Output file length = ${outFile!!.length()}")
+    return outFile!!
+}
+
+fun processAndPlayUris(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    context: Context,
+    uriStartIndex: Int
+){
+    resetRecordingFile(context)
+    generalMediaPlayerService.onDestroy()
+    resetRecordingCDT()
+    resetIndividualCDT()
+
+    processIt(uriStartIndex, context){
+        remainingCDTTime = retrieveUriDuration(
+            outFile!!.path,
+            context
+        )
+
+        generalMediaPlayerService.setAudioUri(outFile!!.toUri())
+        val intent = Intent()
+        intent.action = "PLAY"
+        generalMediaPlayerService.onStartCommand(intent, 0, 0)
+
+        deActivatePageControls(2)
+        deActivatePageControls(3)
+
+        individualPlayingIndex = uriStartIndex
+        startIndividualCDT(uriStartIndex)
+
+        Log.i(TAG, "remainingCDTTime utinh = $remainingCDTTime")
+        startBedtimeStoryRecordingCountDownTimer(
+            remainingCDTTime.toLong(),
+            generalMediaPlayerService
+        ){
+            Log.i(TAG, "Done with gmp1")
+            resetRecordingCDT()
+            resetIndividualCDT()
+            resetColors()
+            outFile!!.delete()
+            generalMediaPlayerService.onDestroy()
+            activatePageControls(2)
+            deActivatePageControls(3)
+            individualPlayingIndex = 0
+        }
+        setColorToGreen(individualPlayingIndex)
+    }
+}
+
+fun stopPlayingThisPage(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+){
+    if(generalMediaPlayerService.isMediaPlayerInitialized()){
+        resetAllPageRecordBedtimeStoryUIMediaPlayers()
+        generalMediaPlayerService.onDestroy()
+
+        resetRecordingCDT()
+        resetIndividualCDT()
+        resetColors()
+        individualPlayingIndex = 0
+        outFile!!.delete()
+        activatePageControls(3)
+        activatePageControls(2)
+    }
+}*/
 
 /**
  * Change the appearance of the control button to look activated

@@ -45,6 +45,8 @@ import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.navigation.recordAudioViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.Timer
+import com.example.eunoia.utils.getRandomString
+import com.example.eunoia.utils.retrieveUriDuration
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
@@ -230,14 +232,6 @@ fun resetRecordingFileWithoutDeleting(
 ){
     Log.i(TAG, "resetRecordingFileWithoutDeleting")
     recordingFile = File(context.externalCacheDir!!.absolutePath + "/${getRandomString(5)}_audio.aac")
-}
-
-fun getRandomString(length: Int) : String {
-    Log.i(TAG, "Getting random String")
-    val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-    return (1..length)
-        .map { allowedChars.random() }
-        .joinToString("")
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -643,8 +637,10 @@ fun setPageRecordingsData(
             recordedNames.last().absolutePath.toUri()
         pageRecordingFileNames[selectedPageRecordingIndex].value =
             pageRecordingNames[selectedPageRecordingIndex].value
-        audioPageRecordingFileLengthMilliSeconds[selectedPageRecordingIndex].value =
-            recordedNames.last().length()
+        audioPageRecordingFileLengthMilliSeconds[selectedPageRecordingIndex].value = retrieveUriDuration(
+            recordedNames.last().path,
+            context
+        ).toLong()
         pageRecordingS3Keys[selectedPageRecordingIndex].value = "open"
         resetRecordingFileWithoutDeleting(context)
         Log.i(TAG, "Saving page recording 0")

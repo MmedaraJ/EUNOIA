@@ -24,6 +24,7 @@ import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.amplifyframework.datastore.generated.model.UserBedtimeStoryInfoRelationship
+import com.chaquo.python.Python
 import com.example.eunoia.R
 import com.example.eunoia.backend.BedtimeStoryChapterBackend
 import com.example.eunoia.backend.PageBackend
@@ -209,6 +210,10 @@ fun BedtimeStoryActivityUI(
             ) {
                 when (it) {
                     "pouring\nrain" -> {
+                        val py = Python.getInstance()
+                        val pyObj = py.getModule("myscript")
+                        val obj = pyObj.callAttr("main", "GOLIATH")
+                        Log.i(TAG, "Dangas python = $obj")
                     }
                     "coffee\nhouse" -> {
                     }
@@ -932,8 +937,8 @@ private fun initializeRecordedMediaPlayer(
     index: Int,
     context: Context
 ){
-    updatePreviousAndCurrentBedtimeStoryRelationship(index) {
-    }
+    //TODO user presviously bts insted
+    updatePreviousAndCurrentBedtimeStoryRelationship(index) {}
     resetRecordedCDT()
     generalMediaPlayerService.onDestroy()
     generalMediaPlayerService.setAudioUri(recordedBedtimeStoryActivityUris[index][recordedPlayingIndex])

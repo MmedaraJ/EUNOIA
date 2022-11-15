@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.chaquo.python'
 }
 //apply plugin: 'kotlin-android'
 
@@ -21,6 +22,25 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+
+        python {
+            version "3.8"
+
+            pip {
+                install "pydub"
+                install "tqdm"
+                install "ffmpeg-python"
+                install "ffprobe"
+            }
+        }
+
+        /*python {
+            buildPython "C:/path/to/python.exe"
+        }*/
     }
 
     buildTypes {
@@ -138,4 +158,6 @@ dependencies {
 
     //reorderable
     implementation("org.burnoutcrew.composereorderable:reorderable:0.7.0")
+
+    implementation 'com.arthenica:mobile-ffmpeg-full:4.4'
 }
