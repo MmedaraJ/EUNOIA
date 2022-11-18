@@ -639,20 +639,20 @@ fun processPageDeletion(
 ) {
     deletePage(pageData){
         openConfirmDeletePageDialogBox = false
-        chapterPages[thisChapterIndex].removeIf {
+        chapterPages.removeIf {
             it!!.id == pageData.id
         }
 
         //update chapter names. chapter 2 becomes chapter 1
-        for(i in pageData.pageNumber..chapterPages[thisChapterIndex].size){
-            val newPage = chapterPages[thisChapterIndex][i - 1]!!.copyOfBuilder()
+        for(i in pageData.pageNumber..chapterPages.size){
+            val newPage = chapterPages[i - 1]!!.copyOfBuilder()
                 .displayName("Page $i")
                 .pageNumber(i)
                 .build()
 
             PageBackend.updatePage(newPage){
-                chapterPages[thisChapterIndex][i - 1] = it
-                if(i == chapterPages[thisChapterIndex].size){
+                chapterPages[i - 1] = it
+                if(i == chapterPages.size){
                     navController.popBackStack()
                 }
             }
@@ -728,146 +728,6 @@ fun stopPlayingThisPage(
         activatePageControls(2)
     }
 }
-
-/*var remainingCDTTime: Int = 0
-var remainingIndividualCDTTime: Int = 0
-
-fun startPlayingThisPage(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context
-){
-    if(generalMediaPlayerService.isMediaPlayerInitialized()) {
-        if (generalMediaPlayerService.isMediaPlayerPlaying()) {
-            generalMediaPlayerService.pauseMediaPlayer()
-            resetRecordingCDT()
-            resetIndividualCDT()
-            remainingCDTTime = generalMediaPlayerService.getMediaPlayer()!!.duration -
-                    generalMediaPlayerService.getMediaPlayer()!!.currentPosition
-
-            var total = 0
-            for(i in 0..individualPlayingIndex){
-                total += audioPageRecordingFileLengthMilliSeconds[i].value.toInt()
-            }
-            remainingIndividualCDTTime = total - generalMediaPlayerService.getMediaPlayer()!!.currentPosition
-
-            activatePageControls(2)
-            setColorToGreen(individualPlayingIndex)
-        }else{
-            if(pageRecordingNames.isNotEmpty()) {
-                //playIt(generalMediaPlayerService)
-                //combineAudioFiles(context)
-                generalMediaPlayerService.startMediaPlayer()
-                deActivatePageControls(index)
-                deActivatePageControls(index + 1)
-
-                startIndividualCDT(individualPlayingIndex)
-                startBedtimeStoryRecordingCountDownTimer(
-                    remainingCDTTime.toLong(),
-                    generalMediaPlayerService
-                ){
-                    Log.i(TAG, "Done with gmp")
-                    outFile!!.delete()
-                    resetRecordingCDT()
-                    resetIndividualCDT()
-                    resetColors()
-                    generalMediaPlayerService.onDestroy()
-                    activatePageControls(2)
-                    deActivatePageControls(3)
-                    individualPlayingIndex = 0
-                }
-                //startIndividualCDT(individualPlayingIndex)
-                setColorToGreen(individualPlayingIndex)
-            }
-        }
-    }else {
-        if(pageRecordingNames.isNotEmpty()) {
-            processAndPlayUris(
-                generalMediaPlayerService,
-                context,
-                0
-            )
-        }
-    }
-}
-
-var outFile: File? = null
-
-fun resetRecordingFile(
-    context: Context,
-): File {
-    if(outFile != null) {
-        if(outFile!!.length() > 0) {
-            outFile!!.delete()
-        }
-    }
-    outFile = File(context.externalCacheDir!!.absolutePath + "/${getRandomString(5)}_audio.aac")
-    Log.i(TAG, "Output file length = ${outFile!!.length()}")
-    return outFile!!
-}
-
-fun processAndPlayUris(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    context: Context,
-    uriStartIndex: Int
-){
-    resetRecordingFile(context)
-    generalMediaPlayerService.onDestroy()
-    resetRecordingCDT()
-    resetIndividualCDT()
-
-    processIt(uriStartIndex, context){
-        remainingCDTTime = retrieveUriDuration(
-            outFile!!.path,
-            context
-        )
-
-        generalMediaPlayerService.setAudioUri(outFile!!.toUri())
-        val intent = Intent()
-        intent.action = "PLAY"
-        generalMediaPlayerService.onStartCommand(intent, 0, 0)
-
-        deActivatePageControls(2)
-        deActivatePageControls(3)
-
-        individualPlayingIndex = uriStartIndex
-        startIndividualCDT(uriStartIndex)
-
-        Log.i(TAG, "remainingCDTTime utinh = $remainingCDTTime")
-        startBedtimeStoryRecordingCountDownTimer(
-            remainingCDTTime.toLong(),
-            generalMediaPlayerService
-        ){
-            Log.i(TAG, "Done with gmp1")
-            resetRecordingCDT()
-            resetIndividualCDT()
-            resetColors()
-            outFile!!.delete()
-            generalMediaPlayerService.onDestroy()
-            activatePageControls(2)
-            deActivatePageControls(3)
-            individualPlayingIndex = 0
-        }
-        setColorToGreen(individualPlayingIndex)
-    }
-}
-
-fun stopPlayingThisPage(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-){
-    if(generalMediaPlayerService.isMediaPlayerInitialized()){
-        resetAllPageRecordBedtimeStoryUIMediaPlayers()
-        generalMediaPlayerService.onDestroy()
-
-        resetRecordingCDT()
-        resetIndividualCDT()
-        resetColors()
-        individualPlayingIndex = 0
-        outFile!!.delete()
-        activatePageControls(3)
-        activatePageControls(2)
-    }
-}*/
 
 /**
  * Change the appearance of the control button to look activated
@@ -964,13 +824,6 @@ private fun updateChapterPageData(
 ) {
     Log.i(TAG, "Werieed audio $pageRecordingFileNames")
     if(index < pageRecordingFileNames.size) {
-        if(index > audioNames.indices.last){
-            for(i in audioNames.size until index + 1){
-                audioNames.add("")
-                audioKeysS3.add("")
-                audioLength.add(0)
-            }
-        }
         Log.i(TAG, "index audio $index")
         Log.i(TAG, "pageRecordingFileNames[index].value audio ${pageRecordingFileNames[index].value}")
         audioNames[index] = pageRecordingFileNames[index].value
@@ -992,7 +845,10 @@ private fun updateChapterPageData(
 
         Log.i(TAG, "audioNames.size = ${audioNames.size}")
         Log.i(TAG, "totalNonEmptyBlocks = ${totalNonEmptyBlocks}")
-        if(audioNames.size == totalNonEmptyBlocks){
+        val audioNamesCount = audioNames.count {
+            it != ""
+        }
+        if(audioNamesCount == totalNonEmptyBlocks){
             Log.i(TAG, "Saving page recording 3")
             completed(true)
         }
@@ -1026,6 +882,11 @@ fun saveRecordingToS3AndDB(
     var index = -1
 
     if(pageRecordingFileNames.size > 0) {
+        for(name in pageRecordingFileNames){
+            audioNames.add("")
+            audioKeysS3.add("")
+            audioLength.add(0)
+        }
         for (i in pageRecordingFileNames.indices) {
             Log.i(TAG, "dd pageRecordingFileNames[i].value ==> ${pageRecordingFileNames[i].value}")
             if (pageRecordingFileNames[i].value != "empty recording") {

@@ -87,7 +87,6 @@ object PageBackend {
                                 }
                             }
                             mainScope.launch {
-                                //val mutableResult = result.toMutableList()
                                 result.sortBy {
                                     it.pageNumber
                                 }

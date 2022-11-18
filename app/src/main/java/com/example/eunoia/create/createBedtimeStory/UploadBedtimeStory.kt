@@ -195,7 +195,7 @@ fun createBedtimeStoryFromUpload(
                 key,
                 bedtimeStoryIcon,
                 audioFileLengthMilliSecondsBedtimeStory.value,
-                false,
+                false, 
                 tags,
                 BedtimeStoryAudioSource.UPLOADED,
                 BedtimeStoryApprovalStatus.PENDING,
@@ -237,7 +237,6 @@ fun recordBedtimeStoryCreatedViaUploadPinpointEvent(bedtimeStoryData: BedtimeSto
 fun resetAllBedtimeStoryCreationObjects(){
     resetNameBedtimeStoryVariables()
     resetIncompleteBedtimeStoriesVariables()
-    clearPagesList()
     clearPageRecordingsList()
     resetRecordBedtimeStoryVariables()
     clearBedtimeStoryChaptersList()

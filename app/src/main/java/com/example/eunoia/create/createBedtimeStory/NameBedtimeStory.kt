@@ -63,7 +63,6 @@ fun NameBedtimeStoryUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    clearPagesList()
     clearBedtimeStoryChaptersList()
     clearPageRecordingsList()
     SetupAlertDialogs()
@@ -510,14 +509,16 @@ fun NameBedtimeStoryUI(
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ){
-            ClickableNormalText(
-                text = "Complete another bedtime story",
-                color = Black,
-                12,
-                0,
-                0
-            ) {
-                navController.navigate(Screen.IncompleteBedtimeStories.screen_route)
+            if(numberOfIncompleteBedtimeStories > 0) {
+                ClickableNormalText(
+                    text = "Complete another bedtime story",
+                    color = Black,
+                    12,
+                    0,
+                    0
+                ) {
+                    navController.navigate(Screen.IncompleteBedtimeStories.screen_route)
+                }
             }
         }
         Column(

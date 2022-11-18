@@ -63,11 +63,9 @@ object BedtimeStoryChapterBackend {
                                 }
                             }
                             mainScope.launch {
-                                //val mutableResult = result.toMutableList()
                                 result.sortBy {
                                     it.chapterNumber
                                 }
-                                Log.i(TAG, "Result sorted = $result")
                                 completed(result)
                             }
                         }

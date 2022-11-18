@@ -37,7 +37,7 @@ import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-var chapterPages = mutableListOf<MutableList<PageData?>>()
+var chapterPages = mutableListOf<PageData?>()
 private var TAG = "Chapter Pages"
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -50,32 +50,23 @@ fun BedtimeStoryChapterScreenUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    if(chapterIndex >= chapterPages.size) {
-        for (i in chapterPages.size..chapterIndex) {
-            chapterPages.add(mutableListOf())
-        }
-    }
-
-    chapterPages[chapterIndex].clear()
     var numberOfPages by rememberSaveable { mutableStateOf(0) }
 
     PageBackend.queryPageBasedOnChapter(bedtimeStoryChapterData) {
-        //chapterPages[chapterIndex].clear()
+        chapterPages.clear()
         Log.i(TAG, "Received chpter pages the third time ${it.size}")
-        val itMutable = it.toMutableList()
-        itMutable.sortBy { pageList ->
-            pageList.pageNumber
+        it.toMutableList().sortedBy { pageData ->
+            pageData.pageNumber
         }
-        for (i in itMutable.indices) {
-            chapterPages[chapterIndex].add(itMutable[i])
+        for (page in it) {
+            chapterPages.add(page)
         }
-        Log.i(TAG, "chapterPages[chapterIndex].size ${chapterPages[chapterIndex].size}")
-        numberOfPages = 0
-        numberOfPages = chapterPages[chapterIndex].size
+        Log.i(TAG, "chapterPages.size ${chapterPages.size}")
+        numberOfPages = chapterPages.size
     }
 
     SetUpConfirmDeleteChapterDialogBoxUI(
-        chapterPages[chapterIndex],
+        chapterPages,
         bedtimeStoryChapterData,
         navController
     )
@@ -85,7 +76,6 @@ fun BedtimeStoryChapterScreenUI(
         modifier = Modifier
             .padding(horizontal = 16.dp),
     ) {
-
         val (
             header,
             title,
@@ -177,15 +167,15 @@ fun BedtimeStoryChapterScreenUI(
                 Log.i(TAG, "Chapter id isz ${bedtimeStoryChapterData.id}")
                 val page = PageObject.Page(
                     UUID.randomUUID().toString(),
-                    "Page ${chapterPages[chapterIndex].size + 1}",
-                    chapterPages[chapterIndex].size + 1,
+                    "Page ${chapterPages.size + 1}",
+                    chapterPages.size + 1,
                     listOf(),
                     listOf(),
                     listOf(),
                     bedtimeStoryChapterData.id
                 )
                 PageBackend.createPage(page){
-                    chapterPages[chapterIndex].add(it)
+                    chapterPages.add(it)
                     numberOfPages ++
                 }
                 Thread.sleep(1_000)
@@ -220,12 +210,12 @@ fun BedtimeStoryChapterScreenUI(
                         .fillMaxWidth()
                 ) {
                     if(numberOfPages > 0){
-                        for(i in chapterPages[chapterIndex].indices){
-                            Log.i(TAG, "Page index before send is ${chapterPages[chapterIndex][i]!!.pageNumber}")
+                        for(i in chapterPages.indices){
+                            Log.i(TAG, "Page index before send is ${chapterPages[i]!!.pageNumber}")
                             PageBlock(
                                 navController,
-                                chapterPages[chapterIndex][i]!!,
-                                chapterPages[chapterIndex][i]!!.pageNumber - 1,
+                                chapterPages[i]!!,
+                                chapterPages[i]!!.pageNumber - 1,
                                 bedtimeStoryChapterData,
                                 chapterIndex
                             )
@@ -320,11 +310,11 @@ fun updateChapterIndexList(
     chapterIndex: Int,
 ){
     if(chapterIndex < chapterPages.size) {
-        for (i in chapterPages[chapterIndex].indices) {
-            if (chapterPages[chapterIndex][i]!!.id == newPage.id) {
-                Log.i(TAG, "Old page ==> ${chapterPages[chapterIndex][i]!!}")
-                chapterPages[chapterIndex][i] = newPage
-                Log.i(TAG, "new page ==> ${chapterPages[chapterIndex][i]!!}")
+        for (i in chapterPages.indices) {
+            if (chapterPages[i]!!.id == newPage.id) {
+                Log.i(TAG, "Old page ==> ${chapterPages[i]!!}")
+                chapterPages[i] = newPage
+                Log.i(TAG, "new page ==> ${chapterPages[i]!!}")
                 break
             }
         }
@@ -334,11 +324,7 @@ fun updateChapterIndexList(
 fun getChapterPageSize(
     chapterIndex: Int,
 ): Int{
-    return chapterPages[chapterIndex].size
-}
-
-fun clearPagesList(){
-    chapterPages.clear()
+    return chapterPages.size
 }
 
 fun navigateToPageScreen(

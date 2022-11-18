@@ -21,16 +21,12 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.amazonaws.util.DateUtils
 import com.amplifyframework.core.model.temporal.Temporal
-import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.amplifyframework.datastore.generated.model.UserBedtimeStoryInfoRelationship
 import com.chaquo.python.Python
 import com.example.eunoia.R
-import com.example.eunoia.backend.BedtimeStoryChapterBackend
-import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
-import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.home.*
 import com.example.eunoia.dashboard.home.BedtimeStoryForRoutine.updateRecentlyPlayedUserBedtimeStoryRelationshipWithUserBedtimeStoryRelationship
@@ -42,13 +38,13 @@ import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
-import com.example.eunoia.ui.bottomSheets.bedtimeStory.activateBedtimeStoryGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.bedtimeStory.deActivateBedtimeStoryGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.screens.Screen
+import com.example.eunoia.utils.timerFormatMS
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
@@ -56,26 +52,14 @@ private const val TAG = "Bedtime Story Activity"
 var bedtimeStoryActivityUris = mutableListOf<MutableState<Uri>?>()
 var bedtimeStoryActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
 
-/**
- * List = lengths
- * List = lengthTotals
- * List = s3Keys
- * List = uris
- */
-var recordedBedtimeStoryActivityLengths = mutableListOf<MutableList<Int>>()
-var recordedBedtimeStoryActivityLengthTotals = mutableListOf<MutableList<Int>>()
-var recordedBedtimeStoryActivityS3Keys = mutableListOf<MutableList<String>>()
-var recordedBedtimeStoryActivityUris = mutableListOf<MutableList<Uri>>()
-var recordedBedtimeStoryActivityChapters = mutableListOf<MutableList<Int>>()
-var recordedBedtimeStoryActivityPages = mutableListOf<MutableList<Int>>()
-
-private var recordedCDT: CountDownTimer? = null
-private var recordedPlayingIndex by mutableStateOf(0)
+private var CDT: CountDownTimer? = null
 private var remainingPlayTime by mutableStateOf(0)
 
 private const val START_BEDTIME_STORY = "start"
 private const val PAUSE_BEDTIME_STORY = "pause"
 private const val WAIT_FOR_BEDTIME_STORY = "wait"
+
+private var bedtimeStoryIndex = -1
 
 private val allElements = listOf(
     "pouring\nrain",
@@ -137,12 +121,6 @@ fun BedtimeStoryActivityUI(
                 for (i in userBedtimeStoryRelationship.indices) {
                     bedtimeStoryActivityUris.add(mutableStateOf("".toUri()))
                     bedtimeStoryActivityPlayButtonTexts.add(mutableStateOf(START_BEDTIME_STORY))
-                    recordedBedtimeStoryActivityLengths.add(mutableListOf())
-                    recordedBedtimeStoryActivityLengthTotals.add(mutableListOf())
-                    recordedBedtimeStoryActivityS3Keys.add(mutableListOf())
-                    recordedBedtimeStoryActivityUris.add(mutableListOf())
-                    recordedBedtimeStoryActivityChapters.add(mutableListOf())
-                    recordedBedtimeStoryActivityPages.add(mutableListOf())
                 }
             }
             globalViewModel_!!.currentUsersBedtimeStoryRelationships = userBedtimeStoryRelationship.toMutableList()
@@ -313,8 +291,6 @@ fun BedtimeStoryActivityUI(
     }
 }
 
-private var bedtimeStoryIndex = -1
-
 @Composable
 private fun SetUpRoutineCurrentlyPlayingAlertDialog(
     soundMediaPlayerService: SoundMediaPlayerService,
@@ -357,25 +333,12 @@ private fun startBedtimeStoryConfirmed(
     )
     resetPlayButtonTextsIfNecessary(bedtimeStoryIndex)
 
-    if(
-        globalViewModel_!!.currentUsersBedtimeStoryRelationships!![bedtimeStoryIndex]!!
-            .userBedtimeStoryInfoRelationshipBedtimeStoryInfo.audioSource == BedtimeStoryAudioSource.UPLOADED
-    ) {
-        recordedPlayingIndex = 0
-        playOrPauseUploadedMediaPlayerAccordingly(
-            generalMediaPlayerService,
-            soundMediaPlayerService,
-            bedtimeStoryIndex,
-            context
-        )
-    }else{
-        playOrPauseRecordedMediaPlayerAccordingly(
-            generalMediaPlayerService,
-            soundMediaPlayerService,
-            bedtimeStoryIndex,
-            context
-        )
-    }
+    playOrPauseBedtimeStoryAccordingly(
+        generalMediaPlayerService,
+        soundMediaPlayerService,
+        bedtimeStoryIndex,
+        context
+    )
 
     openRoutineIsCurrentlyPlayingDialogBox = false
 }
@@ -415,7 +378,7 @@ private fun setBedtimeStoryActivityPlayButtonTextsCorrectly(i: Int) {
     }
 }
 
-private fun playOrPauseUploadedMediaPlayerAccordingly(
+private fun playOrPauseBedtimeStoryAccordingly(
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
     index: Int,
@@ -436,147 +399,6 @@ private fun playOrPauseUploadedMediaPlayerAccordingly(
     }
 }
 
-private fun playOrPauseRecordedMediaPlayerAccordingly(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    soundMediaPlayerService: SoundMediaPlayerService,
-    index: Int,
-    context: Context
-) {
-    if(bedtimeStoryActivityPlayButtonTexts[index]!!.value == START_BEDTIME_STORY){
-        bedtimeStoryActivityPlayButtonTexts[index]!!.value = WAIT_FOR_BEDTIME_STORY
-        if(recordedBedtimeStoryActivityUris[index].isEmpty()) {
-            retrieveAllRecordedBedtimeStoryInfo(index){
-                recordedPlayingIndex = 0
-                startRecordedBedtimeStory(
-                    generalMediaPlayerService,
-                    soundMediaPlayerService,
-                    index,
-                    context
-                )
-            }
-        }else{
-            startRecordedBedtimeStory(
-                generalMediaPlayerService,
-                soundMediaPlayerService,
-                index,
-                context
-            )
-        }
-    }else if(
-        bedtimeStoryActivityPlayButtonTexts[index]!!.value == PAUSE_BEDTIME_STORY ||
-        bedtimeStoryActivityPlayButtonTexts[index]!!.value == WAIT_FOR_BEDTIME_STORY
-    ){
-        pauseBedtimeStory(generalMediaPlayerService, index)
-    }
-}
-
-fun retrieveAllRecordedBedtimeStoryInfo(
-    index: Int,
-    completed: () -> Unit
-) {
-    BedtimeStoryChapterBackend.queryBedtimeStoryChapterBasedOnBedtimeStory(
-        globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo
-    ){ chapters ->
-        if(chapters.isNotEmpty()){
-            var totalLength = 0
-            var totalIndexes = 0
-            Log.i(TAG, "chapters list is $chapters")
-            chapters.sortBy{
-                it.chapterNumber
-            }
-            chapters.forEachIndexed{ chapterIndex, chapter ->
-                PageBackend.queryPageBasedOnChapter(
-                    chapter
-                ){ pages ->
-                    if(pages.isNotEmpty()) {
-                        pages.sortBy {
-                            it.pageNumber
-                        }
-                        Log.i(TAG, "pages list is $pages")
-                        pages.forEachIndexed { pageIndex, page ->
-                            totalIndexes += page.audioNames.size
-                            page.audioNames.forEachIndexed { i, _ ->
-                                totalLength += page.audioLength[i]
-                                recordedBedtimeStoryActivityLengths[index].add(page.audioLength[i])
-                                recordedBedtimeStoryActivityLengthTotals[index].add(totalLength)
-                                recordedBedtimeStoryActivityS3Keys[index].add(page.audioKeysS3[i])
-                                recordedBedtimeStoryActivityChapters[index].add(chapter.chapterNumber)
-                                recordedBedtimeStoryActivityPages[index].add(page.pageNumber)
-                                recordedBedtimeStoryActivityUris[index].add("".toUri())
-
-                                Log.i(TAG, "page.audioKeysS3[i] = ${page.audioKeysS3[i]}")
-                                Log.i(TAG, "i  ez = $i")
-
-                                retrieveCorrespondingUri(
-                                    page.audioKeysS3[i],
-                                    recordedBedtimeStoryActivityUris[index].size - 1,
-                                    index
-                                ){
-                                    completed()
-                                }
-                            }
-                        }
-                    }else{
-                        completed()
-                    }
-                }
-            }
-        }else{
-            completed()
-        }
-    }
-}
-
-fun retrieveCorrespondingUri(
-    s3Key: String?,
-    i: Int,
-    index: Int,
-    completed: () -> Unit
-) {
-    SoundBackend.retrieveAudio(
-        s3Key!!,
-        globalViewModel_!!.currentUser!!.amplifyAuthUserId
-    ) {
-        if (it != null) {
-            recordedBedtimeStoryActivityUris[index][i] = it
-            Log.i(
-                TAG,
-                "recordedBedtimeStoryActivityUris[index] = ${recordedBedtimeStoryActivityUris[index]}"
-            )
-
-            if (
-                !recordedBedtimeStoryActivityUris[index].contains("".toUri())
-            ) {
-                Log.i(
-                    TAG,
-                    "recordedBedtimeStoryActivityLengths[index] = ${recordedBedtimeStoryActivityLengths[index]}"
-                )
-                Log.i(
-                    TAG,
-                    "recordedBedtimeStoryActivityLengthTotals[index] = ${recordedBedtimeStoryActivityLengthTotals[index]}"
-                )
-                Log.i(
-                    TAG,
-                    "recordedBedtimeStoryActivityS3Keys[index] = ${recordedBedtimeStoryActivityS3Keys[index]}"
-                )
-                Log.i(
-                    TAG,
-                    "recordedBedtimeStoryActivityChapters[index] = ${recordedBedtimeStoryActivityChapters[index]}"
-                )
-                Log.i(
-                    TAG,
-                    "recordedBedtimeStoryActivityPages[index] = ${recordedBedtimeStoryActivityPages[index]}"
-                )
-                Log.i(
-                    TAG,
-                    "recordedBedtimeStoryActivityUris[index] = ${recordedBedtimeStoryActivityUris[index]}"
-                )
-                completed()
-            }
-        }
-    }
-}
-
 private fun pauseBedtimeStory(
     generalMediaPlayerService: GeneralMediaPlayerService,
     index: Int
@@ -591,14 +413,8 @@ private fun pauseBedtimeStory(
             bedtimeStoryActivityPlayButtonTexts[index]!!.value = START_BEDTIME_STORY
             globalViewModel_!!.bedtimeStoryTimer.pause()
             globalViewModel_!!.generalPlaytimeTimer.pause()
+            resetCDT()
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
-            if(
-                globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!
-                    .userBedtimeStoryInfoRelationshipBedtimeStoryInfo.audioSource ==
-                BedtimeStoryAudioSource.RECORDED
-            ){
-                resetRecordedCDT()
-            }
             deActivateBedtimeStoryGlobalControlButton(2)
         }
     }
@@ -616,8 +432,15 @@ private fun startBedtimeStory(
             globalViewModel_!!.currentSelfLovePlaying == null &&
             globalViewModel_!!.currentPrayerPlaying == null
         ){
+            remainingPlayTime =
+                globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.fullPlayTime -
+                    generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+            Log.i(TAG, "remainingPlayTime = $remainingPlayTime")
             generalMediaPlayerService.startMediaPlayer()
-            afterPlayingBedtimeStory(index)
+            afterPlayingBedtimeStory(
+                index,
+                generalMediaPlayerService
+            )
         }else{
             initializeMediaPlayer(
                 generalMediaPlayerService,
@@ -629,62 +452,99 @@ private fun startBedtimeStory(
     }
 }
 
-private fun startRecordedBedtimeStory(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    soundMediaPlayerService: SoundMediaPlayerService,
+private fun afterPlayingBedtimeStory(
     index: Int,
-    context: Context
+    generalMediaPlayerService: GeneralMediaPlayerService
+){
+    globalViewModel_!!.bedtimeStoryTimer.start()
+    globalViewModel_!!.generalPlaytimeTimer.start()
+    startCDT(
+        index,
+        generalMediaPlayerService
+    )
+    setGlobalPropertiesAfterPlayingBedtimeStory(index)
+}
+
+private fun startCDT(
+    index: Int,
+    generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(recordedBedtimeStoryActivityUris[index].isNotEmpty()){
-        if(
-            generalMediaPlayerService.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentSelfLovePlaying == null &&
-            globalViewModel_!!.currentPrayerPlaying == null
-        ){
-            generalMediaPlayerService.startMediaPlayer()
-            remainingPlayTime = recordedBedtimeStoryActivityLengths[index][recordedPlayingIndex] -
-                    generalMediaPlayerService.getMediaPlayer()!!.currentPosition
-            Log.i(TAG, "Remainning playtime is $remainingPlayTime")
-            startRecordedCDT(
-                generalMediaPlayerService,
-                soundMediaPlayerService,
-                index,
-                context
-            )
-            afterPlayingRecordedBedtimeStory(
-                generalMediaPlayerService,
-                soundMediaPlayerService,
-                index,
-                context
-            )
-        }else{
-            initializeRecordedMediaPlayer(
-                generalMediaPlayerService,
-                soundMediaPlayerService,
-                index,
-                context
-            )
-        }
-    }else{
+    startTheCDT(
+        remainingPlayTime.toLong(),
+        index,
+        generalMediaPlayerService
+    ){
+        resetBedtimeStoryGlobally(
+            generalMediaPlayerService,
+            index
+        )
         bedtimeStoryActivityPlayButtonTexts[index]!!.value = START_BEDTIME_STORY
     }
 }
 
-private fun afterPlayingBedtimeStory(index: Int){
-    globalViewModel_!!.bedtimeStoryTimer.start()
-    globalViewModel_!!.generalPlaytimeTimer.start()
-    setGlobalPropertiesAfterPlayingBedtimeStory(index)
+fun resetBedtimeStoryGlobally(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    index: Int
+) {
+    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
+        if (
+            globalViewModel_!!.currentBedtimeStoryPlaying!!.id ==
+            globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.id
+        ) {
+            if (
+                generalMediaPlayerService.isMediaPlayerInitialized() &&
+                globalViewModel_!!.currentSelfLovePlaying == null &&
+                globalViewModel_!!.currentPrayerPlaying == null
+            ) {
+                resetBothLocalAndGlobalControlButtonsAfterReset()
+                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
+                globalViewModel_!!.bedtimeStoryCircularSliderAngle = 0f
+                globalViewModel_!!.bedtimeStoryTimer.stop()
+                globalViewModel_!!.bedtimeStoryTimeDisplay = timerFormatMS(
+                    globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!
+                        .userBedtimeStoryInfoRelationshipBedtimeStoryInfo.fullPlayTime.toLong()
+                )
+                globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+                generalMediaPlayerService.onDestroy()
+            }
+        }
+    }
 }
 
-private fun afterPlayingRecordedBedtimeStory(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    soundMediaPlayerService: SoundMediaPlayerService,
+fun startTheCDT(
+    time: Long,
     index: Int,
-    context: Context
-){
-    globalViewModel_!!.bedtimeStoryTimer.start()
-    globalViewModel_!!.generalPlaytimeTimer.start()
-    setGlobalPropertiesAfterPlayingBedtimeStory(index)
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    completed: () -> Unit
+) {
+    if (CDT == null) {
+        CDT = object : CountDownTimer(time, 1) {
+            override fun onTick(millisUntilFinished: Long) {
+                if(generalMediaPlayerService.isMediaPlayerInitialized()){
+                    if(
+                        generalMediaPlayerService.getMediaPlayer()!!.currentPosition >=
+                        generalMediaPlayerService.getMediaPlayer()!!.duration
+                    ){
+                        Log.i(TAG, "Done with CDT")
+                        resetBedtimeStoryGlobally(
+                            generalMediaPlayerService,
+                            index
+                        )
+                    }
+                }
+
+                if(millisUntilFinished % 10000 == 0L) {
+                    Log.i(TAG, "CDT: $millisUntilFinished")
+                }
+            }
+
+            override fun onFinish() {
+                Log.i(TAG, "CDT stopped")
+                completed()
+            }
+        }
+    }
+    CDT!!.start()
 }
 
 private fun setGlobalPropertiesAfterPlayingBedtimeStory(index: Int){
@@ -723,10 +583,7 @@ private fun resetGeneralMediaPlayerServiceIfNecessary(
     if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
         if (globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.id != globalViewModel_!!.currentBedtimeStoryPlaying!!.id) {
             generalMediaPlayerService.onDestroy()
-            recordedPlayingIndex = 0
         }
-    }else{
-        recordedPlayingIndex = 0
     }
 }
 
@@ -765,203 +622,27 @@ private fun initializeMediaPlayer(
     context: Context
 ){
     updatePreviousAndCurrentBedtimeStoryRelationship(index) {
-        resetRecordedCDT()
-        recordedPlayingIndex = 0
-        generalMediaPlayerService.onDestroy()
-        generalMediaPlayerService.setAudioUri(bedtimeStoryActivityUris[index]!!.value)
-        val intent = Intent()
-        intent.action = "PLAY"
-        generalMediaPlayerService.onStartCommand(intent, 0, 0)
-        globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.fullPlayTime.toLong())
-        resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
     }
-    afterPlayingBedtimeStory(index)
-}
-
-private fun resetRecordedCDT(){
-    if(recordedCDT != null){
-        recordedCDT!!.cancel()
-        recordedCDT = null
-    }
-}
-
-/**
- * Start count down timer
- *
- * @param time duration of the count down timer
- * @param completed runs when count down timer is finished
- */
-private fun startBedtimeStoryRecordedCountDownTimer(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    soundMediaPlayerService: SoundMediaPlayerService,
-    index: Int,
-    context: Context,
-    time: Long,
-    completed: () -> Unit
-) {
-    if (recordedCDT == null) {
-        recordedCDT = object : CountDownTimer(time, 1) {
-            override fun onTick(millisUntilFinished: Long) {
-                if(generalMediaPlayerService.isMediaPlayerInitialized()){
-                    if(generalMediaPlayerService.isMediaPlayerPlaying()){
-                        val currPos = generalMediaPlayerService.getMediaPlayer()!!.currentPosition
-                        if(currPos == generalMediaPlayerService.getMediaPlayer()!!.duration){
-                            Log.i(TAG, "Something fishy. 1. millisUntil finihsed = $millisUntilFinished")
-                            Log.i(TAG, "Something fishy. 2. currPos = ${generalMediaPlayerService.getMediaPlayer()!!.currentPosition}")
-                            Log.i(TAG, "Something fishy. 3. duration = ${generalMediaPlayerService.getMediaPlayer()!!.duration}")
-
-                            recordedPlayingIndex += 1
-                            resetRecordingCDT()
-                            generalMediaPlayerService.onDestroy()
-
-                            if(
-                                recordedPlayingIndex < recordedBedtimeStoryActivityUris[index].size
-                            ){
-                                if(recordedBedtimeStoryActivityUris[index][recordedPlayingIndex] == "".toUri()){
-                                    recordedPlayingIndex += 1
-                                    remainingPlayTime = if(recordedPlayingIndex < recordedBedtimeStoryActivityUris[index].size) {
-                                        recordedBedtimeStoryActivityLengths[index][recordedPlayingIndex]
-                                    }else{
-                                        0
-                                    }
-                                    startRecordedCDT(
-                                        generalMediaPlayerService,
-                                        soundMediaPlayerService,
-                                        index,
-                                        context
-                                    )
-                                }else {
-                                    startRecordedBedtimeStory(
-                                        generalMediaPlayerService,
-                                        soundMediaPlayerService,
-                                        index,
-                                        context
-                                    )
-                                }
-                            }else{
-                                recordedPlayingIndex = 0
-                                generalMediaPlayerService.onDestroy()
-                                resetRecordingCDT()
-                                bedtimeStoryActivityPlayButtonTexts[index]!!.value = START_BEDTIME_STORY
-                                activateBedtimeStoryGlobalControlButton(2)
-                                deActivateBedtimeStoryGlobalControlButton(0)
-                            }
-                        }
-                    }
-                }
-                if(millisUntilFinished.toInt() % 10000 == 0) {
-                    Log.i(TAG, "Recorded bts timer up: $millisUntilFinished")
-                }
-            }
-
-            override fun onFinish() {
-                completed()
-                Log.i(TAG, "Timer stopped recorded bts")
-            }
-        }
-    }
-    recordedCDT!!.start()
-}
-
-private fun startRecordedCDT(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    soundMediaPlayerService: SoundMediaPlayerService,
-    index: Int,
-    context: Context
-) {
-    Log.i(TAG, "about to start cdt $remainingPlayTime")
-    if(
-        recordedPlayingIndex < recordedBedtimeStoryActivityUris[index].size
-    ){
-        startBedtimeStoryRecordedCountDownTimer(
-            generalMediaPlayerService,
-            soundMediaPlayerService,
-            index,
-            context,
-            remainingPlayTime.toLong()
-        ) {
-            Log.i(TAG, "DONE cdt")
-            //after a uri is done playing, play the next one
-            recordedPlayingIndex += 1
-
-            resetRecordingCDT()
-            generalMediaPlayerService.onDestroy()
-
-            //if all uris for this bedtime story have been played, stop media player
-            if(
-                recordedPlayingIndex < recordedBedtimeStoryActivityUris[index].size
-            ){
-                if(recordedBedtimeStoryActivityUris[index][recordedPlayingIndex] == "".toUri()){
-                    recordedPlayingIndex += 1
-                    remainingPlayTime = if(recordedPlayingIndex < recordedBedtimeStoryActivityUris[index].size) {
-                        recordedBedtimeStoryActivityLengths[index][recordedPlayingIndex]
-                    }else{
-                        0
-                    }
-                    startRecordedCDT(
-                        generalMediaPlayerService,
-                        soundMediaPlayerService,
-                        index,
-                        context
-                    )
-                }else {
-                    startRecordedBedtimeStory(
-                        generalMediaPlayerService,
-                        soundMediaPlayerService,
-                        index,
-                        context
-                    )
-                }
-            }else{
-                recordedPlayingIndex = 0
-                generalMediaPlayerService.onDestroy()
-                resetRecordingCDT()
-                bedtimeStoryActivityPlayButtonTexts[index]!!.value = START_BEDTIME_STORY
-                activateBedtimeStoryGlobalControlButton(2)
-                deActivateBedtimeStoryGlobalControlButton(0)
-            }
-        }
-    }else{
-        recordedPlayingIndex = 0
-        generalMediaPlayerService.onDestroy()
-        resetRecordingCDT()
-        bedtimeStoryActivityPlayButtonTexts[index]!!.value = START_BEDTIME_STORY
-        activateBedtimeStoryGlobalControlButton(2)
-        deActivateBedtimeStoryGlobalControlButton(0)
-    }
-}
-
-private fun initializeRecordedMediaPlayer(
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    soundMediaPlayerService: SoundMediaPlayerService,
-    index: Int,
-    context: Context
-){
-    //TODO user presviously bts insted
-    updatePreviousAndCurrentBedtimeStoryRelationship(index) {}
-    resetRecordedCDT()
+    resetCDT()
     generalMediaPlayerService.onDestroy()
-    generalMediaPlayerService.setAudioUri(recordedBedtimeStoryActivityUris[index][recordedPlayingIndex])
+    generalMediaPlayerService.setAudioUri(bedtimeStoryActivityUris[index]!!.value)
     val intent = Intent()
     intent.action = "PLAY"
     generalMediaPlayerService.onStartCommand(intent, 0, 0)
-    Log.i(TAG, "remainingPlayTime after initialization is $remainingPlayTime")
-    globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(recordedBedtimeStoryActivityLengthTotals[index].last().toLong())
+    globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.fullPlayTime.toLong())
+    remainingPlayTime = globalViewModel_!!.currentUsersBedtimeStoryRelationships!![index]!!.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.fullPlayTime
     resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
+    afterPlayingBedtimeStory(
+        index,
+        generalMediaPlayerService
+    )
+}
 
-    remainingPlayTime = recordedBedtimeStoryActivityLengths[index][recordedPlayingIndex]
-    startRecordedCDT(
-        generalMediaPlayerService,
-        soundMediaPlayerService,
-        index,
-        context
-    )
-    afterPlayingRecordedBedtimeStory(
-        generalMediaPlayerService,
-        soundMediaPlayerService,
-        index,
-        context
-    )
+private fun resetCDT(){
+    if(CDT != null){
+        CDT!!.cancel()
+        CDT = null
+    }
 }
 
 /**

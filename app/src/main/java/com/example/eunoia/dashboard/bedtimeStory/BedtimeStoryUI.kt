@@ -547,22 +547,15 @@ private fun retrieveBedtimeStoryAudio(
     generalMediaPlayerService: GeneralMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
 ) {
-    if (
-        bedtimeStoryInfoData.audioSource == BedtimeStoryAudioSource.UPLOADED
+    SoundBackend.retrieveAudio(
+        bedtimeStoryInfoData.audioKeyS3,
+        bedtimeStoryInfoData.bedtimeStoryOwner.amplifyAuthUserId
     ) {
-        SoundBackend.retrieveAudio(
-            bedtimeStoryInfoData.audioKeyS3,
-            bedtimeStoryInfoData.bedtimeStoryOwner.amplifyAuthUserId
-        ) {
-            bedtimeStoryUri = it
-            startBedtimeStory(
-                generalMediaPlayerService,
-                bedtimeStoryInfoData,
-            )
-        }
-    } else {
-        //if recorded
-        //get chapter, get pages, get recordings from s3, play them one after the order
+        bedtimeStoryUri = it
+        startBedtimeStory(
+            generalMediaPlayerService,
+            bedtimeStoryInfoData,
+        )
     }
 }
 

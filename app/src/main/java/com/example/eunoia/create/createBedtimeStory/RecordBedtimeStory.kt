@@ -1,6 +1,8 @@
 package com.example.eunoia.create.createBedtimeStory
 
+import android.content.Context
 import android.content.res.Configuration
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -20,17 +22,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.Lifecycle
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryCreationStatus
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
+import com.arthenica.mobileffmpeg.Config
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
+import com.arthenica.mobileffmpeg.FFmpeg
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
 import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.sound.gradientBackground
-import com.example.eunoia.lifecycle.CustomLifecycleEventListener
 import com.example.eunoia.models.BedtimeStoryChapterObject
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -41,12 +46,14 @@ import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.navigation.openConfirmDeleteBedtimeStoryDialogBox
-import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.navigation.openSavedElementDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.getRandomString
+import com.example.eunoia.utils.retrieveUriDuration
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
+import java.io.File
 import java.util.*
 
 var selectedIndex by mutableStateOf(0)
@@ -113,6 +120,8 @@ fun RecordBedtimeStoryUI(
         navController
     )
 
+    SetUpSavedBedtimeStoryDialogBoxUI()
+
     ConstraintLayout(
         modifier = Modifier
             .padding(horizontal = 16.dp),
@@ -173,124 +182,77 @@ fun RecordBedtimeStoryUI(
                 .fillMaxWidth()
         ){
             icons.forEachIndexed { index, icon ->
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .gradientBackground(
-                            listOf(
-                                backgroundControlColor1[index].value,
-                                backgroundControlColor2[index].value
-                            ),
-                            angle = 45f
-                        )
-                        .border(
-                            BorderStroke(
-                                1.dp,
-                                borderControlColors[index].value
-                            ),
-                            RoundedCornerShape(50.dp)
-                        ),
-                    contentAlignment = Alignment.Center
+                if(
+                    index == 0 ||
+                    (index == 1 && numberOfChapters > 0) ||
+                    index == 2
                 ) {
-                    AnImageWithColor(
-                        icon.value,
-                        "icon",
-                        borderControlColors[index].value,
-                        16.dp,
-                        16.dp,
-                        0,
-                        0
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .gradientBackground(
+                                listOf(
+                                    backgroundControlColor1[index].value,
+                                    backgroundControlColor2[index].value
+                                ),
+                                angle = 45f
+                            )
+                            .border(
+                                BorderStroke(
+                                    1.dp,
+                                    borderControlColors[index].value
+                                ),
+                                RoundedCornerShape(50.dp)
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
-                        when(index){
-                            0 -> {
-                                openConfirmDeleteBedtimeStoryDialogBox = true
-                            }
-                            1 -> {
-                                completeBedtimeStory(bedtimeStoryData){ updatedBedtimeStoryData ->
-                                    userBedtimeStories.removeIf {
-                                        it!!.id == updatedBedtimeStoryData.id
+                        AnImageWithColor(
+                            icon.value,
+                            "icon",
+                            borderControlColors[index].value,
+                            16.dp,
+                            16.dp,
+                            0,
+                            0
+                        ) {
+                            when (index) {
+                                0 -> {
+                                    openConfirmDeleteBedtimeStoryDialogBox = true
+                                }
+                                1 -> {
+                                    completeBedtimeStory(
+                                        bedtimeStoryData,
+                                        context
+                                    ) { updatedBedtimeStoryData ->
+                                        userBedtimeStories.removeIf {
+                                            it!!.id == updatedBedtimeStoryData.id
+                                        }
+                                        openSavedElementDialogBox = true
+                                        Thread.sleep(1_000)
+                                        navController.popBackStack()
                                     }
-                                    openSavedElementDialogBox = true
-                                    navController.popBackStack()
                                 }
-                            }
-                            2 -> {
-                                val chapter = BedtimeStoryChapterObject.BedtimeStoryChapter(
-                                    UUID.randomUUID().toString(),
-                                    "Chapter ${bedtimeStoryChapters.size + 1}",
-                                    bedtimeStoryChapters.size + 1,
-                                    BedtimeStoryObject.BedtimeStory.from(bedtimeStoryData),
-                                    bedtimeStoryData.id
-                                )
-                                BedtimeStoryChapterBackend.createBedtimeStoryInfoChapter(chapter){
-                                    bedtimeStoryChapters.add(it)
-                                    numberOfChapters ++
+                                2 -> {
+                                    val chapter = BedtimeStoryChapterObject.BedtimeStoryChapter(
+                                        UUID.randomUUID().toString(),
+                                        "Chapter ${bedtimeStoryChapters.size + 1}",
+                                        bedtimeStoryChapters.size + 1,
+                                        BedtimeStoryObject.BedtimeStory.from(bedtimeStoryData),
+                                        bedtimeStoryData.id
+                                    )
+                                    BedtimeStoryChapterBackend.createBedtimeStoryInfoChapter(chapter) {
+                                        bedtimeStoryChapters.add(it)
+                                        numberOfChapters++
+                                    }
+                                    Thread.sleep(1_000)
                                 }
-                                Thread.sleep(1_000)
                             }
                         }
                     }
                 }
             }
         }
-        /*Column(
-            modifier = Modifier
-                .constrainAs(delete) {
-                    top.linkTo(title.bottom, margin = 32.dp)
-                    start.linkTo(parent.start, margin = 0.dp)
-                }
-                .fillMaxWidth(0.25F)
-        ) {
-            CustomizableButton(
-                text = "delete",
-                height = 35,
-                fontSize = 15,
-                textColor = White,
-                backgroundColor = Black,
-                corner = 50,
-                borderStroke = 0.0,
-                borderColor = Black.copy(alpha = 0F),
-                textType = "morge",
-                maxWidthFraction = 1F
-            ) {
-                openConfirmDeleteBedtimeStoryDialogBox = true
-            }
-        }
-        Column(
-            modifier = Modifier
-                .constrainAs(save1) {
-                    top.linkTo(title.bottom, margin = 32.dp)
-                    end.linkTo(parent.end, margin = 0.dp)
-                }
-                .fillMaxWidth(0.3F)
-        ) {
-            CustomizableButton(
-                text = "new chapter",
-                height = 35,
-                fontSize = 15,
-                textColor = Black,
-                backgroundColor = SwansDown,
-                corner = 50,
-                borderStroke = 0.0,
-                borderColor = SwansDown.copy(alpha = 0F),
-                textType = "morge",
-                maxWidthFraction = 1F
-            ) {
-                val chapter = BedtimeStoryChapterObject.BedtimeStoryChapter(
-                    UUID.randomUUID().toString(),
-                    "Chapter ${bedtimeStoryChapters.size + 1}",
-                    bedtimeStoryChapters.size + 1,
-                    BedtimeStoryObject.BedtimeStory.from(bedtimeStoryData),
-                    bedtimeStoryData.id
-                )
-                BedtimeStoryChapterBackend.createBedtimeStoryInfoChapter(chapter){
-                    bedtimeStoryChapters.add(it)
-                    numberOfChapters ++
-                }
-                Thread.sleep(1_000)
-            }
-        }*/
         Column(
             modifier = Modifier
                 .constrainAs(chapter_column) {
@@ -337,16 +299,162 @@ fun RecordBedtimeStoryUI(
 
 fun completeBedtimeStory(
     bedtimeStoryData: BedtimeStoryInfoData,
+    context: Context,
     completed: (bedtimeStoryData: BedtimeStoryInfoData) -> Unit
 ) {
-    val newBedtimeStory = bedtimeStoryData.copyOfBuilder()
-        .creationStatus(BedtimeStoryCreationStatus.COMPLETED)
-        .build()
+    val outFile = File(context.externalCacheDir!!.absolutePath + "/${getRandomString(5)}_audio.aac")
+    getAllUris(bedtimeStoryData){
+        concatenateAllUris(outFile, context) {
+            val key = "Routine/" +
+                    "BedtimeStories/" +
+                    "${globalViewModel_!!.currentUser!!.username}/" +
+                    "recorded/" +
+                    "${bedtimeStoryData.displayName}_complete/" +
+                    "${bedtimeStoryData.displayName}_audio.aac"
 
-    BedtimeStoryBackend.updateBedtimeStory(newBedtimeStory){
-        completed(it)
+            val fullPlayTime = retrieveUriDuration(
+                outFile.path,
+                context
+            )
+
+            SoundBackend.storeAudio(
+                outFile.absolutePath,
+                key
+            ) { s3Key ->
+                val newBedtimeStory = bedtimeStoryData.copyOfBuilder()
+                    .audioKeyS3(s3Key)
+                    .fullPlayTime(fullPlayTime)
+                    .creationStatus(BedtimeStoryCreationStatus.COMPLETED)
+                    .build()
+
+                BedtimeStoryBackend.updateBedtimeStory(newBedtimeStory) {
+                    completed(it)
+                }
+            }
+        }
     }
 }
+
+fun concatenateAllUris(
+    outFile: File,
+    context: Context,
+    completed: () -> Unit
+) {
+    var inputStr = ""
+    var concatStr = ""
+
+    for(i in allUriTriples.indices){
+        inputStr += "-i ${allUriTriples[i].uri.path} "
+        concatStr += "[$i:a]"
+    }
+
+    Log.i(TAG, "Output file before: 0. ${outFile.length()}")
+
+    val rc = FFmpeg.execute("$inputStr-filter_complex \"${concatStr}concat=n=${allUriTriples.size}:v=0:a=1\" -y ${outFile.absolutePath}")
+
+    when (rc) {
+        RETURN_CODE_SUCCESS -> {
+            Log.i(Config.TAG, "Command execution completed successfully.")
+            val len = retrieveUriDuration(
+                outFile.path,
+                context
+            )
+            Log.i(TAG, "Output file done: 1. $len")
+            completed()
+        }
+        RETURN_CODE_CANCEL -> {
+            Log.i(Config.TAG, "Command execution cancelled by user.")
+        }
+        else -> {
+            Log.i(
+                Config.TAG,
+                String.format("Command execution failed with rc=$rc and the output below.", rc)
+            )
+            Config.printLastCommandOutput(Log.INFO)
+        }
+    }
+}
+
+val allUriTriples = mutableListOf<AllUriTriples>()
+
+fun getAllUris(
+    bedtimeStoryData: BedtimeStoryInfoData,
+    completed: () -> Unit
+) {
+    allUriTriples.clear()
+    BedtimeStoryChapterBackend.queryBedtimeStoryChapterBasedOnBedtimeStory(
+        bedtimeStoryData
+    ){ chapters ->
+        if(chapters.isNotEmpty()){
+            chapters.forEachIndexed{ chapterIndex, chapter ->
+                PageBackend.queryPageBasedOnChapter(
+                    chapter
+                ){ pages ->
+                    if(pages.isNotEmpty()) {
+                        pages.forEachIndexed{ pageIndex, page ->
+                            page.audioKeysS3.forEachIndexed { i, s3Key ->
+                                val triple = AllUriTriples(
+                                    chapterIndex,
+                                    pageIndex,
+                                    "".toUri()
+                                )
+                                allUriTriples.add(triple)
+                                retrieveCorrespondingUri(
+                                    s3Key,
+                                    allUriTriples.size - 1,
+                                ){
+                                    completed()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }else{
+            completed()
+        }
+    }
+}
+
+private fun retrieveCorrespondingUri(
+    s3Key: String?,
+    i: Int,
+    completed: () -> Unit
+) {
+    SoundBackend.retrieveAudio(
+        s3Key!!,
+        globalViewModel_!!.currentUser!!.amplifyAuthUserId
+    ) {
+        if (it != null) {
+            allUriTriples[i].uri = it
+
+            if(
+                allUriTriples.none{ triple ->
+                    triple.uri == "".toUri()
+                }
+            ){
+                allUriTriples.sortWith(
+                    compareBy(
+                        { triple ->
+                            triple.chapterIndex
+                        },
+                        { triple ->
+                            triple.pageIndex
+                        }
+                    )
+                )
+                Log.i(TAG, "All uris seize is = ${allUriTriples.size}")
+                completed()
+            }
+        }
+    }
+}
+
+data class AllUriTriples(
+    var chapterIndex: Int,
+    var pageIndex: Int,
+    var uri: Uri
+)
 
 private fun deleteAllPagesAndChapters(
     bedtimeStoryChapters: MutableList<BedtimeStoryInfoChapterData?>,
@@ -445,7 +553,7 @@ private fun SetUpConfirmDeleteBedtimeStoryDialogBoxUI(
 @Composable
 fun SetUpSavedBedtimeStoryDialogBoxUI(){
     if(openSavedElementDialogBox){
-        AlertDialogBox(text = "Sound Saved. We will send you an email when it is approved")
+        AlertDialogBox(text = "Bedtime story saved. We will send you an email when it is approved")
     }
 }
 
