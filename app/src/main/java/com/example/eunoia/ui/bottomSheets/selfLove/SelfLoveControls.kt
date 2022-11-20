@@ -27,6 +27,7 @@ import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.SelfLoveData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.PrayerForRoutine
 import com.example.eunoia.dashboard.home.SelfLoveForRoutine
@@ -402,14 +403,15 @@ private fun afterPlayingSelfLove(){
 
 private fun updatePreviousAndCurrentSelfLoveRelationship(
     selfLoveData: SelfLoveData,
+    continuePlayingTime: Int,
     completed: () -> Unit
 ){
-    updatePreviousUserSelfLoveRelationship {
+    updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
         SelfLoveForRoutine.updateRecentlyPlayedUserSelfLoveRelationshipWithSelfLove(
             selfLoveData
         ) {
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserBedtimeStoryRelationship {
+                updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
                     completed()
                 }
             }
@@ -421,7 +423,11 @@ private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
     selfLoveData: SelfLoveData,
 ){
-    updatePreviousAndCurrentSelfLoveRelationship(selfLoveData) {
+    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+    updatePreviousAndCurrentSelfLoveRelationship(
+        selfLoveData,
+        continuePlayingTime
+    ) {
         generalMediaPlayerService.onDestroy()
         generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentSelfLovePlayingUri!!)
         val intent = Intent()

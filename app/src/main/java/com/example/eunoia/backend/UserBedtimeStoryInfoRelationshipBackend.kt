@@ -53,6 +53,7 @@ object UserBedtimeStoryInfoRelationshipBackend {
             userBedtimeStoryInfoRelationshipBedtimeStoryInfo = BedtimeStoryObject.BedtimeStory.from(bedtimeStoryInfo),
             numberOfTimesPlayed = 0,
             totalPlayTime = 0,
+            continuePlayingTime = 0,
             currentlyListening = false,
             usageTimeStamp = listOf(),
             usagePlayTimes = listOf()
@@ -96,6 +97,41 @@ object UserBedtimeStoryInfoRelationshipBackend {
                 ModelQuery.list(
                     UserBedtimeStoryInfoRelationship::class.java,
                     UserBedtimeStoryInfoRelationship.USER_BEDTIME_STORY_INFO_RELATIONSHIP_OWNER.eq(userData.id),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (userBedtimeStoryInfoRelationshipData in response.data) {
+                            //TODO change pending to approved
+                            if(userBedtimeStoryInfoRelationshipData != null) {
+                                if (
+                                    userBedtimeStoryInfoRelationshipData.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.approvalStatus == BedtimeStoryApprovalStatus.PENDING &&
+                                    userBedtimeStoryInfoRelationshipData.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.creationStatus == BedtimeStoryCreationStatus.COMPLETED
+                                ) {
+                                    Log.i(TAG, userBedtimeStoryInfoRelationshipData.toString())
+                                    userBedtimeStoryInfoRelationshipList.add(userBedtimeStoryInfoRelationshipData)
+                                }
+                            }
+                        }
+                    }
+                    mainScope.launch {
+                        completed(userBedtimeStoryInfoRelationshipList)
+                    }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
+    fun queryApprovedUserBedtimeStoryInfoRelationshipBasedOnId(
+        id: String,
+        completed: (userBedtimeStoryInfoRelationship: List<UserBedtimeStoryInfoRelationship?>) -> Unit
+    ) {
+        scope.launch {
+            val userBedtimeStoryInfoRelationshipList = mutableListOf<UserBedtimeStoryInfoRelationship?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    UserBedtimeStoryInfoRelationship::class.java,
+                    UserBedtimeStoryInfoRelationship.ID.eq(id),
                 ),
                 { response ->
                     if(response.hasData()) {

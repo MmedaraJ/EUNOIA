@@ -19,6 +19,7 @@ object UserBedtimeStoryInfoRelationshipObject {
         val userBedtimeStoryInfoRelationshipBedtimeStoryInfo: @RawValue BedtimeStoryObject.BedtimeStory,
         val numberOfTimesPlayed: Int,
         val totalPlayTime: Long,
+        val continuePlayingTime: Int,
         val currentlyListening: Boolean?,
         val usageTimeStamp: @RawValue List<Temporal.DateTime>?,
         val usagePlayTimes: List<Int>?,
@@ -33,6 +34,7 @@ object UserBedtimeStoryInfoRelationshipObject {
                 .userBedtimeStoryInfoRelationshipBedtimeStoryInfo(this.userBedtimeStoryInfoRelationshipBedtimeStoryInfo.data)
                 .numberOfTimesPlayed(this.numberOfTimesPlayed)
                 .totalPlayTime(this.totalPlayTime.toInt())
+                .continuePlayingTime(this.continuePlayingTime)
                 .currentlyListening(this.currentlyListening)
                 .usageTimestamps(this.usageTimeStamp)
                 .usagePlayTimes(this.usagePlayTimes)
@@ -47,6 +49,7 @@ object UserBedtimeStoryInfoRelationshipObject {
                     BedtimeStoryObject.BedtimeStory.from(userBedtimeStoryInfoRelationship.userBedtimeStoryInfoRelationshipBedtimeStoryInfo),
                     userBedtimeStoryInfoRelationship.numberOfTimesPlayed,
                     userBedtimeStoryInfoRelationship.totalPlayTime.toLong(),
+                    userBedtimeStoryInfoRelationship.continuePlayingTime,
                     userBedtimeStoryInfoRelationship.currentlyListening,
                     userBedtimeStoryInfoRelationship.usageTimestamps,
                     userBedtimeStoryInfoRelationship.usagePlayTimes

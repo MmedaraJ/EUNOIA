@@ -237,6 +237,7 @@ type UserBedtimeStoryInfoRelationship
     userBedtimeStoryInfoRelationshipBedtimeStoryInfo: BedtimeStoryInfoData! @belongsTo(fields: ["userBedtimeStoryInfoRelationshipBedtimeStoryInfoDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    continuePlayingTime: Int
     currentlyListening: Boolean
     usageTimestamps: [AWSDateTime!]
     usagePlayTimes: [Int!]

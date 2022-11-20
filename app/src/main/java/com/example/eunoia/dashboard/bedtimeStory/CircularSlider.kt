@@ -13,11 +13,24 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
-import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.theme.Black
 import kotlin.math.*
 
 private const val TAG = "Circular slider"
+private var circularSliderAngle = mutableStateOf(0f)
+private var circularSliderClicked = mutableStateOf(false)
+
+fun setCircularSliderAngle(angle: Float){
+    circularSliderAngle.value = angle
+}
+
+fun getCircularSliderClicked(): Boolean{
+    return circularSliderClicked.value
+}
+
+fun setCircularSliderClicked(clicked: Boolean){
+    circularSliderClicked.value = clicked
+}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -31,7 +44,9 @@ fun CircularSlider(
     progressColor: Color = Color.Black,
     backgroundColor: Color = Color.LightGray,
     debug: Boolean = false,
-    appliedAngleChanged: (appliedAngle: Float) -> Unit
+    actionDown: (a: Float) -> Unit,
+    actionMove: (a: Float) -> Unit,
+    appliedAngleChanged: (appliedAngle: Float) -> Unit,
 ){
     var width by remember { mutableStateOf(0) }
     var height by remember { mutableStateOf(0) }
@@ -41,9 +56,9 @@ fun CircularSlider(
     var center by remember { mutableStateOf(Offset.Zero) }
     var appliedAngle by remember { mutableStateOf(0f) }
 
-    LaunchedEffect(key1 = angle.value){
-        var a = angle.value
-        if(clicked.value) {
+    LaunchedEffect(key1 = circularSliderAngle.value){
+        var a = circularSliderAngle.value
+        if(circularSliderClicked.value) {
             a += 270f
         }
         if(a<=0f){
@@ -56,6 +71,7 @@ fun CircularSlider(
         if(a==360f){
             a = 0f
         }
+        //Log.i(TAG, "circularSliderAngle.value changed $a")
         appliedAngle = a
     }
 
@@ -75,22 +91,22 @@ fun CircularSlider(
                 val x = it.x
                 val y = it.y
                 val offset = Offset(x, y)
+
                 when (it.action) {
                     MotionEvent.ACTION_DOWN -> {
                         val d = distance(offset, center)
                         val a = angle(center, offset)
                         if (d >= radius - touchStroke / 2f && d <= radius + touchStroke / 2f) {
                             down = true
-                            clicked.value = true
-                            angle.value = a + 0
+                            actionDown(a)
                         } else {
                             down = false
                         }
                     }
                     MotionEvent.ACTION_MOVE -> {
+                        val a = angle(center, offset)
                         if (down) {
-                            clicked.value = true
-                            angle.value = angle(center, offset)
+                            actionMove(a)
                         }
                     }
                     MotionEvent.ACTION_UP -> {

@@ -28,6 +28,7 @@ import com.amplifyframework.datastore.generated.model.PrayerAudioSource
 import com.amplifyframework.datastore.generated.model.PrayerData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
+import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.PrayerForRoutine.updateRecentlyPlayedUserPrayerRelationshipWithPrayer
 import com.example.eunoia.dashboard.prayer.*
@@ -398,14 +399,15 @@ private fun afterPlayingPrayer(){
 
 private fun updatePreviousAndCurrentPrayerRelationship(
     prayerData: PrayerData,
+    conntinuePlayingTime: Int,
     completed: () -> Unit
 ){
     updatePreviousUserPrayerRelationship {
         updateRecentlyPlayedUserPrayerRelationshipWithPrayer(
             prayerData
         ) {
-            updatePreviousUserBedtimeStoryRelationship {
-                updatePreviousUserSelfLoveRelationship {
+            updatePreviousUserBedtimeStoryRelationship(conntinuePlayingTime) {
+                updatePreviousUserSelfLoveRelationship(conntinuePlayingTime) {
                     completed()
                 }
             }
@@ -417,7 +419,11 @@ private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
     prayerData: PrayerData,
 ){
-    updatePreviousAndCurrentPrayerRelationship(prayerData) {
+    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+    updatePreviousAndCurrentPrayerRelationship(
+        prayerData,
+        continuePlayingTime
+    ) {
         generalMediaPlayerService.onDestroy()
         generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentPrayerPlayingUri!!)
         val intent = Intent()

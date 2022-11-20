@@ -10,6 +10,7 @@ import androidx.core.net.toUri
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
+import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.bedtimeStory.resetOtherGeneralMediaPlayerUsersExceptBedtimeStory
 import com.example.eunoia.dashboard.bedtimeStory.updateCurrentUserBedtimeStoryInfoRelationshipUsageTimeStamp
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
@@ -252,8 +253,11 @@ object BedtimeStoryForRoutine{
         setGlobalPropertiesAfterPlayingBedtimeStory(index)
     }
 
-    private fun updatePreviousAndCurrentBedtimeStoryRelationship(completed: () -> Unit){
-        updatePreviousUserBedtimeStoryRelationship {
+    private fun updatePreviousAndCurrentBedtimeStoryRelationship(
+        continuePlayingTime: Int,
+        completed: () -> Unit
+    ){
+        updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
             updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo(
                 globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
                         [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!]!!
@@ -271,8 +275,10 @@ object BedtimeStoryForRoutine{
         context: Context,
     ){
         //TODO Seek to correct position to start playing
-        updatePreviousAndCurrentBedtimeStoryRelationship {
+        val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+        updatePreviousAndCurrentBedtimeStoryRelationship(continuePlayingTime) {
             generalMediaPlayerService.onDestroy()
+
             generalMediaPlayerService.setAudioUri(
                 routineActivityBedtimeStoryUrisMapList[index][
                         globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
@@ -280,9 +286,17 @@ object BedtimeStoryForRoutine{
                             .bedtimeStoryInfoData.id
                 ]!!
             )
+
+            generalMediaPlayerService.setSeekToPos(
+                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
+                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!]!!
+                    .userRoutineRelationship.currentBedtimeStoryContinuePlayingTime
+            )
+
             val intent = Intent()
             intent.action = "PLAY"
             generalMediaPlayerService.onStartCommand(intent, 0, 0)
+
             globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(
                 globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
                         [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!]!!
@@ -299,14 +313,6 @@ object BedtimeStoryForRoutine{
                     context
                 )
             }
-
-            Log.i(TAG, "About to seeeeeek")
-
-            generalMediaPlayerService.seekToPos(
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
-                        [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!]!!
-                    .userRoutineRelationship.currentBedtimeStoryContinuePlayingTime
-            )
         }
 
         afterPlayingBedtimeStory(
@@ -396,11 +402,7 @@ object BedtimeStoryForRoutine{
             globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.bedtimeStoryPlayTime.toLong(),
             generalMediaPlayerService
         ) {
-            var continuePlayingTime = -1
-            if (generalMediaPlayerService.isMediaPlayerInitialized()) {
-                continuePlayingTime = generalMediaPlayerService.getMediaPlayer()!!.currentPosition
-                generalMediaPlayerService.onDestroy()
-            }
+            val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
             deActivateBedtimeStoryGlobalControlButton(0)
             activateBedtimeStoryGlobalControlButton(2)
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
@@ -418,7 +420,7 @@ object BedtimeStoryForRoutine{
                     .build()
 
             //update routine with new BedtimeStory info
-            updatePreviousUserBedtimeStoryRelationship {
+            updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
                 UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {
                     globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
                     routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE

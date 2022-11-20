@@ -31,6 +31,7 @@ class GeneralMediaPlayerService:
     private var mediaPlayerIsPlaying = false
     private var mediaPlayerIsLooping = false
     private var audioUri: Uri? = null
+    private var seekToPos: Int = 0
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val action: String = intent.action!!
@@ -64,6 +65,11 @@ class GeneralMediaPlayerService:
             }
         }
         return START_STICKY
+    }
+
+    fun setSeekToPos(seekToPosition: Int){
+        seekToPos = seekToPosition
+        Log.i(TAG, "seekToPos = $seekToPos")
     }
 
     fun pauseMediaPlayer(){
@@ -113,18 +119,10 @@ class GeneralMediaPlayerService:
         return mediaPlayer
     }
 
-    fun seekToPos(pos: Int){
-        if(mediaPlayerIsPlaying) {
-            mediaPlayer!!.seekTo(pos)
-            Log.i(TAG, "seek to completed= ${mediaPlayer!!.currentPosition}")
-        }
-        Log.i(TAG, "will not seek to")
-    }
-
     override fun onPrepared(mediaPlayer: MediaPlayer?) {
-        mediaPlayer!!.start()
+        mediaPlayer!!.seekTo(seekToPos)
+        mediaPlayer.start()
         mediaPlayerIsPlaying = true
-        //mediaPlayer.seekTo(0)
         mediaPlayerInitialized = true
     }
 

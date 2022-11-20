@@ -22,6 +22,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.R
+import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -62,8 +63,6 @@ var bedtimeStoryScreenBackgroundControlColor2 = arrayOf(
     mutableStateOf(White),
     mutableStateOf(White),
 )
-var angle = mutableStateOf(0f)
-var clicked = mutableStateOf(false)
 var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
 var bedtimeStoryTimeDisplay by mutableStateOf("00.00")
 
@@ -95,20 +94,14 @@ fun BedtimeStoryScreen(
                 retrievedUris = true
             }
         }else{
-            Log.d(TAG, "one 1")
-            resetBedtimeStoryControlsUI()
-            angle.value = 0f
-            clicked.value = false
-            bedtimeStoryTimeDisplay = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
-            retrievedUris = true
+            setUpForNewPlay(bedtimeStoryInfoData){
+                retrievedUris = true
+            }
         }
     }else{
-        Log.d(TAG, "two 2")
-        resetBedtimeStoryControlsUI()
-        angle.value = 0f
-        clicked.value = false
-        bedtimeStoryTimeDisplay = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
-        retrievedUris = true
+        setUpForNewPlay(bedtimeStoryInfoData){
+            retrievedUris = true
+        }
     }
 
     if(retrievedUris) {
@@ -175,17 +168,45 @@ fun BedtimeStoryScreen(
                     progressColor = Black,
                     backgroundColor = PeriwinkleGray.copy(alpha = 0.5F),
                     modifier = Modifier.size(320.dp),
+                    actionDown = { a ->
+                        Log.i(TAG, "actionDown = true")
+                        if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+                            if (generalMediaPlayerService.isMediaPlayerPlaying()) {
+                                setCircularSliderClicked(true)
+                                setCircularSliderAngle(a + 0)
+                            }
+                        }
+                    },
+                    actionMove = { a ->
+                        if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+                            if (generalMediaPlayerService.isMediaPlayerPlaying()) {
+                                setCircularSliderClicked(true)
+                                setCircularSliderAngle(a + 0)
+                            }
+                        }
+                        Log.i(TAG, "actionMove = true")
+                    }
                 ){ appliedAngle ->
                     if(globalViewModel_!!.currentBedtimeStoryPlaying != null){
                         if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
-                            if(clicked.value) {
+                            if(getCircularSliderClicked()) {
+                                globalViewModel_!!.resetCDT()
+
                                 val newSeek = (
                                         appliedAngle /
                                                 360f
                                         ) * generalMediaPlayerService.getMediaPlayer()!!.duration
                                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeek.toInt())
+
+                                globalViewModel_!!.remainingPlayTime =
+                                    bedtimeStoryInfoData.fullPlayTime -
+                                            generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+                                startCDT(
+                                    generalMediaPlayerService,
+                                    bedtimeStoryInfoData
+                                )
+
                                 bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                                //globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                                 bedtimeStoryTimer.start()
                                 globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
                                 if(!globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
@@ -289,6 +310,32 @@ fun BedtimeStoryScreen(
     }
 }
 
+fun setUpForNewPlay(
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    completed: () -> Unit
+) {
+    resetBedtimeStoryControlsUI()
+    setCircularSliderClicked(false)
+    UserBedtimeStoryInfoRelationshipBackend.queryUserBedtimeStoryInfoRelationshipBasedOnUserAndBedtimeStoryInfo(
+        globalViewModel_!!.currentUser!!,
+        bedtimeStoryInfoData
+    ){
+        if(it.isNotEmpty()){
+            val angle = (
+                    it[0]!!.continuePlayingTime.toFloat() /
+                        bedtimeStoryInfoData.fullPlayTime
+                    ) * 360f
+            setCircularSliderAngle(angle)
+            bedtimeStoryTimeDisplay = timerFormatMS(it[0]!!.continuePlayingTime.toLong())
+            completed()
+        }else{
+            setCircularSliderAngle(0f)
+            bedtimeStoryTimeDisplay = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+            completed()
+        }
+    }
+}
+
 private fun setParametersFromGlobalVariables(
     completed: () -> Unit
 ) {
@@ -303,7 +350,9 @@ fun setUpParameters(
     completed: () -> Unit
 ) {
     Log.d(TAG, "setup params")
-    bedtimeStoryUri = globalViewModel_!!.currentBedtimeStoryPlayingUri!!
+    if(bedtimeStoryUri == null) {
+        bedtimeStoryUri = globalViewModel_!!.currentBedtimeStoryPlayingUri!!
+    }
 
     for(i in bedtimeStoryScreenIcons.indices){
         bedtimeStoryScreenIcons[i].value = globalViewModel_!!.bedtimeStoryScreenIcons[i].value
@@ -320,8 +369,8 @@ fun setUpParameters(
 
     bedtimeStoryTimeDisplay = globalViewModel_!!.bedtimeStoryTimeDisplay
     bedtimeStoryTimer = globalViewModel_!!.bedtimeStoryTimer
-    angle.value = globalViewModel_!!.bedtimeStoryCircularSliderAngle
-    clicked.value = globalViewModel_!!.bedtimeStoryCircularSliderClicked
+    setCircularSliderClicked(globalViewModel_!!.bedtimeStoryCircularSliderClicked)
+    setCircularSliderAngle(globalViewModel_!!.bedtimeStoryCircularSliderAngle)
     completed()
 }
 

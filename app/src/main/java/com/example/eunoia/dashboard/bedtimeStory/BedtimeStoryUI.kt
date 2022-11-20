@@ -2,6 +2,7 @@ package com.example.eunoia.dashboard.bedtimeStory
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
+import com.amplifyframework.datastore.generated.model.UserBedtimeStoryInfoRelationship
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.create.resetEverything
@@ -44,6 +46,8 @@ import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.timerFormatMS
 import kotlinx.coroutines.CoroutineScope
+
+private const val TAG = "BedtimeStoryUI"
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -262,12 +266,14 @@ fun resetBedtimeStory(
                 globalViewModel_!!.currentPrayerPlaying == null
             ) {
                 resetBothLocalAndGlobalControlButtonsAfterReset()
-                clicked.value = false
-                angle.value = 0f
+                val angle = 0f
+                setCircularSliderClicked(false)
+                setCircularSliderAngle(angle)
                 bedtimeStoryTimer.stop()
                 globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
                 bedtimeStoryTimeDisplay = timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
                 globalViewModel_!!.bedtimeStoryTimeDisplay = bedtimeStoryTimeDisplay
+                globalViewModel_!!.resetCDT()
                 globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
                 generalMediaPlayerService.onDestroy()
             }
@@ -286,16 +292,29 @@ fun seekBack15(
                 globalViewModel_!!.currentSelfLovePlaying == null &&
                 globalViewModel_!!.currentPrayerPlaying == null
             ) {
+                globalViewModel_!!.resetCDT()
+
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
                 if(newSeekTo < 0){
                     newSeekTo = 0
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
-                clicked.value = false
-                angle.value = (
+
+                globalViewModel_!!.remainingPlayTime =
+                    bedtimeStoryInfoData.fullPlayTime -
+                            generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+                startCDT(
+                    generalMediaPlayerService,
+                    bedtimeStoryInfoData
+                )
+
+                val angle = (
                     (generalMediaPlayerService.getMediaPlayer()!!.currentPosition).toFloat() /
                     (bedtimeStoryInfoData.fullPlayTime).toFloat()
                 ) * 360f
+                setCircularSliderClicked(false)
+                setCircularSliderAngle(angle)
+
                 bedtimeStoryTimer.setDuration(
                     generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
                 )
@@ -320,6 +339,8 @@ fun seekForward15(
                 globalViewModel_!!.currentSelfLovePlaying == null &&
                 globalViewModel_!!.currentPrayerPlaying == null
             ) {
+                globalViewModel_!!.resetCDT()
+
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
                 if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
                     newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.duration - 2000
@@ -329,11 +350,22 @@ fun seekForward15(
                     deActivateLocalBedtimeStoryControlButton(0)
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
-                clicked.value = false
-                angle.value = (
+
+                globalViewModel_!!.remainingPlayTime =
+                    bedtimeStoryInfoData.fullPlayTime -
+                            generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+                startCDT(
+                    generalMediaPlayerService,
+                    bedtimeStoryInfoData
+                )
+
+                val angle = (
                     generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toFloat() /
                     bedtimeStoryInfoData.fullPlayTime.toFloat()
                 ) * 360f
+                setCircularSliderClicked(false)
+                setCircularSliderAngle(angle)
+
                 bedtimeStoryTimer.setDuration(
                     generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
                 )
@@ -448,6 +480,7 @@ private fun pauseBedtimeStory(
             activateLocalBedtimeStoryControlButton(2)
             activateGlobalBedtimeStoryControlButton(2)
             globalViewModel_!!.generalPlaytimeTimer.pause()
+            globalViewModel_!!.resetCDT()
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
         }
     }
@@ -464,8 +497,17 @@ private fun startBedtimeStory(
             globalViewModel_!!.currentPrayerPlaying == null
         ){
             if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+                globalViewModel_!!.remainingPlayTime =
+                    bedtimeStoryInfoData.fullPlayTime -
+                        generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+                Log.i(TAG, "globalViewModel_!!.remainingPlayTime = ${globalViewModel_!!.remainingPlayTime}")
+
                 generalMediaPlayerService.startMediaPlayer()
-                afterPlayingBedtimeStory(bedtimeStoryInfoData)
+
+                afterPlayingBedtimeStory(
+                    generalMediaPlayerService,
+                    bedtimeStoryInfoData
+                )
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
@@ -482,6 +524,7 @@ private fun startBedtimeStory(
 }
 
 private fun afterPlayingBedtimeStory(
+    generalMediaPlayerService: GeneralMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData
 ){
     bedtimeStoryTimer.start()
@@ -489,40 +532,88 @@ private fun afterPlayingBedtimeStory(
     deActivateLocalBedtimeStoryControlButton(2)
     deActivateLocalBedtimeStoryControlButton(0)
     globalViewModel_!!.generalPlaytimeTimer.start()
+    startCDT(
+        generalMediaPlayerService,
+        bedtimeStoryInfoData
+    )
     setGlobalPropertiesAfterPlayingBedtimeStory(bedtimeStoryInfoData)
+}
+
+fun startCDT(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData
+) {
+    globalViewModel_!!.startTheCDT(
+        globalViewModel_!!.remainingPlayTime.toLong(),
+        generalMediaPlayerService
+    ){
+        resetBedtimeStory(
+            generalMediaPlayerService,
+            bedtimeStoryInfoData
+        )
+        deActivateResetButton()
+    }
 }
 
 private fun updatePreviousAndCurrentBedtimeStoryRelationship(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
-    completed: () -> Unit
+    continuePlayingTime: Int,
+    completed: (userBedtimeStoryInfoRelationship: UserBedtimeStoryInfoRelationship) -> Unit
 ){
-    updatePreviousUserBedtimeStoryRelationship {
-        updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo(bedtimeStoryInfoData) {
+    updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
+        updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo(bedtimeStoryInfoData) { userBedtimeStoryInfoRelationship ->
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserSelfLoveRelationship {
-                    completed()
+                updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
+                    completed(userBedtimeStoryInfoRelationship)
                 }
             }
         }
     }
 }
 
+private fun getSeekToPos(
+    userBedtimeStoryInfoRelationship: UserBedtimeStoryInfoRelationship,
+): Int{
+    var seekToPos = 0
+    if(userBedtimeStoryInfoRelationship.continuePlayingTime != null){
+        seekToPos = userBedtimeStoryInfoRelationship.continuePlayingTime
+    }
+    return seekToPos
+}
+
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
 ){
-    updatePreviousAndCurrentBedtimeStoryRelationship(bedtimeStoryInfoData) {
+    globalViewModel_!!.continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+    updatePreviousAndCurrentBedtimeStoryRelationship(
+        bedtimeStoryInfoData,
+        globalViewModel_!!.continuePlayingTime
+    ) {
         generalMediaPlayerService.onDestroy()
         generalMediaPlayerService.setAudioUri(bedtimeStoryUri!!)
+        val seekToPos = getSeekToPos(it)
+        Log.i(TAG, "Bts UI seekToPos = $seekToPos")
+        generalMediaPlayerService.setSeekToPos(seekToPos)
+
         val intent = Intent()
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
+
+        bedtimeStoryTimer.setDuration(
+            it.continuePlayingTime.toLong()
+        )
         bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
         globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
+        globalViewModel_!!.remainingPlayTime = bedtimeStoryInfoData.fullPlayTime
+
         resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
+        resetBothLocalAndGlobalControlButtons()
+        afterPlayingBedtimeStory(
+            generalMediaPlayerService,
+            bedtimeStoryInfoData
+        )
     }
-    resetBothLocalAndGlobalControlButtons()
-    afterPlayingBedtimeStory(bedtimeStoryInfoData)
 }
 
 private fun setGlobalPropertiesAfterPlayingBedtimeStory(
@@ -581,6 +672,11 @@ fun resetBothLocalAndGlobalControlButtonsAfterReset(){
     deActivateGlobalBedtimeStoryControlButton(1)
     activateGlobalBedtimeStoryControlButton(2)
     deActivateGlobalBedtimeStoryControlButton(3)
+}
+
+fun deActivateResetButton(){
+    deActivateLocalBedtimeStoryControlButton(0)
+    deActivateGlobalBedtimeStoryControlButton(0)
 }
 
 private fun activateLocalBedtimeStoryControlButton(index: Int){

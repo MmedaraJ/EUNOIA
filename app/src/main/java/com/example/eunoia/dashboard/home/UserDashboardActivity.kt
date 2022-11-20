@@ -396,7 +396,7 @@ class UserDashboardActivity :
             globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
             globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
                     (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
-                            (globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime).toFloat()
+                            globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime
                     ) * 360f
         }
         //TODO if current position of media player == duration of media player, stop media player,

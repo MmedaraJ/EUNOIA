@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.example.eunoia.create.createBedtimeStory.resetAllBedtimeStoryCreationObjects
+import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.resetRoutineGlobalProperties
@@ -139,10 +140,11 @@ fun resetEverything(
     context: Context,
     completed: () -> Unit
 ){
+    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
     updatePreviousUserSoundRelationship {
-        updatePreviousUserBedtimeStoryRelationship {
+        updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserSelfLoveRelationship {
+                updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
                     updatePreviousUserRoutineRelationship {
                         soundMediaPlayerService.onDestroy()
                         generalMediaPlayerService.onDestroy()
@@ -168,10 +170,11 @@ fun resetEverythingExceptRoutine(
     context: Context,
     completed: () -> Unit
 ){
+    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
     updatePreviousUserSoundRelationship {
-        updatePreviousUserBedtimeStoryRelationship {
+        updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserSelfLoveRelationship {
+                updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
                     soundMediaPlayerService.onDestroy()
                     generalMediaPlayerService.onDestroy()
                     com.example.eunoia.dashboard.sound.resetAll(context, soundMediaPlayerService)

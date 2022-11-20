@@ -26,6 +26,7 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserPrayerRelationshipBackend
 import com.example.eunoia.create.resetEverything
+import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.OptionItem
@@ -496,6 +497,7 @@ private fun resetPlayButtonTextsIfNecessary(index: Int) {
 
 private fun updatePreviousAndCurrentPrayerRelationship(
     index: Int,
+    continuePlayingTime: Int,
     completed: () -> Unit
 ){
     updatePreviousUserPrayerRelationship{
@@ -503,8 +505,8 @@ private fun updatePreviousAndCurrentPrayerRelationship(
             globalViewModel_!!.currentUsersPrayerRelationships!![index]!!
         ) {
             globalViewModel_!!.currentUsersPrayerRelationships!![index] = it
-            updatePreviousUserBedtimeStoryRelationship {
-                updatePreviousUserSelfLoveRelationship {
+            updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
+                updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
                     completed()
                 }
             }
@@ -518,7 +520,11 @@ private fun initializeMediaPlayer(
     index: Int,
     context: Context
 ){
-    updatePreviousAndCurrentPrayerRelationship(index) {
+    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+    updatePreviousAndCurrentPrayerRelationship(
+        index,
+        continuePlayingTime
+    ) {
         generalMediaPlayerService.onDestroy()
         generalMediaPlayerService.setAudioUri(prayerActivityUris[index]!!.value)
         val intent = Intent()

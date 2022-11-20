@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +13,7 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.dashboard.home.UserDashboardActivity
+import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.*
 
@@ -19,6 +21,13 @@ class GlobalViewModel: ViewModel(){
     //general media player
     private val _generalMediaPlayerIsCompleted = MutableLiveData(false)
     var generalMediaPlayerIsCompleted: LiveData<Boolean> = _generalMediaPlayerIsCompleted
+
+    var CDT: CountDownTimer? = null
+    var remainingPlayTime by mutableStateOf(0)
+
+    var continuePlayingTime = 0
+
+    private val TAG = "GlobalViewModel"
 
     fun setGeneralMediaPlayerIsCompleted(newValue : Boolean) {
         _generalMediaPlayerIsCompleted.postValue(newValue)
@@ -175,6 +184,7 @@ class GlobalViewModel: ViewModel(){
     var bedtimeStoryCircularSliderClicked by mutableStateOf(false)
     var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
     var previouslyPlayedUserBedtimeStoryRelationship: UserBedtimeStoryInfoRelationship? = null
+    var currentUserBedtimeStoryRelationship: UserBedtimeStoryInfoRelationship? = null
 
     var currentBedtimeStoryToBeAdded by mutableStateOf<BedtimeStoryInfoData?>(null)
 
@@ -299,4 +309,43 @@ class GlobalViewModel: ViewModel(){
         mutableStateOf(White),
         mutableStateOf(White),
     )
+
+    fun startTheCDT(
+        time: Long,
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        completed: () -> Unit
+    ) {
+        if (CDT == null) {
+            CDT = object : CountDownTimer(time, 1) {
+                override fun onTick(millisUntilFinished: Long) {
+                    if(generalMediaPlayerService.isMediaPlayerInitialized()){
+                        if(
+                            generalMediaPlayerService.getMediaPlayer()!!.currentPosition >=
+                            generalMediaPlayerService.getMediaPlayer()!!.duration
+                        ){
+                            Log.i(TAG, "Done with CDT")
+                            completed()
+                        }
+                    }
+
+                    if(millisUntilFinished % 10000 == 0L) {
+                        Log.i(TAG, "CDT: $millisUntilFinished")
+                    }
+                }
+
+                override fun onFinish() {
+                    Log.i(TAG, "CDT stopped")
+                    completed()
+                }
+            }
+        }
+        CDT!!.start()
+    }
+
+    fun resetCDT(){
+        if(CDT != null){
+            CDT!!.cancel()
+            CDT = null
+        }
+    }
 }

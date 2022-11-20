@@ -4,13 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.core.net.toUri
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
-import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
-import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
+import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.selfLove.resetOtherGeneralMediaPlayerUsersExceptSelfLove
 import com.example.eunoia.dashboard.selfLove.updateCurrentUserSelfLoveRelationshipUsageTimeStamp
 import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
@@ -257,8 +254,11 @@ object SelfLoveForRoutine {
         setGlobalPropertiesAfterPlayingSelfLove(index)
     }
 
-    private fun updatePreviousAndCurrentSelfLoveRelationship(completed: () -> Unit){
-        updatePreviousUserSelfLoveRelationship {
+    private fun updatePreviousAndCurrentSelfLoveRelationship(
+        continuePlayingTime: Int,
+        completed: () -> Unit
+    ){
+        updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
             updateRecentlyPlayedUserSelfLoveRelationshipWithSelfLove(
                 globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!!
                         [globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!!]!!
@@ -275,7 +275,8 @@ object SelfLoveForRoutine {
         index: Int,
         context: Context
     ){
-        updatePreviousAndCurrentSelfLoveRelationship {
+        val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+        updatePreviousAndCurrentSelfLoveRelationship(continuePlayingTime) {
             generalMediaPlayerService.onDestroy()
             generalMediaPlayerService.setAudioUri(
                 routineActivitySelfLoveUrisMapList[index][
@@ -389,11 +390,8 @@ object SelfLoveForRoutine {
             globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.selfLovePlayTime.toLong(),
             generalMediaPlayerService
         ){
-            var continuePlayingTime = -1
-            if(generalMediaPlayerService.isMediaPlayerInitialized()) {
-                continuePlayingTime = generalMediaPlayerService.getMediaPlayer()!!.currentPosition
-                generalMediaPlayerService.onDestroy()
-            }
+            val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+
             deActivateSelfLoveGlobalControlButton(0)
             activateSelfLoveGlobalControlButton(2)
             globalViewModel_!!.isCurrentSelfLovePlaying = false
@@ -407,7 +405,7 @@ object SelfLoveForRoutine {
                 .build()
 
             //update routine with new SelfLove info
-            updatePreviousUserBedtimeStoryRelationship {
+            updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
                 UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {
                     globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
                     routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE

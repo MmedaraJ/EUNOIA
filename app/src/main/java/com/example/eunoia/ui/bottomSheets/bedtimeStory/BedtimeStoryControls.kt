@@ -253,6 +253,7 @@ fun resetBedtimeStory(
                 globalViewModel_!!.bedtimeStoryTimer.stop()
                 globalViewModel_!!.bedtimeStoryTimeDisplay =
                     timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
+                globalViewModel_!!.resetCDT()
                 globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
                 generalMediaPlayerService.onDestroy()
             }
@@ -267,16 +268,27 @@ fun seekBack15(
     if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
         if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
             if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+                globalViewModel_!!.resetCDT()
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
                 if(newSeekTo < 0){
                     newSeekTo = 0
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
+
+                globalViewModel_!!.remainingPlayTime =
+                    bedtimeStoryInfoData.fullPlayTime -
+                            generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+                startCDT(
+                    generalMediaPlayerService,
+                    bedtimeStoryInfoData
+                )
+
                 globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
                 globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
                         (generalMediaPlayerService.getMediaPlayer()!!.currentPosition).toFloat() /
                                 (bedtimeStoryInfoData.fullPlayTime).toFloat()
                         ) * 360f
+
                 globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                 if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
                     globalViewModel_!!.bedtimeStoryTimer.start()
@@ -293,6 +305,8 @@ fun seekForward15(
     if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
         if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
             if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+                globalViewModel_!!.resetCDT()
+
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
                 if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
                     newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.duration - 2000
@@ -300,6 +314,15 @@ fun seekForward15(
                     deActivateBedtimeStoryGlobalControlButton(0)
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
+
+                globalViewModel_!!.remainingPlayTime =
+                    bedtimeStoryInfoData.fullPlayTime -
+                            generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+                startCDT(
+                    generalMediaPlayerService,
+                    bedtimeStoryInfoData
+                )
+
                 globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
                 globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
                         generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toFloat() /
@@ -311,6 +334,22 @@ fun seekForward15(
                 }
             }
         }
+    }
+}
+
+private fun startCDT(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData
+) {
+    globalViewModel_!!.startTheCDT(
+        globalViewModel_!!.remainingPlayTime.toLong(),
+        generalMediaPlayerService
+    ){
+        resetBedtimeStory(
+            generalMediaPlayerService,
+            bedtimeStoryInfoData
+        )
+        deActivateResetButton()
     }
 }
 
@@ -357,6 +396,7 @@ private fun pauseBedtimeStory(
             generalMediaPlayerService.pauseMediaPlayer()
             globalViewModel_!!.bedtimeStoryTimer.pause()
             globalViewModel_!!.generalPlaytimeTimer.pause()
+            globalViewModel_!!.resetCDT()
             activateBedtimeStoryGlobalControlButton(2)
             activateBedtimeStoryGlobalControlButton(2)
             globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
@@ -371,8 +411,15 @@ private fun startBedtimeStory(
     if(globalViewModel_!!.currentBedtimeStoryPlayingUri != null){
         if(generalMediaPlayerService.isMediaPlayerInitialized()){
             if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+                globalViewModel_!!.remainingPlayTime =
+                    globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime -
+                            generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+
                 generalMediaPlayerService.startMediaPlayer()
-                afterPlayingBedtimeStory()
+                afterPlayingBedtimeStory(
+                    generalMediaPlayerService,
+                    bedtimeStoryInfoData
+                )
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
@@ -388,9 +435,16 @@ private fun startBedtimeStory(
     }
 }
 
-private fun afterPlayingBedtimeStory(){
+private fun afterPlayingBedtimeStory(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+){
     globalViewModel_!!.bedtimeStoryTimer.start()
     globalViewModel_!!.generalPlaytimeTimer.start()
+    startCDT(
+        generalMediaPlayerService,
+        bedtimeStoryInfoData
+    )
     globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
     deActivateBedtimeStoryGlobalControlButton(2)
     deActivateBedtimeStoryGlobalControlButton(0)
@@ -398,14 +452,15 @@ private fun afterPlayingBedtimeStory(){
 
 private fun updatePreviousAndCurrentBedtimeStoryRelationship(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
+    continuePlayingTime: Int,
     completed: () -> Unit
 ){
-    updatePreviousUserBedtimeStoryRelationship {
+    updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
         BedtimeStoryForRoutine.updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo(
             bedtimeStoryInfoData
         ) {
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserSelfLoveRelationship {
+                updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
                     completed()
                 }
             }
@@ -417,7 +472,11 @@ private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
 ){
-    updatePreviousAndCurrentBedtimeStoryRelationship(bedtimeStoryInfoData) {
+    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+    updatePreviousAndCurrentBedtimeStoryRelationship(
+        bedtimeStoryInfoData,
+        continuePlayingTime
+    ) {
         generalMediaPlayerService.onDestroy()
         generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentBedtimeStoryPlayingUri!!)
         val intent = Intent()
@@ -425,9 +484,13 @@ private fun initializeMediaPlayer(
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
         globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
         resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
+
+        resetGlobalControlButtons()
+        afterPlayingBedtimeStory(
+            generalMediaPlayerService,
+            bedtimeStoryInfoData
+        )
     }
-    resetGlobalControlButtons()
-    afterPlayingBedtimeStory()
 }
 
 private fun retrieveBedtimeStoryAudio(

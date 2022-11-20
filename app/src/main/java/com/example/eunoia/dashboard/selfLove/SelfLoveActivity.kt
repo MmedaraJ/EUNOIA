@@ -26,6 +26,7 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSelfLoveRelationshipBackend
 import com.example.eunoia.create.resetEverything
+import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.OptionItem
@@ -491,15 +492,16 @@ private fun resetPlayButtonTextsIfNecessary(index: Int) {
 
 private fun updatePreviousAndCurrentSelfLoveRelationship(
     index: Int,
+    continuePlayingTime: Int,
     completed: () -> Unit
 ){
-    updatePreviousUserSelfLoveRelationship{
+    updatePreviousUserSelfLoveRelationship(continuePlayingTime){
         SelfLoveForRoutine.updateRecentlyPlayedUserSelfLoveRelationshipWithUserSelfLoveRelationship(
             globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!
         ) {
             globalViewModel_!!.currentUsersSelfLoveRelationships!![index] = it
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserBedtimeStoryRelationship {
+                updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
                     completed()
                 }
             }
@@ -513,7 +515,11 @@ private fun initializeMediaPlayer(
     index: Int,
     context: Context
 ){
-    updatePreviousAndCurrentSelfLoveRelationship(index) {
+    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+    updatePreviousAndCurrentSelfLoveRelationship(
+        index,
+        continuePlayingTime
+    ) {
         generalMediaPlayerService.onDestroy()
         generalMediaPlayerService.setAudioUri(selfLoveActivityUris[index]!!.value)
         val intent = Intent()
@@ -554,6 +560,7 @@ fun updateCurrentUserSelfLoveRelationshipUsageTimeStamp(
 }
 
 fun updatePreviousUserSelfLoveRelationship(
+    continuePlayingTime: Int,
     completed: (updatedUserSelfLoveRelationship: UserSelfLoveRelationship?) -> Unit
 ) {
     if(globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship != null){

@@ -101,7 +101,10 @@ fun EightHourCountdownUI(
                 progressColor = Black,
                 backgroundColor = PeriwinkleGray.copy(alpha = 0.5F),
                 modifier = Modifier.size(389.73.dp),
-                //generalMediaPlayerService = generalMediaPlayerService
+                actionDown = {},
+                actionMove = { a ->
+
+                }
             ){}
             Card(
                 elevation = 8.dp,
