@@ -53,7 +53,6 @@ var recordedPrayerAbsolutePath = mutableStateOf("")
 @Composable
 fun RecordPrayerUI(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     soundMediaPlayerService: SoundMediaPlayerService,
@@ -98,7 +97,7 @@ fun RecordPrayerUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -133,7 +132,7 @@ fun RecordPrayerUI(
             SwipeToResetRecordedPrayerUI(
                 context
             ) {
-                globalViewModel_!!.bottomSheetOpenFor = "recordAudio"
+                com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "recordAudio"
                 recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording = "prayer"
                 openBottomSheet(scope, state)
             }
@@ -188,12 +187,12 @@ fun createPrayerFromRecord(
     Thread.sleep(1_000)
     val tags = getPrayerTagsList()
     if (otherPrayersWithSameName < 1) {
-        val key = "Routine/Prayer/${globalViewModel_!!.currentUser!!.username}/recorded/$prayerName/${prayerName}_audio.aac"
+        val key = "Routine/Prayer/${globalViewModel!!.currentUser!!.username}/recorded/$prayerName/${prayerName}_audio.aac"
         SoundBackend.storeAudio(recordedFilePrayer.value.absolutePath, key){
             val prayer = PrayerObject.Prayer(
                 UUID.randomUUID().toString(),
-                UserObject.User.from(globalViewModel_!!.currentUser!!),
-                globalViewModel_!!.currentUser!!.id,
+                UserObject.User.from(globalViewModel!!.currentUser!!),
+                globalViewModel!!.currentUser!!.id,
                 prayerName,
                 prayerShortDescription,
                 prayerLongDescription,

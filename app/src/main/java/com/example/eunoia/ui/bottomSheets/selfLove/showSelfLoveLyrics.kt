@@ -13,8 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.eunoia.ui.components.AlignedLightText
 import com.example.eunoia.ui.components.NormalText
-import com.example.eunoia.ui.components.SimpleFlowRow
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.selfLoveViewModel
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.OldLace
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +44,7 @@ fun ShowSelfLoveLyricsBottomSheet(
                 }
         ) {
             NormalText(
-                text = globalViewModel_!!.currentSelfLoveLyricsToBeShown!!.displayName,
+                text = selfLoveViewModel!!.currentSelfLoveLyricsToBeShown!!.displayName,
                 color = Black,
                 fontSize = 13,
                 xOffset = 0,
@@ -60,7 +59,7 @@ fun ShowSelfLoveLyricsBottomSheet(
                     end.linkTo(parent.end, margin = 16.dp)
                 }
         ) {
-            for(lyric in globalViewModel_!!.currentSelfLoveLyricsToBeShown!!.lyrics){
+            for(lyric in selfLoveViewModel!!.currentSelfLoveLyricsToBeShown!!.lyrics){
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier

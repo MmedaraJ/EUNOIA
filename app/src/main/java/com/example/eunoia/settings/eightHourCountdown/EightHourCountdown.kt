@@ -28,7 +28,7 @@ import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.dashboard.bedtimeStory.CircularSlider
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.PurpleBackgroundStart
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 
@@ -65,7 +65,7 @@ fun EightHourCountdownUI(
                     navigateBack(navController)
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {

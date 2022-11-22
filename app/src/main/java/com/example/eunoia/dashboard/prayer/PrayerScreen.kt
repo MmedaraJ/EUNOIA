@@ -2,7 +2,6 @@ package com.example.eunoia.dashboard.prayer
 
 import android.content.res.Configuration
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -38,7 +37,9 @@ import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.PurpleBackgroundInfo
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
+import com.example.eunoia.ui.navigation.prayerViewModel
+import com.example.eunoia.ui.navigation.prayerViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.PrayerTimer
 import com.example.eunoia.utils.timerFormatMS
@@ -96,11 +97,11 @@ fun PrayerScreen(
         prayerData
     )
 
-    globalViewModel_!!.navController = navController
+    globalViewModel!!.navController = navController
     var retrievedUris by rememberSaveable{ mutableStateOf(false) }
 
-    if(globalViewModel_!!.currentPrayerPlaying != null) {
-        if (globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id) {
+    if(prayerViewModel!!.currentPrayerPlaying != null) {
+        if (prayerViewModel!!.currentPrayerPlaying!!.id == prayerData.id) {
             setParametersFromGlobalVariables{
                 retrievedUris = true
             }
@@ -146,7 +147,7 @@ fun PrayerScreen(
                         navigateBack(navController)
                     },
                     {
-                        globalViewModel_!!.bottomSheetOpenFor = "controls"
+                        globalViewModel!!.bottomSheetOpenFor = "controls"
                         openBottomSheet(scope, state)
                     },
                     {
@@ -185,8 +186,8 @@ fun PrayerScreen(
                     backgroundColor = PeriwinkleGray.copy(alpha = 0.5F),
                     modifier = Modifier.size(320.dp),
                 ){ appliedAngle ->
-                    if(globalViewModel_!!.currentPrayerPlaying != null){
-                        if(globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id){
+                    if(prayerViewModel!!.currentPrayerPlaying != null){
+                        if(prayerViewModel!!.currentPrayerPlaying!!.id == prayerData.id){
                             if(prayerClicked.value) {
                                 val newSeek = (
                                         appliedAngle /
@@ -194,12 +195,12 @@ fun PrayerScreen(
                                         ) * generalMediaPlayerService.getMediaPlayer()!!.duration
                                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeek.toInt())
                                 prayerTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                                //globalViewModel_!!.prayerTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                                //prayerViewModel_!!.prayerTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                                 prayerTimer.start()
-                                globalViewModel_!!.prayerTimer = prayerTimer
-                                if(!globalViewModel_!!.isCurrentPrayerPlaying) {
+                                prayerViewModel!!.prayerTimer = prayerTimer
+                                if(!prayerViewModel!!.isCurrentPrayerPlaying) {
                                     prayerTimer.pause()
-                                    globalViewModel_!!.prayerTimer = prayerTimer
+                                    prayerViewModel!!.prayerTimer = prayerTimer
                                 }
                             }
                         }
@@ -312,29 +313,29 @@ private const val TAG = "prayerScreen"
 fun setUpParameters(
     completed: () -> Unit
 ) {
-    if(globalViewModel_!!.currentPrayerPlayingUri != null) {
-        prayerUri = globalViewModel_!!.currentPrayerPlayingUri!!
+    if(prayerViewModel!!.currentPrayerPlayingUri != null) {
+        prayerUri = prayerViewModel!!.currentPrayerPlayingUri!!
 
         for (i in prayerScreenIcons.indices) {
-            prayerScreenIcons[i].value = globalViewModel_!!.prayerScreenIcons[i].value
+            prayerScreenIcons[i].value = prayerViewModel!!.prayerScreenIcons[i].value
         }
         for (i in prayerScreenBorderControlColors.indices) {
             prayerScreenBorderControlColors[i].value =
-                globalViewModel_!!.prayerScreenBorderControlColors[i].value
+                prayerViewModel!!.prayerScreenBorderControlColors[i].value
         }
         for (i in prayerScreenBackgroundControlColor1.indices) {
             prayerScreenBackgroundControlColor1[i].value =
-                globalViewModel_!!.prayerScreenBackgroundControlColor1[i].value
+                prayerViewModel!!.prayerScreenBackgroundControlColor1[i].value
         }
         for (i in prayerScreenBackgroundControlColor2.indices) {
             prayerScreenBackgroundControlColor2[i].value =
-                globalViewModel_!!.prayerScreenBackgroundControlColor2[i].value
+                prayerViewModel!!.prayerScreenBackgroundControlColor2[i].value
         }
 
-        prayerTimeDisplay = globalViewModel_!!.prayerTimeDisplay
-        prayerTimer = globalViewModel_!!.prayerTimer
-        prayerAngle.value = globalViewModel_!!.prayerCircularSliderAngle
-        prayerClicked.value = globalViewModel_!!.prayerCircularSliderClicked
+        prayerTimeDisplay = prayerViewModel!!.prayerTimeDisplay
+        prayerTimer = prayerViewModel!!.prayerTimer
+        prayerAngle.value = prayerViewModel!!.prayerCircularSliderAngle
+        prayerClicked.value = prayerViewModel!!.prayerCircularSliderClicked
         completed()
     }
 }

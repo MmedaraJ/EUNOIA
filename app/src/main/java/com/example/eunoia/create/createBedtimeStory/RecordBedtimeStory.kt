@@ -44,7 +44,7 @@ import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.navigation.openConfirmDeleteBedtimeStoryDialogBox
 import com.example.eunoia.ui.navigation.openSavedElementDialogBox
 import com.example.eunoia.ui.screens.Screen
@@ -86,7 +86,6 @@ private var backgroundControlColor2 = arrayOf(
 fun RecordBedtimeStoryUI(
     navController: NavController,
     bedtimeStoryData: BedtimeStoryInfoData,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     soundMediaPlayerService: SoundMediaPlayerService,
@@ -147,7 +146,7 @@ fun RecordBedtimeStoryUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -307,7 +306,7 @@ fun completeBedtimeStory(
         concatenateAllUris(outFile, context) {
             val key = "Routine/" +
                     "BedtimeStories/" +
-                    "${globalViewModel_!!.currentUser!!.username}/" +
+                    "${globalViewModel!!.currentUser!!.username}/" +
                     "recorded/" +
                     "${bedtimeStoryData.displayName}_complete/" +
                     "${bedtimeStoryData.displayName}_audio.aac"
@@ -423,7 +422,7 @@ private fun retrieveCorrespondingUri(
 ) {
     SoundBackend.retrieveAudio(
         s3Key!!,
-        globalViewModel_!!.currentUser!!.amplifyAuthUserId
+        globalViewModel!!.currentUser!!.amplifyAuthUserId
     ) {
         if (it != null) {
             allUriTriples[i].uri = it
@@ -487,7 +486,7 @@ private fun deleteUserBedtimeStory(
     completed: () -> Unit
 ) {
     UserBedtimeStoryBackend.queryUserBedtimeStoryBasedOnUserAndBedtimeStory(
-        globalViewModel_!!.currentUser!!,
+        globalViewModel!!.currentUser!!,
         bedtimeStoryData
     ){
         if(it.isNotEmpty()){
@@ -505,7 +504,7 @@ private fun deleteUserBedtimeStoryRelationship(
     completed: () -> Unit
 ) {
     UserBedtimeStoryInfoRelationshipBackend.queryUserBedtimeStoryInfoRelationshipBasedOnUserAndBedtimeStoryInfo(
-        globalViewModel_!!.currentUser!!,
+        globalViewModel!!.currentUser!!,
         bedtimeStoryData
     ){
         if(it.isNotEmpty()){

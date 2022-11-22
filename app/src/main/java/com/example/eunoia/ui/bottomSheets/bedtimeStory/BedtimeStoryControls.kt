@@ -13,7 +13,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,8 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
-import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
@@ -38,10 +35,10 @@ import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.components.AnImageWithColor
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.NormalText
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.bedtimeStoryViewModel
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.timerFormatMS
-import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 
 private const val TAG = "bottomSheetBedtimeStoryControl"
@@ -49,16 +46,15 @@ private const val TAG = "bottomSheetBedtimeStoryControl"
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun bottomSheetBedtimeStoryControlPanel(
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService
 ): Boolean{
     var showing = false
-    if(globalViewModel.currentBedtimeStoryPlaying != null) {
+    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
         showing = true
         BottomSheetBedtimeStoryControlPanelUI(
-            bedtimeStoryInfoData = globalViewModel.currentBedtimeStoryPlaying!!,
+            bedtimeStoryInfoData = bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!,
             scope = scope,
             state = state,
             generalMediaPlayerService = generalMediaPlayerService
@@ -83,10 +79,10 @@ fun BottomSheetBedtimeStoryControlPanelUI(
             .height(115.dp)
             .fillMaxWidth()
             .clickable {
-                if(globalViewModel_!!.navController != null){
+                if(globalViewModel!!.navController != null){
                     closeBottomSheet(scope, state)
                     navigateToBedtimeStoryScreen(
-                        globalViewModel_!!.navController!!,
+                        globalViewModel!!.navController!!,
                         bedtimeStoryInfoData
                     )
                 }
@@ -155,7 +151,7 @@ fun BottomSheetBedtimeStoryControlPanelUI(
                     }
             ) {
                 BottomSheetBedtimeStoryControls(
-                    globalViewModel_!!.currentBedtimeStoryPlaying!!,
+                    bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!,
                     generalMediaPlayerService
                 )
             }
@@ -172,22 +168,22 @@ fun BottomSheetBedtimeStoryControls(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        globalViewModel_!!.bedtimeStoryScreenIcons.forEachIndexed { index, icon ->
+        bedtimeStoryViewModel!!.bedtimeStoryScreenIcons.forEachIndexed { index, icon ->
             Box(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
                     .gradientBackground(
                         listOf(
-                           globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value,
-                            globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value
+                           bedtimeStoryViewModel!!.bedtimeStoryScreenBackgroundControlColor1[index].value,
+                            bedtimeStoryViewModel!!.bedtimeStoryScreenBackgroundControlColor2[index].value
                         ),
                         angle = 45f
                     )
                     .border(
                         BorderStroke(
                             0.5.dp,
-                            globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value
+                            bedtimeStoryViewModel!!.bedtimeStoryScreenBorderControlColors[index].value
                         ),
                         RoundedCornerShape(50.dp)
                     ),
@@ -196,7 +192,7 @@ fun BottomSheetBedtimeStoryControls(
                 AnImageWithColor(
                     icon.value,
                     "icon",
-                    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value,
+                    bedtimeStoryViewModel!!.bedtimeStoryScreenBorderControlColors[index].value,
                     12.dp,
                     12.dp,
                     0,
@@ -244,17 +240,17 @@ fun resetBedtimeStory(
     generalMediaPlayerService: GeneralMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData
 ){
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
+        if (bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
             if (generalMediaPlayerService.isMediaPlayerInitialized()) {
                 resetBothLocalAndGlobalControlButtonsAfterReset()
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle = 0f
-                globalViewModel_!!.bedtimeStoryTimer.stop()
-                globalViewModel_!!.bedtimeStoryTimeDisplay =
+                bedtimeStoryViewModel!!.bedtimeStoryCircularSliderClicked = false
+                bedtimeStoryViewModel!!.bedtimeStoryCircularSliderAngle = 0f
+                bedtimeStoryViewModel!!.bedtimeStoryTimer.stop()
+                bedtimeStoryViewModel!!.bedtimeStoryTimeDisplay =
                     timerFormatMS(bedtimeStoryInfoData.fullPlayTime.toLong())
-                globalViewModel_!!.resetCDT()
-                globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+                globalViewModel!!.resetCDT()
+                bedtimeStoryViewModel!!.isCurrentBedtimeStoryPlaying = false
                 generalMediaPlayerService.onDestroy()
             }
         }
@@ -265,17 +261,17 @@ fun seekBack15(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
+        if (bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
             if(generalMediaPlayerService.isMediaPlayerInitialized()) {
-                globalViewModel_!!.resetCDT()
+                globalViewModel!!.resetCDT()
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
                 if(newSeekTo < 0){
                     newSeekTo = 0
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
 
-                globalViewModel_!!.remainingPlayTime =
+                globalViewModel!!.remainingPlayTime =
                     bedtimeStoryInfoData.fullPlayTime -
                             generalMediaPlayerService.getMediaPlayer()!!.currentPosition
                 startCDT(
@@ -283,15 +279,15 @@ fun seekBack15(
                     bedtimeStoryInfoData
                 )
 
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
+                bedtimeStoryViewModel!!.bedtimeStoryCircularSliderClicked = false
+                bedtimeStoryViewModel!!.bedtimeStoryCircularSliderAngle = (
                         (generalMediaPlayerService.getMediaPlayer()!!.currentPosition).toFloat() /
                                 (bedtimeStoryInfoData.fullPlayTime).toFloat()
                         ) * 360f
 
-                globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
-                    globalViewModel_!!.bedtimeStoryTimer.start()
+                bedtimeStoryViewModel!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(bedtimeStoryViewModel!!.isCurrentBedtimeStoryPlaying) {
+                    bedtimeStoryViewModel!!.bedtimeStoryTimer.start()
                 }
             }
         }
@@ -302,10 +298,10 @@ fun seekForward15(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
+        if (bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
             if(generalMediaPlayerService.isMediaPlayerInitialized()) {
-                globalViewModel_!!.resetCDT()
+                globalViewModel!!.resetCDT()
 
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
                 if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
@@ -315,7 +311,7 @@ fun seekForward15(
                 }
                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeekTo)
 
-                globalViewModel_!!.remainingPlayTime =
+                globalViewModel!!.remainingPlayTime =
                     bedtimeStoryInfoData.fullPlayTime -
                             generalMediaPlayerService.getMediaPlayer()!!.currentPosition
                 startCDT(
@@ -323,14 +319,14 @@ fun seekForward15(
                     bedtimeStoryInfoData
                 )
 
-                globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-                globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
+                bedtimeStoryViewModel!!.bedtimeStoryCircularSliderClicked = false
+                bedtimeStoryViewModel!!.bedtimeStoryCircularSliderAngle = (
                         generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toFloat() /
                                 bedtimeStoryInfoData.fullPlayTime.toFloat()
                         ) * 360f
-                globalViewModel_!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
-                if(globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
-                    globalViewModel_!!.bedtimeStoryTimer.start()
+                bedtimeStoryViewModel!!.bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
+                if(bedtimeStoryViewModel!!.isCurrentBedtimeStoryPlaying) {
+                    bedtimeStoryViewModel!!.bedtimeStoryTimer.start()
                 }
             }
         }
@@ -341,8 +337,8 @@ private fun startCDT(
     generalMediaPlayerService: GeneralMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData
 ) {
-    globalViewModel_!!.startTheCDT(
-        globalViewModel_!!.remainingPlayTime.toLong(),
+    globalViewModel!!.startTheCDT(
+        globalViewModel!!.remainingPlayTime.toLong(),
         generalMediaPlayerService
     ){
         resetBedtimeStory(
@@ -357,8 +353,8 @@ fun pauseOrPlayBedtimeStoryAccordingly(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
+        if (bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
             if (generalMediaPlayerService.isMediaPlayerInitialized()) {
                 if (generalMediaPlayerService.isMediaPlayerPlaying()) {
                     pauseBedtimeStory(generalMediaPlayerService)
@@ -394,12 +390,12 @@ private fun pauseBedtimeStory(
     if(generalMediaPlayerService.isMediaPlayerInitialized()) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
-            globalViewModel_!!.bedtimeStoryTimer.pause()
-            globalViewModel_!!.generalPlaytimeTimer.pause()
-            globalViewModel_!!.resetCDT()
+            bedtimeStoryViewModel!!.bedtimeStoryTimer.pause()
+            globalViewModel!!.generalPlaytimeTimer.pause()
+            globalViewModel!!.resetCDT()
             activateBedtimeStoryGlobalControlButton(2)
             activateBedtimeStoryGlobalControlButton(2)
-            globalViewModel_!!.isCurrentBedtimeStoryPlaying = false
+            bedtimeStoryViewModel!!.isCurrentBedtimeStoryPlaying = false
         }
     }
 }
@@ -408,11 +404,11 @@ private fun startBedtimeStory(
     generalMediaPlayerService: GeneralMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
 ) {
-    if(globalViewModel_!!.currentBedtimeStoryPlayingUri != null){
+    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri != null){
         if(generalMediaPlayerService.isMediaPlayerInitialized()){
-            if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
-                globalViewModel_!!.remainingPlayTime =
-                    globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime -
+            if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+                globalViewModel!!.remainingPlayTime =
+                    bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.fullPlayTime -
                             generalMediaPlayerService.getMediaPlayer()!!.currentPosition
 
                 generalMediaPlayerService.startMediaPlayer()
@@ -439,13 +435,13 @@ private fun afterPlayingBedtimeStory(
     generalMediaPlayerService: GeneralMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
 ){
-    globalViewModel_!!.bedtimeStoryTimer.start()
-    globalViewModel_!!.generalPlaytimeTimer.start()
+    bedtimeStoryViewModel!!.bedtimeStoryTimer.start()
+    globalViewModel!!.generalPlaytimeTimer.start()
     startCDT(
         generalMediaPlayerService,
         bedtimeStoryInfoData
     )
-    globalViewModel_!!.isCurrentBedtimeStoryPlaying = true
+    bedtimeStoryViewModel!!.isCurrentBedtimeStoryPlaying = true
     deActivateBedtimeStoryGlobalControlButton(2)
     deActivateBedtimeStoryGlobalControlButton(0)
 }
@@ -478,11 +474,11 @@ private fun initializeMediaPlayer(
         continuePlayingTime
     ) {
         generalMediaPlayerService.onDestroy()
-        generalMediaPlayerService.setAudioUri(globalViewModel_!!.currentBedtimeStoryPlayingUri!!)
+        generalMediaPlayerService.setAudioUri(bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri!!)
         val intent = Intent()
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
-        globalViewModel_!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
+        bedtimeStoryViewModel!!.bedtimeStoryTimer.setMaxDuration(bedtimeStoryInfoData.fullPlayTime.toLong())
         resetOtherGeneralMediaPlayerUsersExceptBedtimeStory()
 
         resetGlobalControlButtons()
@@ -501,7 +497,7 @@ private fun retrieveBedtimeStoryAudio(
         bedtimeStoryInfoData.audioKeyS3,
         bedtimeStoryInfoData.bedtimeStoryOwner.amplifyAuthUserId
     ) {
-        globalViewModel_!!.currentBedtimeStoryPlayingUri = it
+        bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri = it
         startBedtimeStory(
             generalMediaPlayerService,
             bedtimeStoryInfoData,
@@ -518,19 +514,19 @@ fun resetGlobalControlButtons(){
 }
 
 fun activateBedtimeStoryGlobalControlButton(index: Int){
-    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value = Black
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value = SoftPeach
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value = Solitude
+    bedtimeStoryViewModel!!.bedtimeStoryScreenBorderControlColors[index].value = Black
+    bedtimeStoryViewModel!!.bedtimeStoryScreenBackgroundControlColor1[index].value = SoftPeach
+    bedtimeStoryViewModel!!.bedtimeStoryScreenBackgroundControlColor2[index].value = Solitude
     if(index == 2){
-        globalViewModel_!!.bedtimeStoryScreenIcons[index].value = R.drawable.play_icon
+        bedtimeStoryViewModel!!.bedtimeStoryScreenIcons[index].value = R.drawable.play_icon
     }
 }
 
 fun deActivateBedtimeStoryGlobalControlButton(index: Int){
-    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[index].value = Bizarre
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[index].value = White
-    globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[index].value = White
+    bedtimeStoryViewModel!!.bedtimeStoryScreenBorderControlColors[index].value = Bizarre
+    bedtimeStoryViewModel!!.bedtimeStoryScreenBackgroundControlColor1[index].value = White
+    bedtimeStoryViewModel!!.bedtimeStoryScreenBackgroundControlColor2[index].value = White
     if(index == 2){
-        globalViewModel_!!.bedtimeStoryScreenIcons[index].value = R.drawable.pause_icon
+        bedtimeStoryViewModel!!.bedtimeStoryScreenIcons[index].value = R.drawable.pause_icon
     }
 }

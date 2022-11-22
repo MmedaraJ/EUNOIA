@@ -2,7 +2,6 @@ package com.example.eunoia.create
 
 import android.content.Context
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,7 +15,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.example.eunoia.create.createBedtimeStory.resetAllBedtimeStoryCreationObjects
 import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
@@ -45,11 +43,10 @@ var createSoundViewModel: CreateSoundViewModel? = null
 @Composable
 fun CreateUI(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    globalViewModel_!!.navController = navController
+    globalViewModel!!.navController = navController
     createSoundViewModel =  viewModel()
     openSavedElementDialogBox = false
     resetAllBedtimeStoryCreationObjects()
@@ -77,7 +74,7 @@ fun CreateUI(
             ProfilePictureHeader(
                 {},
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
 
                 },
@@ -204,7 +201,6 @@ fun CreatePreview() {
     EUNOIATheme {
         CreateUI(
             rememberNavController(),
-            globalViewModel,
             rememberCoroutineScope(),
             rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
         )

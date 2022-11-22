@@ -53,7 +53,6 @@ var recordedSelfLoveAbsolutePath = mutableStateOf("")
 @Composable
 fun RecordSelfLoveUI(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     soundMediaPlayerService: SoundMediaPlayerService,
@@ -98,7 +97,7 @@ fun RecordSelfLoveUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -133,7 +132,7 @@ fun RecordSelfLoveUI(
             SwipeToResetRecordedSelfLoveUI(
                 context
             ) {
-                globalViewModel_!!.bottomSheetOpenFor = "recordAudio"
+                com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "recordAudio"
                 recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording = "selfLove"
                 openBottomSheet(scope, state)
             }
@@ -189,12 +188,12 @@ fun createSelfLoveFromRecord(
     val tags = getSelfLoveTagsList()
     val lyrics = getSelfLoveLyricsList()
     if (otherSelfLovesWithSameName < 1) {
-        val key = "Routine/SelfLove/${globalViewModel_!!.currentUser!!.username}/recorded/$selfLoveName/${selfLoveName}_audio.aac"
+        val key = "Routine/SelfLove/${globalViewModel!!.currentUser!!.username}/recorded/$selfLoveName/${selfLoveName}_audio.aac"
         SoundBackend.storeAudio(recordedFileSelfLove.value.absolutePath, key){
             val selfLove = SelfLoveObject.SelfLove(
                 UUID.randomUUID().toString(),
-                UserObject.User.from(globalViewModel_!!.currentUser!!),
-                globalViewModel_!!.currentUser!!.id,
+                UserObject.User.from(globalViewModel!!.currentUser!!),
+                globalViewModel!!.currentUser!!.id,
                 selfLoveName,
                 selfLoveShortDescription,
                 selfLoveLongDescription,

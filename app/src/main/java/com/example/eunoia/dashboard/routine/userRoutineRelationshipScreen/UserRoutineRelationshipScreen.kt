@@ -33,8 +33,7 @@ import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.WrappedPurpleBackgroundStart
-import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
@@ -90,8 +89,8 @@ fun UserRoutineRelationshipScreen(
 
     var retrievedData by rememberSaveable{ mutableStateOf(false) }
 
-    if(globalViewModel_!!.currentRoutinePlaying != null) {
-        if (globalViewModel_!!.currentRoutinePlaying!!.id == userRoutineRelationship.userRoutineRelationshipRoutine.id) {
+    if(routineViewModel!!.currentRoutinePlaying != null) {
+        if (routineViewModel!!.currentRoutinePlaying!!.id == userRoutineRelationship.userRoutineRelationshipRoutine.id) {
             setParametersFromGlobalVariables{
                 retrievedData = true
             }
@@ -135,7 +134,7 @@ fun UserRoutineRelationshipScreen(
                         navigateBack(navController)
                     },
                     {
-                        globalViewModel_!!.bottomSheetOpenFor = "controls"
+                        globalViewModel!!.bottomSheetOpenFor = "controls"
                         openBottomSheet(scope, state)
                     },
                     {
@@ -205,55 +204,55 @@ private fun setParametersFromGlobalVariables(
 ) {
     playButtonText = PAUSE_ROUTINE
 
-    if(globalViewModel_!!.currentUserRoutineRelationshipPlaying != null) {
-        thisUserRoutineRelationship = globalViewModel_!!.currentUserRoutineRelationshipPlaying
+    if(routineViewModel!!.currentUserRoutineRelationshipPlaying != null) {
+        thisUserRoutineRelationship = routineViewModel!!.currentUserRoutineRelationshipPlaying
     }
 
-    if(globalViewModel_!!.currentRoutinePlayingOrder != null) {
-        playingOrderIndex = globalViewModel_!!.currentRoutinePlayingOrderIndex!!
-        playingOrder = globalViewModel_!!.currentRoutinePlayingOrder!!
+    if(routineViewModel!!.currentRoutinePlayingOrder != null) {
+        playingOrderIndex = routineViewModel!!.currentRoutinePlayingOrderIndex!!
+        playingOrder = routineViewModel!!.currentRoutinePlayingOrder!!
     }
 
-    if (globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets != null) {
-        presetsIndex = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!
-        presets = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+    if (routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresets != null) {
+        presetsIndex = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!
+        presets = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
     }
 
-    if (globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers != null) {
-        prayersIndex = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!
-        prayers = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+    if (routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayers != null) {
+        prayersIndex = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!
+        prayers = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
     }
 
-    if (globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories != null){
-        bedtimeStoriesIndex = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!
-        bedtimeStories = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
+    if (routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories != null){
+        bedtimeStoriesIndex = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!
+        bedtimeStories = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
     }
 
-    if(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves != null){
-        selfLovesIndex = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!!
-        selfLoves = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!!
+    if(routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves != null){
+        selfLovesIndex = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!!
+        selfLoves = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!!
     }
 
-    if(globalViewModel_!!.currentPrayerPlayingUri != null) {
-        prayerUri[prayers!![prayersIndex]!!.prayerData.id] = globalViewModel_!!.currentPrayerPlayingUri!!
+    if(prayerViewModel!!.currentPrayerPlayingUri != null) {
+        prayerUri[prayers!![prayersIndex]!!.prayerData.id] = prayerViewModel!!.currentPrayerPlayingUri!!
     }
-    if(globalViewModel_!!.currentBedtimeStoryPlayingUri != null) {
-        bedtimeStoryUri[bedtimeStories!![bedtimeStoriesIndex]!!.bedtimeStoryInfoData.id] = globalViewModel_!!.currentBedtimeStoryPlayingUri!!
+    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri != null) {
+        bedtimeStoryUri[bedtimeStories!![bedtimeStoriesIndex]!!.bedtimeStoryInfoData.id] = bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri!!
     }
-    if(globalViewModel_!!.currentSelfLovePlayingUri != null) {
-        selfLoveUri[selfLoves!![selfLovesIndex]!!.selfLoveData.id] = globalViewModel_!!.currentSelfLovePlayingUri!!
+    if(selfLoveViewModel!!.currentSelfLovePlayingUri != null) {
+        selfLoveUri[selfLoves!![selfLovesIndex]!!.selfLoveData.id] = selfLoveViewModel!!.currentSelfLovePlayingUri!!
     }
-    if(globalViewModel_!!.currentSoundPlayingUris != null) {
-        presetUris[presets!![presetsIndex]!!.soundPresetData.id] = globalViewModel_!!.currentSoundPlayingUris!!
+    if(soundViewModel!!.currentSoundPlayingUris != null) {
+        presetUris[presets!![presetsIndex]!!.soundPresetData.id] = soundViewModel!!.currentSoundPlayingUris!!
     }
 
-    soundCountDownTimer = globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer
-    prayerCountDownTimer = globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer
-    nextPrayerCountDownTimer = globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer
-    selfLoveCountDownTimer = globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer
-    nextSelfLoveCountDownTimer = globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer
-    bedtimeStoryCountDownTimer = globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer
-    nextBedtimeStoryCountDownTimer = globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer
+    soundCountDownTimer = routineViewModel!!.currentRoutinePlayingSoundCountDownTimer
+    prayerCountDownTimer = routineViewModel!!.currentRoutinePlayingPrayerCountDownTimer
+    nextPrayerCountDownTimer = routineViewModel!!.currentRoutinePlayingNextPrayerCountDownTimer
+    selfLoveCountDownTimer = routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer
+    nextSelfLoveCountDownTimer = routineViewModel!!.currentRoutinePlayingNextSelfLoveCountDownTimer
+    bedtimeStoryCountDownTimer = routineViewModel!!.currentRoutinePlayingBedtimeStoryCountDownTimer
+    nextBedtimeStoryCountDownTimer = routineViewModel!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer
 
     completed()
 }
@@ -327,9 +326,9 @@ fun resetCurrentlyPlayingRoutineIfNecessaryRoutineUI(
     context: Context,
 ) {
     if(
-        globalViewModel_!!.currentRoutinePlaying != null &&
-        globalViewModel_!!.currentUserRoutineRelationshipPlaying != null &&
-        globalViewModel_!!.currentUserRoutineRelationshipPlaying!!.id != thisUserRoutineRelationship!!.id
+        routineViewModel!!.currentRoutinePlaying != null &&
+        routineViewModel!!.currentUserRoutineRelationshipPlaying != null &&
+        routineViewModel!!.currentUserRoutineRelationshipPlaying!!.id != thisUserRoutineRelationship!!.id
     ){
         openRoutineIsCurrentlyPlayingDialogBox = true
     }else{
@@ -354,11 +353,11 @@ private fun selectNextRoutineElement(
             thisUserRoutineRelationship = it
         }
 
-        globalViewModel_!!.routinePlaytimeTimer.start()
-        globalViewModel_!!.currentRoutinePlaying = thisUserRoutineRelationship!!.userRoutineRelationshipRoutine
+        globalViewModel!!.routinePlaytimeTimer.start()
+        routineViewModel!!.currentRoutinePlaying = thisUserRoutineRelationship!!.userRoutineRelationshipRoutine
         playingOrder = thisUserRoutineRelationship!!.playingOrder
-        globalViewModel_!!.currentRoutinePlayingOrder = playingOrder
-        globalViewModel_!!.currentUserRoutineRelationshipPlaying = thisUserRoutineRelationship
+        routineViewModel!!.currentRoutinePlayingOrder = playingOrder
+        routineViewModel!!.currentUserRoutineRelationshipPlaying = thisUserRoutineRelationship
 
         Log.i(
             TAG,
@@ -418,16 +417,16 @@ fun incrementPlayingOrderIndex(
 ){
     Log.i(TAG, "plahing ordeer index before increment is $playingOrderIndex")
     playingOrderIndex += 1
-    globalViewModel_!!.currentRoutinePlayingOrderIndex = globalViewModel_!!.currentRoutinePlayingOrderIndex!! + 1
+    routineViewModel!!.currentRoutinePlayingOrderIndex = routineViewModel!!.currentRoutinePlayingOrderIndex!! + 1
     if(playingOrderIndex > playingOrder!!.indices.last){
         updateUserRoutineRelationshipWhenRoutineIsDonePlaying(
             thisUserRoutineRelationship!!
         ){
             Log.i(TAG, "Routine is endeedz")
             thisUserRoutineRelationship = it
-            globalViewModel_!!.currentUserRoutineRelationshipPlaying = it
+            routineViewModel!!.currentUserRoutineRelationshipPlaying = it
             playingOrderIndex = 0
-            globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
+            routineViewModel!!.currentRoutinePlayingOrderIndex = 0
             playButtonText = START_ROUTINE
         }
     }else{

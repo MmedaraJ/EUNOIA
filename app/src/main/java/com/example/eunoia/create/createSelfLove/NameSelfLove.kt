@@ -19,8 +19,8 @@ import com.example.eunoia.backend.SelfLoveBackend
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
 import com.example.eunoia.ui.navigation.openSelfLoveNameTakenDialogBox
+import com.example.eunoia.ui.navigation.soundViewModel
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
@@ -52,7 +52,6 @@ private const val MAX_SELF_LOVE_LYRICS = 2000
 @Composable
 fun NameSelfLoveUI(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -105,7 +104,7 @@ fun NameSelfLoveUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -343,10 +342,10 @@ fun NameSelfLoveUI(
                 }
         ) {
             val borders = mutableListOf<MutableState<Boolean>>()
-            for(icon in globalViewModel_!!.soundScreenIcons){
+            for(icon in soundViewModel!!.soundScreenIcons){
                 borders.add(remember { mutableStateOf(false) })
             }
-            globalViewModel_!!.soundScreenIcons.forEachIndexed{ index, icon ->
+            soundViewModel!!.soundScreenIcons.forEachIndexed{ index, icon ->
                 var cardModifier = Modifier
                     .padding(bottom = 15.dp)
                     .clickable {

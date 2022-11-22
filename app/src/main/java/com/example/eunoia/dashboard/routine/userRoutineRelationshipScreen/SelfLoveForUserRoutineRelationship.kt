@@ -18,9 +18,7 @@ import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.selfLove.activateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
-import com.example.eunoia.ui.bottomSheets.selfLove.activateSelfLoveGlobalControlButton
-import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.*
 
 object SelfLoveForUserRoutineRelationship {
     private const val TAG = "SelfLoveForUserRoutineRelationship"
@@ -71,14 +69,14 @@ object SelfLoveForUserRoutineRelationship {
     ) {
         if(
             generalMediaPlayerService.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-            globalViewModel_!!.currentPrayerPlaying == null
+            bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+            prayerViewModel!!.currentPrayerPlaying == null
         ) {
             if(generalMediaPlayerService.isMediaPlayerPlaying()) {
                 generalMediaPlayerService.pauseMediaPlayer()
-                globalViewModel_!!.selfLoveTimer.pause()
-                globalViewModel_!!.generalPlaytimeTimer.pause()
-                globalViewModel_!!.isCurrentSelfLovePlaying = false
+                selfLoveViewModel!!.selfLoveTimer.pause()
+                globalViewModel!!.generalPlaytimeTimer.pause()
+                selfLoveViewModel!!.isCurrentSelfLovePlaying = false
                 activateSelfLoveGlobalControlButton(2)
             }
         }
@@ -173,8 +171,8 @@ object SelfLoveForUserRoutineRelationship {
     private fun afterPlayingSelfLove(generalMediaPlayerService: GeneralMediaPlayerService, ){
         playButtonText = PAUSE_ROUTINE
         generalMediaPlayerService.loopMediaPlayer()
-        globalViewModel_!!.selfLoveTimer.start()
-        globalViewModel_!!.generalPlaytimeTimer.start()
+        selfLoveViewModel!!.selfLoveTimer.start()
+        globalViewModel!!.generalPlaytimeTimer.start()
         setGlobalPropertiesAfterPlayingSelfLove()
     }
 
@@ -186,8 +184,8 @@ object SelfLoveForUserRoutineRelationship {
         if(selfLoveUri[selfLoves!![selfLovesIndex]!!.selfLoveData.id] != "".toUri()) {
             if(
                 generalMediaPlayerService.isMediaPlayerInitialized() &&
-                globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-                globalViewModel_!!.currentPrayerPlaying == null
+                bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+                prayerViewModel!!.currentPrayerPlaying == null
             ){
                 generalMediaPlayerService.startMediaPlayer()
                 afterPlayingSelfLove(generalMediaPlayerService)
@@ -237,7 +235,7 @@ object SelfLoveForUserRoutineRelationship {
             generalMediaPlayerService.onStartCommand(intent, 0, 0)
             Log.i(TAG, "selfLove index = $selfLovesIndex")
 
-            globalViewModel_!!.selfLoveTimer.setMaxDuration(
+            selfLoveViewModel!!.selfLoveTimer.setMaxDuration(
                 selfLoves!![selfLovesIndex]!!.selfLoveData.fullPlayTime.toLong()
             )
             resetOtherGeneralMediaPlayerUsersExceptSelfLove()
@@ -289,17 +287,17 @@ object SelfLoveForUserRoutineRelationship {
             deActivateSelfLoveGlobalControlButton(0)
             activateSelfLoveGlobalControlButton(2)
 
-            globalViewModel_!!.isCurrentSelfLovePlaying = false
-            globalViewModel_!!.currentSelfLovePlaying = null
+            selfLoveViewModel!!.isCurrentSelfLovePlaying = false
+            selfLoveViewModel!!.currentSelfLovePlaying = null
 
             selfLoveCountDownTimer = null
-            globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = selfLoveCountDownTimer
+            routineViewModel!!.currentRoutinePlayingNextSelfLoveCountDownTimer = selfLoveCountDownTimer
 
             selfLovesIndex += 1
             if (selfLovesIndex > selfLoves!!.indices.last) {
                 selfLovesIndex = 0
             }
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = selfLovesIndex
+            routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = selfLovesIndex
 
             val routine =
                 thisUserRoutineRelationship!!.copyOfBuilder()
@@ -308,7 +306,7 @@ object SelfLoveForUserRoutineRelationship {
 
             UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {
                 thisUserRoutineRelationship = it
-                globalViewModel_!!.currentUserRoutineRelationshipPlaying = it
+                routineViewModel!!.currentUserRoutineRelationshipPlaying = it
                 playButtonText = START_ROUTINE
                 playOrPauseSelfLoveAccordingly(
                     soundMediaPlayerService,
@@ -334,13 +332,13 @@ object SelfLoveForUserRoutineRelationship {
             deActivateSelfLoveGlobalControlButton(0)
             activateSelfLoveGlobalControlButton(2)
 
-            globalViewModel_!!.isCurrentSelfLovePlaying = false
-            globalViewModel_!!.currentSelfLovePlaying = null
+            selfLoveViewModel!!.isCurrentSelfLovePlaying = false
+            selfLoveViewModel!!.currentSelfLovePlaying = null
             selfLoveCountDownTimer = null
-            globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer = selfLoveCountDownTimer
+            routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer = selfLoveCountDownTimer
 
             nextSelfLoveCountDownTimer = null
-            globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = nextSelfLoveCountDownTimer
+            routineViewModel!!.currentRoutinePlayingNextSelfLoveCountDownTimer = nextSelfLoveCountDownTimer
 
             val routine = thisUserRoutineRelationship!!.copyOfBuilder()
                 .currentSelfLoveContinuePlayingTime(continuePlayingTime)
@@ -349,7 +347,7 @@ object SelfLoveForUserRoutineRelationship {
             updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
                 UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {
                     thisUserRoutineRelationship = it
-                    globalViewModel_!!.currentUserRoutineRelationshipPlaying = it
+                    routineViewModel!!.currentUserRoutineRelationshipPlaying = it
                     playButtonText = START_ROUTINE
 
                     incrementPlayingOrderIndex(
@@ -380,7 +378,7 @@ object SelfLoveForUserRoutineRelationship {
             }
         }
         selfLoveCountDownTimer!!.start()
-        globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer = selfLoveCountDownTimer
+        routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer = selfLoveCountDownTimer
     }
 
     private fun startNextSelfLoveCountDownTimer(
@@ -401,15 +399,15 @@ object SelfLoveForUserRoutineRelationship {
             }
         }
         nextSelfLoveCountDownTimer!!.start()
-        globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = nextSelfLoveCountDownTimer
+        routineViewModel!!.currentRoutinePlayingNextSelfLoveCountDownTimer = nextSelfLoveCountDownTimer
     }
 
     private fun setGlobalPropertiesAfterPlayingSelfLove(){
-        globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = selfLoves
-        globalViewModel_!!.currentSelfLovePlaying = selfLoves!![selfLovesIndex]!!.selfLoveData
-        globalViewModel_!!.currentSelfLovePlayingUri = selfLoveUri[selfLoves!![selfLovesIndex]!!.selfLoveData.id]
-        globalViewModel_!!.isCurrentSelfLovePlaying = true
-        globalViewModel_!!.isCurrentRoutinePlaying = true
+        routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = selfLoves
+        selfLoveViewModel!!.currentSelfLovePlaying = selfLoves!![selfLovesIndex]!!.selfLoveData
+        selfLoveViewModel!!.currentSelfLovePlayingUri = selfLoveUri[selfLoves!![selfLovesIndex]!!.selfLoveData.id]
+        selfLoveViewModel!!.isCurrentSelfLovePlaying = true
+        routineViewModel!!.isCurrentRoutinePlaying = true
 
         deActivateSelfLoveGlobalControlButton(0)
         deActivateSelfLoveGlobalControlButton(2)

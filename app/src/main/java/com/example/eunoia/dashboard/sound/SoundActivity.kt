@@ -35,11 +35,9 @@ import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.sound.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
-import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -103,11 +101,11 @@ fun SoundActivityUI(
     )
 
     resetSoundActivityPlayButtonTexts()
-    globalViewModel_!!.navController = navController
+    globalViewModel!!.navController = navController
     val scrollState = rememberScrollState()
 
     var retrievedSounds by rememberSaveable{ mutableStateOf(false) }
-    globalViewModel_!!.currentUser?.let {
+    globalViewModel!!.currentUser?.let {
         UserSoundRelationshipBackend.queryApprovedUserSoundRelationshipBasedOnUser(it) { userSoundRelationship ->
             if(soundActivityUris.size < userSoundRelationship.size) {
                 for(i in userSoundRelationship.indices){
@@ -117,7 +115,7 @@ fun SoundActivityUI(
                     soundActivityPresets.add(mutableStateOf(null))
                 }
             }
-            globalViewModel_!!.currentUsersSoundRelationships = userSoundRelationship.toMutableList()
+            soundViewModel!!.currentUsersSoundRelationships = userSoundRelationship.toMutableList()
             retrievedSounds = true
         }
     }
@@ -149,7 +147,7 @@ fun SoundActivityUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -220,13 +218,13 @@ fun SoundActivityUI(
         ){
             if(
                 retrievedSounds &&
-                globalViewModel_!!.currentUsersSoundRelationships != null
+                soundViewModel!!.currentUsersSoundRelationships != null
             ) {
-                if(globalViewModel_!!.currentUsersSoundRelationships!!.size > 0){
-                    for(i in globalViewModel_!!.currentUsersSoundRelationships!!.indices){
+                if(soundViewModel!!.currentUsersSoundRelationships!!.size > 0){
+                    for(i in soundViewModel!!.currentUsersSoundRelationships!!.indices){
                         setSoundActivityPlayButtonTextsCorrectly(i)
                         SoundCard(
-                            globalViewModel_!!.currentUsersSoundRelationships!![i]!!.userSoundRelationshipSound,
+                            soundViewModel!!.currentUsersSoundRelationships!![i]!!.userSoundRelationshipSound,
                             i,
                             { index ->
                                 soundIndex = index
@@ -239,10 +237,10 @@ fun SoundActivityUI(
                                 if(soundActivityPlayButtonTexts[index]!!.value != WAIT_FOR_SOUND) {
                                     soundScreenBorderControlColors[7].value = Bizarre
 
-                                    Log.d(TAG, "Sound is 123 ${globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound}")
+                                    Log.d(TAG, "Sound is 123 ${soundViewModel!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound}")
                                     navigateToSoundScreen(
                                         navController,
-                                        globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound
+                                        soundViewModel!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound
                                     )
                                 }
                             }
@@ -338,7 +336,7 @@ private fun resetCurrentlyPlayingRoutineIfNecessary(
     soundMediaPlayerService: SoundMediaPlayerService,
     context: Context,
 ) {
-    if(globalViewModel_!!.currentRoutinePlaying != null){
+    if(routineViewModel!!.currentRoutinePlaying != null){
         openRoutineIsCurrentlyPlayingDialogBox = true
     }else{
         startSoundConfirmed(
@@ -349,12 +347,12 @@ private fun resetCurrentlyPlayingRoutineIfNecessary(
 }
 
 private fun setSoundActivityPlayButtonTextsCorrectly(i: Int) {
-    if (globalViewModel_!!.currentSoundPlaying != null) {
+    if (soundViewModel!!.currentSoundPlaying != null) {
         if (
-            globalViewModel_!!.currentSoundPlaying!!.id ==
-            globalViewModel_!!.currentUsersSoundRelationships!![i]!!.userSoundRelationshipSound.id
+            soundViewModel!!.currentSoundPlaying!!.id ==
+            soundViewModel!!.currentUsersSoundRelationships!![i]!!.userSoundRelationshipSound.id
         ) {
-            if(globalViewModel_!!.isCurrentSoundPlaying){
+            if(soundViewModel!!.isCurrentSoundPlaying){
                 soundActivityPlayButtonTexts[i]!!.value = PAUSE_SOUND
             }else{
                 soundActivityPlayButtonTexts[i]!!.value = START_SOUND
@@ -387,8 +385,8 @@ private fun resetSoundMediaPlayerServiceIfNecessary(
     soundMediaPlayerService: SoundMediaPlayerService,
     index: Int
 ) {
-    if(globalViewModel_!!.currentSoundPlaying != null) {
-        if (globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.id != globalViewModel_!!.currentSoundPlaying!!.id) {
+    if(soundViewModel!!.currentSoundPlaying != null) {
+        if (soundViewModel!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.id != soundViewModel!!.currentSoundPlaying!!.id) {
             soundMediaPlayerService.onDestroy()
         }
     }
@@ -431,13 +429,13 @@ private fun retrieveSoundAudio(
 ) {
     soundActivityUris[index].clear()
     SoundBackend.listS3Sounds(
-        globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.audioKeyS3,
-        globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.soundOwner.amplifyAuthUserId
+        soundViewModel!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.audioKeyS3,
+        soundViewModel!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.soundOwner.amplifyAuthUserId
     ){ s3List ->
         s3List.items.forEachIndexed { i, item ->
             SoundBackend.retrieveAudio(
                 item.key,
-                globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.soundOwner.amplifyAuthUserId
+                soundViewModel!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.soundOwner.amplifyAuthUserId
             ) { uri ->
                 soundActivityUris[index].add(uri)
                 if(soundActivityUris[index].size == s3List.items.size){
@@ -478,14 +476,14 @@ private fun afterPlayingSound(
     index: Int,
     context: Context
 ){
-    globalViewModel_!!.soundPlaytimeTimer.start()
+    globalViewModel!!.soundPlaytimeTimer.start()
     setGlobalPropertiesAfterPlayingSound(index, context)
 }
 
 private fun getNecessaryPresets(index: Int, completed: () -> Unit){
     getUserSoundPresets(
-        globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound,
-        globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.soundOwner,
+        soundViewModel!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound,
+        soundViewModel!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound.soundOwner,
     ) { presetData ->
         if(presetData.isNotEmpty()) {
             soundActivityPresets[index]!!.value = presetData[0]
@@ -496,20 +494,20 @@ private fun getNecessaryPresets(index: Int, completed: () -> Unit){
 }
 
 private fun setGlobalPropertiesAfterPlayingSound(index: Int, context: Context) {
-    globalViewModel_!!.currentSoundPlaying = globalViewModel_!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound
-    Log.i(TAG, "globalViewModel_!!.currentSoundPlaying is ${globalViewModel_!!.currentSoundPlaying}")
-    globalViewModel_!!.currentSoundPlayingPreset = soundActivityPresets[index]!!.value
-    globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-    globalViewModel_!!.soundSliderVolumes = globalViewModel_!!.currentSoundPlayingPreset!!.volumes
-    for (volume in globalViewModel_!!.currentSoundPlayingPreset!!.volumes) {
-        globalViewModel_!!.currentSoundPlayingSliderPositions.add(
+    soundViewModel!!.currentSoundPlaying = soundViewModel!!.currentUsersSoundRelationships!![index]!!.userSoundRelationshipSound
+    Log.i(TAG, "soundViewModel_!!.currentSoundPlaying is ${soundViewModel!!.currentSoundPlaying}")
+    soundViewModel!!.currentSoundPlayingPreset = soundActivityPresets[index]!!.value
+    soundViewModel!!.currentSoundPlayingSliderPositions.clear()
+    soundViewModel!!.soundSliderVolumes = soundViewModel!!.currentSoundPlayingPreset!!.volumes
+    for (volume in soundViewModel!!.currentSoundPlayingPreset!!.volumes) {
+        soundViewModel!!.currentSoundPlayingSliderPositions.add(
             mutableStateOf(volume.toFloat())
         )
     }
-    globalViewModel_!!.currentSoundPlayingUris = soundActivityUris[index]
-    globalViewModel_!!.currentSoundPlayingContext = context
+    soundViewModel!!.currentSoundPlayingUris = soundActivityUris[index]
+    soundViewModel!!.currentSoundPlayingContext = context
     soundActivityPlayButtonTexts[index]!!.value = PAUSE_SOUND
-    globalViewModel_!!.isCurrentSoundPlaying = true
+    soundViewModel!!.isCurrentSoundPlaying = true
     com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(3)
     com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(1)
     com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(0)
@@ -521,9 +519,9 @@ private fun updatePreviousAndCurrentSoundRelationship(
 ){
     updatePreviousUserSoundRelationship {
         updateRecentlyPlayedUserSoundRelationshipWithUserSoundRelationship(
-            globalViewModel_!!.currentUsersSoundRelationships!![index]!!
+            soundViewModel!!.currentUsersSoundRelationships!![index]!!
         ){
-            globalViewModel_!!.currentUsersSoundRelationships!![index] = it
+            soundViewModel!!.currentUsersSoundRelationships!![index] = it
             completed()
         }
     }
@@ -584,35 +582,35 @@ fun updateCurrentUserSoundRelationshipUsageTimeStamp(
 fun updatePreviousUserSoundRelationship(
     completed: (updatedUserSoundRelationship: UserSoundRelationship?) -> Unit
 ) {
-    if(globalViewModel_!!.previouslyPlayedUserSoundRelationship != null){
-        Log.i(TAG, "Duration of general timer is ${globalViewModel_!!.soundPlaytimeTimer.getDuration()}")
-        val playTime = globalViewModel_!!.soundPlaytimeTimer.getDuration()
-        globalViewModel_!!.soundPlaytimeTimer.stop()
+    if(soundViewModel!!.previouslyPlayedUserSoundRelationship != null){
+        Log.i(TAG, "Duration of general timer is ${globalViewModel!!.soundPlaytimeTimer.getDuration()}")
+        val playTime = globalViewModel!!.soundPlaytimeTimer.getDuration()
+        globalViewModel!!.soundPlaytimeTimer.stop()
 
-        Log.i(TAG, "Total play time = ${globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime}")
+        Log.i(TAG, "Total play time = ${soundViewModel!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime}")
         Log.i(TAG, "play time = $playTime")
-        val totalPlayTime = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime + playTime
+        val totalPlayTime = soundViewModel!!.previouslyPlayedUserSoundRelationship!!.totalPlayTime + playTime
         Log.i(TAG, "final total play time = $totalPlayTime")
 
-        var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.usagePlayTimes
+        var usagePlayTimes = soundViewModel!!.previouslyPlayedUserSoundRelationship!!.usagePlayTimes
         if(usagePlayTimes != null) {
             usagePlayTimes.add(playTime.toInt())
         }else{
             usagePlayTimes = listOf(playTime.toInt())
         }
 
-        val numberOfTimesPlayed = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.numberOfTimesPlayed
+        val numberOfTimesPlayed = soundViewModel!!.previouslyPlayedUserSoundRelationship!!.numberOfTimesPlayed
         Log.i(TAG, "number of times played = $numberOfTimesPlayed")
 
         if(totalPlayTime > 0){
-            val userSoundRelationship = globalViewModel_!!.previouslyPlayedUserSoundRelationship!!.copyOfBuilder()
+            val userSoundRelationship = soundViewModel!!.previouslyPlayedUserSoundRelationship!!.copyOfBuilder()
                 .numberOfTimesPlayed(numberOfTimesPlayed)
                 .totalPlayTime(totalPlayTime.toInt())
                 .usagePlayTimes(usagePlayTimes)
                 .build()
 
             UserSoundRelationshipBackend.updateUserSoundRelationship(userSoundRelationship){
-                globalViewModel_!!.previouslyPlayedUserSoundRelationship = null
+                soundViewModel!!.previouslyPlayedUserSoundRelationship = null
                 completed(it)
             }
         }else{
@@ -629,11 +627,11 @@ private fun pauseSound(
 ) {
     if(soundMediaPlayerService.areMediaPlayersInitialized()) {
         if(soundMediaPlayerService.areMediaPlayersPlaying()) {
-            globalViewModel_!!.soundPlaytimeTimer.pause()
+            globalViewModel!!.soundPlaytimeTimer.pause()
             soundMediaPlayerService.pauseMediaPlayers()
             soundActivityPlayButtonTexts[index]!!.value = START_SOUND
             com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(3)
-            globalViewModel_!!.isCurrentSoundPlaying = false
+            soundViewModel!!.isCurrentSoundPlaying = false
         }
     }
 }
@@ -694,8 +692,7 @@ fun clearSoundActivityPlayButtonTexts(){
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        //SoundActivityUI(rememberNavController(), LocalContext.current, globalViewModel)
+        //SoundActivityUI(rememberNavController(), LocalContext.current, soundViewModel)
     }
 }

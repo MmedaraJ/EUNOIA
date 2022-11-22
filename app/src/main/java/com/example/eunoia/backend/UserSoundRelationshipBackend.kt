@@ -7,7 +7,7 @@ import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.*
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.models.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,7 +45,7 @@ object UserSoundRelationshipBackend {
     fun createUserSoundRelationshipObject(sound: SoundData, completed: (userSoundRelationship: UserSoundRelationship) -> Unit){
         val userSoundRelationshipModel = UserSoundRelationshipObject.UserSoundRelationshipModel(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            UserObject.User.from(globalViewModel!!.currentUser!!),
             SoundObject.Sound.from(sound),
             0,
             0,

@@ -21,8 +21,7 @@ import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
-fun FeedbackUI(navController: NavController, context: Context, globalViewModel: GlobalViewModel) {
-    //globalViewModel_!!.navController = navController
+fun FeedbackUI(navController: NavController) {
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier
@@ -157,8 +156,7 @@ fun FeedbackUI(navController: NavController, context: Context, globalViewModel: 
 )
 @Composable
 fun Preview() {
-    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        FeedbackUI(rememberNavController(), LocalContext.current, globalViewModel)
+        FeedbackUI(rememberNavController())
     }
 }

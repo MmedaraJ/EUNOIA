@@ -29,7 +29,8 @@ import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.bedtimeStoryViewModel
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.BedtimeStoryTimer
 import com.example.eunoia.utils.timerFormatMS
@@ -85,11 +86,11 @@ fun BedtimeStoryScreen(
         bedtimeStoryInfoData
     )
 
-    globalViewModel_!!.navController = navController
+    globalViewModel!!.navController = navController
     var retrievedUris by rememberSaveable{ mutableStateOf(false) }
 
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null) {
-        if (globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
+    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
+        if (bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
             setParametersFromGlobalVariables{
                 retrievedUris = true
             }
@@ -130,7 +131,7 @@ fun BedtimeStoryScreen(
                         navigateBack(navController)
                     },
                     {
-                        globalViewModel_!!.bottomSheetOpenFor = "controls"
+                        globalViewModel!!.bottomSheetOpenFor = "controls"
                         openBottomSheet(scope, state)
                     },
                     {
@@ -187,10 +188,10 @@ fun BedtimeStoryScreen(
                         Log.i(TAG, "actionMove = true")
                     }
                 ){ appliedAngle ->
-                    if(globalViewModel_!!.currentBedtimeStoryPlaying != null){
-                        if(globalViewModel_!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+                    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null){
+                        if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
                             if(getCircularSliderClicked()) {
-                                globalViewModel_!!.resetCDT()
+                                globalViewModel!!.resetCDT()
 
                                 val newSeek = (
                                         appliedAngle /
@@ -198,7 +199,7 @@ fun BedtimeStoryScreen(
                                         ) * generalMediaPlayerService.getMediaPlayer()!!.duration
                                 generalMediaPlayerService.getMediaPlayer()!!.seekTo(newSeek.toInt())
 
-                                globalViewModel_!!.remainingPlayTime =
+                                globalViewModel!!.remainingPlayTime =
                                     bedtimeStoryInfoData.fullPlayTime -
                                             generalMediaPlayerService.getMediaPlayer()!!.currentPosition
                                 startCDT(
@@ -208,10 +209,10 @@ fun BedtimeStoryScreen(
 
                                 bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                                 bedtimeStoryTimer.start()
-                                globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
-                                if(!globalViewModel_!!.isCurrentBedtimeStoryPlaying) {
+                                bedtimeStoryViewModel!!.bedtimeStoryTimer = bedtimeStoryTimer
+                                if(!bedtimeStoryViewModel!!.isCurrentBedtimeStoryPlaying) {
                                     bedtimeStoryTimer.pause()
-                                    globalViewModel_!!.bedtimeStoryTimer = bedtimeStoryTimer
+                                    bedtimeStoryViewModel!!.bedtimeStoryTimer = bedtimeStoryTimer
                                 }
                             }
                         }
@@ -317,7 +318,7 @@ fun setUpForNewPlay(
     resetBedtimeStoryControlsUI()
     setCircularSliderClicked(false)
     UserBedtimeStoryInfoRelationshipBackend.queryUserBedtimeStoryInfoRelationshipBasedOnUserAndBedtimeStoryInfo(
-        globalViewModel_!!.currentUser!!,
+        globalViewModel!!.currentUser!!,
         bedtimeStoryInfoData
     ){
         if(it.isNotEmpty()){
@@ -351,26 +352,26 @@ fun setUpParameters(
 ) {
     Log.d(TAG, "setup params")
     if(bedtimeStoryUri == null) {
-        bedtimeStoryUri = globalViewModel_!!.currentBedtimeStoryPlayingUri!!
+        bedtimeStoryUri = bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri!!
     }
 
     for(i in bedtimeStoryScreenIcons.indices){
-        bedtimeStoryScreenIcons[i].value = globalViewModel_!!.bedtimeStoryScreenIcons[i].value
+        bedtimeStoryScreenIcons[i].value = bedtimeStoryViewModel!!.bedtimeStoryScreenIcons[i].value
     }
     for(i in bedtimeStoryScreenBorderControlColors.indices){
-        bedtimeStoryScreenBorderControlColors[i].value = globalViewModel_!!.bedtimeStoryScreenBorderControlColors[i].value
+        bedtimeStoryScreenBorderControlColors[i].value = bedtimeStoryViewModel!!.bedtimeStoryScreenBorderControlColors[i].value
     }
     for(i in bedtimeStoryScreenBackgroundControlColor1.indices){
-        bedtimeStoryScreenBackgroundControlColor1[i].value = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor1[i].value
+        bedtimeStoryScreenBackgroundControlColor1[i].value = bedtimeStoryViewModel!!.bedtimeStoryScreenBackgroundControlColor1[i].value
     }
     for(i in bedtimeStoryScreenBackgroundControlColor2.indices){
-        bedtimeStoryScreenBackgroundControlColor2[i].value = globalViewModel_!!.bedtimeStoryScreenBackgroundControlColor2[i].value
+        bedtimeStoryScreenBackgroundControlColor2[i].value = bedtimeStoryViewModel!!.bedtimeStoryScreenBackgroundControlColor2[i].value
     }
 
-    bedtimeStoryTimeDisplay = globalViewModel_!!.bedtimeStoryTimeDisplay
-    bedtimeStoryTimer = globalViewModel_!!.bedtimeStoryTimer
-    setCircularSliderClicked(globalViewModel_!!.bedtimeStoryCircularSliderClicked)
-    setCircularSliderAngle(globalViewModel_!!.bedtimeStoryCircularSliderAngle)
+    bedtimeStoryTimeDisplay = bedtimeStoryViewModel!!.bedtimeStoryTimeDisplay
+    bedtimeStoryTimer = bedtimeStoryViewModel!!.bedtimeStoryTimer
+    setCircularSliderClicked(bedtimeStoryViewModel!!.bedtimeStoryCircularSliderClicked)
+    setCircularSliderAngle(bedtimeStoryViewModel!!.bedtimeStoryCircularSliderAngle)
     completed()
 }
 

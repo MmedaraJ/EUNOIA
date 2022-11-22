@@ -1,7 +1,5 @@
 package com.example.eunoia.create.createBedtimeStory
 
-import android.content.Context
-import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.CountDownTimer
@@ -30,25 +28,19 @@ import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
 import com.amplifyframework.datastore.generated.model.PageData
 import com.example.eunoia.R
-import com.example.eunoia.backend.BedtimeStoryChapterBackend
 import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.dashboard.bedtimeStory.bedtimeStoryActivityUris
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.lifecycle.CustomLifecycleEventListener
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
-import com.example.eunoia.ui.bottomSheets.recordAudio.recordingFile
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.*
-import com.example.eunoia.utils.getRandomString
-import com.example.eunoia.utils.retrieveUriDuration
 import com.example.eunoia.viewModels.PageViewModel
 import kotlinx.coroutines.CoroutineScope
-import java.io.File
 
 var pageRecordingNames = mutableListOf<MutableState<String>>()
 var pageRecordingS3Keys = mutableListOf<MutableState<String>>()
@@ -222,7 +214,7 @@ fun PageScreenUI(
                     }
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -514,7 +506,7 @@ fun PageScreenUI(
 
                                             SoundBackend.retrieveAudio(
                                                 pageRecordingS3Keys[i].value,
-                                                globalViewModel_!!.currentUser!!.amplifyAuthUserId
+                                                globalViewModel!!.currentUser!!.amplifyAuthUserId
                                             ) {
                                                 if(it != null){
                                                     if(i < pageRecordingFileUris.size) {
@@ -555,7 +547,7 @@ fun PageScreenUI(
 
                                             SoundBackend.retrieveAudio(
                                                 pageRecordingS3Keys[i].value,
-                                                globalViewModel_!!.currentUser!!.amplifyAuthUserId
+                                                globalViewModel!!.currentUser!!.amplifyAuthUserId
                                             ) {
                                                 if(it != null){
                                                     if(i < pageRecordingFileUris.size) {
@@ -588,7 +580,7 @@ fun PageScreenUI(
                                             Log.i(TAG, "selectedPageRecordingIndex iz $it")
                                             selectedPageRecordingIndex = it
                                             activatePageControls(2)
-                                            globalViewModel_!!.bottomSheetOpenFor = "recordAudio"
+                                            globalViewModel!!.bottomSheetOpenFor = "recordAudio"
                                             recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording =
                                                 pageData
                                             openBottomSheet(scope, state)
@@ -773,7 +765,7 @@ private fun storeToS3IfChapterPage(
     if(index < pageRecordingFileNames.size) {
         val key = "Routine/" +
                 "BedtimeStories/" +
-                "${globalViewModel_!!.currentUser!!.username}/" +
+                "${globalViewModel!!.currentUser!!.username}/" +
                 "recorded/" +
                 "${thisChapterData!!.bedtimeStoryInfo.displayName}/" +
                 "${thisChapterData!!.displayName}/" +

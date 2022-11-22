@@ -7,7 +7,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -23,7 +22,7 @@ import com.example.eunoia.ui.bottomSheets.prayer.bottomSheetPrayerControlPanel
 import com.example.eunoia.ui.bottomSheets.selfLove.bottomSheetSelfLoveControlPanel
 import com.example.eunoia.ui.bottomSheets.sound.bottomSheetSoundControlPanel
 import com.example.eunoia.ui.components.LightText
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -38,10 +37,10 @@ fun openBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
 
 @OptIn(ExperimentalMaterialApi::class)
 fun closeBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
-    globalViewModel_!!.soundScreenBorderControlColors[7].value = Bizarre
-    globalViewModel_!!.bedtimeStoryScreenBorderControlColors[4].value = Bizarre
-    globalViewModel_!!.selfLoveScreenBorderControlColors[4].value = Bizarre
-    globalViewModel_!!.prayerScreenBorderControlColors[4].value = Bizarre
+    soundViewModel!!.soundScreenBorderControlColors[7].value = Bizarre
+    bedtimeStoryViewModel!!.bedtimeStoryScreenBorderControlColors[4].value = Bizarre
+    selfLoveViewModel!!.selfLoveScreenBorderControlColors[4].value = Bizarre
+    prayerViewModel!!.prayerScreenBorderControlColors[4].value = Bizarre
     scope.launch{
         state.hide()
     }
@@ -50,7 +49,6 @@ fun closeBottomSheet(scope: CoroutineScope, state: ModalBottomSheetState) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetAllControls(
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -61,7 +59,6 @@ fun BottomSheetAllControls(
             .padding(start = 16.dp, top = 16.dp, end = 16.dp)
     ) {
         val soundPlaying = bottomSheetSoundControlPanel(
-            globalViewModel,
             scope,
             state,
             generalMediaPlayerService,
@@ -69,21 +66,18 @@ fun BottomSheetAllControls(
         )
 
         val bedtimeStoryPlaying = bottomSheetBedtimeStoryControlPanel(
-            globalViewModel,
             scope,
             state,
             generalMediaPlayerService
         )
 
         val selfLovePlaying = bottomSheetSelfLoveControlPanel(
-            globalViewModel,
             scope,
             state,
             generalMediaPlayerService
         )
 
         val prayerPlaying = bottomSheetPrayerControlPanel(
-            globalViewModel,
             scope,
             state,
             generalMediaPlayerService

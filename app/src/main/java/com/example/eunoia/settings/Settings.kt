@@ -26,7 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.amplifyframework.core.Amplify
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -35,12 +35,10 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun Settings(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
-    context: Context,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
-    globalViewModel_!!.navController = navController
+    globalViewModel!!.navController = navController
     val scrollState = rememberScrollState()
     ConstraintLayout(
         modifier = Modifier

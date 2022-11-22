@@ -8,7 +8,7 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.PrayerObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserPrayerRelationshipObject
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -46,7 +46,7 @@ object UserPrayerRelationshipBackend {
     fun createUserPrayerRelationshipObject(prayer: PrayerData, completed: (userPrayerRelationship: UserPrayerRelationship) -> Unit){
         val userPrayerRelationshipModel = UserPrayerRelationshipObject.UserPrayerRelationshipModel(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            UserObject.User.from(globalViewModel!!.currentUser!!),
             PrayerObject.Prayer.from(prayer),
             0,
             0,

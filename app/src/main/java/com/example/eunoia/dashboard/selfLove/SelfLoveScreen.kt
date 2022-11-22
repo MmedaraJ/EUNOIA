@@ -38,7 +38,8 @@ import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.PurpleBackgroundInfo
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
+import com.example.eunoia.ui.navigation.selfLoveViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.SelfLoveTimer
 import com.example.eunoia.utils.timerFormatMS
@@ -96,11 +97,11 @@ fun SelfLoveScreen(
         selfLoveData
     )
 
-    globalViewModel_!!.navController = navController
+    globalViewModel!!.navController = navController
     var retrievedUris by rememberSaveable{ mutableStateOf(false) }
 
-    if(globalViewModel_!!.currentSelfLovePlaying != null) {
-        if (globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
+    if(selfLoveViewModel!!.currentSelfLovePlaying != null) {
+        if (selfLoveViewModel!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
             setParametersFromGlobalVariables{
                 retrievedUris = true
             }
@@ -146,7 +147,7 @@ fun SelfLoveScreen(
                         navigateBack(navController)
                     },
                     {
-                        globalViewModel_!!.bottomSheetOpenFor = "controls"
+                        globalViewModel!!.bottomSheetOpenFor = "controls"
                         openBottomSheet(scope, state)
                     },
                     {
@@ -188,8 +189,8 @@ fun SelfLoveScreen(
                         .fillMaxWidth(0.8f)
                         .aspectRatio(1f),
                 ){ appliedAngle ->
-                    if(globalViewModel_!!.currentSelfLovePlaying != null){
-                        if(globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id){
+                    if(selfLoveViewModel!!.currentSelfLovePlaying != null){
+                        if(selfLoveViewModel!!.currentSelfLovePlaying!!.id == selfLoveData.id){
                             if(selfLoveClicked.value) {
                                 val newSeek = (
                                         appliedAngle /
@@ -199,10 +200,10 @@ fun SelfLoveScreen(
                                 selfLoveTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                                 //globalViewModel_!!.selfLoveTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())
                                 selfLoveTimer.start()
-                                globalViewModel_!!.selfLoveTimer = selfLoveTimer
-                                if(!globalViewModel_!!.isCurrentSelfLovePlaying) {
+                                selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
+                                if(!selfLoveViewModel!!.isCurrentSelfLovePlaying) {
                                     selfLoveTimer.pause()
-                                    globalViewModel_!!.selfLoveTimer = selfLoveTimer
+                                    selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
                                 }
                             }
                         }
@@ -318,25 +319,25 @@ fun setUpParameters(
     completed: () -> Unit
 ) {
     Log.d(TAG, "setup params")
-    selfLoveUri = globalViewModel_!!.currentSelfLovePlayingUri!!
+    selfLoveUri = selfLoveViewModel!!.currentSelfLovePlayingUri!!
 
     for(i in selfLoveScreenIcons.indices){
-        selfLoveScreenIcons[i].value = globalViewModel_!!.selfLoveScreenIcons[i].value
+        selfLoveScreenIcons[i].value = selfLoveViewModel!!.selfLoveScreenIcons[i].value
     }
     for(i in selfLoveScreenBorderControlColors.indices){
-        selfLoveScreenBorderControlColors[i].value = globalViewModel_!!.selfLoveScreenBorderControlColors[i].value
+        selfLoveScreenBorderControlColors[i].value = selfLoveViewModel!!.selfLoveScreenBorderControlColors[i].value
     }
     for(i in selfLoveScreenBackgroundControlColor1.indices){
-        selfLoveScreenBackgroundControlColor1[i].value = globalViewModel_!!.selfLoveScreenBackgroundControlColor1[i].value
+        selfLoveScreenBackgroundControlColor1[i].value = selfLoveViewModel!!.selfLoveScreenBackgroundControlColor1[i].value
     }
     for(i in selfLoveScreenBackgroundControlColor2.indices){
-        selfLoveScreenBackgroundControlColor2[i].value = globalViewModel_!!.selfLoveScreenBackgroundControlColor2[i].value
+        selfLoveScreenBackgroundControlColor2[i].value = selfLoveViewModel!!.selfLoveScreenBackgroundControlColor2[i].value
     }
 
-    selfLoveTimeDisplay = globalViewModel_!!.selfLoveTimeDisplay
-    selfLoveTimer = globalViewModel_!!.selfLoveTimer
-    selfLoveAngle.value = globalViewModel_!!.selfLoveCircularSliderAngle
-    selfLoveClicked.value = globalViewModel_!!.selfLoveCircularSliderClicked
+    selfLoveTimeDisplay = selfLoveViewModel!!.selfLoveTimeDisplay
+    selfLoveTimer = selfLoveViewModel!!.selfLoveTimer
+    selfLoveAngle.value = selfLoveViewModel!!.selfLoveCircularSliderAngle
+    selfLoveClicked.value = selfLoveViewModel!!.selfLoveCircularSliderClicked
     completed()
 }
 

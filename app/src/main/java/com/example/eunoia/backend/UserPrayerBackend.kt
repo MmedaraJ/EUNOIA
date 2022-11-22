@@ -7,7 +7,7 @@ import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.*
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.models.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,7 +45,7 @@ object UserPrayerBackend {
     fun createUserPrayerObject(prayer: PrayerData, completed: (userPrayer: UserPrayer) -> Unit){
         val userPrayerModel = UserPrayerObject.UserPrayerModel(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            UserObject.User.from(globalViewModel!!.currentUser!!),
             PrayerObject.Prayer.from(prayer),
         )
         createUserPrayer(userPrayerModel){

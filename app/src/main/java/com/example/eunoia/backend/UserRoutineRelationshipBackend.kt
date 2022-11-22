@@ -10,12 +10,11 @@ import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 import com.example.eunoia.models.RoutineObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserRoutineRelationshipObject
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.RawValue
 import java.util.*
 
 object UserRoutineRelationshipBackend {
@@ -49,7 +48,7 @@ object UserRoutineRelationshipBackend {
     fun createUserRoutineRelationshipObject(routine: RoutineData, completed: (userRoutineRelationship: UserRoutineRelationship) -> Unit){
         val userRoutineRelationshipModel = UserRoutineRelationshipObject.UserRoutineRelationshipModel(
             id = UUID.randomUUID().toString(),
-            userRoutineRelationshipOwner = UserObject.User.from(globalViewModel_!!.currentUser!!),
+            userRoutineRelationshipOwner = UserObject.User.from(globalViewModel!!.currentUser!!),
             userRoutineRelationshipRoutine = RoutineObject.Routine.from(routine),
             numberOfTimesPlayed = 0,
             totalPlayTime = 0,

@@ -33,7 +33,6 @@ import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.*
-import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
@@ -131,12 +130,12 @@ fun SoundScreen(
     )
 
     SetUpAlertDialogs()
-    globalViewModel_!!.navController = navController
+    globalViewModel!!.navController = navController
     showCommentBox = false
     var retrievedPresets by rememberSaveable{ mutableStateOf(false) }
 
-    if(globalViewModel_!!.currentSoundPlaying != null) {
-        if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
+    if(soundViewModel!!.currentSoundPlaying != null) {
+        if (soundViewModel!!.currentSoundPlaying!!.id == soundData.id) {
             setParametersFromGlobalVariables{
                 retrievedPresets = true
             }
@@ -186,7 +185,7 @@ fun SoundScreen(
 
                     },
                     {
-                        globalViewModel_!!.bottomSheetOpenFor = "controls"
+                        globalViewModel!!.bottomSheetOpenFor = "controls"
                         openBottomSheet(scope, state)
                     },
                     {
@@ -296,8 +295,8 @@ fun SoundScreen(
                     0,
                     LocalContext.current
                 ) {
-                    if(globalViewModel_!!.currentSoundPlaying != null) {
-                        if (globalViewModel_!!.currentSoundPlaying!!.id == soundData.id) {
+                    if(soundViewModel!!.currentSoundPlaying != null) {
+                        if (soundViewModel!!.currentSoundPlaying!!.id == soundData.id) {
                             checkIfItIsOkayToOpenCommentBox(context) {}
                         }
                     }else{
@@ -442,31 +441,31 @@ private fun setParametersFromGlobalVariables(completed: () -> Unit) {
 }
 
 fun setUpParameters(completed: () -> Unit) {
-    if(globalViewModel_!!.currentSoundPlayingUris != null) {
-        soundPreset = globalViewModel_!!.currentSoundPlayingPreset
-        sliderPositions = globalViewModel_!!.currentSoundPlayingSliderPositions
-        sliderVolumes = globalViewModel_!!.soundSliderVolumes
-        soundUris = globalViewModel_!!.currentSoundPlayingUris!!
+    if(soundViewModel!!.currentSoundPlayingUris != null) {
+        soundPreset = soundViewModel!!.currentSoundPlayingPreset
+        sliderPositions = soundViewModel!!.currentSoundPlayingSliderPositions
+        sliderVolumes = soundViewModel!!.soundSliderVolumes
+        soundUris = soundViewModel!!.currentSoundPlayingUris!!
 
         for (i in soundScreenIcons.indices) {
-            soundScreenIcons[i] = globalViewModel_!!.soundScreenIcons[i]
+            soundScreenIcons[i] = soundViewModel!!.soundScreenIcons[i]
         }
         for (i in soundScreenBorderControlColors.indices) {
-            soundScreenBorderControlColors[i] = globalViewModel_!!.soundScreenBorderControlColors[i]
+            soundScreenBorderControlColors[i] = soundViewModel!!.soundScreenBorderControlColors[i]
         }
         for (i in soundScreenBackgroundControlColor1.indices) {
             soundScreenBackgroundControlColor1[i] =
-                globalViewModel_!!.soundScreenBackgroundControlColor1[i]
+                soundViewModel!!.soundScreenBackgroundControlColor1[i]
         }
         for (i in soundScreenBackgroundControlColor2.indices) {
             soundScreenBackgroundControlColor2[i] =
-                globalViewModel_!!.soundScreenBackgroundControlColor2[i]
+                soundViewModel!!.soundScreenBackgroundControlColor2[i]
         }
 
-        meditationBellInterval.value = globalViewModel_!!.soundMeditationBellInterval
-        timerTime.value = globalViewModel_!!.soundTimerTime
+        meditationBellInterval.value = soundViewModel!!.soundMeditationBellInterval
+        timerTime.value = soundViewModel!!.soundTimerTime
         associatedPreset = soundPreset
-        countDownTimer = globalViewModel_!!.soundCountDownTimer
+        countDownTimer = soundViewModel!!.soundCountDownTimer
         showAssociatedSoundWithSameVolume.value = false
         otherPresetsThatOriginatedFromThisSound = mutableListOf()
     }
@@ -476,8 +475,8 @@ fun setUpParameters(completed: () -> Unit) {
 fun setAllUserSoundPresets(completed: () -> Unit) {
     allUserSoundPresets = mutableSetOf()
     getUserSoundPresets(
-        globalViewModel_!!.currentSoundPlaying!!,
-        globalViewModel_!!.currentUser!!
+        soundViewModel!!.currentSoundPlaying!!,
+        globalViewModel!!.currentUser!!
     ) { presetList ->
         if(presetList.isNotEmpty()) {
             allUserSoundPresets!!.addAll(presetList)
@@ -489,8 +488,8 @@ fun setAllUserSoundPresets(completed: () -> Unit) {
 fun setAllOriginalSoundPresets(completed: () -> Unit) {
     allOriginalSoundPresets = mutableSetOf()
     getUserSoundPresets(
-        globalViewModel_!!.currentSoundPlaying!!,
-        globalViewModel_!!.currentSoundPlaying!!.soundOwner
+        soundViewModel!!.currentSoundPlaying!!,
+        soundViewModel!!.currentSoundPlaying!!.soundOwner
     ) {
         if(it.isNotEmpty()) {
             allOriginalSoundPresets!!.addAll(it)
@@ -558,7 +557,7 @@ private fun getNecessaryPresets(soundData: SoundData, completed: () -> Unit){
 
             getUserSoundPresets(
                 soundData,
-                globalViewModel_!!.currentUser!!
+                globalViewModel!!.currentUser!!
             ) { presetList ->
                 if(presetList.isNotEmpty()) {
                     allUserSoundPresets!!.addAll(presetList)
@@ -661,8 +660,8 @@ fun makePublicPresetObject(
 ){
     val preset = SoundPresetObject.SoundPreset(
         UUID.randomUUID().toString(),
-        UserObject.User.from(globalViewModel_!!.currentUser!!),
-        globalViewModel_!!.currentUser!!.id,
+        UserObject.User.from(globalViewModel!!.currentUser!!),
+        globalViewModel!!.currentUser!!.id,
         newPresetName,
         sliderVolumes!!.toList(),
         SoundObject.Sound.from(soundData).id,
@@ -684,8 +683,8 @@ private fun createSoundComment(
 ){
     val comment = CommentObject.Comment(
         UUID.randomUUID().toString(),
-        UserObject.User.from(globalViewModel_!!.currentUser!!),
-        globalViewModel_!!.currentUser!!.id,
+        UserObject.User.from(globalViewModel!!.currentUser!!),
+        globalViewModel!!.currentUser!!.id,
         newComment,
         SoundObject.Sound.from(soundData),
         soundData.id,
@@ -713,8 +712,7 @@ fun navigateBack(navController: NavController) {
 )
 @Composable
 fun Preview() {
-    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        //SoundScreen(rememberNavController(), "pouring_rain", LocalContext.current, globalViewModel)
+        //SoundScreen(rememberNavController(), "pouring_rain", LocalContext.current, soundViewModel)
     }
 }

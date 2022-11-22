@@ -32,11 +32,6 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
 import com.amplifyframework.datastore.generated.model.PageData
-import com.arthenica.mobileffmpeg.Config
-import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
-import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
-import com.arthenica.mobileffmpeg.FFmpeg
-import com.chaquo.python.Python
 import com.example.eunoia.R
 import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.backend.SoundBackend
@@ -45,9 +40,8 @@ import com.example.eunoia.ui.components.CustomizableButton
 import com.example.eunoia.ui.components.CustomizableLRButton
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.WrappedPurpleBackgroundStart
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.*
-import com.example.eunoia.utils.retrieveUriDuration
 import java.io.File
 
 
@@ -437,7 +431,7 @@ private fun getNextUri(generalMediaPlayerService: GeneralMediaPlayerService){
         if(nxtInd < thisPageData!!.audioKeysS3.size) {
             SoundBackend.retrieveAudio(
                 thisPageData!!.audioKeysS3[nxtInd],
-                globalViewModel_!!.currentUser!!.amplifyAuthUserId
+                globalViewModel!!.currentUser!!.amplifyAuthUserId
             ) {
                 if(nxtInd < pageRecordingFileUris.size) {
                     pageRecordingFileUris[nxtInd].value = it!!
@@ -459,7 +453,7 @@ fun playIt(generalMediaPlayerService: GeneralMediaPlayerService){
         if(pageRecordingFileUris[playingIndex].value.toString().isEmpty()){
             SoundBackend.retrieveAudio(
                 pageRecordingS3Keys[playingIndex].value,
-                globalViewModel_!!.currentUser!!.amplifyAuthUserId
+                globalViewModel!!.currentUser!!.amplifyAuthUserId
             ) {
                 pageRecordingFileUris[playingIndex].value = it!!
                 startPlaying(

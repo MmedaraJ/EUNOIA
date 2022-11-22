@@ -11,7 +11,7 @@ import com.amplifyframework.datastore.generated.model.UserSound
 import com.example.eunoia.models.SoundObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserSoundObject
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -50,7 +50,7 @@ object UserSoundBackend {
         val userSoundModel = UserSoundObject.UserSoundModel(
             UUID.randomUUID().toString(),
             SoundObject.Sound.from(soundData),
-            UserObject.User.from(globalViewModel_!!.currentUser!!)
+            UserObject.User.from(globalViewModel!!.currentUser!!)
         )
         createUserSound(userSoundModel){
             mainScope.launch {

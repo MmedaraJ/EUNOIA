@@ -11,23 +11,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
-import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
 import com.amplifyframework.datastore.generated.model.PageData
-import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.BedtimeStoryChapterBackend
 import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.backend.SoundBackend
-import com.example.eunoia.lifecycle.CustomLifecycleEventListener
 import com.example.eunoia.models.BedtimeStoryChapterObject
 import com.example.eunoia.models.PageObject
 import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.navigation.openConfirmDeleteBedtimeStoryDialogBox
 import com.example.eunoia.ui.navigation.openConfirmDeleteChapterDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
@@ -46,7 +40,6 @@ fun BedtimeStoryChapterScreenUI(
     navController: NavController,
     bedtimeStoryChapterData: BedtimeStoryInfoChapterData,
     chapterIndex: Int,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -96,7 +89,7 @@ fun BedtimeStoryChapterScreenUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {

@@ -28,12 +28,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.amplifyframework.datastore.generated.model.ChapterPageData
 import com.amplifyframework.datastore.generated.model.PageData
 import com.example.eunoia.R
-import com.example.eunoia.backend.BedtimeStoryChapterBackend
-import com.example.eunoia.backend.PageBackend
-import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.create.createBedtimeStory.*
 import com.example.eunoia.create.createPrayer.*
 import com.example.eunoia.create.createSelfLove.*
@@ -41,7 +37,7 @@ import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.navigation.recordAudioViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.Timer
@@ -67,7 +63,6 @@ var noOfPlaybackClicks = mutableStateOf(0)
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecordAudio(
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -535,7 +530,7 @@ fun resetRecordingFile(context: Context) {
     val fileIsDeleted = recordingFile!!.delete()
     if(fileIsDeleted) {
         recordingFile =
-            File(context.externalCacheDir!!.absolutePath + "/${globalViewModel_!!.currentUser!!.username}_audio.aac")
+            File(context.externalCacheDir!!.absolutePath + "/${globalViewModel!!.currentUser!!.username}_audio.aac")
     }
 }
 
@@ -765,10 +760,8 @@ fun stopAudioRecordedMediaPlayer(generalMediaPlayerService: GeneralMediaPlayerSe
 )
 @Composable
 fun RecordAudioPreview() {
-    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
         RecordAudio(
-            globalViewModel,
             rememberCoroutineScope(),
             rememberModalBottomSheetState(
                 initialValue = ModalBottomSheetValue.Hidden,

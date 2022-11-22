@@ -41,8 +41,7 @@ import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.screens.Screen
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
@@ -105,10 +104,10 @@ fun SelfLoveActivityUI(
     )
 
     resetSelfLoveActivityPlayButtonTexts()
-    globalViewModel_!!.navController = navController
+    globalViewModel!!.navController = navController
     val scrollState = rememberScrollState()
     var retrievedSelfLove by rememberSaveable{ mutableStateOf(false) }
-    globalViewModel_!!.currentUser?.let {
+    globalViewModel!!.currentUser?.let {
         UserSelfLoveRelationshipBackend.queryApprovedUserSelfLoveRelationshipBasedOnUser(it) { userSelfLoveRelationships ->
             if(selfLoveActivityUris.size < userSelfLoveRelationships.size) {
                 for (i in userSelfLoveRelationships.indices) {
@@ -116,7 +115,7 @@ fun SelfLoveActivityUI(
                     selfLoveActivityPlayButtonTexts.add(mutableStateOf(START_SELF_LOVE))
                 }
             }
-            globalViewModel_!!.currentUsersSelfLoveRelationships = userSelfLoveRelationships.toMutableList()
+            selfLoveViewModel!!.currentUsersSelfLoveRelationships = userSelfLoveRelationships.toMutableList()
             retrievedSelfLove = true
         }
     }
@@ -147,7 +146,7 @@ fun SelfLoveActivityUI(
             BackArrowHeader(
                 {navController.popBackStack()},
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -219,13 +218,13 @@ fun SelfLoveActivityUI(
         ){
             if(
                 retrievedSelfLove &&
-                globalViewModel_!!.currentUsersSelfLoveRelationships != null
+                selfLoveViewModel!!.currentUsersSelfLoveRelationships != null
             ){
-                if(globalViewModel_!!.currentUsersSelfLoveRelationships!!.size > 0){
-                    for(i in globalViewModel_!!.currentUsersSelfLoveRelationships!!.indices){
+                if(selfLoveViewModel!!.currentUsersSelfLoveRelationships!!.size > 0){
+                    for(i in selfLoveViewModel!!.currentUsersSelfLoveRelationships!!.indices){
                         setSelfLoveActivityPlayButtonTextsCorrectly(i)
                         DisplayUsersSelfLoves(
-                            globalViewModel_!!.currentUsersSelfLoveRelationships!![i]!!.userSelfLoveRelationshipSelfLove,
+                            selfLoveViewModel!!.currentUsersSelfLoveRelationships!![i]!!.userSelfLoveRelationshipSelfLove,
                             i,
                             { index ->
                                 selfLoveIndex = index
@@ -238,7 +237,7 @@ fun SelfLoveActivityUI(
                             { index ->
                                 navigateToSelfLoveScreen(
                                     navController,
-                                    globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove
+                                    selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove
                                 )
                             }
                         )
@@ -338,7 +337,7 @@ private fun resetCurrentlyPlayingRoutineIfNecessary(
     generalMediaPlayerService: GeneralMediaPlayerService,
     context: Context,
 ) {
-    if(globalViewModel_!!.currentRoutinePlaying != null){
+    if(routineViewModel!!.currentRoutinePlaying != null){
         openRoutineIsCurrentlyPlayingDialogBox = true
     }else{
         startSelfLoveConfirmed(
@@ -350,12 +349,12 @@ private fun resetCurrentlyPlayingRoutineIfNecessary(
 }
 
 private fun setSelfLoveActivityPlayButtonTextsCorrectly(i: Int) {
-    if (globalViewModel_!!.currentSelfLovePlaying != null) {
+    if (selfLoveViewModel!!.currentSelfLovePlaying != null) {
         if (
-            globalViewModel_!!.currentSelfLovePlaying!!.id ==
-            globalViewModel_!!.currentUsersSelfLoveRelationships!![i]!!.userSelfLoveRelationshipSelfLove.id
+            selfLoveViewModel!!.currentSelfLovePlaying!!.id ==
+            selfLoveViewModel!!.currentUsersSelfLoveRelationships!![i]!!.userSelfLoveRelationshipSelfLove.id
         ) {
-            if(globalViewModel_!!.isCurrentSelfLovePlaying){
+            if(selfLoveViewModel!!.isCurrentSelfLovePlaying){
                 selfLoveActivityPlayButtonTexts[i]!!.value = PAUSE_SELF_LOVE
             }else{
                 selfLoveActivityPlayButtonTexts[i]!!.value = START_SELF_LOVE
@@ -395,15 +394,15 @@ private fun pauseSelfLove(
 ) {
     if(
         generalMediaPlayerService.isMediaPlayerInitialized() &&
-        globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-        globalViewModel_!!.currentPrayerPlaying == null
+        bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+        prayerViewModel!!.currentPrayerPlaying == null
     ) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
             selfLoveActivityPlayButtonTexts[index]!!.value = START_SELF_LOVE
-            globalViewModel_!!.selfLoveTimer.pause()
-            globalViewModel_!!.generalPlaytimeTimer.pause()
-            globalViewModel_!!.isCurrentSelfLovePlaying = false
+            selfLoveViewModel!!.selfLoveTimer.pause()
+            globalViewModel!!.generalPlaytimeTimer.pause()
+            selfLoveViewModel!!.isCurrentSelfLovePlaying = false
             deActivateSelfLoveGlobalControlButton(2)
         }
     }
@@ -418,8 +417,8 @@ private fun startSelfLove(
     if(selfLoveActivityUris[index]!!.value != "".toUri()){
         if(
             generalMediaPlayerService.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-            globalViewModel_!!.currentPrayerPlaying == null
+            bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+            prayerViewModel!!.currentPrayerPlaying == null
         ){
             generalMediaPlayerService.startMediaPlayer()
             afterPlayingSelfLove(index)
@@ -435,16 +434,16 @@ private fun startSelfLove(
 }
 
 private fun afterPlayingSelfLove(index: Int){
-    globalViewModel_!!.selfLoveTimer.start()
-    globalViewModel_!!.generalPlaytimeTimer.start()
+    selfLoveViewModel!!.selfLoveTimer.start()
+    globalViewModel!!.generalPlaytimeTimer.start()
     setGlobalPropertiesAfterPlayingSelfLove(index)
 }
 
 private fun setGlobalPropertiesAfterPlayingSelfLove(index: Int){
-    globalViewModel_!!.currentSelfLovePlaying = globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove
-    globalViewModel_!!.currentSelfLovePlayingUri = selfLoveActivityUris[index]!!.value
+    selfLoveViewModel!!.currentSelfLovePlaying = selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove
+    selfLoveViewModel!!.currentSelfLovePlayingUri = selfLoveActivityUris[index]!!.value
     selfLoveActivityPlayButtonTexts[index]!!.value = PAUSE_SELF_LOVE
-    globalViewModel_!!.isCurrentSelfLovePlaying = true
+    selfLoveViewModel!!.isCurrentSelfLovePlaying = true
     deActivateSelfLoveGlobalControlButton(0)
     deActivateSelfLoveGlobalControlButton(2)
 }
@@ -456,8 +455,8 @@ private fun retrieveSelfLoveAudio(
     context: Context
 ) {
     SoundBackend.retrieveAudio(
-        globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.audioKeyS3,
-        globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.selfLoveOwner.amplifyAuthUserId
+        selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.audioKeyS3,
+        selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.selfLoveOwner.amplifyAuthUserId
     ) {
         selfLoveActivityUris[index]!!.value = it!!
         startSelfLove(
@@ -473,8 +472,8 @@ private fun resetGeneralMediaPlayerServiceIfNecessary(
     generalMediaPlayerService: GeneralMediaPlayerService,
     index: Int
 ) {
-    if(globalViewModel_!!.currentSelfLovePlaying != null) {
-        if (globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.id != globalViewModel_!!.currentSelfLovePlaying!!.id) {
+    if(selfLoveViewModel!!.currentSelfLovePlaying != null) {
+        if (selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.id != selfLoveViewModel!!.currentSelfLovePlaying!!.id) {
             generalMediaPlayerService.onDestroy()
         }
     }
@@ -497,9 +496,9 @@ private fun updatePreviousAndCurrentSelfLoveRelationship(
 ){
     updatePreviousUserSelfLoveRelationship(continuePlayingTime){
         SelfLoveForRoutine.updateRecentlyPlayedUserSelfLoveRelationshipWithUserSelfLoveRelationship(
-            globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!
+            selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index]!!
         ) {
-            globalViewModel_!!.currentUsersSelfLoveRelationships!![index] = it
+            selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index] = it
             updatePreviousUserPrayerRelationship {
                 updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
                     completed()
@@ -525,7 +524,7 @@ private fun initializeMediaPlayer(
         val intent = Intent()
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
-        globalViewModel_!!.selfLoveTimer.setMaxDuration(globalViewModel_!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.fullPlayTime.toLong())
+        selfLoveViewModel!!.selfLoveTimer.setMaxDuration(selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index]!!.userSelfLoveRelationshipSelfLove.fullPlayTime.toLong())
         resetOtherGeneralMediaPlayerUsersExceptSelfLove()
     }
     afterPlayingSelfLove(index)
@@ -563,35 +562,35 @@ fun updatePreviousUserSelfLoveRelationship(
     continuePlayingTime: Int,
     completed: (updatedUserSelfLoveRelationship: UserSelfLoveRelationship?) -> Unit
 ) {
-    if(globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship != null){
-        Log.i(TAG, "Duration of SelfLove general timer is ${globalViewModel_!!.generalPlaytimeTimer.getDuration()}")
-        val playTime = globalViewModel_!!.generalPlaytimeTimer.getDuration()
-        globalViewModel_!!.generalPlaytimeTimer.stop()
+    if(selfLoveViewModel!!.previouslyPlayedUserSelfLoveRelationship != null){
+        Log.i(TAG, "Duration of SelfLove general timer is ${globalViewModel!!.generalPlaytimeTimer.getDuration()}")
+        val playTime = globalViewModel!!.generalPlaytimeTimer.getDuration()
+        globalViewModel!!.generalPlaytimeTimer.stop()
 
-        Log.i(TAG, "Total bts play time = ${globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.totalPlayTime}")
+        Log.i(TAG, "Total bts play time = ${selfLoveViewModel!!.previouslyPlayedUserSelfLoveRelationship!!.totalPlayTime}")
         Log.i(TAG, "play time = $playTime")
-        val totalPlayTime = globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.totalPlayTime + playTime
+        val totalPlayTime = selfLoveViewModel!!.previouslyPlayedUserSelfLoveRelationship!!.totalPlayTime + playTime
         Log.i(TAG, "final total play time = $totalPlayTime")
 
-        var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.usagePlayTimes
+        var usagePlayTimes = selfLoveViewModel!!.previouslyPlayedUserSelfLoveRelationship!!.usagePlayTimes
         if(usagePlayTimes != null) {
             usagePlayTimes.add(playTime.toInt())
         }else{
             usagePlayTimes = listOf(playTime.toInt())
         }
 
-        val numberOfTimesPlayed = globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.numberOfTimesPlayed
+        val numberOfTimesPlayed = selfLoveViewModel!!.previouslyPlayedUserSelfLoveRelationship!!.numberOfTimesPlayed
         Log.i(TAG, "number of times played = $numberOfTimesPlayed")
 
         if(totalPlayTime > 0){
-            val userSelfLoveRelationship = globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship!!.copyOfBuilder()
+            val userSelfLoveRelationship = selfLoveViewModel!!.previouslyPlayedUserSelfLoveRelationship!!.copyOfBuilder()
                 .numberOfTimesPlayed(numberOfTimesPlayed)
                 .totalPlayTime(totalPlayTime.toInt())
                 .usagePlayTimes(usagePlayTimes)
                 .build()
 
             UserSelfLoveRelationshipBackend.updateUserSelfLoveRelationship(userSelfLoveRelationship){
-                globalViewModel_!!.previouslyPlayedUserSelfLoveRelationship = null
+                selfLoveViewModel!!.previouslyPlayedUserSelfLoveRelationship = null
                 completed(it)
             }
         }else{
@@ -603,10 +602,10 @@ fun updatePreviousUserSelfLoveRelationship(
 }
 
 fun resetOtherGeneralMediaPlayerUsersExceptSelfLove(){
-    if(globalViewModel_!!.currentBedtimeStoryPlaying != null){
+    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null){
         resetBedtimeStoryGlobalProperties()
     }
-    if(globalViewModel_!!.currentPrayerPlaying != null){
+    if(prayerViewModel!!.currentPrayerPlaying != null){
         resetPrayerGlobalProperties()
     }
 }

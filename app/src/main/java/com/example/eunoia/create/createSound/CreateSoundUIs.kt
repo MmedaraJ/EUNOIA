@@ -50,7 +50,7 @@ import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.GlobalViewModel
 import java.io.File
@@ -558,7 +558,7 @@ fun playSoundsPreset(
     index: Int,
     soundMediaPlayerService: SoundMediaPlayerService
 ){
-    globalViewModel_!!.bottomSheetOpenFor = ""
+    globalViewModel!!.bottomSheetOpenFor = ""
     com.example.eunoia.dashboard.sound.resetAll(applicationContext, soundMediaPlayerService)
     fileMediaPlayers.forEachIndexed { i,  media ->
         try {

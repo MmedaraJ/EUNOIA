@@ -56,7 +56,6 @@ var audioFileLengthMilliSecondsBedtimeStory = mutableStateOf(0L)
 @Composable
 fun UploadBedtimeStoryUI(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     soundMediaPlayerService: SoundMediaPlayerService,
@@ -101,7 +100,7 @@ fun UploadBedtimeStoryUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -183,12 +182,12 @@ fun createBedtimeStoryFromUpload(
     Thread.sleep(1_000)
     val tags = getBedtimeStoryTagsList()
     if (otherBedtimeStoriesWithSameName < 1) {
-        val key = "Routine/BedtimeStories/${globalViewModel_!!.currentUser!!.username}/uploaded/$bedtimeStoryName/${bedtimeStoryName}_audio.aac"
+        val key = "Routine/BedtimeStories/${globalViewModel!!.currentUser!!.username}/uploaded/$bedtimeStoryName/${bedtimeStoryName}_audio.aac"
         SoundBackend.storeAudio(uploadedFileBedtimeStory.value.absolutePath, key){
             val bedtimeStory = BedtimeStoryObject.BedtimeStory(
                 UUID.randomUUID().toString(),
-                UserObject.User.from(globalViewModel_!!.currentUser!!),
-                globalViewModel_!!.currentUser!!.id,
+                UserObject.User.from(globalViewModel!!.currentUser!!),
+                globalViewModel!!.currentUser!!.id,
                 bedtimeStoryName,
                 bedtimeStoryShortDescription,
                 bedtimeStoryLongDescription,

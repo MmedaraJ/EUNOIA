@@ -1,6 +1,5 @@
 package com.example.eunoia.create.createBedtimeStory
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,17 +11,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
-import com.example.eunoia.lifecycle.CustomLifecycleEventListener
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.BackArrowHeader
 import com.example.eunoia.ui.components.NormalText
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.Black
-import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 
 var userBedtimeStories = mutableListOf<BedtimeStoryInfoData?>()
@@ -32,14 +28,13 @@ private var TAG = "Incomplete Bedtime Story"
 @Composable
 fun IncompleteBedtimeStoriesUI(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
     clearBedtimeStoryChaptersList()
     clearPageRecordingsList()
     var numberOfBedtimeStories by rememberSaveable { mutableStateOf(0) }
-    BedtimeStoryBackend.queryIncompleteBedtimeStoryBasedOnUser(globalViewModel_!!.currentUser!!) {
+    BedtimeStoryBackend.queryIncompleteBedtimeStoryBasedOnUser(globalViewModel!!.currentUser!!) {
         for (i in userBedtimeStories.size until it.size) {
             userBedtimeStories.add(it[i]!!)
         }
@@ -68,7 +63,7 @@ fun IncompleteBedtimeStoriesUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {

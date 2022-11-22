@@ -41,8 +41,7 @@ import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.selfLove.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.formatMilliSecond
 import com.example.eunoia.utils.timerFormatMS
@@ -368,7 +367,7 @@ fun BottomSheetSelfLoveControls(
                 contentAlignment = Alignment.Center
             ) {
                 AnImageWithColor(
-                    globalViewModel_!!.addIcon.value,
+                    soundViewModel!!.addIcon.value,
                     "save self love icon",
                     White,
                     10.dp,
@@ -377,8 +376,8 @@ fun BottomSheetSelfLoveControls(
                     0
                 ) {
                     selfLoveScreenBorderControlColors[4].value = Black
-                    globalViewModel_!!.currentSelfLoveToBeAdded = selfLoveData
-                    globalViewModel_!!.bottomSheetOpenFor = "addToSelfLoveListOrRoutine"
+                    selfLoveViewModel!!.currentSelfLoveToBeAdded = selfLoveData
+                    globalViewModel!!.bottomSheetOpenFor = "addToSelfLoveListOrRoutine"
                     openBottomSheet(scope, state)
                 }
             }
@@ -393,8 +392,8 @@ fun showSelfLoveBottomSheet(
     state: ModalBottomSheetState
 ) {
     //activateSelfLoveLyricsButton()
-    globalViewModel_!!.currentSelfLoveLyricsToBeShown = selfLoveData
-    globalViewModel_!!.bottomSheetOpenFor = "showSelfLoveLyrics"
+    selfLoveViewModel!!.currentSelfLoveLyricsToBeShown = selfLoveData
+    globalViewModel!!.bottomSheetOpenFor = "showSelfLoveLyrics"
     openBottomSheet(scope, state)
 }
 
@@ -445,21 +444,21 @@ fun resetSelfLove(
     generalMediaPlayerService: GeneralMediaPlayerService,
     selfLoveData: SelfLoveData
 ){
-    if(globalViewModel_!!.currentSelfLovePlaying != null) {
-        if (globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
+    if(selfLoveViewModel!!.currentSelfLovePlaying != null) {
+        if (selfLoveViewModel!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
             if (
                 generalMediaPlayerService.isMediaPlayerInitialized() &&
-                globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-                globalViewModel_!!.currentPrayerPlaying == null
+                bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+                prayerViewModel!!.currentPrayerPlaying == null
             ) {
                 resetBothLocalAndGlobalControlButtonsAfterReset()
                 selfLoveClicked.value = false
                 selfLoveAngle.value = 0f
                 selfLoveTimer.stop()
-                globalViewModel_!!.selfLoveTimer = selfLoveTimer
+                selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
                 selfLoveTimeDisplay = timerFormatMS(selfLoveData.fullPlayTime.toLong())
-                globalViewModel_!!.selfLoveTimeDisplay = selfLoveTimeDisplay
-                globalViewModel_!!.isCurrentSelfLovePlaying = false
+                selfLoveViewModel!!.selfLoveTimeDisplay = selfLoveTimeDisplay
+                selfLoveViewModel!!.isCurrentSelfLovePlaying = false
                 generalMediaPlayerService.onDestroy()
             }
         }
@@ -470,12 +469,12 @@ fun seekBack15(
     selfLoveData: SelfLoveData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentSelfLovePlaying != null) {
-        if (globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
+    if(selfLoveViewModel!!.currentSelfLovePlaying != null) {
+        if (selfLoveViewModel!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
             if(
                 generalMediaPlayerService.isMediaPlayerInitialized() &&
-                globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-                globalViewModel_!!.currentPrayerPlaying == null
+                bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+                prayerViewModel!!.currentPrayerPlaying == null
             ) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
                 if(newSeekTo < 0){
@@ -490,10 +489,10 @@ fun seekBack15(
                 selfLoveTimer.setDuration(
                     generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
                 )
-                globalViewModel_!!.selfLoveTimer = selfLoveTimer
-                if(globalViewModel_!!.isCurrentSelfLovePlaying) {
+                selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
+                if(selfLoveViewModel!!.isCurrentSelfLovePlaying) {
                     selfLoveTimer.start()
-                    globalViewModel_!!.selfLoveTimer = selfLoveTimer
+                    selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
                 }
             }
         }
@@ -504,12 +503,12 @@ fun seekForward15(
     selfLoveData: SelfLoveData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentSelfLovePlaying != null) {
-        if (globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
+    if(selfLoveViewModel!!.currentSelfLovePlaying != null) {
+        if (selfLoveViewModel!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
             if(
                 generalMediaPlayerService.isMediaPlayerInitialized() &&
-                globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-                globalViewModel_!!.currentPrayerPlaying == null
+                bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+                prayerViewModel!!.currentPrayerPlaying == null
             ) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
                 if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
@@ -528,10 +527,10 @@ fun seekForward15(
                 selfLoveTimer.setDuration(
                     generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
                 )
-                globalViewModel_!!.selfLoveTimer = selfLoveTimer
-                if(globalViewModel_!!.isCurrentSelfLovePlaying) {
+                selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
+                if(selfLoveViewModel!!.isCurrentSelfLovePlaying) {
                     selfLoveTimer.start()
-                    globalViewModel_!!.selfLoveTimer = selfLoveTimer
+                    selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
                 }
             }
         }
@@ -575,7 +574,7 @@ fun resetCurrentlyPlayingRoutineIfNecessarySelfLoveUI(
     context: Context,
     selfLoveData: SelfLoveData
 ) {
-    if(globalViewModel_!!.currentRoutinePlaying != null){
+    if(routineViewModel!!.currentRoutinePlaying != null){
         openRoutineIsCurrentlyPlayingDialogBox = true
     }else{
         pauseOrPlaySelfLoveAccordingly(
@@ -589,12 +588,12 @@ fun pauseOrPlaySelfLoveAccordingly(
     selfLoveData: SelfLoveData,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ) {
-    if(globalViewModel_!!.currentSelfLovePlaying != null) {
-        if (globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
+    if(selfLoveViewModel!!.currentSelfLovePlaying != null) {
+        if (selfLoveViewModel!!.currentSelfLovePlaying!!.id == selfLoveData.id) {
             if (
                 generalMediaPlayerService.isMediaPlayerInitialized() &&
-                globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-                globalViewModel_!!.currentPrayerPlaying == null
+                 bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+                prayerViewModel!!.currentPrayerPlaying == null
             ) {
                 if (generalMediaPlayerService.isMediaPlayerPlaying()) {
                     pauseSelfLove(generalMediaPlayerService)
@@ -629,17 +628,17 @@ private fun pauseSelfLove(
 ) {
     if(
         generalMediaPlayerService.isMediaPlayerInitialized() &&
-        globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-        globalViewModel_!!.currentPrayerPlaying == null
+        bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+        prayerViewModel!!.currentPrayerPlaying == null
     ) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
             selfLoveTimer.pause()
-            globalViewModel_!!.selfLoveTimer = selfLoveTimer
+            selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
             activateLocalSelfLoveControlButton(2)
             activateGlobalSelfLoveControlButton(2)
-            globalViewModel_!!.generalPlaytimeTimer.pause()
-            globalViewModel_!!.isCurrentSelfLovePlaying = false
+            globalViewModel!!.generalPlaytimeTimer.pause()
+            selfLoveViewModel!!.isCurrentSelfLovePlaying = false
         }
     }
 }
@@ -651,10 +650,10 @@ private fun startSelfLove(
     if(selfLoveUri != null){
         if(
             generalMediaPlayerService.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-            globalViewModel_!!.currentPrayerPlaying == null
+            bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+            prayerViewModel!!.currentPrayerPlaying == null
         ){
-            if(globalViewModel_!!.currentSelfLovePlaying!!.id == selfLoveData.id){
+            if(selfLoveViewModel!!.currentSelfLovePlaying!!.id == selfLoveData.id){
                 generalMediaPlayerService.startMediaPlayer()
                 afterPlayingSelfLove(selfLoveData)
             }else{
@@ -676,10 +675,10 @@ private fun afterPlayingSelfLove(
     selfLoveData: SelfLoveData
 ){
     selfLoveTimer.start()
-    globalViewModel_!!.selfLoveTimer = selfLoveTimer
+    selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
     deActivateLocalSelfLoveControlButton(2)
     deActivateLocalSelfLoveControlButton(0)
-    globalViewModel_!!.generalPlaytimeTimer.start()
+    globalViewModel!!.generalPlaytimeTimer.start()
     setGlobalPropertiesAfterPlayingSelfLove(selfLoveData)
 }
 
@@ -716,7 +715,7 @@ private fun initializeMediaPlayer(
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
         selfLoveTimer.setMaxDuration(selfLoveData.fullPlayTime.toLong())
-        globalViewModel_!!.selfLoveTimer = selfLoveTimer
+        selfLoveViewModel!!.selfLoveTimer = selfLoveTimer
         resetOtherGeneralMediaPlayerUsersExceptSelfLove()
     }
     resetBothLocalAndGlobalControlButtons()
@@ -726,18 +725,18 @@ private fun initializeMediaPlayer(
 private fun setGlobalPropertiesAfterPlayingSelfLove(
     selfLoveData: SelfLoveData
 ){
-    globalViewModel_!!.currentSelfLovePlaying = selfLoveData
-    globalViewModel_!!.currentSelfLovePlayingUri = selfLoveUri
-    globalViewModel_!!.isCurrentSelfLovePlaying = true
+    selfLoveViewModel!!.currentSelfLovePlaying = selfLoveData
+    selfLoveViewModel!!.currentSelfLovePlayingUri = selfLoveUri
+    selfLoveViewModel!!.isCurrentSelfLovePlaying = true
     deActivateGlobalSelfLoveControlButton(2)
     deActivateGlobalSelfLoveControlButton(0)
 }
 
 fun resetSelfLoveGlobalProperties(){
-    globalViewModel_!!.currentSelfLovePlaying = null
-    globalViewModel_!!.currentSelfLovePlayingUri = null
-    globalViewModel_!!.isCurrentSelfLovePlaying = false
-    globalViewModel_!!.selfLoveTimer.stop()
+    selfLoveViewModel!!.currentSelfLovePlaying = null
+    selfLoveViewModel!!.currentSelfLovePlayingUri = null
+    selfLoveViewModel!!.isCurrentSelfLovePlaying = false
+    selfLoveViewModel!!.selfLoveTimer.stop()
     resetGlobalControlButtons()
 }
 
@@ -800,19 +799,19 @@ private fun deActivateLocalSelfLoveControlButton(index: Int){
 }
 
 private fun activateGlobalSelfLoveControlButton(index: Int){
-    globalViewModel_!!.selfLoveScreenBorderControlColors[index].value = selfLoveScreenBorderControlColors[index].value
-    globalViewModel_!!.selfLoveScreenBackgroundControlColor1[index].value = selfLoveScreenBackgroundControlColor1[index].value
-    globalViewModel_!!.selfLoveScreenBackgroundControlColor2[index].value = selfLoveScreenBackgroundControlColor2[index].value
+    selfLoveViewModel!!.selfLoveScreenBorderControlColors[index].value = selfLoveScreenBorderControlColors[index].value
+    selfLoveViewModel!!.selfLoveScreenBackgroundControlColor1[index].value = selfLoveScreenBackgroundControlColor1[index].value
+    selfLoveViewModel!!.selfLoveScreenBackgroundControlColor2[index].value = selfLoveScreenBackgroundControlColor2[index].value
     if(index == 2){
-        globalViewModel_!!.selfLoveScreenIcons[index].value = selfLoveScreenIcons[index].value
+        selfLoveViewModel!!.selfLoveScreenIcons[index].value = selfLoveScreenIcons[index].value
     }
 }
 
 private fun deActivateGlobalSelfLoveControlButton(index: Int){
-    globalViewModel_!!.selfLoveScreenBorderControlColors[index].value = selfLoveScreenBorderControlColors[index].value
-    globalViewModel_!!.selfLoveScreenBackgroundControlColor1[index].value = selfLoveScreenBackgroundControlColor1[index].value
-    globalViewModel_!!.selfLoveScreenBackgroundControlColor2[index].value = selfLoveScreenBackgroundControlColor2[index].value
+    selfLoveViewModel!!.selfLoveScreenBorderControlColors[index].value = selfLoveScreenBorderControlColors[index].value
+    selfLoveViewModel!!.selfLoveScreenBackgroundControlColor1[index].value = selfLoveScreenBackgroundControlColor1[index].value
+    selfLoveViewModel!!.selfLoveScreenBackgroundControlColor2[index].value = selfLoveScreenBackgroundControlColor2[index].value
     if(index == 2){
-        globalViewModel_!!.selfLoveScreenIcons[index].value = selfLoveScreenIcons[index].value
+        selfLoveViewModel!!.selfLoveScreenIcons[index].value = selfLoveScreenIcons[index].value
     }
 }

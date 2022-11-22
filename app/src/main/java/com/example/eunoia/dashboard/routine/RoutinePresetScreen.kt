@@ -20,10 +20,8 @@ import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.AlignedNormalText
 import com.example.eunoia.ui.components.BackArrowHeader
-import com.example.eunoia.ui.components.WrappedPurpleBackgroundStart
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.Black
-import com.example.eunoia.utils.formatMilliSecond
 import kotlinx.coroutines.CoroutineScope
 
 var routinePresetList by mutableStateOf<MutableList<UserRoutineRelationshipSoundPreset?>?>(null)
@@ -61,7 +59,7 @@ fun RoutinePresetScreen(
                     navigateBack(navController)
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {

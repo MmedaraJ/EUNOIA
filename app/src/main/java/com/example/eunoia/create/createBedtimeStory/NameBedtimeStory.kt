@@ -59,7 +59,6 @@ var incompleteBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?
 @Composable
 fun NameBedtimeStoryUI(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
@@ -68,7 +67,7 @@ fun NameBedtimeStoryUI(
     SetupAlertDialogs()
 
     var numberOfIncompleteBedtimeStories by rememberSaveable { mutableStateOf(0) }
-    BedtimeStoryBackend.queryIncompleteBedtimeStoryBasedOnUser(globalViewModel_!!.currentUser!!) {
+    BedtimeStoryBackend.queryIncompleteBedtimeStoryBasedOnUser(globalViewModel!!.currentUser!!) {
         for (i in incompleteBedtimeStories.size until it.size) {
             incompleteBedtimeStories.add(mutableStateOf(it[i]!!))
         }
@@ -126,7 +125,7 @@ fun NameBedtimeStoryUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -391,10 +390,10 @@ fun NameBedtimeStoryUI(
                 }
         ) {
             val borders = mutableListOf<MutableState<Boolean>>()
-            for(icon in globalViewModel_!!.soundScreenIcons){
+            for(icon in soundViewModel!!.soundScreenIcons){
                 borders.add(remember { mutableStateOf(false) })
             }
-            globalViewModel_!!.soundScreenIcons.forEachIndexed{ index, icon ->
+            soundViewModel!!.soundScreenIcons.forEachIndexed{ index, icon ->
                 var cardModifier = Modifier
                     .padding(bottom = 15.dp)
                     .clickable {
@@ -604,15 +603,15 @@ private fun createBedtimeStory(
                 Log.i(TAG, "Nxt 2")
                 val key = "Routine/" +
                         "BedtimeStories/" +
-                        "${globalViewModel_!!.currentUser!!.username}/" +
+                        "${globalViewModel!!.currentUser!!.username}/" +
                         "recorded/" +
                         "$bedtimeStoryName/"
 
                 //TODO Compute full play time
                 val bedtimeStory = BedtimeStoryObject.BedtimeStory(
                     UUID.randomUUID().toString(),
-                    UserObject.User.from(globalViewModel_!!.currentUser!!),
-                    globalViewModel_!!.currentUser!!.id,
+                    UserObject.User.from(globalViewModel!!.currentUser!!),
+                    globalViewModel!!.currentUser!!.id,
                     bedtimeStoryName,
                     bedtimeStoryShortDescription,
                     bedtimeStoryLongDescription,
@@ -686,7 +685,6 @@ fun CreateBedtimeStoryPreview() {
     EUNOIATheme {
         NameBedtimeStoryUI(
             rememberNavController(),
-            globalViewModel,
             rememberCoroutineScope(),
             rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
         )

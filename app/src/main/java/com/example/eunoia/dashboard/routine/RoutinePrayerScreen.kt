@@ -15,15 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.amplifyframework.datastore.generated.model.RoutineData
-import com.amplifyframework.datastore.generated.model.RoutinePrayer
 import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 import com.amplifyframework.datastore.generated.model.UserRoutineRelationshipPrayer
 import com.example.eunoia.dashboard.sound.navigateBack
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.AlignedNormalText
 import com.example.eunoia.ui.components.BackArrowHeader
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.Black
 import kotlinx.coroutines.CoroutineScope
 
@@ -62,7 +60,7 @@ fun RoutinePrayerScreen(
                     navigateBack(navController)
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {

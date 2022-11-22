@@ -16,16 +16,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.R
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.EUNOIATheme
 import com.example.eunoia.viewModels.GlobalViewModel
 
 @Composable
-fun ArticleUI(navController: NavController, globalViewModel: GlobalViewModel){
-    globalViewModel_!!.navController = navController
+fun ArticleUI(navController: NavController){
+    globalViewModel!!.navController = navController
     val scrollState = rememberScrollState()
-    val sub_texts = arrayOf(
+    val subTexts = arrayOf(
         "Your skincare routine ends with a goodnight sleep.\n" +
                 "Do you know that most Retinoids works in the dark? Go to sleep.",
         "Instead of getting addicted to caffein, get a goodnight sleep instead. " +
@@ -125,7 +125,7 @@ fun ArticleUI(navController: NavController, globalViewModel: GlobalViewModel){
                 }
                 Column(modifier = Modifier.padding(bottom = 0.dp)) {
                     AlignedLightText(
-                        sub_texts[index],
+                        subTexts[index],
                         color = MaterialTheme.colors.primary,
                         fontSize = 15,
                         xOffset = 0,
@@ -156,8 +156,7 @@ fun ArticleUI(navController: NavController, globalViewModel: GlobalViewModel){
 )
 @Composable
 fun Preview() {
-    val globalViewModel: GlobalViewModel = viewModel()
     EUNOIATheme {
-        ArticleUI(rememberNavController(), globalViewModel)
+        ArticleUI(rememberNavController())
     }
 }

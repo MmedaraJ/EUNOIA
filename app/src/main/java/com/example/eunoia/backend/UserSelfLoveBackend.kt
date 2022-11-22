@@ -8,7 +8,7 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.SelfLoveObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserSelfLoveObject
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -46,7 +46,7 @@ object UserSelfLoveBackend {
     fun createUserSelfLoveObject(SelfLove: SelfLoveData, completed: (userSelfLove: UserSelfLove) -> Unit){
         val userSelfLoveModel = UserSelfLoveObject.UserSelfLoveModel(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            UserObject.User.from(globalViewModel!!.currentUser!!),
             SelfLoveObject.SelfLove.from(SelfLove),
         )
         createUserSelfLove(userSelfLoveModel){

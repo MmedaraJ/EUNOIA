@@ -7,7 +7,7 @@ import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.*
 import com.amplifyframework.datastore.generated.model.UserData
 import com.example.eunoia.models.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,7 +45,7 @@ object UserRoutineBackend {
     fun createUserRoutineObject(routineData: RoutineData, completed: (userRoutine: UserRoutine) -> Unit){
         val userRoutineModel = UserRoutineObject.UserRoutineModel(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
+            UserObject.User.from(globalViewModel!!.currentUser!!),
             RoutineObject.Routine.from(routineData),
         )
         createUserRoutine(userRoutineModel){

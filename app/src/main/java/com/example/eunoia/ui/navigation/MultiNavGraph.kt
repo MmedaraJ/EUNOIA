@@ -8,7 +8,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -27,7 +26,6 @@ import com.example.eunoia.feedback.FeedbackUI
 import com.example.eunoia.pricing.PricingUI
 import com.example.eunoia.settings.Settings
 import com.example.eunoia.ui.screens.Screen
-import com.example.eunoia.viewModels.GlobalViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import com.example.eunoia.create.createSound.NameSoundUI
@@ -56,12 +54,16 @@ import com.example.eunoia.ui.bottomSheets.selfLove.*
 import com.example.eunoia.ui.bottomSheets.sound.*
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.theme.*
-import com.example.eunoia.viewModels.PageViewModel
-import com.example.eunoia.viewModels.RecordAudioViewModel
+import com.example.eunoia.viewModels.*
 import kotlinx.coroutines.CoroutineScope
 
-var globalViewModel_: GlobalViewModel? = null
+var globalViewModel: GlobalViewModel? = null
 var recordAudioViewModel: RecordAudioViewModel? = null
+var bedtimeStoryViewModel: BedtimeStoryViewModel? = null
+var soundViewModel: SoundViewModel? = null
+var prayerViewModel: PrayerViewModel? = null
+var selfLoveViewModel: SelfLoveViewModel? = null
+var routineViewModel: RoutineViewModel? = null
 var generalMediaPlayerService_: GeneralMediaPlayerService? = null
 
 var commentCreatedDialog by mutableStateOf(false)
@@ -90,21 +92,23 @@ var openRoutineAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MultiBottomNavApp(
-    globalViewModel: GlobalViewModel = viewModel(),
-) {
-    globalViewModel_ = globalViewModel
+fun MultiBottomNavApp() {
+    globalViewModel = viewModel()
     recordAudioViewModel = viewModel()
+    bedtimeStoryViewModel = viewModel()
+    soundViewModel = viewModel()
+    prayerViewModel = viewModel()
+    selfLoveViewModel = viewModel()
+    routineViewModel = viewModel()
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { globalViewModel_!!.allowBottomSheetClose }
+        confirmStateChange = { globalViewModel!!.allowBottomSheetClose }
     )
     val scope = rememberCoroutineScope()
     val generalMediaPlayerService = GeneralMediaPlayerService()
     generalMediaPlayerService_ = generalMediaPlayerService
     val soundMediaPlayerService = SoundMediaPlayerService()
     EunoiaApp(
-        globalViewModel,
         scope,
         modalBottomSheetState,
         generalMediaPlayerService,
@@ -112,7 +116,6 @@ fun MultiBottomNavApp(
     ) { screen ->
         MultiNavTabContent(
             screen,
-            globalViewModel,
             scope,
             modalBottomSheetState,
             generalMediaPlayerService,
@@ -130,7 +133,6 @@ var accountNavController: NavController? = null
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EunoiaApp(
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -153,46 +155,45 @@ fun EunoiaApp(
                         modifier = Modifier
                             .defaultMinSize(minHeight = 1.dp)
                     ) {
-                        when(globalViewModel.bottomSheetOpenFor){
+                        when(globalViewModel!!.bottomSheetOpenFor){
                             /**
                              * Currently playing controls
                              */
                             "controls" -> {
                                 BottomSheetAllControls(
-                                    globalViewModel,
                                     scope,
                                     state,
                                     generalMediaPlayerService,
                                     soundMediaPlayerService,
                                 )
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                             }
 
                             /**
                              * Add sound to list or routine
                              */
                             "addToSoundListOrRoutine" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 AddToSoundListAndRoutineBottomSheet(scope, state)
                             }
                             "addToRoutine" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineForSound(scope, state)
                             }
                             "inputRoutineName" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
-                                globalViewModel_!!.routineNameToBeAdded = inputRoutineName(scope, state)
+                                globalViewModel!!.allowBottomSheetClose = true
+                                routineViewModel!!.routineNameToBeAdded = inputRoutineName(scope, state)
                             }
                             "inputPresetName" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
-                                globalViewModel_!!.presetNameToBeCreated = inputPresetName(scope, state)
+                                globalViewModel!!.allowBottomSheetClose = true
+                                soundViewModel!!.presetNameToBeCreated = inputPresetName(scope, state)
                             }
                             "selectRoutineColor" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineColor(scope, state)
                             }
                             "selectRoutineIcon" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineIcon(scope, state)
                             }
 
@@ -200,23 +201,23 @@ fun EunoiaApp(
                              * Add bedtime story to list or routine
                              */
                             "addToBedtimeStoryListOrRoutine" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 AddToBedtimeStoryListAndRoutineBottomSheet(scope, state)
                             }
                             "addBedtimeStoryToRoutine" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineForBedtimeStory(scope, state)
                             }
                             "inputRoutineNameForBedtimeStory" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
-                                globalViewModel_!!.routineNameToBeAdded = inputRoutineNameForBedtimeStory(scope, state)
+                                globalViewModel!!.allowBottomSheetClose = true
+                                routineViewModel!!.routineNameToBeAdded = inputRoutineNameForBedtimeStory(scope, state)
                             }
                             "selectRoutineColorForBedtimeStory" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineColorForBedtimeStory(scope, state)
                             }
                             "selectRoutineIconForBedtimeStory" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineIconForBedtimeStory(scope, state)
                             }
 
@@ -224,27 +225,27 @@ fun EunoiaApp(
                              * Add self love to list or routine
                              */
                             "addToSelfLoveListOrRoutine" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 AddToSelfLoveListAndRoutineBottomSheet(scope, state)
                             }
                             "addSelfLoveToRoutine" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineForSelfLove(scope, state)
                             }
                             "inputRoutineNameForSelfLove" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
-                                globalViewModel_!!.routineNameToBeAdded = inputRoutineNameForSelfLove(scope, state)
+                                globalViewModel!!.allowBottomSheetClose = true
+                                routineViewModel!!.routineNameToBeAdded = inputRoutineNameForSelfLove(scope, state)
                             }
                             "selectRoutineColorForSelfLove" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineColorForSelfLove(scope, state)
                             }
                             "selectRoutineIconForSelfLove" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineIconForSelfLove(scope, state)
                             }
                             "showSelfLoveLyrics" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 ShowSelfLoveLyricsBottomSheet(scope, state)
                             }
 
@@ -252,23 +253,23 @@ fun EunoiaApp(
                              * Add prayer to list or routine
                              */
                             "addToPrayerListOrRoutine" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 AddToPrayerListAndRoutineBottomSheet(scope, state)
                             }
                             "addPrayerToRoutine" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineForPrayer(scope, state)
                             }
                             "inputRoutineNameForPrayer" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
-                                globalViewModel_!!.routineNameToBeAdded = inputRoutineNameForPrayer(scope, state)
+                                globalViewModel!!.allowBottomSheetClose = true
+                                routineViewModel!!.routineNameToBeAdded = inputRoutineNameForPrayer(scope, state)
                             }
                             "selectRoutineColorForPrayer" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineColorForPrayer(scope, state)
                             }
                             "selectRoutineIconForPrayer" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 SelectRoutineIconForPrayer(scope, state)
                             }
 
@@ -276,14 +277,17 @@ fun EunoiaApp(
                              * Record audio
                              */
                             "recordAudio" -> {
-                                globalViewModel_!!.allowBottomSheetClose = false
-                                RecordAudio(globalViewModel, scope, state, generalMediaPlayerService)
+                                globalViewModel!!.allowBottomSheetClose = false
+                                RecordAudio(
+                                    scope,
+                                    state,
+                                    generalMediaPlayerService
+                                )
                             }
 
                             "" -> {
-                                globalViewModel_!!.allowBottomSheetClose = true
+                                globalViewModel!!.allowBottomSheetClose = true
                                 BottomSheetAllControls(
-                                    globalViewModel,
                                     scope,
                                     state,
                                     generalMediaPlayerService,
@@ -412,7 +416,6 @@ fun EunoiaApp(
 @Composable
 fun MultiNavTabContent(
     screen: Screen,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -434,12 +437,12 @@ fun MultiNavTabContent(
         saver = navStateSaver()
     ) { mutableStateOf(Bundle()) }
     when (screen) {
-        Screen.Dashboard -> DashboardTab(dashboardNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
-        Screen.Create -> CreateTab(createNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
-        Screen.Search -> SearchTab(searchNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
-        Screen.Feedback -> FeedbackTab(feedbackNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
-        Screen.Account -> AccountTab(accountNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
-        else -> DashboardTab(dashboardNavState, globalViewModel, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        Screen.Dashboard -> DashboardTab(dashboardNavState, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        Screen.Create -> CreateTab(createNavState, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        Screen.Search -> SearchTab(searchNavState, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        Screen.Feedback -> FeedbackTab(feedbackNavState, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        Screen.Account -> AccountTab(accountNavState, scope, state, generalMediaPlayerService, soundMediaPlayerService)
+        else -> DashboardTab(dashboardNavState, scope, state, generalMediaPlayerService, soundMediaPlayerService)
     }
 }
 
@@ -447,7 +450,6 @@ fun MultiNavTabContent(
 @Composable
 fun DashboardTab(
     navState: MutableState<Bundle>,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -485,7 +487,6 @@ fun DashboardTab(
             Log.i("Dashboard", "You are now on the Dashboard tab")
             UserDashboardActivityUI(
                 navController,
-                globalViewModel,
                 scope,
                 state,
                 generalMediaPlayerService,
@@ -554,8 +555,6 @@ fun DashboardTab(
             Log.i("Settings", "You are now on the Settings tab")
             Settings(
                 navController,
-                globalViewModel,
-                LocalContext.current,
                 scope,
                 state
             )
@@ -564,7 +563,6 @@ fun DashboardTab(
             Log.i("Article", "You are now on the Article tab")
             ArticleUI(
                 navController,
-                globalViewModel
             )
         }
         composable(
@@ -754,7 +752,6 @@ fun DashboardTab(
 @Composable
 fun CreateTab(
     navState: MutableState<Bundle>,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -786,7 +783,6 @@ fun CreateTab(
             Log.i("Create", "You are now on the Create tab")
             CreateUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state
             )
@@ -814,7 +810,6 @@ fun CreateTab(
             Log.i("CreateSound", "You are now on the CreateSound tab")
             NameSoundUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state
             )
@@ -823,7 +818,6 @@ fun CreateTab(
             Log.i("UploadSounds", "You are now on the UploadSounds tab")
             UploadSoundsUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
                 soundMediaPlayerService,
@@ -845,7 +839,6 @@ fun CreateTab(
             Log.i("NameBedtimeStory", "You are now on the NameBedtimeStory tab")
             NameBedtimeStoryUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state
             )
@@ -863,7 +856,6 @@ fun CreateTab(
             RecordBedtimeStoryUI(
                 navController = navController,
                 bedtimeStory.data,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
                 soundMediaPlayerService,
@@ -874,7 +866,6 @@ fun CreateTab(
             Log.i("UploadBedtimeStory", "You are now on the UploadBedtimeStory tab")
             UploadBedtimeStoryUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
                 soundMediaPlayerService,
@@ -898,7 +889,6 @@ fun CreateTab(
                 navController = navController,
                 bedtimeStoryChapter.data,
                 backStackEntry.arguments?.getString("chapterIndex")!!.toInt(),
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state
             )
@@ -955,7 +945,6 @@ fun CreateTab(
             Log.i("IncompleteBedtimeStories", "You are now on the IncompleteBedtimeStories tab")
             IncompleteBedtimeStoriesUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state
             )
@@ -964,7 +953,6 @@ fun CreateTab(
             Log.i("NamePrayer", "You are now on the NamePrayer tab")
             NamePrayerUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state
             )
@@ -973,7 +961,6 @@ fun CreateTab(
             Log.i("UploadPrayer", "You are now on the UploadPrayer tab")
             UploadPrayerUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
                 soundMediaPlayerService,
@@ -984,7 +971,6 @@ fun CreateTab(
             Log.i("RecordPrayer", "You are now on the RecordPrayer tab")
             RecordPrayerUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
                 soundMediaPlayerService,
@@ -995,7 +981,6 @@ fun CreateTab(
             Log.i("NameSelfLove", "You are now on the NameSelfLove tab")
             NameSelfLoveUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state
             )
@@ -1004,7 +989,6 @@ fun CreateTab(
             Log.i("UploadSelfLove", "You are now on the UploadSelfLove tab")
             UploadSelfLoveUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
                 soundMediaPlayerService,
@@ -1015,7 +999,6 @@ fun CreateTab(
             Log.i("RecordSelfLove", "You are now on the RecordSelfLove tab")
             RecordSelfLoveUI(
                 navController = navController,
-                globalViewModel = globalViewModel,
                 scope = scope,
                 state = state,
                 soundMediaPlayerService,
@@ -1067,7 +1050,6 @@ fun CreateTab(
 @Composable
 fun SearchTab(
     navState: MutableState<Bundle>,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -1121,7 +1103,6 @@ fun SearchTab(
 @Composable
 fun FeedbackTab(
     navState: MutableState<Bundle>,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -1151,14 +1132,14 @@ fun FeedbackTab(
     ) {
         composable(Screen.Feedback.screen_route) {
             Log.i("Feedback", "You are now on the Feedback tab")
-            FeedbackUI(navController = navController, context = LocalContext.current, globalViewModel)
+            FeedbackUI(
+                navController = navController
+            )
         }
         composable(Screen.Settings.screen_route) {
             Log.i("Settings", "You are now on the Settings tab")
             Settings(
                 navController,
-                globalViewModel,
-                LocalContext.current,
                 scope,
                 state
             )
@@ -1185,7 +1166,6 @@ fun FeedbackTab(
 @Composable
 fun AccountTab(
     navState: MutableState<Bundle>,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -1215,14 +1195,14 @@ fun AccountTab(
     ) {
         composable(Screen.Account.screen_route) {
             Log.i("Account", "You are now on the Account tab")
-            PricingUI(navController = navController, globalViewModel)
+            PricingUI(
+                navController = navController
+            )
         }
         composable(Screen.Settings.screen_route) {
             Log.i("Settings", "You are now on the Settings tab")
             Settings(
                 navController,
-                globalViewModel,
-                LocalContext.current,
                 scope,
                 state
             )

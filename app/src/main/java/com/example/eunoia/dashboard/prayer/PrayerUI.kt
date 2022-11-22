@@ -41,8 +41,7 @@ import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.bottomSheets.prayer.resetGlobalControlButtons
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.formatMilliSecond
 import com.example.eunoia.utils.timerFormatMS
@@ -329,7 +328,7 @@ fun BottomSheetPrayerControls(
                 contentAlignment = Alignment.Center
             ) {
                 AnImageWithColor(
-                    globalViewModel_!!.addIcon.value,
+                    soundViewModel!!.addIcon.value,
                     "save prayer icon",
                     White,
                     10.dp,
@@ -338,8 +337,8 @@ fun BottomSheetPrayerControls(
                     0
                 ) {
                     prayerScreenBorderControlColors[4].value = Black
-                    globalViewModel_!!.currentPrayerToBeAdded = prayerData
-                    globalViewModel_!!.bottomSheetOpenFor = "addToPrayerListOrRoutine"
+                    prayerViewModel!!.currentPrayerToBeAdded = prayerData
+                    globalViewModel!!.bottomSheetOpenFor = "addToPrayerListOrRoutine"
                     openBottomSheet(scope, state)
                 }
             }
@@ -382,21 +381,21 @@ fun resetPrayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
     prayerData: PrayerData
 ){
-    if(globalViewModel_!!.currentPrayerPlaying != null) {
-        if (globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id) {
+    if(prayerViewModel!!.currentPrayerPlaying != null) {
+        if (prayerViewModel!!.currentPrayerPlaying!!.id == prayerData.id) {
             if (
                 generalMediaPlayerService.isMediaPlayerInitialized() &&
-                globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-                globalViewModel_!!.currentSelfLovePlaying == null
+                bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+                selfLoveViewModel!!.currentSelfLovePlaying == null
             ) {
                 resetBothLocalAndGlobalControlButtonsAfterReset()
                 prayerClicked.value = false
                 prayerAngle.value = 0f
                 prayerTimer.stop()
-                globalViewModel_!!.prayerTimer = prayerTimer
+                prayerViewModel!!.prayerTimer = prayerTimer
                 prayerTimeDisplay = timerFormatMS(prayerData.fullPlayTime.toLong())
-                globalViewModel_!!.prayerTimeDisplay = prayerTimeDisplay
-                globalViewModel_!!.isCurrentPrayerPlaying = false
+                prayerViewModel!!.prayerTimeDisplay = prayerTimeDisplay
+                prayerViewModel!!.isCurrentPrayerPlaying = false
                 generalMediaPlayerService.onDestroy()
             }
         }
@@ -407,12 +406,12 @@ fun seekBack15(
     prayerData: PrayerData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentPrayerPlaying != null) {
-        if (globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id) {
+    if(prayerViewModel!!.currentPrayerPlaying != null) {
+        if (prayerViewModel!!.currentPrayerPlaying!!.id == prayerData.id) {
             if(
                 generalMediaPlayerService.isMediaPlayerInitialized() &&
-                globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-                globalViewModel_!!.currentSelfLovePlaying == null
+                bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+                selfLoveViewModel!!.currentSelfLovePlaying == null
             ) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition - 15000
                 if(newSeekTo < 0){
@@ -427,10 +426,10 @@ fun seekBack15(
                 prayerTimer.setDuration(
                     generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
                 )
-                globalViewModel_!!.prayerTimer = prayerTimer
-                if(globalViewModel_!!.isCurrentPrayerPlaying) {
+                prayerViewModel!!.prayerTimer = prayerTimer
+                if(prayerViewModel!!.isCurrentPrayerPlaying) {
                     prayerTimer.start()
-                    globalViewModel_!!.prayerTimer = prayerTimer
+                    prayerViewModel!!.prayerTimer = prayerTimer
                 }
             }
         }
@@ -441,12 +440,12 @@ fun seekForward15(
     prayerData: PrayerData,
     generalMediaPlayerService: GeneralMediaPlayerService
 ) {
-    if(globalViewModel_!!.currentPrayerPlaying != null) {
-        if (globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id) {
+    if(prayerViewModel!!.currentPrayerPlaying != null) {
+        if (prayerViewModel!!.currentPrayerPlaying!!.id == prayerData.id) {
             if(
                 generalMediaPlayerService.isMediaPlayerInitialized() &&
-                globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-                globalViewModel_!!.currentSelfLovePlaying == null
+                bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+                selfLoveViewModel!!.currentSelfLovePlaying == null
             ) {
                 var newSeekTo = generalMediaPlayerService.getMediaPlayer()!!.currentPosition + 15000
                 if(newSeekTo > generalMediaPlayerService.getMediaPlayer()!!.duration){
@@ -465,10 +464,10 @@ fun seekForward15(
                 prayerTimer.setDuration(
                     generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong()
                 )
-                globalViewModel_!!.prayerTimer = prayerTimer
-                if(globalViewModel_!!.isCurrentPrayerPlaying) {
+                prayerViewModel!!.prayerTimer = prayerTimer
+                if(prayerViewModel!!.isCurrentPrayerPlaying) {
                     prayerTimer.start()
-                    globalViewModel_!!.prayerTimer = prayerTimer
+                    prayerViewModel!!.prayerTimer = prayerTimer
                 }
             }
         }
@@ -512,7 +511,7 @@ fun resetCurrentlyPlayingRoutineIfNecessaryPrayerUI(
     context: Context,
     prayerData: PrayerData
 ) {
-    if(globalViewModel_!!.currentRoutinePlaying != null){
+    if(routineViewModel!!.currentRoutinePlaying != null){
         openRoutineIsCurrentlyPlayingDialogBox = true
     }else{
         pauseOrPlayPrayerAccordingly(
@@ -526,12 +525,12 @@ fun pauseOrPlayPrayerAccordingly(
     prayerData: PrayerData,
     generalMediaPlayerService: GeneralMediaPlayerService,
 ) {
-    if(globalViewModel_!!.currentPrayerPlaying != null) {
-        if (globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id) {
+    if(prayerViewModel!!.currentPrayerPlaying != null) {
+        if (prayerViewModel!!.currentPrayerPlaying!!.id == prayerData.id) {
             if (
                 generalMediaPlayerService.isMediaPlayerInitialized() &&
-                globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-                globalViewModel_!!.currentSelfLovePlaying == null
+                bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+                selfLoveViewModel!!.currentSelfLovePlaying == null
             ) {
                 if (generalMediaPlayerService.isMediaPlayerPlaying()) {
                     pausePrayer(generalMediaPlayerService)
@@ -567,17 +566,17 @@ private fun pausePrayer(
 ) {
     if(
         generalMediaPlayerService.isMediaPlayerInitialized() &&
-        globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-        globalViewModel_!!.currentSelfLovePlaying == null
+        bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+        selfLoveViewModel!!.currentSelfLovePlaying == null
     ) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
             generalMediaPlayerService.pauseMediaPlayer()
             prayerTimer.pause()
-            globalViewModel_!!.prayerTimer = prayerTimer
+            prayerViewModel!!.prayerTimer = prayerTimer
             activateLocalPrayerControlButton(2)
             activateGlobalprayerControlButton(2)
-            globalViewModel_!!.generalPlaytimeTimer.pause()
-            globalViewModel_!!.isCurrentPrayerPlaying = false
+            globalViewModel!!.generalPlaytimeTimer.pause()
+            prayerViewModel!!.isCurrentPrayerPlaying = false
         }
     }
 }
@@ -589,10 +588,10 @@ private fun startPrayer(
     if(prayerUri != null){
         if(
             generalMediaPlayerService.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentBedtimeStoryPlaying == null &&
-            globalViewModel_!!.currentSelfLovePlaying == null
+            bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
+            selfLoveViewModel!!.currentSelfLovePlaying == null
         ){
-            if(globalViewModel_!!.currentPrayerPlaying!!.id == prayerData.id){
+            if(prayerViewModel!!.currentPrayerPlaying!!.id == prayerData.id){
                 generalMediaPlayerService.startMediaPlayer()
                 afterPlayingPrayer(prayerData)
             }else{
@@ -612,10 +611,10 @@ private fun startPrayer(
 
 private fun afterPlayingPrayer(prayerData: PrayerData){
     prayerTimer.start()
-    globalViewModel_!!.prayerTimer = prayerTimer
+    prayerViewModel!!.prayerTimer = prayerTimer
     deActivateLocalPrayerControlButton(2)
     deActivateLocalPrayerControlButton(0)
-    globalViewModel_!!.generalPlaytimeTimer.start()
+    globalViewModel!!.generalPlaytimeTimer.start()
     setGlobalPropertiesAfterPlayingPrayer(prayerData)
 }
 
@@ -652,7 +651,7 @@ private fun initializeMediaPlayer(
         intent.action = "PLAY"
         generalMediaPlayerService.onStartCommand(intent, 0, 0)
         prayerTimer.setMaxDuration(prayerData.fullPlayTime.toLong())
-        globalViewModel_!!.prayerTimer = prayerTimer
+        prayerViewModel!!.prayerTimer = prayerTimer
         resetOtherGeneralMediaPlayerUsersExceptPrayer()
     }
     resetBothLocalAndGlobalControlButtons()
@@ -662,19 +661,19 @@ private fun initializeMediaPlayer(
 private fun setGlobalPropertiesAfterPlayingPrayer(
     prayerData: PrayerData
 ){
-    globalViewModel_!!.currentPrayerPlaying = prayerData
-    globalViewModel_!!.currentPrayerPlayingUri = prayerUri
-    globalViewModel_!!.isCurrentPrayerPlaying = true
+    prayerViewModel!!.currentPrayerPlaying = prayerData
+    prayerViewModel!!.currentPrayerPlayingUri = prayerUri
+    prayerViewModel!!.isCurrentPrayerPlaying = true
     deActivateGlobalprayerControlButton(2)
     deActivateGlobalprayerControlButton(0)
 }
 
 fun resetPrayerGlobalProperties(){
     Log.i("Reset praya", "Prayersss will reset now")
-    globalViewModel_!!.currentPrayerPlaying = null
-    globalViewModel_!!.currentPrayerPlayingUri = null
-    globalViewModel_!!.isCurrentPrayerPlaying = false
-    globalViewModel_!!.prayerTimer.stop()
+    prayerViewModel!!.currentPrayerPlaying = null
+    prayerViewModel!!.currentPrayerPlayingUri = null
+    prayerViewModel!!.isCurrentPrayerPlaying = false
+    prayerViewModel!!.prayerTimer.stop()
     resetGlobalControlButtons()
 }
 
@@ -737,19 +736,19 @@ private fun deActivateLocalPrayerControlButton(index: Int){
 }
 
 private fun activateGlobalprayerControlButton(index: Int){
-    globalViewModel_!!.prayerScreenBorderControlColors[index].value = prayerScreenBorderControlColors[index].value
-    globalViewModel_!!.prayerScreenBackgroundControlColor1[index].value = prayerScreenBackgroundControlColor1[index].value
-    globalViewModel_!!.prayerScreenBackgroundControlColor2[index].value = prayerScreenBackgroundControlColor2[index].value
+    prayerViewModel!!.prayerScreenBorderControlColors[index].value = prayerScreenBorderControlColors[index].value
+    prayerViewModel!!.prayerScreenBackgroundControlColor1[index].value = prayerScreenBackgroundControlColor1[index].value
+    prayerViewModel!!.prayerScreenBackgroundControlColor2[index].value = prayerScreenBackgroundControlColor2[index].value
     if(index == 2){
-        globalViewModel_!!.prayerScreenIcons[index].value = prayerScreenIcons[index].value
+        prayerViewModel!!.prayerScreenIcons[index].value = prayerScreenIcons[index].value
     }
 }
 
 private fun deActivateGlobalprayerControlButton(index: Int){
-    globalViewModel_!!.prayerScreenBorderControlColors[index].value = prayerScreenBorderControlColors[index].value
-    globalViewModel_!!.prayerScreenBackgroundControlColor1[index].value = prayerScreenBackgroundControlColor1[index].value
-    globalViewModel_!!.prayerScreenBackgroundControlColor2[index].value = prayerScreenBackgroundControlColor2[index].value
+    prayerViewModel!!.prayerScreenBorderControlColors[index].value = prayerScreenBorderControlColors[index].value
+    prayerViewModel!!.prayerScreenBackgroundControlColor1[index].value = prayerScreenBackgroundControlColor1[index].value
+    prayerViewModel!!.prayerScreenBackgroundControlColor2[index].value = prayerScreenBackgroundControlColor2[index].value
     if(index == 2){
-        globalViewModel_!!.prayerScreenIcons[index].value = prayerScreenIcons[index].value
+        prayerViewModel!!.prayerScreenIcons[index].value = prayerScreenIcons[index].value
     }
 }

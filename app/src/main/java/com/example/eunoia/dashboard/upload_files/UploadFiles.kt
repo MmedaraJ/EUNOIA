@@ -3,8 +3,6 @@ package com.example.eunoia.dashboard.upload_files
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -28,7 +26,7 @@ import com.example.eunoia.backend.*
 import com.example.eunoia.models.*
 import com.example.eunoia.sign_in_process.SignInActivity
 import com.example.eunoia.ui.components.StandardBlueButton
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.EUNOIATheme
 import java.io.File
 import java.io.FileOutputStream
@@ -165,8 +163,8 @@ class UploadFilesActivity : ComponentActivity() {
     private fun createSoundPreset(soundData: SoundData){
         val originalVolumes = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
-            globalViewModel_!!.currentUser!!.id,
+            UserObject.User.from(globalViewModel!!.currentUser!!),
+            globalViewModel!!.currentUser!!.id,
             "original_volumes",
             listOf(5, 5, 5, 5, 5, 5, 5, 5, 5, 5),
             soundData.id,
@@ -178,8 +176,8 @@ class UploadFilesActivity : ComponentActivity() {
 
         val preset1 = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
-            globalViewModel_!!.currentUser!!.id,
+            UserObject.User.from(globalViewModel!!.currentUser!!),
+            globalViewModel!!.currentUser!!.id,
             "preset1",
             listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
             soundData.id,
@@ -191,8 +189,8 @@ class UploadFilesActivity : ComponentActivity() {
 
         val preset2 = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
-            globalViewModel_!!.currentUser!!.id,
+            UserObject.User.from(globalViewModel!!.currentUser!!),
+            globalViewModel!!.currentUser!!.id,
             "preset2",
             listOf(10, 9, 8, 7, 6, 5, 4, 3, 2, 1),
             soundData.id,
@@ -204,8 +202,8 @@ class UploadFilesActivity : ComponentActivity() {
 
         val preset3 = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
-            globalViewModel_!!.currentUser!!.id,
+            UserObject.User.from(globalViewModel!!.currentUser!!),
+            globalViewModel!!.currentUser!!.id,
             "preset3",
             listOf(10, 9, 8, 7, 6, 1, 2, 3, 4, 5),
             soundData.id,
@@ -217,8 +215,8 @@ class UploadFilesActivity : ComponentActivity() {
 
         val preset4 = SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
-            globalViewModel_!!.currentUser!!.id,
+            UserObject.User.from(globalViewModel!!.currentUser!!),
+            globalViewModel!!.currentUser!!.id,
             "preset4",
             listOf(10, 8, 6, 4, 2, 1, 2, 4, 6, 8),
             soundData.id,

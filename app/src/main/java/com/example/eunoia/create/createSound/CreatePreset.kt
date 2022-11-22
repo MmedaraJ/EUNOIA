@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
 import com.example.eunoia.create.createSoundViewModel
@@ -26,7 +25,7 @@ import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.navigation.openSavedElementDialogBox
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
@@ -97,7 +96,7 @@ fun CreatePresetUI(
                     navigateBack(navController)
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -292,7 +291,7 @@ fun resetAll(){
 
 fun saveAudioFilesToS3(completed: () -> Unit){
     for(i in uploadedFiles.indices) {
-        val key = "Routine/Sounds/${globalViewModel_!!.currentUser!!.username}/$soundName/${i}_${uploadedFiles[i]!!.value.name}"
+        val key = "Routine/Sounds/${globalViewModel!!.currentUser!!.username}/$soundName/${i}_${uploadedFiles[i]!!.value.name}"
         SoundBackend.storeAudio(uploadedFiles[i]!!.value.absolutePath, key){
             if(i == uploadedFiles.size - 1){
                 completed()
@@ -308,13 +307,13 @@ fun createSound(completed: (soundData: SoundData) -> Unit){
 
     val sound = SoundObject.Sound(
         UUID.randomUUID().toString(),
-        UserObject.User.from(globalViewModel_!!.currentUser!!),
-        globalViewModel_!!.currentUser!!.id,
+        UserObject.User.from(globalViewModel!!.currentUser!!),
+        globalViewModel!!.currentUser!!.id,
         soundName,
         soundName,
         soundShortDescription,
         soundShortDescription,
-        "Routine/Sounds/${globalViewModel_!!.currentUser!!.username}/$soundName/",
+        "Routine/Sounds/${globalViewModel!!.currentUser!!.username}/$soundName/",
         soundIcon,
         0xFFEBBA9A.toInt(),
         maxPlayTime,
@@ -361,7 +360,7 @@ private fun createUserSound(soundData: SoundData, completed: () -> Unit){
     val userSoundModel = UserSoundObject.UserSoundModel(
         UUID.randomUUID().toString(),
         SoundObject.Sound.from(soundData),
-        UserObject.User.from(globalViewModel_!!.currentUser!!)
+        UserObject.User.from(globalViewModel!!.currentUser!!)
     )
     UserSoundBackend.createUserSound(userSoundModel){
         completed()
@@ -424,8 +423,8 @@ fun saveThisPreset(completed: () -> Unit){
     val preset = mutableStateOf(
         SoundPresetObject.SoundPreset(
             UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel_!!.currentUser!!),
-            globalViewModel_!!.currentUser!!.id,
+            UserObject.User.from(globalViewModel!!.currentUser!!),
+            globalViewModel!!.currentUser!!.id,
             presetName,
             volumes,
             null,

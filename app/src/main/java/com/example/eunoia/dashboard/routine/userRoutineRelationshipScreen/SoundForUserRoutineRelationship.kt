@@ -15,7 +15,9 @@ import com.example.eunoia.dashboard.sound.updatePreviousUserSoundRelationship
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.sound.resetGlobalControlButtons
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
+import com.example.eunoia.ui.navigation.routineViewModel
+import com.example.eunoia.ui.navigation.soundViewModel
 
 object SoundForUserRoutineRelationship{
     private const val TAG = "SoundForUserRoutineRelationship"
@@ -65,10 +67,10 @@ object SoundForUserRoutineRelationship{
     ) {
         if(soundMediaPlayerService.areMediaPlayersInitialized()) {
             if(soundMediaPlayerService.areMediaPlayersPlaying()) {
-                globalViewModel_!!.soundPlaytimeTimer.pause()
+                globalViewModel!!.soundPlaytimeTimer.pause()
                 soundMediaPlayerService.pauseMediaPlayers()
                 com.example.eunoia.ui.bottomSheets.sound.activateGlobalControlButton(3)
-                globalViewModel_!!.isCurrentSoundPlaying = false
+                soundViewModel!!.isCurrentSoundPlaying = false
                 Log.i(TAG, "Pausedz sound")
             }
         }
@@ -168,7 +170,7 @@ object SoundForUserRoutineRelationship{
     ){
         playButtonText = PAUSE_ROUTINE
         soundMediaPlayerService.loopMediaPlayers()
-        globalViewModel_!!.soundPlaytimeTimer.start()
+        globalViewModel!!.soundPlaytimeTimer.start()
         setGlobalPropertiesAfterPlayingSound(context)
     }
 
@@ -231,18 +233,18 @@ object SoundForUserRoutineRelationship{
             }
             resetGlobalControlButtons()
 
-            globalViewModel_!!.isCurrentSoundPlaying = false
-            globalViewModel_!!.currentSoundPlaying = null
+            soundViewModel!!.isCurrentSoundPlaying = false
+            soundViewModel!!.currentSoundPlaying = null
 
             soundCountDownTimer!!.cancel()
             soundCountDownTimer = null
-            globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer = soundCountDownTimer
+            routineViewModel!!.currentRoutinePlayingSoundCountDownTimer = soundCountDownTimer
 
             presetsIndex += 1
             if (presetsIndex > presets!!.indices.last) {
                 presetsIndex = 0
             }
-            globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = presetsIndex
+            routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = presetsIndex
 
             playButtonText = START_ROUTINE
             playSound(
@@ -271,7 +273,7 @@ object SoundForUserRoutineRelationship{
             }
         }
         soundCountDownTimer!!.start()
-        globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer = soundCountDownTimer
+        routineViewModel!!.currentRoutinePlayingSoundCountDownTimer = soundCountDownTimer
     }
 
     private fun getSoundAssociatedWithUserSoundRelationship(completed: () -> Unit){
@@ -293,26 +295,26 @@ object SoundForUserRoutineRelationship{
             presets!![presetsIndex]!!.soundPresetData.soundId
         ) {
             if (it.isNotEmpty()) {
-                globalViewModel_!!.currentSoundPlaying = it[0]
+                soundViewModel!!.currentSoundPlaying = it[0]
                 Log.i(TAG, "From sound from routine, currently playing is ${it[0]}")
 
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets = presets
-                globalViewModel_!!.currentSoundPlayingPreset = presets!![presetsIndex]!!.soundPresetData
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresets = presets
+                soundViewModel!!.currentSoundPlayingPreset = presets!![presetsIndex]!!.soundPresetData
 
-                globalViewModel_!!.currentSoundPlayingSliderPositions.clear()
-                globalViewModel_!!.soundSliderVolumes = presets!![presetsIndex]!!.soundPresetData.volumes
+                soundViewModel!!.currentSoundPlayingSliderPositions.clear()
+                soundViewModel!!.soundSliderVolumes = presets!![presetsIndex]!!.soundPresetData.volumes
 
-                for (volume in globalViewModel_!!.soundSliderVolumes!!) {
-                    globalViewModel_!!.currentSoundPlayingSliderPositions.add(
+                for (volume in soundViewModel!!.soundSliderVolumes!!) {
+                    soundViewModel!!.currentSoundPlayingSliderPositions.add(
                         mutableStateOf(volume.toFloat())
                     )
                 }
 
-                globalViewModel_!!.currentSoundPlayingUris = presetUris[presets!![presetsIndex]!!.soundPresetData.id]
+                soundViewModel!!.currentSoundPlayingUris = presetUris[presets!![presetsIndex]!!.soundPresetData.id]
 
-                globalViewModel_!!.currentSoundPlayingContext = context
-                globalViewModel_!!.isCurrentSoundPlaying = true
-                globalViewModel_!!.isCurrentRoutinePlaying = true
+                soundViewModel!!.currentSoundPlayingContext = context
+                soundViewModel!!.isCurrentSoundPlaying = true
+                routineViewModel!!.isCurrentRoutinePlaying = true
 
                 com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(3)
                 com.example.eunoia.ui.bottomSheets.sound.deActivateGlobalControlButton(1)

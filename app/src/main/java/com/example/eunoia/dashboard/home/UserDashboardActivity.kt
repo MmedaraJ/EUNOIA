@@ -73,15 +73,11 @@ import com.example.eunoia.ui.bottomSheets.recordAudio.recorder
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingFile
 import com.example.eunoia.ui.bottomSheets.recordAudio.recordingTimeDisplay
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.MultiBottomNavApp
-import com.example.eunoia.ui.navigation.generalMediaPlayerService_
-import com.example.eunoia.ui.navigation.globalViewModel_
-import com.example.eunoia.ui.navigation.openRoutineIsCurrentlyPlayingDialogBox
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.*
 import com.example.eunoia.utils.Timer
-import com.example.eunoia.viewModels.GlobalViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import java.io.DataOutputStream
@@ -390,13 +386,13 @@ class UserDashboardActivity :
     override fun onBedtimeStoryTimerTick(durationString: String, durationMilliSeconds: Long) {
         if(
             generalMediaPlayerService_!!.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentBedtimeStoryPlaying != null
+            bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null
         ){
-            globalViewModel_!!.bedtimeStoryTimeDisplay = durationString
-            globalViewModel_!!.bedtimeStoryCircularSliderClicked = false
-            globalViewModel_!!.bedtimeStoryCircularSliderAngle = (
+            bedtimeStoryViewModel!!.bedtimeStoryTimeDisplay = durationString
+            bedtimeStoryViewModel!!.bedtimeStoryCircularSliderClicked = false
+            bedtimeStoryViewModel!!.bedtimeStoryCircularSliderAngle = (
                     (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
-                            globalViewModel_!!.currentBedtimeStoryPlaying!!.fullPlayTime
+                            bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.fullPlayTime
                     ) * 360f
         }
         //TODO if current position of media player == duration of media player, stop media player,
@@ -406,13 +402,13 @@ class UserDashboardActivity :
     override fun onSelfLoveTimerTick(durationString: String, durationMilliSeconds: Long) {
         if (
             generalMediaPlayerService_!!.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentSelfLovePlaying != null
+            selfLoveViewModel!!.currentSelfLovePlaying != null
         ) {
-            globalViewModel_!!.selfLoveTimeDisplay = durationString
-            globalViewModel_!!.selfLoveCircularSliderClicked = false
-            globalViewModel_!!.selfLoveCircularSliderAngle = (
+            selfLoveViewModel!!.selfLoveTimeDisplay = durationString
+            selfLoveViewModel!!.selfLoveCircularSliderClicked = false
+            selfLoveViewModel!!.selfLoveCircularSliderAngle = (
                     (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
-                            (globalViewModel_!!.currentSelfLovePlaying!!.fullPlayTime).toFloat()
+                            (selfLoveViewModel!!.currentSelfLovePlaying!!.fullPlayTime).toFloat()
                     ) * 360f
         }
     }
@@ -420,13 +416,13 @@ class UserDashboardActivity :
     override fun onPrayerTimerTick(durationString: String, durationMilliSeconds: Long) {
         if (
             generalMediaPlayerService_!!.isMediaPlayerInitialized() &&
-            globalViewModel_!!.currentPrayerPlaying != null
+            prayerViewModel!!.currentPrayerPlaying != null
         ) {
-            globalViewModel_!!.prayerTimeDisplay = durationString
-            globalViewModel_!!.prayerCircularSliderClicked = false
-            globalViewModel_!!.prayerCircularSliderAngle = (
+            prayerViewModel!!.prayerTimeDisplay = durationString
+            prayerViewModel!!.prayerCircularSliderClicked = false
+            prayerViewModel!!.prayerCircularSliderAngle = (
                     (generalMediaPlayerService_!!.getMediaPlayer()!!.currentPosition).toFloat() /
-                            (globalViewModel_!!.currentPrayerPlaying!!.fullPlayTime).toFloat()
+                            (prayerViewModel!!.currentPrayerPlaying!!.fullPlayTime).toFloat()
                     ) * 360f
         }
     }
@@ -448,7 +444,6 @@ class UserDashboardActivity :
 @Composable
 fun UserDashboardActivityUI(
     navController: NavHostController,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
@@ -462,12 +457,11 @@ fun UserDashboardActivityUI(
         context
     )
 
-    globalViewModel_!!.navController = navController
+    globalViewModel!!.navController = navController
     val scrollState = rememberScrollState()
-    //Log.i(TAG, "routines owned by user size is ${globalViewModel_!!.currentUser!!.userRoutineRelationshipsOwnedByUser}")
 
     var retrievedUserRoutineRelationships by rememberSaveable{ mutableStateOf(false) }
-    globalViewModel_!!.currentUser?.let {
+    globalViewModel!!.currentUser?.let {
         UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUser(it) { userRoutineRelationships ->
             if(routineActivitySoundUrisMapList.size < userRoutineRelationships.size) {
                 for (i in userRoutineRelationships.indices) {
@@ -480,7 +474,7 @@ fun UserDashboardActivityUI(
                 }
             }
 
-            globalViewModel_!!.currentUsersRoutineRelationships = userRoutineRelationships.toMutableList()
+            routineViewModel!!.currentUsersRoutineRelationships = userRoutineRelationships.toMutableList()
             retrievedUserRoutineRelationships = true
         }
     }
@@ -513,7 +507,7 @@ fun UserDashboardActivityUI(
 
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
 
                 },
@@ -585,14 +579,14 @@ fun UserDashboardActivityUI(
                 .padding(bottom = 12.dp)
         ){
             if(
-                globalViewModel_!!.currentUsersRoutineRelationships != null &&
+                routineViewModel!!.currentUsersRoutineRelationships != null &&
                 retrievedUserRoutineRelationships
             ){
-                if(globalViewModel_!!.currentUsersRoutineRelationships!!.size > 0) {
-                    for(i in globalViewModel_!!.currentUsersRoutineRelationships!!.indices){
+                if(routineViewModel!!.currentUsersRoutineRelationships!!.size > 0) {
+                    for(i in routineViewModel!!.currentUsersRoutineRelationships!!.indices){
                         setRoutineActivityPlayButtonTextsCorrectly(i)
                         UserRoutineRelationshipCard(
-                            globalViewModel_!!.currentUsersRoutineRelationships!![i]!!,
+                            routineViewModel!!.currentUsersRoutineRelationships!![i]!!,
                             i,
                             { index ->
                                 routineIndex = index
@@ -603,9 +597,12 @@ fun UserDashboardActivityUI(
                                 )
                             },
                             {
-                                Log.i(TAG, "globalViewModel_!!.currentUsersRoutineRelationships!![i]!! = " +
-                                        "${globalViewModel_!!.currentUsersRoutineRelationships!![i]!!}")
-                                navigateToUserRoutineRelationshipScreen(navController, globalViewModel_!!.currentUsersRoutineRelationships!![i]!!)
+                                Log.i(TAG, "globalViewModel!!.currentUsersRoutineRelationships!![i]!! = " +
+                                        "${routineViewModel!!.currentUsersRoutineRelationships!![i]!!}")
+                                navigateToUserRoutineRelationshipScreen(
+                                    navController,
+                                    routineViewModel!!.currentUsersRoutineRelationships!![i]!!
+                                )
                             }
                         )
                     }
@@ -658,7 +655,7 @@ private fun SetUpRoutineCurrentlyPlayingAlertDialogRoutineUI(
         ConfirmAlertDialog(
             "Are you sure you want to stop your routine?",
             {
-                updatePreviousUserRoutineRelationship {
+                updatePreviousUserRoutineRelationship() {
                     resetEverything(
                         soundMediaPlayerService,
                         generalMediaPlayerService,
@@ -684,8 +681,8 @@ private fun startRoutineConfirmed(
     generalMediaPlayerService: GeneralMediaPlayerService,
     context: Context,
 ){
-    if(globalViewModel_!!.currentUserRoutineRelationshipPlaying != null){
-        if(globalViewModel_!!.currentUserRoutineRelationshipPlaying!!.id == globalViewModel_!!.currentUsersRoutineRelationships!![routineIndex]!!.id){
+    if(routineViewModel!!.currentUserRoutineRelationshipPlaying != null){
+        if(routineViewModel!!.currentUserRoutineRelationshipPlaying!!.id == routineViewModel!!.currentUsersRoutineRelationships!![routineIndex]!!.id){
             resetRoutinePlayButtonTextsIfNecessary(routineIndex)
             selectNextRoutineElement(
                 soundMediaPlayerService,
@@ -734,9 +731,9 @@ private fun resetCurrentlyPlayingRoutineIfNecessary(
     context: Context,
 ) {
     if(
-        globalViewModel_!!.currentRoutinePlaying != null &&
-        globalViewModel_!!.currentUserRoutineRelationshipPlaying != null &&
-        globalViewModel_!!.currentUserRoutineRelationshipPlaying!!.id != globalViewModel_!!.currentUsersRoutineRelationships!![routineIndex]!!.id
+        routineViewModel!!.currentRoutinePlaying != null &&
+        routineViewModel!!.currentUserRoutineRelationshipPlaying != null &&
+        routineViewModel!!.currentUserRoutineRelationshipPlaying!!.id != routineViewModel!!.currentUsersRoutineRelationships!![routineIndex]!!.id
     ){
         openRoutineIsCurrentlyPlayingDialogBox = true
     }else{
@@ -748,13 +745,15 @@ private fun resetCurrentlyPlayingRoutineIfNecessary(
     }
 }
 
-private fun setRoutineActivityPlayButtonTextsCorrectly(i: Int) {
-    if (globalViewModel_!!.currentUserRoutineRelationshipPlaying != null) {
+private fun setRoutineActivityPlayButtonTextsCorrectly(
+    i: Int,
+) {
+    if (routineViewModel!!.currentUserRoutineRelationshipPlaying != null) {
         if (
-            globalViewModel_!!.currentUserRoutineRelationshipPlaying!!.id ==
-            globalViewModel_!!.currentUsersRoutineRelationships!![i]!!.id
+            routineViewModel!!.currentUserRoutineRelationshipPlaying!!.id ==
+            routineViewModel!!.currentUsersRoutineRelationships!![i]!!.id
         ) {
-            if(globalViewModel_!!.isCurrentRoutinePlaying){
+            if(routineViewModel!!.isCurrentRoutinePlaying){
                 routineActivityPlayButtonTexts[i]!!.value = PAUSE_ROUTINE
             }else{
                 routineActivityPlayButtonTexts[i]!!.value = START_ROUTINE
@@ -781,18 +780,18 @@ private fun resetRoutineMediaPlayerServicesIfNecessary(
         generalMediaPlayerService,
         context
     ){
-        if(globalViewModel_!!.currentUserRoutineRelationshipPlaying != null) {
-            if (globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.id != globalViewModel_!!.currentUserRoutineRelationshipPlaying!!.id) {
-                globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
-                globalViewModel_!!.currentRoutinePlayingOrder = null
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = 0
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets = null
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentPrayerPlayingIndex
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers = null
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentBedtimeStoryPlayingIndex
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories = null
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.currentSelfLovePlayingIndex
-                globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = null
+        if(routineViewModel!!.currentUserRoutineRelationshipPlaying != null) {
+            if (routineViewModel!!.currentUsersRoutineRelationships!![index]!!.id != routineViewModel!!.currentUserRoutineRelationshipPlaying!!.id) {
+                routineViewModel!!.currentRoutinePlayingOrderIndex = 0
+                routineViewModel!!.currentRoutinePlayingOrder = null
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = 0
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresets = null
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = routineViewModel!!.currentUsersRoutineRelationships!![index]!!.currentPrayerPlayingIndex
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayers = null
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex = routineViewModel!!.currentUsersRoutineRelationships!![index]!!.currentBedtimeStoryPlayingIndex
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories = null
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = routineViewModel!!.currentUsersRoutineRelationships!![index]!!.currentSelfLovePlayingIndex
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = null
                 //countdown timers
                 resetGlobalRoutineCountdownTimers()
 
@@ -805,39 +804,39 @@ private fun resetRoutineMediaPlayerServicesIfNecessary(
 }
 
 fun resetGlobalRoutineCountdownTimers() {
-    if(globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer != null) {
-        globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer!!.cancel()
-        globalViewModel_!!.currentRoutinePlayingSoundCountDownTimer = null
+    if(routineViewModel!!.currentRoutinePlayingSoundCountDownTimer != null) {
+        routineViewModel!!.currentRoutinePlayingSoundCountDownTimer!!.cancel()
+        routineViewModel!!.currentRoutinePlayingSoundCountDownTimer = null
     }
 
-    if(globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer != null) {
-        globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer!!.cancel()
-        globalViewModel_!!.currentRoutinePlayingPrayerCountDownTimer = null
+    if(routineViewModel!!.currentRoutinePlayingPrayerCountDownTimer != null) {
+        routineViewModel!!.currentRoutinePlayingPrayerCountDownTimer!!.cancel()
+        routineViewModel!!.currentRoutinePlayingPrayerCountDownTimer = null
     }
 
-    if(globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer != null) {
-        globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer!!.cancel()
-        globalViewModel_!!.currentRoutinePlayingNextPrayerCountDownTimer = null
+    if(routineViewModel!!.currentRoutinePlayingNextPrayerCountDownTimer != null) {
+        routineViewModel!!.currentRoutinePlayingNextPrayerCountDownTimer!!.cancel()
+        routineViewModel!!.currentRoutinePlayingNextPrayerCountDownTimer = null
     }
 
-    if(globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer != null) {
-        globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer!!.cancel()
-        globalViewModel_!!.currentRoutinePlayingSelfLoveCountDownTimer = null
+    if(routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer != null) {
+        routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer!!.cancel()
+        routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer = null
     }
 
-    if(globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer != null) {
-        globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer!!.cancel()
-        globalViewModel_!!.currentRoutinePlayingNextSelfLoveCountDownTimer = null
+    if(routineViewModel!!.currentRoutinePlayingNextSelfLoveCountDownTimer != null) {
+        routineViewModel!!.currentRoutinePlayingNextSelfLoveCountDownTimer!!.cancel()
+        routineViewModel!!.currentRoutinePlayingNextSelfLoveCountDownTimer = null
     }
 
-    if(globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer != null) {
-        globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer!!.cancel()
-        globalViewModel_!!.currentRoutinePlayingBedtimeStoryCountDownTimer = null
+    if(routineViewModel!!.currentRoutinePlayingBedtimeStoryCountDownTimer != null) {
+        routineViewModel!!.currentRoutinePlayingBedtimeStoryCountDownTimer!!.cancel()
+        routineViewModel!!.currentRoutinePlayingBedtimeStoryCountDownTimer = null
     }
 
-    if(globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer != null) {
-        globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer!!.cancel()
-        globalViewModel_!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer = null
+    if(routineViewModel!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer != null) {
+        routineViewModel!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer!!.cancel()
+        routineViewModel!!.currentRoutinePlayingNextBedtimeStoryCountDownTimer = null
     }
 }
 
@@ -857,32 +856,25 @@ private fun selectNextRoutineElement(
     index: Int,
     context: Context
 ) {
-    /*observeGeneralMediaPlayerIsCompleted(
-        soundMediaPlayerService,
-        generalMediaPlayerService,
-        index,
-        context
-    )*/
-
     updateRoutineOncePlayIsClicked(
-        globalViewModel_!!.currentRoutinePlayingOrderIndex!!,
-        globalViewModel_!!.currentUsersRoutineRelationships!![index]!!,
+        routineViewModel!!.currentRoutinePlayingOrderIndex!!,
+        routineViewModel!!.currentUsersRoutineRelationships!![index]!!,
     ) {
         if(it != null) {
-            globalViewModel_!!.currentRoutinePlaying = it.userRoutineRelationshipRoutine
-            globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
+            routineViewModel!!.currentRoutinePlaying = it.userRoutineRelationshipRoutine
+            routineViewModel!!.currentUsersRoutineRelationships!![index] = it
         }
 
-        globalViewModel_!!.routinePlaytimeTimer.start()
-        globalViewModel_!!.currentRoutinePlayingOrder =
-            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.playingOrder
-        globalViewModel_!!.currentUserRoutineRelationshipPlaying =
-            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!
+        globalViewModel!!.routinePlaytimeTimer.start()
+        routineViewModel!!.currentRoutinePlayingOrder =
+            routineViewModel!!.currentUsersRoutineRelationships!![index]!!.playingOrder
+        routineViewModel!!.currentUserRoutineRelationshipPlaying =
+            routineViewModel!!.currentUsersRoutineRelationships!![index]!!
         Log.i(
             TAG,
-            "Our routine playing orderz is ${globalViewModel_!!.currentRoutinePlayingOrder!![globalViewModel_!!.currentRoutinePlayingOrderIndex!!]}"
+            "Our routine playing orderz is ${routineViewModel!!.currentRoutinePlayingOrder!![routineViewModel!!.currentRoutinePlayingOrderIndex!!]}"
         )
-        when (globalViewModel_!!.currentRoutinePlayingOrder!![globalViewModel_!!.currentRoutinePlayingOrderIndex!!]) {
+        when (routineViewModel!!.currentRoutinePlayingOrder!![routineViewModel!!.currentRoutinePlayingOrderIndex!!]) {
             "sound" -> {
                 incrementPlayingOrderIndex(
                     soundMediaPlayerService,
@@ -941,9 +933,9 @@ fun updateRoutineOncePlayIsClicked(
     completed: (updatedUserRoutineRelationship: UserRoutineRelationship?) -> Unit
 ) {
     if (playingOrderIndex == 0) {
-        updatePreviousUserRoutineRelationship {
+        updatePreviousUserRoutineRelationship() {
             updateRecentlyPlayedUserRoutineRelationshipWithUserRoutineRelationship(
-                updatedUserRoutineRelationship
+                updatedUserRoutineRelationship,
             ) {
                 completed(it)
             }
@@ -956,30 +948,30 @@ fun updateRoutineOncePlayIsClicked(
 fun updatePreviousUserRoutineRelationship(
     completed: (updatedUserRoutineRelationship: UserRoutineRelationship?) -> Unit
 ) {
-    if(globalViewModel_!!.previouslyPlayedUserRoutineRelationship != null){
-        val playTime = globalViewModel_!!.routinePlaytimeTimer.getDuration()
-        globalViewModel_!!.routinePlaytimeTimer.stop()
+    if(routineViewModel!!.previouslyPlayedUserRoutineRelationship != null){
+        val playTime = globalViewModel!!.routinePlaytimeTimer.getDuration()
+        globalViewModel!!.routinePlaytimeTimer.stop()
 
-        val totalPlayTime = globalViewModel_!!.previouslyPlayedUserRoutineRelationship!!.totalPlayTime + playTime
+        val totalPlayTime = routineViewModel!!.previouslyPlayedUserRoutineRelationship!!.totalPlayTime + playTime
 
-        var usagePlayTimes = globalViewModel_!!.previouslyPlayedUserRoutineRelationship!!.usagePlayTimes
+        var usagePlayTimes = routineViewModel!!.previouslyPlayedUserRoutineRelationship!!.usagePlayTimes
         if(usagePlayTimes != null) {
             usagePlayTimes.add(playTime.toInt())
         }else{
             usagePlayTimes = listOf(playTime.toInt())
         }
 
-        val numberOfTimesPlayed = globalViewModel_!!.previouslyPlayedUserRoutineRelationship!!.numberOfTimesPlayed
+        val numberOfTimesPlayed = routineViewModel!!.previouslyPlayedUserRoutineRelationship!!.numberOfTimesPlayed
 
         if(totalPlayTime > 0){
-            val userRoutineRelationship = globalViewModel_!!.previouslyPlayedUserRoutineRelationship!!.copyOfBuilder()
+            val userRoutineRelationship = routineViewModel!!.previouslyPlayedUserRoutineRelationship!!.copyOfBuilder()
                 .numberOfTimesPlayed(numberOfTimesPlayed)
                 .totalPlayTime(totalPlayTime.toInt())
                 .usagePlayTimes(usagePlayTimes)
                 .build()
 
             UserRoutineRelationshipBackend.updateUserRoutineRelationship(userRoutineRelationship){
-                globalViewModel_!!.previouslyPlayedUserRoutineRelationship = null
+                routineViewModel!!.previouslyPlayedUserRoutineRelationship = null
                 completed(it)
             }
         }else{
@@ -1023,7 +1015,7 @@ fun updateRecentlyPlayedUserRoutineRelationshipWithUserRoutineRelationship(
     completed: (userRoutineRelationship: UserRoutineRelationship) -> Unit
 ){
     updateCurrentUserRoutineRelationshipUsageTimeStamp(userRoutineRelationship) {
-        globalViewModel_!!.previouslyPlayedUserRoutineRelationship = it
+        routineViewModel!!.previouslyPlayedUserRoutineRelationship = it
         completed(it)
     }
 }
@@ -1032,14 +1024,14 @@ fun updateRecentlyPlayedUserRoutineRelationshipWithRoutine(
     routineData: RoutineData,
     completed: (userRoutineRelationship: UserRoutineRelationship) -> Unit
 ){
-    globalViewModel_!!.currentRoutinePlaying = routineData
+    routineViewModel!!.currentRoutinePlaying = routineData
     UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUserAndRoutine(
-        globalViewModel_!!.currentUser!!,
+        globalViewModel!!.currentUser!!,
         routineData
     ) { userRoutineRelationship ->
         if(userRoutineRelationship.isNotEmpty()) {
             updateCurrentUserRoutineRelationshipUsageTimeStamp(userRoutineRelationship[0]!!) {
-                globalViewModel_!!.previouslyPlayedUserRoutineRelationship = it
+                routineViewModel!!.previouslyPlayedUserRoutineRelationship = it
                 completed(it)
             }
         }else{
@@ -1047,46 +1039,8 @@ fun updateRecentlyPlayedUserRoutineRelationshipWithRoutine(
                 routineData
             ){ newUserRoutineRelationship ->
                 updateCurrentUserRoutineRelationshipUsageTimeStamp(newUserRoutineRelationship) {
-                    globalViewModel_!!.previouslyPlayedUserRoutineRelationship = it
+                    routineViewModel!!.previouslyPlayedUserRoutineRelationship = it
                     completed(it)
-                }
-            }
-        }
-    }
-}
-
-private fun observeGeneralMediaPlayerIsCompleted(
-    soundMediaPlayerService: SoundMediaPlayerService,
-    generalMediaPlayerService: GeneralMediaPlayerService,
-    index: Int,
-    context: Context
-){
-    globalViewModel_!!.generalMediaPlayerIsCompleted.observe(UserDashboardActivity.getInstanceActivity()) { generalMediaPlayerIsCompleted ->
-        Log.i(TAG, "isCompleted changed : ${globalViewModel_!!.generalMediaPlayerIsCompleted.value}")
-        if (generalMediaPlayerIsCompleted) {
-            when(globalViewModel_!!.currentRoutinePlayingOrder!![globalViewModel_!!.currentRoutinePlayingOrderIndex!!]){
-                "prayer" -> {
-                    Log.i(TAG, "Prayar is completed in routine")
-                    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!! + 1
-                    if(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!! > globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!.indices.last){
-                        globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = 0
-                    }
-
-                    val routine = globalViewModel_!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
-                        .currentPrayerPlayingIndex(globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex)
-                        .build()
-
-                    UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine){}
-
-                    selectNextRoutineElement(
-                        soundMediaPlayerService,
-                        generalMediaPlayerService,
-                        index,
-                        context
-                    )
-                }
-                else -> {
-                    Log.i(TAG, "SOmething besides prayer")
                 }
             }
         }
@@ -1099,15 +1053,15 @@ fun incrementPlayingOrderIndex(
     index: Int,
     context: Context
 ){
-    Log.i(TAG, "plahing order index before increment is ${globalViewModel_!!.currentRoutinePlayingOrderIndex}")
-    globalViewModel_!!.currentRoutinePlayingOrderIndex = globalViewModel_!!.currentRoutinePlayingOrderIndex!! + 1
-    if(globalViewModel_!!.currentRoutinePlayingOrderIndex!! > globalViewModel_!!.currentRoutinePlayingOrder!!.indices.last){
+    Log.i(TAG, "plahing order index before increment is ${routineViewModel!!.currentRoutinePlayingOrderIndex}")
+    routineViewModel!!.currentRoutinePlayingOrderIndex = routineViewModel!!.currentRoutinePlayingOrderIndex!! + 1
+    if(routineViewModel!!.currentRoutinePlayingOrderIndex!! > routineViewModel!!.currentRoutinePlayingOrder!!.indices.last){
         updateUserRoutineRelationshipWhenRoutineIsDonePlaying(
-            globalViewModel_!!.currentUsersRoutineRelationships!![index]!!
+            routineViewModel!!.currentUsersRoutineRelationships!![index]!!,
         ){
             Log.i(TAG, "Routine is endedz")
-            globalViewModel_!!.currentUsersRoutineRelationships!![index] = it
-            globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
+            routineViewModel!!.currentUsersRoutineRelationships!![index] = it
+            routineViewModel!!.currentRoutinePlayingOrderIndex = 0
             routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
         }
     }else{
@@ -1124,8 +1078,8 @@ fun updateUserRoutineRelationshipWhenRoutineIsDonePlaying(
     userRoutineRelationship: UserRoutineRelationship,
     completed: (updatedUserRoutineRelationship: UserRoutineRelationship?) -> Unit
 ) {
-    val playTime = globalViewModel_!!.routinePlaytimeTimer.getDuration()
-    globalViewModel_!!.routinePlaytimeTimer.stop()
+    val playTime = globalViewModel!!.routinePlaytimeTimer.getDuration()
+    globalViewModel!!.routinePlaytimeTimer.stop()
 
     val totalPlayTime = userRoutineRelationship.totalPlayTime + playTime
 
@@ -1146,7 +1100,7 @@ fun updateUserRoutineRelationshipWhenRoutineIsDonePlaying(
             .build()
 
         UserRoutineRelationshipBackend.updateUserRoutineRelationship(newUserRoutineRelationship){
-            globalViewModel_!!.previouslyPlayedUserRoutineRelationship = null
+            routineViewModel!!.previouslyPlayedUserRoutineRelationship = null
             completed(it)
         }
     }
@@ -1154,20 +1108,20 @@ fun updateUserRoutineRelationshipWhenRoutineIsDonePlaying(
 
 fun resetRoutineGlobalProperties(){
     resetGlobalRoutineCountdownTimers()
-    globalViewModel_!!.currentRoutinePlaying = null
-    globalViewModel_!!.currentUserRoutineRelationshipPlaying = null
-    globalViewModel_!!.isCurrentRoutinePlaying = false
+    routineViewModel!!.currentRoutinePlaying = null
+    routineViewModel!!.currentUserRoutineRelationshipPlaying = null
+    routineViewModel!!.isCurrentRoutinePlaying = false
 
-    globalViewModel_!!.currentRoutinePlayingOrderIndex = 0
-    globalViewModel_!!.currentRoutinePlayingOrder = null
-    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = 0
-    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPresets = null
-    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = 0
-    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipPrayers = null
-    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex = 0
-    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories = null
-    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = 0
-    globalViewModel_!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = null
+    routineViewModel!!.currentRoutinePlayingOrderIndex = 0
+    routineViewModel!!.currentRoutinePlayingOrder = null
+    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex = 0
+    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresets = null
+    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex = 0
+    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayers = null
+    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex = 0
+    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories = null
+    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = 0
+    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = null
 }
 
 private val allElements = listOf(

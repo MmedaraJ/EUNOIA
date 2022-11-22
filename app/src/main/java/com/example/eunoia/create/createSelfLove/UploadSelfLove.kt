@@ -52,7 +52,6 @@ var uploadedAudioFileLengthMilliSecondsSelfLove = mutableStateOf(0L)
 @Composable
 fun UploadSelfLoveUI(
     navController: NavController,
-    globalViewModel: GlobalViewModel,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     soundMediaPlayerService: SoundMediaPlayerService,
@@ -97,7 +96,7 @@ fun UploadSelfLoveUI(
                     navController.popBackStack()
                 },
                 {
-                    globalViewModel_!!.bottomSheetOpenFor = "controls"
+                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -183,12 +182,12 @@ fun createSelfLoveFromUpload(
     val tags = getSelfLoveTagsList()
     val lyrics = getSelfLoveLyricsList()
     if (otherSelfLovesWithSameName < 1) {
-        val key = "Routine/SelfLove/${globalViewModel_!!.currentUser!!.username}/uploaded/$selfLoveName/${selfLoveName}_audio.aac"
+        val key = "Routine/SelfLove/${globalViewModel!!.currentUser!!.username}/uploaded/$selfLoveName/${selfLoveName}_audio.aac"
         SoundBackend.storeAudio(uploadedFileSelfLove.value.absolutePath, key){
             val selfLove = SelfLoveObject.SelfLove(
                 UUID.randomUUID().toString(),
-                UserObject.User.from(globalViewModel_!!.currentUser!!),
-                globalViewModel_!!.currentUser!!.id,
+                UserObject.User.from(globalViewModel!!.currentUser!!),
+                globalViewModel!!.currentUser!!.id,
                 selfLoveName,
                 selfLoveShortDescription,
                 selfLoveLongDescription,

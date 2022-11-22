@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.amplifyframework.datastore.generated.model.RoutineData
 import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
@@ -129,7 +128,7 @@ fun AddToPrayerListAndRoutineBottomSheet(
                         bottom.linkTo(parent.bottom, margin = 0.dp)
                     }
                     .clickable {
-                        globalViewModel_!!.bottomSheetOpenFor = "addPrayerToRoutine"
+                        globalViewModel!!.bottomSheetOpenFor = "addPrayerToRoutine"
                         openBottomSheet(scope, state)
                     }
                     .fillMaxWidth()
@@ -201,18 +200,18 @@ private fun addToPrayerListClicked(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    if (globalViewModel_!!.currentPrayerToBeAdded != null) {
-        if (globalViewModel_!!.currentUser != null) {
+    if (prayerViewModel!!.currentPrayerToBeAdded != null) {
+        if (globalViewModel!!.currentUser != null) {
             UserPrayerRelationshipBackend.queryUserPrayerRelationshipBasedOnUserAndPrayer(
-                globalViewModel_!!.currentUser!!,
-                globalViewModel_!!.currentPrayerToBeAdded!!
+                globalViewModel!!.currentUser!!,
+                prayerViewModel!!.currentPrayerToBeAdded!!
             ){
                 if (it.isEmpty()) {
                     UserPrayerRelationshipBackend.createUserPrayerRelationshipObject(
-                        globalViewModel_!!.currentPrayerToBeAdded!!
+                        prayerViewModel!!.currentPrayerToBeAdded!!
                     ) {
                         UserPrayerBackend.createUserPrayerObject(
-                            globalViewModel_!!.currentPrayerToBeAdded!!
+                            prayerViewModel!!.currentPrayerToBeAdded!!
                         ) {
                             closeBottomSheet(scope, state)
                             openSavedElementDialogBox = true
@@ -235,7 +234,7 @@ fun SelectRoutineForPrayer(
 ) {
     SetUpAlertDialogs()
     val userRoutineRelationships = remember{ mutableStateOf(mutableListOf<UserRoutineRelationship?>()) }
-    UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUser(globalViewModel_!!.currentUser!!){
+    UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUser(globalViewModel!!.currentUser!!){
         userRoutinesSize = it.size
         userRoutineRelationships.value = it.toMutableList()
     }
@@ -280,7 +279,7 @@ fun SelectRoutineForPrayer(
                 modifier = Modifier
                     .padding(bottom = 15.dp)
                     .clickable {
-                        globalViewModel_!!.bottomSheetOpenFor = "inputRoutineNameForPrayer"
+                        globalViewModel!!.bottomSheetOpenFor = "inputRoutineNameForPrayer"
                         openBottomSheet(scope, state)
                     }
             ) {
@@ -391,7 +390,7 @@ fun setUpUserRoutineRelationshipPrayer(
 ) {
     UserRoutineRelationshipPrayerBackend.queryUserRoutineRelationshipPrayerBasedOnPrayerAndUserRoutineRelationship(
         userRoutineRelationship,
-        globalViewModel_!!.currentPrayerToBeAdded!!
+        prayerViewModel!!.currentPrayerToBeAdded!!
     ){
         if (it.isEmpty()) {
             if (!userRoutineRelationship.playingOrder.contains("prayer")) {
@@ -418,14 +417,14 @@ private fun updateUserRoutineRelationshipThatDoesNotContainPrayer(
 
     //updated play time should be <= 45'
     var playTime = userRoutineRelationship.fullPlayTime
-    if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime > playTime) {
-        playTime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
+    if(playTime < MAX_ROUTINE_PLAYTIME && prayerViewModel!!.currentPrayerToBeAdded!!.fullPlayTime > playTime) {
+        playTime = prayerViewModel!!.currentPrayerToBeAdded!!.fullPlayTime
         if (playTime > MAX_ROUTINE_PLAYTIME) {
             playTime = MAX_ROUTINE_PLAYTIME
         }
     }
 
-    var prayerPlaytime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
+    var prayerPlaytime = prayerViewModel!!.currentPrayerToBeAdded!!.fullPlayTime
     if(prayerPlaytime > MAX_PRAYER_PLAYTIME){
         prayerPlaytime = MAX_PRAYER_PLAYTIME
     }
@@ -443,11 +442,11 @@ private fun updateUserRoutineRelationshipThatDoesNotContainPrayer(
 
     UserRoutineRelationshipBackend.updateUserRoutineRelationship(newUserRoutineRelationship) { updatedUserRoutineRelationship ->
         UserRoutineRelationshipPrayerBackend.createUserRoutineRelationshipPrayerObject(
-            globalViewModel_!!.currentPrayerToBeAdded!!,
+            prayerViewModel!!.currentPrayerToBeAdded!!,
             updatedUserRoutineRelationship
         ) {
             RoutinePrayerBackend.createRoutinePrayerObject(
-                globalViewModel_!!.currentPrayerToBeAdded!!,
+                prayerViewModel!!.currentPrayerToBeAdded!!,
                 updatedUserRoutineRelationship.userRoutineRelationshipRoutine
             ) {
                 completed()
@@ -461,8 +460,8 @@ private fun updateUserRoutineRelationshipThatContainsPrayer(
     completed: () -> Unit
 ) {
     var playTime = userRoutineRelationship.fullPlayTime
-    if(playTime < MAX_ROUTINE_PLAYTIME && globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime > playTime) {
-        playTime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
+    if(playTime < MAX_ROUTINE_PLAYTIME && prayerViewModel!!.currentPrayerToBeAdded!!.fullPlayTime > playTime) {
+        playTime = prayerViewModel!!.currentPrayerToBeAdded!!.fullPlayTime
         if (playTime > MAX_ROUTINE_PLAYTIME) {
             playTime = MAX_ROUTINE_PLAYTIME
         }
@@ -474,11 +473,11 @@ private fun updateUserRoutineRelationshipThatContainsPrayer(
 
     UserRoutineRelationshipBackend.updateUserRoutineRelationship(newUserRoutineRelationship) { updatedUserRoutineRelationship ->
         UserRoutineRelationshipPrayerBackend.createUserRoutineRelationshipPrayerObject(
-            globalViewModel_!!.currentPrayerToBeAdded!!,
+            prayerViewModel!!.currentPrayerToBeAdded!!,
             updatedUserRoutineRelationship
         ) {
             RoutinePrayerBackend.createRoutinePrayerObject(
-                globalViewModel_!!.currentPrayerToBeAdded!!,
+                prayerViewModel!!.currentPrayerToBeAdded!!,
                 updatedUserRoutineRelationship.userRoutineRelationshipRoutine
             ) {
                 completed()
@@ -489,12 +488,12 @@ private fun updateUserRoutineRelationshipThatContainsPrayer(
 
 fun setUpUserPrayer(completed: () -> Unit) {
     UserPrayerBackend.queryUserPrayerBasedOnUserAndPrayer(
-        globalViewModel_!!.currentUser!!,
-        globalViewModel_!!.currentPrayerToBeAdded!!
+        globalViewModel!!.currentUser!!,
+        prayerViewModel!!.currentPrayerToBeAdded!!
     ){
         if (it.isEmpty()) {
             UserPrayerBackend.createUserPrayerObject(
-                globalViewModel_!!.currentPrayerToBeAdded!!
+                prayerViewModel!!.currentPrayerToBeAdded!!
             ) {
                 completed()
             }
@@ -506,12 +505,12 @@ fun setUpUserPrayer(completed: () -> Unit) {
 
 fun setUpUserPrayerRelationship(completed: () -> Unit) {
     UserPrayerRelationshipBackend.queryUserPrayerRelationshipBasedOnUserAndPrayer(
-        globalViewModel_!!.currentUser!!,
-        globalViewModel_!!.currentPrayerToBeAdded!!
+        globalViewModel!!.currentUser!!,
+        prayerViewModel!!.currentPrayerToBeAdded!!
     ){
         if (it.isEmpty()) {
             UserPrayerRelationshipBackend.createUserPrayerRelationshipObject(
-                globalViewModel_!!.currentPrayerToBeAdded!!
+                prayerViewModel!!.currentPrayerToBeAdded!!
             ) {
                 completed()
             }
@@ -578,7 +577,7 @@ fun inputRoutineNameForPrayer(
                 if(name.isNotEmpty()){
                     checkIfRoutineNameIsTaken {
                         if (!it) {
-                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineColorForPrayer"
+                            globalViewModel!!.bottomSheetOpenFor = "selectRoutineColorForPrayer"
                             openBottomSheet(scope, state)
                         }else{
                             openRoutineNameIsAlreadyTakenDialog = true
@@ -665,8 +664,8 @@ fun SelectRoutineColorForPrayer(
                     modifier = Modifier
                         .padding(bottom = 15.dp)
                         .clickable {
-                            globalViewModel_!!.routineColorToBeAdded = color
-                            globalViewModel_!!.bottomSheetOpenFor = "selectRoutineIconForPrayer"
+                            routineViewModel!!.routineColorToBeAdded = color
+                            globalViewModel!!.bottomSheetOpenFor = "selectRoutineIconForPrayer"
                             openBottomSheet(scope, state)
                         }
                 ) {
@@ -728,7 +727,7 @@ fun SelectRoutineIconForPrayer(
                     bottom.linkTo(parent.bottom, margin = 16.dp)
                 }
         ) {
-            globalViewModel_!!.soundScreenIcons.forEach{ icon ->
+            soundViewModel!!.soundScreenIcons.forEach{ icon ->
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
@@ -747,7 +746,7 @@ fun SelectRoutineIconForPrayer(
                                 .size(71.dp, 71.dp)
                                 .fillMaxWidth(),
                             shape = MaterialTheme.shapes.small,
-                            backgroundColor = Color(globalViewModel_!!.routineColorToBeAdded!!),
+                            backgroundColor = Color(routineViewModel!!.routineColorToBeAdded!!),
                             elevation = 8.dp
                         ) {
                             Image(
@@ -771,29 +770,29 @@ private fun newRoutineIconSelected(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
-    globalViewModel_!!.routineIconToBeAdded = icon
+    routineViewModel!!.routineIconToBeAdded = icon
     //45' default playtime
     var playTime = MAX_ROUTINE_PLAYTIME
-    if(globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime < playTime){
-        playTime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
+    if(prayerViewModel!!.currentPrayerToBeAdded!!.fullPlayTime < playTime){
+        playTime = prayerViewModel!!.currentPrayerToBeAdded!!.fullPlayTime
     }
 
     var prayerPlayTime = MAX_PRAYER_PLAYTIME
-    if(globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime < prayerPlayTime){
-        prayerPlayTime = globalViewModel_!!.currentPrayerToBeAdded!!.fullPlayTime
+    if(prayerViewModel!!.currentPrayerToBeAdded!!.fullPlayTime < prayerPlayTime){
+        prayerPlayTime = prayerViewModel!!.currentPrayerToBeAdded!!.fullPlayTime
     }
 
     val routine = RoutineObject.Routine(
         id = UUID.randomUUID().toString(),
         routineOwner = UserObject.signedInUser().value!!,
         routineOwnerId = UserObject.signedInUser().value!!.id,
-        originalName = globalViewModel_!!.routineNameToBeAdded,
-        displayName = globalViewModel_!!.routineNameToBeAdded,
+        originalName = routineViewModel!!.routineNameToBeAdded,
+        displayName = routineViewModel!!.routineNameToBeAdded,
         numberOfSteps = 2,
         fullPlayTime = playTime.toLong(),
-        icon = globalViewModel_!!.routineIconToBeAdded!!,
+        icon = routineViewModel!!.routineIconToBeAdded!!,
         visibleToOthers = false,
-        colorHex = globalViewModel_!!.routineColorToBeAdded!!.toInt(),
+        colorHex = routineViewModel!!.routineColorToBeAdded!!.toInt(),
         playSoundDuringStretch = true,
         playSoundDuringPrayer = true,
         playSoundDuringBreathing = true,
@@ -845,11 +844,11 @@ fun setUpRoutineAndUserPrayerAfterMakingNewRoutine(
     completed: () -> Unit
 ){
     UserRoutineRelationshipPrayerBackend.createUserRoutineRelationshipPrayerObject(
-        globalViewModel_!!.currentPrayerToBeAdded!!,
+        prayerViewModel!!.currentPrayerToBeAdded!!,
         userRoutineRelationship
     ) {
         RoutinePrayerBackend.createRoutinePrayerObject(
-            globalViewModel_!!.currentPrayerToBeAdded!!,
+            prayerViewModel!!.currentPrayerToBeAdded!!,
             userRoutineRelationship.userRoutineRelationshipRoutine
         ) {
             setUpUserPrayerRelationship {

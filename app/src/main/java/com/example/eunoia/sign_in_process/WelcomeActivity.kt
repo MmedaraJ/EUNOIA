@@ -27,7 +27,7 @@ import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.components.EunoiaLogo
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.components.StandardBlueButton
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.theme.EUNOIATheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -119,8 +119,8 @@ class WelcomeActivity : ComponentActivity() {
                 "rookie"
             )
             UserBackend.createUser(user){ userData ->
-                globalViewModel_!!.currentUser = userData
-                Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel_!!.currentUser}")
+                globalViewModel!!.currentUser = userData
+                Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel!!.currentUser}")
                 completed(userData)
             }
         }
@@ -129,8 +129,8 @@ class WelcomeActivity : ComponentActivity() {
     private fun setSignedInUser(completed: (userData: com.amplifyframework.datastore.generated.model.UserData?) -> Unit){
         UserBackend.getUserWithUsername(Amplify.Auth.currentUser.username){
             if(it!= null) {
-                globalViewModel_!!.currentUser = it
-                Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel_!!.currentUser}")
+                globalViewModel!!.currentUser = it
+                Log.i(TAG, "bdid mfidf dkfjd fdk ${globalViewModel!!.currentUser}")
             }
             completed(it)
         }

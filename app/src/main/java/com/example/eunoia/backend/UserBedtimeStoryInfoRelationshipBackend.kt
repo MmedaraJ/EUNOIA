@@ -8,7 +8,7 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserBedtimeStoryInfoRelationshipObject
-import com.example.eunoia.ui.navigation.globalViewModel_
+import com.example.eunoia.ui.navigation.globalViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -49,7 +49,7 @@ object UserBedtimeStoryInfoRelationshipBackend {
     ){
         val userBedtimeStoryInfoRelationshipModel = UserBedtimeStoryInfoRelationshipObject.UserBedtimeStoryInfoRelationshipModel(
             id = UUID.randomUUID().toString(),
-            userBedtimeStoryInfoRelationshipOwner = UserObject.User.from(globalViewModel_!!.currentUser!!),
+            userBedtimeStoryInfoRelationshipOwner = UserObject.User.from(globalViewModel!!.currentUser!!),
             userBedtimeStoryInfoRelationshipBedtimeStoryInfo = BedtimeStoryObject.BedtimeStory.from(bedtimeStoryInfo),
             numberOfTimesPlayed = 0,
             totalPlayTime = 0,
