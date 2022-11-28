@@ -62,6 +62,11 @@ import com.example.eunoia.create.createSound.selectedIndex
 import com.example.eunoia.create.createSound.uploadedFiles
 import com.example.eunoia.create.resetEverything
 import com.example.eunoia.create.resetEverythingExceptRoutine
+import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
+import com.example.eunoia.dashboard.home.BedtimeStoryForRoutine.resetBtsCDT
+import com.example.eunoia.dashboard.home.SelfLoveForRoutine.resetSelfLoveCDT
+import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
+import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.models.UserRoutineRelationshipObject
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -474,7 +479,12 @@ fun UserDashboardActivityUI(
                 }
             }
 
-            routineViewModel!!.currentUsersRoutineRelationships = userRoutineRelationships.toMutableList()
+            val itMut = userRoutineRelationships.toMutableList()
+            itMut.sortByDescending{ userRoutineRelationship ->
+                userRoutineRelationship!!.numberOfTimesPlayed
+            }
+
+            routineViewModel!!.currentUsersRoutineRelationships = itMut
             retrievedUserRoutineRelationships = true
         }
     }
@@ -589,7 +599,7 @@ fun UserDashboardActivityUI(
                             routineViewModel!!.currentUsersRoutineRelationships!![i]!!,
                             i,
                             { index ->
-                                routineIndex = index
+                                routineViewModel!!.routineIndex = index
                                 resetCurrentlyPlayingRoutineIfNecessary(
                                     soundMediaPlayerService,
                                     generalMediaPlayerService,
@@ -643,8 +653,6 @@ fun UserDashboardActivityUI(
     }
 }
 
-private var routineIndex = -1
-
 @Composable
 private fun SetUpRoutineCurrentlyPlayingAlertDialogRoutineUI(
     soundMediaPlayerService: SoundMediaPlayerService,
@@ -655,17 +663,36 @@ private fun SetUpRoutineCurrentlyPlayingAlertDialogRoutineUI(
         ConfirmAlertDialog(
             "Are you sure you want to stop your routine?",
             {
-                updatePreviousUserRoutineRelationship() {
-                    resetEverything(
-                        soundMediaPlayerService,
-                        generalMediaPlayerService,
-                        context
-                    ){
-                        startRoutineConfirmed(
-                            soundMediaPlayerService,
-                            generalMediaPlayerService,
-                            context
-                        )
+                Log.i(TAG, "k - 1")
+                updatePreviousUserRoutineRelationship {
+                    Log.i(TAG, "k - 2")
+                    updatePreviousUserBedtimeStoryRelationship(generalMediaPlayerService) {
+                        Log.i(TAG, "k - 3")
+                        updatePreviousUserPrayerRelationship {
+                            Log.i(TAG, "k - 4")
+                            updatePreviousUserSelfLoveRelationship(generalMediaPlayerService) {
+                                Log.i(TAG, "k - 5")
+                                resetEverything(
+                                    soundMediaPlayerService,
+                                    generalMediaPlayerService,
+                                    context
+                                ) {
+                                    UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnId(
+                                        routineViewModel!!.currentUsersRoutineRelationships!![routineViewModel!!.routineIndex]!!.id
+                                    ){
+                                        if(it.isNotEmpty()) {
+                                            routineViewModel!!.currentUsersRoutineRelationships!![routineViewModel!!.routineIndex] =
+                                                it[0]
+                                        }
+                                        startRoutineConfirmed(
+                                            soundMediaPlayerService,
+                                            generalMediaPlayerService,
+                                            context
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -682,42 +709,43 @@ private fun startRoutineConfirmed(
     context: Context,
 ){
     if(routineViewModel!!.currentUserRoutineRelationshipPlaying != null){
-        if(routineViewModel!!.currentUserRoutineRelationshipPlaying!!.id == routineViewModel!!.currentUsersRoutineRelationships!![routineIndex]!!.id){
-            resetRoutinePlayButtonTextsIfNecessary(routineIndex)
+        if(routineViewModel!!.currentUserRoutineRelationshipPlaying!!.id == routineViewModel!!.currentUsersRoutineRelationships!![routineViewModel!!.routineIndex]!!.id){
+            resetRoutinePlayButtonTextsIfNecessary(routineViewModel!!.routineIndex)
             selectNextRoutineElement(
                 soundMediaPlayerService,
                 generalMediaPlayerService,
-                routineIndex,
+                routineViewModel!!.routineIndex,
                 context
             )
         }else{
             resetRoutineMediaPlayerServicesIfNecessary(
                 soundMediaPlayerService,
                 generalMediaPlayerService,
-                routineIndex,
+                routineViewModel!!.routineIndex,
                 context
             ){
-                resetRoutinePlayButtonTextsIfNecessary(routineIndex)
+                resetRoutinePlayButtonTextsIfNecessary(routineViewModel!!.routineIndex)
                 selectNextRoutineElement(
                     soundMediaPlayerService,
                     generalMediaPlayerService,
-                    routineIndex,
+                    routineViewModel!!.routineIndex,
                     context
                 )
             }
         }
     }else {
+        Log.i(TAG, "gg")
         resetRoutineMediaPlayerServicesIfNecessary(
             soundMediaPlayerService,
             generalMediaPlayerService,
-            routineIndex,
+            routineViewModel!!.routineIndex,
             context
         ) {
-            resetRoutinePlayButtonTextsIfNecessary(routineIndex)
+            resetRoutinePlayButtonTextsIfNecessary(routineViewModel!!.routineIndex)
             selectNextRoutineElement(
                 soundMediaPlayerService,
                 generalMediaPlayerService,
-                routineIndex,
+                routineViewModel!!.routineIndex,
                 context
             )
         }
@@ -733,7 +761,7 @@ private fun resetCurrentlyPlayingRoutineIfNecessary(
     if(
         routineViewModel!!.currentRoutinePlaying != null &&
         routineViewModel!!.currentUserRoutineRelationshipPlaying != null &&
-        routineViewModel!!.currentUserRoutineRelationshipPlaying!!.id != routineViewModel!!.currentUsersRoutineRelationships!![routineIndex]!!.id
+        routineViewModel!!.currentUserRoutineRelationshipPlaying!!.id != routineViewModel!!.currentUsersRoutineRelationships!![routineViewModel!!.routineIndex]!!.id
     ){
         openRoutineIsCurrentlyPlayingDialogBox = true
     }else{
@@ -794,6 +822,8 @@ private fun resetRoutineMediaPlayerServicesIfNecessary(
                 routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves = null
                 //countdown timers
                 resetGlobalRoutineCountdownTimers()
+
+                globalViewModel!!.resetCDT()
 
                 soundMediaPlayerService.onDestroy()
                 generalMediaPlayerService.onDestroy()
@@ -1060,9 +1090,16 @@ fun incrementPlayingOrderIndex(
             routineViewModel!!.currentUsersRoutineRelationships!![index]!!,
         ){
             Log.i(TAG, "Routine is endedz")
+            generalMediaPlayerService.onDestroy()
+            globalViewModel!!.resetCDT()
+            resetBtsCDT()
+            resetSelfLoveCDT()
             routineViewModel!!.currentUsersRoutineRelationships!![index] = it
             routineViewModel!!.currentRoutinePlayingOrderIndex = 0
             routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
+            routineViewModel!!.currentRoutinePlaying = null
+            routineViewModel!!.isCurrentRoutinePlaying = false
+            routineViewModel!!.currentUserRoutineRelationshipPlaying = null
         }
     }else{
         selectNextRoutineElement(

@@ -42,6 +42,7 @@ import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.screens.Screen
+import com.example.eunoia.utils.getCurrentlyPlayingTime
 import com.example.eunoia.utils.timerFormatMS
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
@@ -329,7 +330,13 @@ private fun startBedtimeStoryConfirmed(
     )
     resetPlayButtonTextsIfNecessary(bedtimeStoryIndex)
 
-    setCurrentlyPlayedUserBedtimeStoryRelationshipToUpdatedValue(bedtimeStoryIndex){
+    setCurrentlyPlayedUserBedtimeStoryRelationshipToUpdatedValue(
+        bedtimeStoryViewModel!!.currentUsersBedtimeStoryRelationships!![bedtimeStoryIndex]!!.id
+    ){
+        if(it != null) {
+            bedtimeStoryViewModel!!.currentUsersBedtimeStoryRelationships!![bedtimeStoryIndex] = it
+        }
+
         playOrPauseBedtimeStoryAccordingly(
             generalMediaPlayerService,
             soundMediaPlayerService,
@@ -342,15 +349,14 @@ private fun startBedtimeStoryConfirmed(
 }
 
 fun setCurrentlyPlayedUserBedtimeStoryRelationshipToUpdatedValue(
-    index: Int,
-    completed: () -> Unit
+    id: String,
+    completed: (userBedtimeStoryInfoRelationship: UserBedtimeStoryInfoRelationship?) -> Unit
 ) {
-    UserBedtimeStoryInfoRelationshipBackend.queryApprovedUserBedtimeStoryInfoRelationshipBasedOnId(
-        bedtimeStoryViewModel!!.currentUsersBedtimeStoryRelationships!![index]!!.id
-    ){
+    UserBedtimeStoryInfoRelationshipBackend.queryApprovedUserBedtimeStoryInfoRelationshipBasedOnId(id){
         if(it.isNotEmpty()) {
-            bedtimeStoryViewModel!!.currentUsersBedtimeStoryRelationships!![index] = it[0]
-            completed()
+            completed(it[0]!!)
+        }else{
+            completed(null)
         }
     }
 }
@@ -579,37 +585,21 @@ private fun resetPlayButtonTextsIfNecessary(index: Int) {
 
 private fun updatePreviousAndCurrentBedtimeStoryRelationship(
     index: Int,
-    continuePlayingTime: Int,
+    generalMediaPlayerService: GeneralMediaPlayerService,
     completed: () -> Unit
 ){
-    updatePreviousUserBedtimeStoryRelationship(continuePlayingTime){
+    updatePreviousUserBedtimeStoryRelationship(generalMediaPlayerService){
         updateRecentlyPlayedUserBedtimeStoryRelationshipWithUserBedtimeStoryRelationship(
             bedtimeStoryViewModel!!.currentUsersBedtimeStoryRelationships!![index]!!
         ) {
             bedtimeStoryViewModel!!.currentUsersBedtimeStoryRelationships!![index] = it
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
+                updatePreviousUserSelfLoveRelationship(generalMediaPlayerService) {
                     completed()
                 }
             }
         }
     }
-}
-
-fun getCurrentlyPlayingTime(
-    generalMediaPlayerService: GeneralMediaPlayerService
-): Int{
-    var result = 0
-    if(generalMediaPlayerService.isMediaPlayerInitialized()){
-        if(
-            generalMediaPlayerService.getMediaPlayer()!!.currentPosition !=
-            generalMediaPlayerService.getMediaPlayer()!!.duration
-        ) {
-            result = generalMediaPlayerService.getMediaPlayer()!!.currentPosition
-            Log.i(TAG, "Resultz = $result")
-        }
-    }
-    return result
 }
 
 private fun getSeekToPos(index: Int): Int{
@@ -629,7 +619,7 @@ private fun initializeMediaPlayer(
     Log.i(TAG, "bedtimeStoryViewModel_!!.continuePlayingTime = ${globalViewModel!!.continuePlayingTime}")
     updatePreviousAndCurrentBedtimeStoryRelationship(
         index,
-        globalViewModel!!.continuePlayingTime
+        generalMediaPlayerService
     ) {
         globalViewModel!!.resetCDT()
 
@@ -692,13 +682,16 @@ fun updateCurrentUserBedtimeStoryInfoRelationshipUsageTimeStamp(
 }
 
 fun updatePreviousUserBedtimeStoryRelationship(
-    continuePlayingTime: Int,
+    generalMediaPlayerService: GeneralMediaPlayerService,
     completed: (updatedUserBedtimeStoryRelationship: UserBedtimeStoryInfoRelationship?) -> Unit
 ) {
     if(bedtimeStoryViewModel!!.previouslyPlayedUserBedtimeStoryRelationship != null){
         Log.i(TAG, "Duration of bedtime story general timer is ${globalViewModel!!.generalPlaytimeTimer.getDuration()}")
         val playTime = globalViewModel!!.generalPlaytimeTimer.getDuration()
         globalViewModel!!.generalPlaytimeTimer.stop()
+
+        val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
+        Log.i(TAG, "Cointaineau = $continuePlayingTime")
 
         Log.i(TAG, "Total bts play time = ${bedtimeStoryViewModel!!.previouslyPlayedUserBedtimeStoryRelationship!!.totalPlayTime}")
         Log.i(TAG, "play time = $playTime")

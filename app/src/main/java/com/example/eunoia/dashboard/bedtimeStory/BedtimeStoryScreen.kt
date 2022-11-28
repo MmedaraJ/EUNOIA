@@ -202,9 +202,12 @@ fun BedtimeStoryScreen(
                                 globalViewModel!!.remainingPlayTime =
                                     bedtimeStoryInfoData.fullPlayTime -
                                             generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+
                                 startCDT(
                                     generalMediaPlayerService,
-                                    bedtimeStoryInfoData
+                                    soundMediaPlayerService,
+                                    bedtimeStoryInfoData,
+                                    context
                                 )
 
                                 bedtimeStoryTimer.setDuration(generalMediaPlayerService.getMediaPlayer()!!.currentPosition.toLong())

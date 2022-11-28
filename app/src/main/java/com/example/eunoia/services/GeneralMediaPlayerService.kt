@@ -26,6 +26,7 @@ class GeneralMediaPlayerService:
     private var mediaPlayerIsLooping = false
     private var audioUri: Uri? = null
     private var seekToPos: Int = 0
+    private var loopMp: Boolean = false
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val action: String = intent.action!!
@@ -66,6 +67,10 @@ class GeneralMediaPlayerService:
         Log.i(TAG, "seekToPos = $seekToPos")
     }
 
+    fun setLoop(loop: Boolean){
+        loopMp = loop
+    }
+
     fun pauseMediaPlayer(){
         if(mediaPlayerIsPlaying) {
             mediaPlayer!!.pause()
@@ -88,6 +93,7 @@ class GeneralMediaPlayerService:
             mediaPlayer!!.isLooping = true
         }
         mediaPlayerIsLooping = true
+        Log.i(TAG, "Looped MPped")
     }
 
     fun toggleLoopMediaPlayer(){
@@ -115,6 +121,7 @@ class GeneralMediaPlayerService:
 
     override fun onPrepared(mediaPlayer: MediaPlayer?) {
         mediaPlayer!!.seekTo(seekToPos)
+        //mediaPlayer.isLooping = loopMp
         mediaPlayer.start()
         mediaPlayerIsPlaying = true
         mediaPlayerInitialized = true
@@ -133,6 +140,7 @@ class GeneralMediaPlayerService:
 
     override fun onCompletion(mediaPlayer: MediaPlayer?) {
         Log.i(TAG, "Media player completed")
+        seekToPos = 0
     }
 
     override fun onDestroy() {
@@ -146,6 +154,7 @@ class GeneralMediaPlayerService:
             mediaPlayerIsPlaying = false
             mediaPlayerInitialized = false
             audioUri = null
+            seekToPos = 0
         }
     }
 }

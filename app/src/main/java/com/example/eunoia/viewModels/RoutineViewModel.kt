@@ -50,4 +50,6 @@ class RoutineViewModel @Inject constructor(): ViewModel() {
     var currentRoutinePlayingNextSelfLoveCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingBedtimeStoryCountDownTimer: CountDownTimer? = null
     var currentRoutinePlayingNextBedtimeStoryCountDownTimer: CountDownTimer? = null
+
+    var routineIndex = -1
 }

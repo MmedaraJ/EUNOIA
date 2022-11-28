@@ -13,10 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.R
 import com.example.eunoia.backend.*
@@ -238,6 +241,8 @@ fun SelectRoutineForSound(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ) {
+    val context = LocalContext.current
+
     SetUpAlertDialogs()
     val userRoutineRelationships = remember{ mutableStateOf(mutableListOf<UserRoutineRelationship?>()) }
     UserRoutineRelationshipBackend.queryUserRoutineRelationshipBasedOnUser(globalViewModel!!.currentUser!!){
@@ -340,8 +345,14 @@ fun SelectRoutineForSound(
                                     backgroundColor = Color(userRoutineRelationship!!.userRoutineRelationshipRoutine.colorHex),
                                     elevation = 8.dp
                                 ) {
+                                    val image = remember {
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            userRoutineRelationship.userRoutineRelationshipRoutine.icon
+                                        )?.toBitmap(25.64.toInt(), 25.64.toInt())?.asImageBitmap()!!
+                                    }
                                     Image(
-                                        painter = painterResource(id = userRoutineRelationship.userRoutineRelationshipRoutine.icon),
+                                        image,
                                         contentDescription = "routine icon",
                                         modifier = Modifier
                                             .size(width = 25.64.dp, height = 25.64.dp)

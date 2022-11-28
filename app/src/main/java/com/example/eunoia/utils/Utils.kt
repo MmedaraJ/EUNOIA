@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.Log
 import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
+import com.example.eunoia.services.GeneralMediaPlayerService
 
 private const val TAG = "Utils"
 
@@ -74,8 +75,6 @@ fun getRandomString(length: Int) : String {
         .joinToString("")
 }
 
-
-
 fun retrieveUriDuration(
     pathStr: String,
     context: Context
@@ -85,4 +84,21 @@ fun retrieveUriDuration(
     mmr.setDataSource(context, uri)
     val durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
     return durationStr!!.toInt()
+}
+
+fun getCurrentlyPlayingTime(
+    generalMediaPlayerService: GeneralMediaPlayerService
+): Int{
+    var result = 0
+    if(generalMediaPlayerService.isMediaPlayerInitialized()){
+        if(
+            generalMediaPlayerService.getMediaPlayer()!!.currentPosition <=
+            generalMediaPlayerService.getMediaPlayer()!!.duration
+        ) {
+            result = generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+            generalMediaPlayerService.onDestroy()
+            Log.i(TAG, "Resultz = $result")
+        }
+    }
+    return result
 }

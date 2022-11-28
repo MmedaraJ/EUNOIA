@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
-import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.selfLove.resetOtherGeneralMediaPlayerUsersExceptSelfLove
 import com.example.eunoia.dashboard.selfLove.updateCurrentUserSelfLoveRelationshipUsageTimeStamp
 import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
@@ -16,6 +15,7 @@ import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.selfLove.activateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.navigation.*
+import com.example.eunoia.utils.getCurrentlyPlayingTime
 
 object SelfLoveForRoutine {
     private const val TAG = "SelfLoveForRoutine"
@@ -84,6 +84,7 @@ object SelfLoveForRoutine {
                 selfLoveViewModel!!.selfLoveTimer.pause()
                 globalViewModel!!.generalPlaytimeTimer.pause()
                 selfLoveViewModel!!.isCurrentSelfLovePlaying = false
+                globalViewModel!!.resetCDT()
                 activateSelfLoveGlobalControlButton(2)
             }
         }
@@ -215,10 +216,19 @@ object SelfLoveForRoutine {
                 bedtimeStoryViewModel!!.currentBedtimeStoryPlaying == null &&
                 prayerViewModel!!.currentPrayerPlaying == null
             ){
+                globalViewModel!!.remainingPlayTime =
+                    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!![
+                            routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!!
+                    ]!!.selfLoveData.fullPlayTime -
+                            generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+
                 generalMediaPlayerService.startMediaPlayer()
+
                 afterPlayingSelfLove(
+                    generalMediaPlayerService,
+                    soundMediaPlayerService,
                     index,
-                    generalMediaPlayerService
+                    context
                 )
             }else{
                 initializeSelfLoveMediaPlayers(
@@ -239,21 +249,33 @@ object SelfLoveForRoutine {
     }
 
     private fun afterPlayingSelfLove(
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        soundMediaPlayerService: SoundMediaPlayerService,
         index: Int,
-        generalMediaPlayerService: GeneralMediaPlayerService
+        context: Context
     ){
         routineActivityPlayButtonTexts[index]!!.value = PAUSE_ROUTINE
         generalMediaPlayerService.loopMediaPlayer()
         selfLoveViewModel!!.selfLoveTimer.start()
         globalViewModel!!.generalPlaytimeTimer.start()
+
+        if (routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer == null) {
+            startSelfLoveCDT(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
+        }
+
         setGlobalPropertiesAfterPlayingSelfLove(index)
     }
 
     private fun updatePreviousAndCurrentSelfLoveRelationship(
-        continuePlayingTime: Int,
+        generalMediaPlayerService: GeneralMediaPlayerService,
         completed: () -> Unit
     ){
-        updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
+        updatePreviousUserSelfLoveRelationship(generalMediaPlayerService) {
             updateRecentlyPlayedUserSelfLoveRelationshipWithSelfLove(
                 routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!!
                         [routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!!]!!
@@ -270,8 +292,9 @@ object SelfLoveForRoutine {
         index: Int,
         context: Context
     ){
-        val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
-        updatePreviousAndCurrentSelfLoveRelationship(continuePlayingTime) {
+        updatePreviousAndCurrentSelfLoveRelationship(generalMediaPlayerService) {
+            globalViewModel!!.resetCDT()
+
             generalMediaPlayerService.onDestroy()
             generalMediaPlayerService.setAudioUri(
                 routineActivitySelfLoveUrisMapList[index][
@@ -280,6 +303,11 @@ object SelfLoveForRoutine {
                             .selfLoveData.id
                 ]!!
             )
+
+            generalMediaPlayerService.setSeekToPos(
+                0
+            )
+
             val intent = Intent()
             intent.action = "PLAY"
             generalMediaPlayerService.onStartCommand(intent, 0, 0)
@@ -290,20 +318,19 @@ object SelfLoveForRoutine {
             )
             resetOtherGeneralMediaPlayerUsersExceptSelfLove()
 
-            if (routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer == null) {
-                startSelfLoveCDT(
-                    soundMediaPlayerService,
-                    generalMediaPlayerService,
-                    index,
-                    context
-                )
-            }
-        }
+            //TODO fix this
+            globalViewModel!!.remainingPlayTime =
+                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!![
+                        routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!!
+                ]!!.selfLoveData.fullPlayTime
 
-        afterPlayingSelfLove(
-            index,
-            generalMediaPlayerService
-        )
+            afterPlayingSelfLove(
+                generalMediaPlayerService,
+                soundMediaPlayerService,
+                index,
+                context
+            )
+        }
     }
 
     private fun startSelfLoveCDT(
@@ -333,44 +360,60 @@ object SelfLoveForRoutine {
         index: Int,
         context: Context
     ) {
-        startNextSelfLoveCountDownTimer(
-            context,
-            routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!![
-                    routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!!
-            ]!!.selfLoveData.fullPlayTime.toLong(),
+        globalViewModel!!.startTheCDT(
+            globalViewModel!!.remainingPlayTime.toLong(),
             generalMediaPlayerService
         ){
-            if(generalMediaPlayerService.isMediaPlayerInitialized()) {
-                generalMediaPlayerService.onDestroy()
-            }
+            Log.i(TAG, "2. slv about to be updated from routine")
+            individualSelfLoveCDTDone(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context,
+            )
+        }
+    }
 
-            deActivateSelfLoveGlobalControlButton(0)
-            activateSelfLoveGlobalControlButton(2)
+    fun individualSelfLoveCDTDone(
+        soundMediaPlayerService: SoundMediaPlayerService,
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        index: Int,
+        context: Context,
+    ){
+        if(generalMediaPlayerService.isMediaPlayerInitialized()) {
+            generalMediaPlayerService.onDestroy()
+        }
 
-            selfLoveViewModel!!.isCurrentSelfLovePlaying = false
-            selfLoveViewModel!!.currentSelfLovePlaying = null
-            routineViewModel!!.currentRoutinePlayingNextSelfLoveCountDownTimer = null
+        globalViewModel!!.resetCDT()
 
-            routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex =
-                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!! + 1
-            if(routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!! > routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!!.indices.last){
-                routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = 0
-            }
+        deActivateSelfLoveGlobalControlButton(0)
+        activateSelfLoveGlobalControlButton(2)
 
-            val routine = routineViewModel!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
-                .currentSelfLovePlayingIndex(routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex)
-                .build()
+        selfLoveViewModel!!.isCurrentSelfLovePlaying = false
+        selfLoveViewModel!!.currentSelfLovePlaying = null
+        routineViewModel!!.currentRoutinePlayingNextSelfLoveCountDownTimer = null
 
-            UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine){
-                routineViewModel!!.currentUsersRoutineRelationships!![index] = it
-                routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
-                playOrPauseSelfLoveAccordingly(
-                    soundMediaPlayerService,
-                    generalMediaPlayerService,
-                    index,
-                    context
-                )
-            }
+        routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex =
+            routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!! + 1
+        if(routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!! >
+            routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!!.indices.last){
+            routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex = 0
+        }
+
+        val routine = routineViewModel!!.currentUsersRoutineRelationships!![index]!!.copyOfBuilder()
+            .currentSelfLovePlayingIndex(routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex)
+            .build()
+
+        UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine){
+            routineViewModel!!.currentUsersRoutineRelationships!![index] = it
+            routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
+            Log.i(TAG, "Invidul tne de slv")
+            playOrPauseSelfLoveAccordingly(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
         }
     }
 
@@ -385,6 +428,7 @@ object SelfLoveForRoutine {
             routineViewModel!!.currentUsersRoutineRelationships!![index]!!.selfLovePlayTime.toLong(),
             generalMediaPlayerService
         ){
+            globalViewModel!!.resetCDT()
             val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
 
             deActivateSelfLoveGlobalControlButton(0)
@@ -400,7 +444,7 @@ object SelfLoveForRoutine {
                 .build()
 
             //update routine with new SelfLove info
-            updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
+            updatePreviousUserSelfLoveRelationship(generalMediaPlayerService) {
                 UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {
                     routineViewModel!!.currentUsersRoutineRelationships!![index] = it
                     routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
@@ -412,6 +456,13 @@ object SelfLoveForRoutine {
                     )
                 }
             }
+        }
+    }
+
+    fun resetSelfLoveCDT(){
+        if(routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer != null){
+            routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer!!.cancel()
+            routineViewModel!!.currentRoutinePlayingSelfLoveCountDownTimer = null
         }
     }
 

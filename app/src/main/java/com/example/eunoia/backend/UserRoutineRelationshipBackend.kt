@@ -144,6 +144,35 @@ object UserRoutineRelationshipBackend {
         }
     }
 
+    fun queryUserRoutineRelationshipBasedOnId(
+        id: String,
+        completed: (userRoutineRelationship: List<UserRoutineRelationship?>) -> Unit
+    ) {
+        scope.launch {
+            val userRoutineRelationshipList = mutableListOf<UserRoutineRelationship?>()
+            Amplify.API.query(
+                ModelQuery.list(
+                    UserRoutineRelationship::class.java,
+                    UserRoutineRelationship.ID.eq(id),
+                ),
+                { response ->
+                    if(response.hasData()) {
+                        for (userRoutineRelationshipData in response.data) {
+                            if(userRoutineRelationshipData != null) {
+                                Log.i(TAG, userRoutineRelationshipData.toString())
+                                userRoutineRelationshipList.add(userRoutineRelationshipData)
+                            }
+                        }
+                    }
+                    mainScope.launch {
+                        completed(userRoutineRelationshipList)
+                    }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+            )
+        }
+    }
+
     fun updateUserRoutineRelationship(
         userRoutineRelationship: UserRoutineRelationship,
         completed: (userRoutineRelationship: UserRoutineRelationship) -> Unit

@@ -5,13 +5,11 @@ import android.content.Intent
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.core.net.toUri
-import com.amplifyframework.datastore.generated.model.BedtimeStoryAudioSource
 import com.amplifyframework.datastore.generated.model.UserRoutineRelationship
 import com.amplifyframework.datastore.generated.model.UserRoutineRelationshipBedtimeStoryInfo
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserRoutineRelationshipBackend
 import com.example.eunoia.backend.UserRoutineRelationshipBedtimeStoryInfoBackend
-import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.home.BedtimeStoryForRoutine
 import com.example.eunoia.dashboard.bedtimeStory.resetOtherGeneralMediaPlayerUsersExceptBedtimeStory
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
@@ -22,6 +20,7 @@ import com.example.eunoia.ui.bottomSheets.bedtimeStory.deActivateBedtimeStoryGlo
 import com.example.eunoia.ui.bottomSheets.selfLove.activateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalControlButton
 import com.example.eunoia.ui.navigation.*
+import com.example.eunoia.utils.getCurrentlyPlayingTime
 
 object BedtimeStoryForUserRoutineRelationship {
     private const val TAG = "BedtimeStoryForUserRoutineRelationship"
@@ -206,10 +205,10 @@ object BedtimeStoryForUserRoutineRelationship {
     }
 
     private fun updatePreviousAndCurrentBedtimeStoryRelationship(
-        continuePlayingTime: Int,
+        generalMediaPlayerService: GeneralMediaPlayerService,
         completed: () -> Unit
     ){
-        updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
+        updatePreviousUserBedtimeStoryRelationship(generalMediaPlayerService) {
             BedtimeStoryForRoutine.updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo(
                 bedtimeStories!![bedtimeStoriesIndex]!!.bedtimeStoryInfoData
             ) {
@@ -223,8 +222,7 @@ object BedtimeStoryForUserRoutineRelationship {
         soundMediaPlayerService: SoundMediaPlayerService,
         context: Context
     ){
-        val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
-        updatePreviousAndCurrentBedtimeStoryRelationship(continuePlayingTime) {
+        updatePreviousAndCurrentBedtimeStoryRelationship(generalMediaPlayerService) {
             generalMediaPlayerService.onDestroy()
             generalMediaPlayerService.setAudioUri(
                 bedtimeStoryUri[bedtimeStories!![bedtimeStoriesIndex]!!.bedtimeStoryInfoData.id]!!
@@ -348,7 +346,7 @@ object BedtimeStoryForUserRoutineRelationship {
                 .currentBedtimeStoryContinuePlayingTime(continuePlayingTime)
                 .build()
 
-            updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
+            updatePreviousUserBedtimeStoryRelationship(generalMediaPlayerService) {
                 UserRoutineRelationshipBackend.updateUserRoutineRelationship(routine) {
                     thisUserRoutineRelationship = it
                     routineViewModel!!.currentUserRoutineRelationshipPlaying = it

@@ -423,10 +423,12 @@ private fun startBedtimeStory(
                 )
             }
         }else{
-            initializeMediaPlayer(
-                generalMediaPlayerService,
-                bedtimeStoryInfoData
-            )
+            if(bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri != null) {
+                initializeMediaPlayer(
+                    generalMediaPlayerService,
+                    bedtimeStoryInfoData
+                )
+            }
         }
     }
 }
@@ -448,15 +450,15 @@ private fun afterPlayingBedtimeStory(
 
 private fun updatePreviousAndCurrentBedtimeStoryRelationship(
     bedtimeStoryInfoData: BedtimeStoryInfoData,
-    continuePlayingTime: Int,
+    generalMediaPlayerService: GeneralMediaPlayerService,
     completed: () -> Unit
 ){
-    updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
+    updatePreviousUserBedtimeStoryRelationship(generalMediaPlayerService) {
         BedtimeStoryForRoutine.updateRecentlyPlayedUserBedtimeStoryInfoRelationshipWithBedtimeStoryInfo(
             bedtimeStoryInfoData
         ) {
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
+                updatePreviousUserSelfLoveRelationship(generalMediaPlayerService) {
                     completed()
                 }
             }
@@ -468,10 +470,9 @@ private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
 ){
-    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
     updatePreviousAndCurrentBedtimeStoryRelationship(
         bedtimeStoryInfoData,
-        continuePlayingTime
+        generalMediaPlayerService
     ) {
         generalMediaPlayerService.onDestroy()
         generalMediaPlayerService.setAudioUri(bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri!!)

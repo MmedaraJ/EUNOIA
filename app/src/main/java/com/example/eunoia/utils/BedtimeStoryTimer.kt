@@ -2,6 +2,7 @@ package com.example.eunoia.utils
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 
 class BedtimeStoryTimer(listener: OnBedtimeStoryTimerTickListener){
     interface OnBedtimeStoryTimerTickListener{
@@ -17,6 +18,8 @@ class BedtimeStoryTimer(listener: OnBedtimeStoryTimerTickListener){
     private var duration = 0L
     private var delay = 100L
     private var maxDuration = 100000L
+
+    private val TAG = "BedtimeStoryTimer"
 
     init{
         runnable = Runnable {
@@ -41,6 +44,11 @@ class BedtimeStoryTimer(listener: OnBedtimeStoryTimerTickListener){
     fun stop(){
         duration = 0L
         handler.removeCallbacks(runnable)
+    }
+
+    fun getDuration(): Long{
+        Log.i(TAG, "duration = $duration")
+        return duration
     }
 
     fun setDuration(ms: Long): String{

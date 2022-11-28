@@ -3,8 +3,7 @@ package com.example.eunoia.create
 import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -16,25 +15,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.eunoia.create.createBedtimeStory.resetAllBedtimeStoryCreationObjects
-import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
-import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
-import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
-import com.example.eunoia.dashboard.home.resetRoutineGlobalProperties
-import com.example.eunoia.dashboard.home.updatePreviousUserRoutineRelationship
-import com.example.eunoia.dashboard.prayer.resetPrayerGlobalProperties
-import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
-import com.example.eunoia.dashboard.selfLove.resetSelfLoveGlobalProperties
-import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
+import com.example.eunoia.dashboard.bedtimeStory.*
+import com.example.eunoia.dashboard.home.*
+import com.example.eunoia.dashboard.prayer.*
+import com.example.eunoia.dashboard.selfLove.*
 import com.example.eunoia.dashboard.sound.updatePreviousUserSoundRelationship
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
-import com.example.eunoia.ui.theme.Black
-import com.example.eunoia.ui.theme.EUNOIATheme
-import com.example.eunoia.viewModels.CreateSoundViewModel
-import com.example.eunoia.viewModels.GlobalViewModel
+import com.example.eunoia.ui.theme.*
+import com.example.eunoia.utils.getCurrentlyPlayingTime
+import com.example.eunoia.viewModels.*
 import kotlinx.coroutines.CoroutineScope
 
 var createSoundViewModel: CreateSoundViewModel? = null
@@ -137,11 +130,10 @@ fun resetEverything(
     context: Context,
     completed: () -> Unit
 ){
-    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
     updatePreviousUserSoundRelationship {
-        updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
+        updatePreviousUserBedtimeStoryRelationship(generalMediaPlayerService) {
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
+                updatePreviousUserSelfLoveRelationship(generalMediaPlayerService) {
                     updatePreviousUserRoutineRelationship {
                         soundMediaPlayerService.onDestroy()
                         generalMediaPlayerService.onDestroy()
@@ -169,9 +161,9 @@ fun resetEverythingExceptRoutine(
 ){
     val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
     updatePreviousUserSoundRelationship {
-        updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
+        updatePreviousUserBedtimeStoryRelationship(generalMediaPlayerService) {
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserSelfLoveRelationship(continuePlayingTime) {
+                updatePreviousUserSelfLoveRelationship(generalMediaPlayerService) {
                     soundMediaPlayerService.onDestroy()
                     generalMediaPlayerService.onDestroy()
                     com.example.eunoia.dashboard.sound.resetAll(context, soundMediaPlayerService)

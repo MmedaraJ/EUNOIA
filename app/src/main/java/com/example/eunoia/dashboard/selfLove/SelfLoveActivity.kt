@@ -26,7 +26,6 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.backend.UserSelfLoveRelationshipBackend
 import com.example.eunoia.create.resetEverything
-import com.example.eunoia.dashboard.bedtimeStory.getCurrentlyPlayingTime
 import com.example.eunoia.dashboard.bedtimeStory.resetBedtimeStoryGlobalProperties
 import com.example.eunoia.dashboard.bedtimeStory.updatePreviousUserBedtimeStoryRelationship
 import com.example.eunoia.dashboard.home.OptionItem
@@ -43,6 +42,7 @@ import com.example.eunoia.ui.bottomSheets.selfLove.deActivateSelfLoveGlobalContr
 import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.screens.Screen
+import com.example.eunoia.utils.getCurrentlyPlayingTime
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
@@ -491,16 +491,16 @@ private fun resetPlayButtonTextsIfNecessary(index: Int) {
 
 private fun updatePreviousAndCurrentSelfLoveRelationship(
     index: Int,
-    continuePlayingTime: Int,
+    generalMediaPlayerService: GeneralMediaPlayerService,
     completed: () -> Unit
 ){
-    updatePreviousUserSelfLoveRelationship(continuePlayingTime){
+    updatePreviousUserSelfLoveRelationship(generalMediaPlayerService){
         SelfLoveForRoutine.updateRecentlyPlayedUserSelfLoveRelationshipWithUserSelfLoveRelationship(
             selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index]!!
         ) {
             selfLoveViewModel!!.currentUsersSelfLoveRelationships!![index] = it
             updatePreviousUserPrayerRelationship {
-                updatePreviousUserBedtimeStoryRelationship(continuePlayingTime) {
+                updatePreviousUserBedtimeStoryRelationship(generalMediaPlayerService) {
                     completed()
                 }
             }
@@ -514,10 +514,9 @@ private fun initializeMediaPlayer(
     index: Int,
     context: Context
 ){
-    val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
     updatePreviousAndCurrentSelfLoveRelationship(
         index,
-        continuePlayingTime
+        generalMediaPlayerService
     ) {
         generalMediaPlayerService.onDestroy()
         generalMediaPlayerService.setAudioUri(selfLoveActivityUris[index]!!.value)
@@ -559,13 +558,15 @@ fun updateCurrentUserSelfLoveRelationshipUsageTimeStamp(
 }
 
 fun updatePreviousUserSelfLoveRelationship(
-    continuePlayingTime: Int,
+    generalMediaPlayerService: GeneralMediaPlayerService,
     completed: (updatedUserSelfLoveRelationship: UserSelfLoveRelationship?) -> Unit
 ) {
     if(selfLoveViewModel!!.previouslyPlayedUserSelfLoveRelationship != null){
         Log.i(TAG, "Duration of SelfLove general timer is ${globalViewModel!!.generalPlaytimeTimer.getDuration()}")
         val playTime = globalViewModel!!.generalPlaytimeTimer.getDuration()
         globalViewModel!!.generalPlaytimeTimer.stop()
+
+        val continuePlayingTime = getCurrentlyPlayingTime(generalMediaPlayerService)
 
         Log.i(TAG, "Total bts play time = ${selfLoveViewModel!!.previouslyPlayedUserSelfLoveRelationship!!.totalPlayTime}")
         Log.i(TAG, "play time = $playTime")

@@ -177,8 +177,9 @@ object SoundForRoutine{
                 soundMediaPlayerService.startMediaPlayers()
 
                 afterPlayingSound(
-                    index,
                     soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    index,
                     context
                 )
             }else{
@@ -201,14 +202,24 @@ object SoundForRoutine{
     }
 
     private fun afterPlayingSound(
-        index: Int,
         soundMediaPlayerService: SoundMediaPlayerService,
+        generalMediaPlayerService: GeneralMediaPlayerService,
+        index: Int,
         context: Context
     ){
         routineActivityPlayButtonTexts[index]!!.value = PAUSE_ROUTINE
-        soundMediaPlayerService.loopMediaPlayers()
+        //soundMediaPlayerService.loopMediaPlayers()
         globalViewModel!!.soundPlaytimeTimer.start()
         setGlobalPropertiesAfterPlayingSound(index, context)
+
+        if (routineViewModel!!.currentRoutinePlayingSoundCountDownTimer == null) {
+            startSoundCDT(
+                soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
+                context
+            )
+        }
     }
 
     private fun updatePreviousAndCurrentSoundRelationship(completed: () -> Unit){
@@ -226,6 +237,9 @@ object SoundForRoutine{
         context: Context
     ) {
         updatePreviousAndCurrentSoundRelationship {
+            resetAll(context, soundMediaPlayerService)
+            resetGlobalControlButtons()
+
             soundMediaPlayerService.onDestroy()
             soundMediaPlayerService.setAudioUris(
                 routineActivitySoundUrisMapList[index][
@@ -243,22 +257,12 @@ object SoundForRoutine{
             )
             val intent = Intent()
             intent.action = "PLAY"
-            resetAll(context, soundMediaPlayerService)
-            resetGlobalControlButtons()
             soundMediaPlayerService.onStartCommand(intent, 0, 0)
 
-            if (routineViewModel!!.currentRoutinePlayingSoundCountDownTimer == null) {
-                startSoundCDT(
-                    soundMediaPlayerService,
-                    generalMediaPlayerService,
-                    index,
-                    context
-                )
-            }
-
             afterPlayingSound(
-                index,
                 soundMediaPlayerService,
+                generalMediaPlayerService,
+                index,
                 context
             )
         }
