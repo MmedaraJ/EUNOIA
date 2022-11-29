@@ -85,6 +85,7 @@ object SelfLoveForRoutine {
                 globalViewModel!!.generalPlaytimeTimer.pause()
                 selfLoveViewModel!!.isCurrentSelfLovePlaying = false
                 globalViewModel!!.resetCDT()
+                resetSelfLoveCDT()
                 activateSelfLoveGlobalControlButton(2)
             }
         }
@@ -255,7 +256,7 @@ object SelfLoveForRoutine {
         context: Context
     ){
         routineActivityPlayButtonTexts[index]!!.value = PAUSE_ROUTINE
-        generalMediaPlayerService.loopMediaPlayer()
+        //generalMediaPlayerService.loopMediaPlayer()
         selfLoveViewModel!!.selfLoveTimer.start()
         globalViewModel!!.generalPlaytimeTimer.start()
 
@@ -304,9 +305,7 @@ object SelfLoveForRoutine {
                 ]!!
             )
 
-            generalMediaPlayerService.setSeekToPos(
-                0
-            )
+            generalMediaPlayerService.setSeekToPos(0)
 
             val intent = Intent()
             intent.action = "PLAY"
@@ -408,6 +407,11 @@ object SelfLoveForRoutine {
             routineViewModel!!.currentUsersRoutineRelationships!![index] = it
             routineActivityPlayButtonTexts[index]!!.value = START_ROUTINE
             Log.i(TAG, "Invidul tne de slv")
+
+            selfLoveViewModel!!.currentSelfLovePlayingUri = null
+            selfLoveViewModel!!.currentSelfLovePlaying = null
+            selfLoveViewModel!!.isCurrentSelfLovePlaying = false
+
             playOrPauseSelfLoveAccordingly(
                 soundMediaPlayerService,
                 generalMediaPlayerService,

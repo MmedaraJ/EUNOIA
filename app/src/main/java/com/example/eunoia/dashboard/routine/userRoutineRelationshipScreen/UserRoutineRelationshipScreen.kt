@@ -216,35 +216,59 @@ private fun setParametersFromGlobalVariables(
     if (routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresets != null) {
         presetsIndex = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresetsIndex!!
         presets = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPresets!!
+    }else{
+        selfLovesIndex = 0
+        presets = mutableListOf()
     }
 
     if (routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayers != null) {
         prayersIndex = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayersIndex!!
         prayers = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipPrayers!!
+    }else{
+        prayersIndex = thisUserRoutineRelationship!!.currentPrayerPlayingIndex
+        prayers = mutableListOf()
     }
 
     if (routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories != null){
         bedtimeStoriesIndex = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStoriesIndex!!
         bedtimeStories = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipBedtimeStories!!
+    }else{
+        selfLovesIndex = thisUserRoutineRelationship!!.currentSelfLovePlayingIndex
+        selfLoves = mutableListOf()
     }
 
     if(routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves != null){
         selfLovesIndex = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLovesIndex!!
         selfLoves = routineViewModel!!.currentRoutinePlayingUserRoutineRelationshipSelfLoves!!
+    }else{
+        selfLovesIndex = thisUserRoutineRelationship!!.currentSelfLovePlayingIndex
+        selfLoves = mutableListOf()
     }
 
     if(prayerViewModel!!.currentPrayerPlayingUri != null) {
         prayerUri[prayers!![prayersIndex]!!.prayerData.id] = prayerViewModel!!.currentPrayerPlayingUri!!
+    }else{
+        prayerUri = mutableMapOf()
     }
+
     if(bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri != null) {
         bedtimeStoryUri[bedtimeStories!![bedtimeStoriesIndex]!!.bedtimeStoryInfoData.id] = bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri!!
+    }else{
+        bedtimeStoryUri = mutableMapOf()
     }
+
     if(selfLoveViewModel!!.currentSelfLovePlayingUri != null) {
         selfLoveUri[selfLoves!![selfLovesIndex]!!.selfLoveData.id] = selfLoveViewModel!!.currentSelfLovePlayingUri!!
+    }else{
+        selfLoveUri = mutableMapOf()
     }
+
     if(soundViewModel!!.currentSoundPlayingUris != null) {
         presetUris[presets!![presetsIndex]!!.soundPresetData.id] = soundViewModel!!.currentSoundPlayingUris!!
+    }else{
+        presetUris = mutableMapOf()
     }
+
 
     soundCountDownTimer = routineViewModel!!.currentRoutinePlayingSoundCountDownTimer
     prayerCountDownTimer = routineViewModel!!.currentRoutinePlayingPrayerCountDownTimer

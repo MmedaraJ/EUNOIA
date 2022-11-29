@@ -28,6 +28,8 @@ class BedtimeStoryViewModel @Inject constructor(): ViewModel() {
     var bedtimeStoryTimer = BedtimeStoryTimer(UserDashboardActivity.getInstanceActivity())
     var previouslyPlayedUserBedtimeStoryRelationship: UserBedtimeStoryInfoRelationship? = null
     var currentUserBedtimeStoryRelationship: UserBedtimeStoryInfoRelationship? = null
+    var remainingPlayTime by mutableStateOf(0)
+    var playTimeSoFar by mutableStateOf(0L)
 
     var currentBedtimeStoryToBeAdded by mutableStateOf<BedtimeStoryInfoData?>(null)
 

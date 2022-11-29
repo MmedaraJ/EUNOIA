@@ -68,7 +68,8 @@ fun BottomSheetAllControls(
         val bedtimeStoryPlaying = bottomSheetBedtimeStoryControlPanel(
             scope,
             state,
-            generalMediaPlayerService
+            generalMediaPlayerService,
+            soundMediaPlayerService
         )
 
         val selfLovePlaying = bottomSheetSelfLoveControlPanel(

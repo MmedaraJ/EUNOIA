@@ -1,6 +1,8 @@
 package com.example.eunoia.ui.bottomSheets.bedtimeStory
 
+import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoData
@@ -30,13 +33,16 @@ import com.example.eunoia.dashboard.home.BedtimeStoryForRoutine
 import com.example.eunoia.dashboard.prayer.updatePreviousUserPrayerRelationship
 import com.example.eunoia.dashboard.selfLove.updatePreviousUserSelfLoveRelationship
 import com.example.eunoia.dashboard.sound.gradientBackground
+import com.example.eunoia.dashboard.sound.soundActivityUris
 import com.example.eunoia.services.GeneralMediaPlayerService
+import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.closeBottomSheet
 import com.example.eunoia.ui.components.AnImageWithColor
 import com.example.eunoia.ui.components.LightText
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.navigation.bedtimeStoryViewModel
 import com.example.eunoia.ui.navigation.globalViewModel
+import com.example.eunoia.ui.navigation.routineViewModel
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.timerFormatMS
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +54,8 @@ private const val TAG = "bottomSheetBedtimeStoryControl"
 fun bottomSheetBedtimeStoryControlPanel(
     scope: CoroutineScope,
     state: ModalBottomSheetState,
-    generalMediaPlayerService: GeneralMediaPlayerService
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ): Boolean{
     var showing = false
     if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
@@ -57,7 +64,8 @@ fun bottomSheetBedtimeStoryControlPanel(
             bedtimeStoryInfoData = bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!,
             scope = scope,
             state = state,
-            generalMediaPlayerService = generalMediaPlayerService
+            generalMediaPlayerService = generalMediaPlayerService,
+            soundMediaPlayerService = soundMediaPlayerService
         )
     }
     return showing
@@ -72,7 +80,10 @@ fun BottomSheetBedtimeStoryControlPanelUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState,
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
 ){
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .padding(bottom = 16.dp)
@@ -151,8 +162,10 @@ fun BottomSheetBedtimeStoryControlPanelUI(
                     }
             ) {
                 BottomSheetBedtimeStoryControls(
+                    generalMediaPlayerService,
+                    soundMediaPlayerService,
                     bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!,
-                    generalMediaPlayerService
+                    context,
                 )
             }
         }
@@ -161,8 +174,10 @@ fun BottomSheetBedtimeStoryControlPanelUI(
 
 @Composable
 fun BottomSheetBedtimeStoryControls(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    context: Context
 ){
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -199,9 +214,11 @@ fun BottomSheetBedtimeStoryControls(
                     0
                 ) {
                     activateControls(
-                        bedtimeStoryInfoData,
-                        index,
                         generalMediaPlayerService,
+                        soundMediaPlayerService,
+                        bedtimeStoryInfoData,
+                        context,
+                        index,
                     )
                 }
             }
@@ -210,9 +227,11 @@ fun BottomSheetBedtimeStoryControls(
 }
 
 private fun activateControls(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
-    index: Int,
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    context: Context,
+    index: Int,
 ){
     when(index){
         0 -> resetBedtimeStory(
@@ -220,18 +239,24 @@ private fun activateControls(
             bedtimeStoryInfoData,
         )
         1 -> seekBack15(
-            bedtimeStoryInfoData,
             generalMediaPlayerService,
+            soundMediaPlayerService,
+            bedtimeStoryInfoData,
+            context
         )
         2 -> {
             pauseOrPlayBedtimeStoryAccordingly(
-                bedtimeStoryInfoData,
                 generalMediaPlayerService,
+                soundMediaPlayerService,
+                bedtimeStoryInfoData,
+                context
             )
         }
         3 -> seekForward15(
-            bedtimeStoryInfoData,
             generalMediaPlayerService,
+            soundMediaPlayerService,
+            bedtimeStoryInfoData,
+            context
         )
     }
 }
@@ -258,8 +283,10 @@ fun resetBedtimeStory(
 }
 
 fun seekBack15(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
-    generalMediaPlayerService: GeneralMediaPlayerService
+    context: Context
 ) {
     if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
         if (bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
@@ -274,9 +301,12 @@ fun seekBack15(
                 globalViewModel!!.remainingPlayTime =
                     bedtimeStoryInfoData.fullPlayTime -
                             generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+
                 startCDT(
                     generalMediaPlayerService,
-                    bedtimeStoryInfoData
+                    soundMediaPlayerService,
+                    bedtimeStoryInfoData,
+                    context
                 )
 
                 bedtimeStoryViewModel!!.bedtimeStoryCircularSliderClicked = false
@@ -295,8 +325,10 @@ fun seekBack15(
 }
 
 fun seekForward15(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
-    generalMediaPlayerService: GeneralMediaPlayerService
+    context: Context
 ) {
     if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
         if (bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
@@ -314,9 +346,12 @@ fun seekForward15(
                 globalViewModel!!.remainingPlayTime =
                     bedtimeStoryInfoData.fullPlayTime -
                             generalMediaPlayerService.getMediaPlayer()!!.currentPosition
+
                 startCDT(
                     generalMediaPlayerService,
-                    bedtimeStoryInfoData
+                    soundMediaPlayerService,
+                    bedtimeStoryInfoData,
+                    context
                 )
 
                 bedtimeStoryViewModel!!.bedtimeStoryCircularSliderClicked = false
@@ -335,7 +370,9 @@ fun seekForward15(
 
 private fun startCDT(
     generalMediaPlayerService: GeneralMediaPlayerService,
-    bedtimeStoryInfoData: BedtimeStoryInfoData
+    soundMediaPlayerService: SoundMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    context: Context
 ) {
     globalViewModel!!.startTheCDT(
         globalViewModel!!.remainingPlayTime.toLong(),
@@ -346,46 +383,73 @@ private fun startCDT(
             bedtimeStoryInfoData
         )
         deActivateResetButton()
+
+        if(routineViewModel!!.currentRoutinePlaying != null){
+            if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null){
+                if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+                    BedtimeStoryForRoutine.individualCDTDone(
+                        soundMediaPlayerService,
+                        generalMediaPlayerService,
+                        routineViewModel!!.routineIndex,
+                        context,
+                    )
+                }
+            }
+        }
     }
 }
 
 fun pauseOrPlayBedtimeStoryAccordingly(
-    bedtimeStoryInfoData: BedtimeStoryInfoData,
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData,
+    context: Context
 ) {
     if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null) {
         if (bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id) {
             if (generalMediaPlayerService.isMediaPlayerInitialized()) {
                 if (generalMediaPlayerService.isMediaPlayerPlaying()) {
-                    pauseBedtimeStory(generalMediaPlayerService)
+                    pauseBedtimeStory(
+                        generalMediaPlayerService,
+                        bedtimeStoryInfoData
+                    )
                 }else{
                     startBedtimeStory(
                         generalMediaPlayerService,
+                        soundMediaPlayerService,
                         bedtimeStoryInfoData,
+                        context
                     )
                 }
             }else{
                 startBedtimeStory(
                     generalMediaPlayerService,
+                    soundMediaPlayerService,
                     bedtimeStoryInfoData,
+                    context
                 )
             }
         }else{
             retrieveBedtimeStoryAudio(
                 generalMediaPlayerService,
+                soundMediaPlayerService,
                 bedtimeStoryInfoData,
+                context
             )
         }
     }else{
         retrieveBedtimeStoryAudio(
             generalMediaPlayerService,
+            soundMediaPlayerService,
             bedtimeStoryInfoData,
+            context
         )
     }
 }
 
 private fun pauseBedtimeStory(
     generalMediaPlayerService: GeneralMediaPlayerService,
+    bedtimeStoryInfoData: BedtimeStoryInfoData
 ) {
     if(generalMediaPlayerService.isMediaPlayerInitialized()) {
         if(generalMediaPlayerService.isMediaPlayerPlaying()) {
@@ -393,6 +457,15 @@ private fun pauseBedtimeStory(
             bedtimeStoryViewModel!!.bedtimeStoryTimer.pause()
             globalViewModel!!.generalPlaytimeTimer.pause()
             globalViewModel!!.resetCDT()
+
+            if(routineViewModel!!.currentRoutinePlaying != null){
+                if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null){
+                    if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+                        BedtimeStoryForRoutine.resetBtsCDT()
+                    }
+                }
+            }
+
             activateBedtimeStoryGlobalControlButton(2)
             activateBedtimeStoryGlobalControlButton(2)
             bedtimeStoryViewModel!!.isCurrentBedtimeStoryPlaying = false
@@ -402,7 +475,9 @@ private fun pauseBedtimeStory(
 
 private fun startBedtimeStory(
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
+    context: Context
 ) {
     if(bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri != null){
         if(generalMediaPlayerService.isMediaPlayerInitialized()){
@@ -411,22 +486,30 @@ private fun startBedtimeStory(
                     bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.fullPlayTime -
                             generalMediaPlayerService.getMediaPlayer()!!.currentPosition
 
+                bedtimeStoryViewModel!!.remainingPlayTime = bedtimeStoryViewModel!!.playTimeSoFar.toInt()
+
                 generalMediaPlayerService.startMediaPlayer()
                 afterPlayingBedtimeStory(
                     generalMediaPlayerService,
-                    bedtimeStoryInfoData
+                    soundMediaPlayerService,
+                    bedtimeStoryInfoData,
+                    context
                 )
             }else{
                 initializeMediaPlayer(
                     generalMediaPlayerService,
-                    bedtimeStoryInfoData
+                    soundMediaPlayerService,
+                    bedtimeStoryInfoData,
+                    context
                 )
             }
         }else{
             if(bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri != null) {
                 initializeMediaPlayer(
                     generalMediaPlayerService,
-                    bedtimeStoryInfoData
+                    soundMediaPlayerService,
+                    bedtimeStoryInfoData,
+                    context
                 )
             }
         }
@@ -435,14 +518,33 @@ private fun startBedtimeStory(
 
 private fun afterPlayingBedtimeStory(
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
+    context: Context
 ){
     bedtimeStoryViewModel!!.bedtimeStoryTimer.start()
     globalViewModel!!.generalPlaytimeTimer.start()
+
     startCDT(
         generalMediaPlayerService,
-        bedtimeStoryInfoData
+        soundMediaPlayerService,
+        bedtimeStoryInfoData,
+        context
     )
+
+    if(routineViewModel!!.currentRoutinePlaying != null){
+        if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying != null){
+            if(bedtimeStoryViewModel!!.currentBedtimeStoryPlaying!!.id == bedtimeStoryInfoData.id){
+                BedtimeStoryForRoutine.generalBedtimeStoryTimer(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    routineViewModel!!.routineIndex,
+                    context
+                )
+            }
+        }
+    }
+
     bedtimeStoryViewModel!!.isCurrentBedtimeStoryPlaying = true
     deActivateBedtimeStoryGlobalControlButton(2)
     deActivateBedtimeStoryGlobalControlButton(0)
@@ -468,7 +570,9 @@ private fun updatePreviousAndCurrentBedtimeStoryRelationship(
 
 private fun initializeMediaPlayer(
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
+    context: Context
 ){
     updatePreviousAndCurrentBedtimeStoryRelationship(
         bedtimeStoryInfoData,
@@ -485,14 +589,18 @@ private fun initializeMediaPlayer(
         resetGlobalControlButtons()
         afterPlayingBedtimeStory(
             generalMediaPlayerService,
-            bedtimeStoryInfoData
+            soundMediaPlayerService,
+            bedtimeStoryInfoData,
+            context
         )
     }
 }
 
 private fun retrieveBedtimeStoryAudio(
     generalMediaPlayerService: GeneralMediaPlayerService,
+    soundMediaPlayerService: SoundMediaPlayerService,
     bedtimeStoryInfoData: BedtimeStoryInfoData,
+    context: Context
 ) {
     SoundBackend.retrieveAudio(
         bedtimeStoryInfoData.audioKeyS3,
@@ -501,7 +609,9 @@ private fun retrieveBedtimeStoryAudio(
         bedtimeStoryViewModel!!.currentBedtimeStoryPlayingUri = it
         startBedtimeStory(
             generalMediaPlayerService,
+            soundMediaPlayerService,
             bedtimeStoryInfoData,
+            context
         )
     }
 }
