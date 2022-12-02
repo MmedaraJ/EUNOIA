@@ -64,10 +64,13 @@ fun NameSoundUI(
         val (
             header,
             title,
+            nameTitle,
             soundNameColumn,
-            name_error,
+            nameError,
+            shortDescriptionTitle,
             soundShortDescriptionColumn,
-            description_error,
+            descriptionError,
+            tagTitle,
             soundTagColumn,
             tag_error,
             icon_title,
@@ -88,7 +91,7 @@ fun NameSoundUI(
                     navController.popBackStack()
                 },
                 {
-                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {
@@ -113,9 +116,25 @@ fun NameSoundUI(
             )
         }
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(nameTitle) {
+                    top.linkTo(title.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            NormalText(
+                text = "Name",
+                color = Black,
+                fontSize = 13,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
             modifier = Modifier
                 .constrainAs(soundNameColumn) {
-                    top.linkTo(title.bottom, margin = 16.dp)
+                    top.linkTo(nameTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -127,24 +146,41 @@ fun NameSoundUI(
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
-                placeholder = "Name",
+                placeholder = "eg. Sweet sensations",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
-                offset = 0
+                offset = 0,
+                showWordCount = true
             )
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(name_error) {
+                .constrainAs(nameError) {
                     top.linkTo(soundNameColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            NormalText(
                 text = soundNameErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(shortDescriptionTitle) {
+                    top.linkTo(nameError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            NormalText(
+                text = "Get people excited in one sentence",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -152,7 +188,7 @@ fun NameSoundUI(
         Column(
             modifier = Modifier
                 .constrainAs(soundShortDescriptionColumn) {
-                    top.linkTo(name_error.bottom, margin = 16.dp)
+                    top.linkTo(shortDescriptionTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -164,24 +200,41 @@ fun NameSoundUI(
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
-                placeholder = "Short description",
+                placeholder = "eg. A very chaotic boat ride with your lover",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
-                offset = 0
+                offset = 0,
+                showWordCount = true
             )
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .constrainAs(description_error) {
+                .constrainAs(descriptionError) {
                     top.linkTo(soundShortDescriptionColumn.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            NormalText(
                 text = soundDescriptionErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(tagTitle) {
+                    top.linkTo(descriptionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            NormalText(
+                text = "Hashtags help users find your self love",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -189,7 +242,7 @@ fun NameSoundUI(
         Column(
             modifier = Modifier
                 .constrainAs(soundTagColumn) {
-                    top.linkTo(description_error.bottom, margin = 16.dp)
+                    top.linkTo(tagTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -201,10 +254,11 @@ fun NameSoundUI(
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
-                placeholder = "Tags",
+                placeholder = "eg. storm, rain, hectic",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
-                offset = 0
+                offset = 0,
+                showWordCount = true
             )
         }
         Column(
@@ -215,10 +269,10 @@ fun NameSoundUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            NormalText(
                 text = soundTagsErrorMessage,
-                color = Black,
-                fontSize = 10,
+                color = BeautyBush,
+                fontSize = 11,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -227,7 +281,7 @@ fun NameSoundUI(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .constrainAs(icon_title) {
-                    top.linkTo(tag_error.bottom, margin = 24.dp)
+                    top.linkTo(tag_error.bottom, margin = 48.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -368,28 +422,30 @@ fun checkOtherSoundsWithSimilarNames(): Boolean{
 }
 
 fun initializeSoundNameError() {
-    soundNameErrorMessage = if(soundName.isEmpty()){
-        "Name this sound"
-    } else if(soundName.length < MIN_SOUND_NAME){
-        "Name must be at least $MIN_SOUND_NAME characters"
-    } else{
+    soundNameErrorMessage = if(
+        soundName.isNotEmpty() &&
+        soundName.length < MIN_SOUND_NAME
+    ){
+        "Must be at least $MIN_SOUND_NAME characters"
+    }else{
         ""
     }
 }
 
 fun initializeSoundDescriptionError() {
-    soundDescriptionErrorMessage = if(soundShortDescription.isEmpty()){
-        "Describe this sound"
-    } else if(soundShortDescription.length < MIN_SOUND_SHORT_DESCRIPTION){
-        "Description must be at least $MIN_SOUND_SHORT_DESCRIPTION characters"
-    } else{
+    soundDescriptionErrorMessage = if(
+        soundShortDescription.isNotEmpty() &&
+        soundShortDescription.length < MIN_SOUND_SHORT_DESCRIPTION
+    ){
+        "Must be at least $MIN_SOUND_SHORT_DESCRIPTION characters"
+    }else{
         ""
     }
 }
 
 fun initializeSoundTagsError() {
     soundTagsErrorMessage = if(soundTags.isEmpty()){
-        "Add tags to this sound. Separate tags with a comma"
+        "Separate hashtags with a comma"
     } else if(soundTags.length < MIN_SOUND_TAGS){
         "Tags must be at least $MIN_SOUND_TAGS characters"
     } else{

@@ -323,7 +323,8 @@ fun SoundScreen(
                         placeholder = "Preset name",
                         placeholderFontSize = 13,
                         placeholderColor = Black,
-                        offset = 0
+                        offset = 0,
+                        showWordCount = true
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))

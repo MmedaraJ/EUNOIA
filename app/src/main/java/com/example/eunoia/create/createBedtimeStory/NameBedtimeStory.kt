@@ -21,6 +21,7 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
+import com.example.eunoia.create.createSelfLove.selfLoveName
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
@@ -51,7 +52,7 @@ private const val MIN_BEDTIME_STORY_LONG_DESCRIPTION = 50
 private const val MIN_BEDTIME_STORY_TAGS = 3
 private const val MAX_BEDTIME_STORY_NAME = 30
 private const val MAX_BEDTIME_STORY_SHORT_DESCRIPTION = 50
-private const val MAX_BEDTIME_STORY_LONG_DESCRIPTION = 200
+private const val MAX_BEDTIME_STORY_LONG_DESCRIPTION = 500
 private const val MAX_BEDTIME_STORY_TAGS = 50
 var incompleteBedtimeStories = mutableListOf<MutableState<BedtimeStoryInfoData>?>()
 
@@ -183,7 +184,8 @@ fun NameBedtimeStoryUI(
                 placeholder = "eg. Mary's Blistered Toe",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
-                offset = 0
+                offset = 0,
+                showWordCount = true
             )
         }
         Column(
@@ -236,7 +238,8 @@ fun NameBedtimeStoryUI(
                 placeholder = "eg. When a man looses his mind over love",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
-                offset = 0
+                offset = 0,
+                showWordCount = true
             )
         }
         Column(
@@ -290,6 +293,7 @@ fun NameBedtimeStoryUI(
                 placeholderColor = BeautyBush,
                 placeholderTextSize = 16,
                 inputFontSize = 16,
+                true
             ){}
         }
         Column(
@@ -342,7 +346,8 @@ fun NameBedtimeStoryUI(
                 placeholder = "eg. thriller, spy, dangerous",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
-                offset = 0
+                offset = 0,
+                showWordCount = true
             )
         }
         Column(
@@ -494,7 +499,6 @@ fun NameBedtimeStoryUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    Log.i(TAG, "Go create bts")
                     createBedtimeStory(numberOfIncompleteBedtimeStories, navController)
                 }
             }
@@ -523,7 +527,7 @@ fun NameBedtimeStoryUI(
         Column(
             modifier = Modifier
                 .constrainAs(endSpace) {
-                    top.linkTo(next.bottom, margin = 40.dp)
+                    top.linkTo(inProgress.bottom, margin = 40.dp)
                 }
         ){
             Spacer(modifier = Modifier.height(40.dp))
@@ -542,9 +546,10 @@ private fun SetupAlertDialogs(){
 }
 
 private fun initializeBedtimeStoryNameError() {
-    bedtimeStoryNameErrorMessage = if(bedtimeStoryName.isEmpty()){
-        ""
-    } else if(bedtimeStoryName.length < MIN_BEDTIME_STORY_NAME){
+    bedtimeStoryNameErrorMessage = if(
+        bedtimeStoryName.isNotEmpty() &&
+        bedtimeStoryName.length < MIN_BEDTIME_STORY_NAME
+    ){
         "Must be at least $MIN_BEDTIME_STORY_NAME characters"
     } else{
         ""
@@ -552,9 +557,10 @@ private fun initializeBedtimeStoryNameError() {
 }
 
 private fun initializeBedtimeStoryShortDescriptionError() {
-    bedtimeStoryShortDescriptionErrorMessage = if(bedtimeStoryShortDescription.isEmpty()){
-        ""
-    } else if(bedtimeStoryShortDescription.length < MIN_BEDTIME_STORY_SHORT_DESCRIPTION){
+    bedtimeStoryShortDescriptionErrorMessage = if(
+        bedtimeStoryShortDescription.isNotEmpty() &&
+        bedtimeStoryShortDescription.length < MIN_BEDTIME_STORY_SHORT_DESCRIPTION
+    ){
         "Must be at least $MIN_BEDTIME_STORY_SHORT_DESCRIPTION characters"
     } else{
         ""
@@ -562,9 +568,10 @@ private fun initializeBedtimeStoryShortDescriptionError() {
 }
 
 private fun initializeBedtimeStoryLongDescriptionError() {
-    bedtimeStoryLongDescriptionErrorMessage = if(bedtimeStoryLongDescription.isEmpty()){
-        ""
-    } else if(bedtimeStoryLongDescription.length < MIN_BEDTIME_STORY_LONG_DESCRIPTION){
+    bedtimeStoryLongDescriptionErrorMessage = if(
+        bedtimeStoryLongDescription.isNotEmpty() &&
+        bedtimeStoryLongDescription.length < MIN_BEDTIME_STORY_LONG_DESCRIPTION
+    ){
         "Must be at least $MIN_BEDTIME_STORY_LONG_DESCRIPTION characters"
     } else{
         ""
@@ -596,18 +603,16 @@ private fun createBedtimeStory(
     BedtimeStoryBackend.queryBedtimeStoryBasedOnDisplayName(bedtimeStoryName){
         val tags = getBedtimeStoryTagsList()
 
-        Log.i(TAG, "numberOfIncompleteBedtimeStories -- $numberOfIncompleteBedtimeStories")
         if(numberOfIncompleteBedtimeStories < 3){
-            Log.i(TAG, "Nxt 1")
             if (it.isEmpty()) {
-                Log.i(TAG, "Nxt 2")
-                val key = "Routine/" +
-                        "BedtimeStories/" +
-                        "${globalViewModel!!.currentUser!!.username}/" +
+                val key = "${globalViewModel!!.currentUser!!.username.lowercase()}/" +
+                        "routine/" +
+                        "bedtime-story/" +
                         "recorded/" +
-                        "$bedtimeStoryName/"
+                        "${bedtimeStoryName.lowercase()}/" +
+                        "complete/" +
+                        "${bedtimeStoryName.lowercase()}_audio.aac"
 
-                //TODO Compute full play time
                 val bedtimeStory = BedtimeStoryObject.BedtimeStory(
                     UUID.randomUUID().toString(),
                     UserObject.User.from(globalViewModel!!.currentUser!!),
@@ -624,6 +629,7 @@ private fun createBedtimeStory(
                     BedtimeStoryApprovalStatus.PENDING,
                     BedtimeStoryCreationStatus.INCOMPLETE
                 )
+
                 BedtimeStoryBackend.createBedtimeStory(bedtimeStory) { bedtimeStoryData ->
                     UserBedtimeStoryInfoRelationshipBackend.createUserBedtimeStoryInfoRelationshipObject(bedtimeStoryData) {
                         UserBedtimeStoryBackend.createUserBedtimeStoryObject(

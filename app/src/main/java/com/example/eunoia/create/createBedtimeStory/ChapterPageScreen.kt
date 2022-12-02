@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.net.toUri
-import androidx.lifecycle.*
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.BedtimeStoryInfoChapterData
 import com.amplifyframework.datastore.generated.model.PageData
@@ -31,7 +30,7 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.PageBackend
 import com.example.eunoia.backend.SoundBackend
 import com.example.eunoia.dashboard.sound.*
-import com.example.eunoia.lifecycle.CustomLifecycleEventListener
+import com.example.eunoia.lifecycle.CustomLifecycleEventListenerProcessor
 import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.alertDialogs.ConfirmAlertDialog
@@ -149,46 +148,32 @@ fun PageScreenUI(
             .padding(horizontal = 16.dp)
             .fillMaxHeight(),
     ) {
-        CustomLifecycleEventListener { event ->
-            when(event){
-                Lifecycle.Event.ON_CREATE -> {
-                    Log.i(TAG, "ON_CREATE here")
-                }
-                Lifecycle.Event.ON_START -> {
-                    Log.i(TAG, "ON_START here")
-                }
-                Lifecycle.Event.ON_RESUME -> {
-                    Log.i(TAG, "ON_RESUME here")
-                    viewModel.onStart(
-                        soundMediaPlayerService,
-                        generalMediaPlayerService,
-                        context
-                    )
+        CustomLifecycleEventListenerProcessor(
+            onCreate = {},
+            onStart = {},
+            onResume = {
+                viewModel.onStart(
+                    soundMediaPlayerService,
+                    generalMediaPlayerService,
+                    context
+                )
+                playingIndex = -1
+            },
+            onPause = {},
+            onStop = {
+                saveRecordingToS3AndDB(thisPageData!!) {
                     playingIndex = -1
+                    viewModel.onStop(generalMediaPlayerService)
                 }
-                Lifecycle.Event.ON_PAUSE -> {
-                    Log.i(TAG, "ON_PAUSE here")
+            },
+            onDestroy = {
+                saveRecordingToS3AndDB(thisPageData!!) {
+                    playingIndex = -1
+                    viewModel.onStop(generalMediaPlayerService)
                 }
-                Lifecycle.Event.ON_STOP -> {
-                    Log.i(TAG, "ON_STOP here $pageData")
-                    Log.i(TAG, "ON_STOP here thisPageData $thisPageData")
-                    saveRecordingToS3AndDB(thisPageData!!) {
-                        playingIndex = -1
-                        viewModel.onStop(generalMediaPlayerService)
-                    }
-                }
-                Lifecycle.Event.ON_DESTROY -> {
-                    Log.i(TAG, "ON_DESTROY here")
-                    saveRecordingToS3AndDB(thisPageData!!) {
-                        playingIndex = -1
-                        viewModel.onStop(generalMediaPlayerService)
-                    }
-                }
-                Lifecycle.Event.ON_ANY -> {
-                    Log.i(TAG, "ON_ANY here")
-                }
-            }
-        }
+            },
+            onAny = {},
+        )
 
         val (
             header,
@@ -204,7 +189,7 @@ fun PageScreenUI(
                 .constrainAs(header) {
                     top.linkTo(parent.top, margin = 40.dp)
                 }
-                //.fillMaxWidth()
+            //.fillMaxWidth()
         ) {
             BackArrowHeader(
                 {
@@ -272,10 +257,10 @@ fun PageScreenUI(
             ){
                 icons.forEachIndexed { index, icon ->
                     if(
-                        /*(index == 1 && pageIndex > 0) ||*/
+                    /*(index == 1 && pageIndex > 0) ||*/
                         index == 2 ||
                         index == 3
-                        /*(index == 4 && pageIndex < getChapterPageSize(chapterIndex) - 1)*/
+                    /*(index == 4 && pageIndex < getChapterPageSize(chapterIndex) - 1)*/
                     ){
                         Box(
                             modifier = Modifier
@@ -361,28 +346,9 @@ fun PageScreenUI(
                     0,
                     0
                 ) {
-                    if(!generalMediaPlayerService.isMediaPlayerPlaying()) {
-                        //recording name must be bigger than others and must not exist
-                        var newRecordingName = "recording 1"
-
-                        if(pageRecordingNames.isNotEmpty()) {
-                            val sortedNames = pageRecordingNames.sortedBy {
-                                it.value.split(" ")[1].toInt()
-                            }
-                            Log.i(TAG, "sortedNames = $sortedNames")
-                            val lastName = sortedNames.last().value
-                            Log.i(TAG, "lastName = $lastName")
-                            val lastNumber = lastName.split(" ")[1].toInt()
-                            Log.i(TAG, "lastNumber = $lastNumber")
-                            newRecordingName = "recording ${lastNumber + 1}"
-                        }
-
-                        val newRecordingKeyS3 = ""
-                        pageRecordingNames.add(mutableStateOf(newRecordingName))
-                        pageRecordingS3Keys.add(mutableStateOf(newRecordingKeyS3))
-                        numberOfRecordings += 1
-                        deActivatePageControls(5)
-                    }
+                    numberOfRecordings += addNewRecordingToBedtimeStoryRecording(
+                        generalMediaPlayerService,
+                    )
                 }
             }
         }
@@ -419,7 +385,6 @@ fun PageScreenUI(
             ) {
                 val (
                     recordings,
-                    spacer,
                 ) = createRefs()
                 Column(
                     modifier = Modifier
@@ -430,178 +395,273 @@ fun PageScreenUI(
                         }
                         .fillMaxWidth()
                 ) {
-                    Log.i(TAG, "We arreived clear")
-
-                    if(numberOfRecordings > -1/* && pageRecordingrs.isNotEmpty() && pageRecordingrs.isNotEmpty()*/){
-                        if(pageRecordingS3Keys.isNotEmpty()){
-                            for(i in pageRecordingS3Keys.indices){
-                                var done by rememberSaveable { mutableStateOf(false) }
-                                Log.i(TAG, "Were in values1")
-                                if(pageRecordingS3Keys[i].value == ""){
-                                    Log.i(TAG, "Were in values2")
-                                    if(i < pageRecordingFileNames.size){
-                                        pageRecordingFileNames[i].value = "empty recording"
-                                        recordedPageRecordingAbsolutePath[i].value = ""
-
-                                        if(playingIndex == i) {
-                                            pageRecordingFileColors[i].value = Color.Green
-                                        }else{
-                                            pageRecordingFileColors[i].value = WePeep
-                                        }
-                                        pageRecordingFileUris[i].value = "".toUri()
-                                        pageRecordingFileMediaPlayers[i].value = MediaPlayer()
-                                        audioPageRecordingFileLengthMilliSeconds[i].value = 0L
-                                    }else{
-                                        pageRecordingFileNames.add(remember{mutableStateOf("empty recording")})
-                                        recordedPageRecordingAbsolutePath.add(remember{mutableStateOf("")})
-
-                                        if(playingIndex == i) {
-                                            pageRecordingFileColors.add(remember {
-                                                mutableStateOf(
-                                                    Color.Green
-                                                )
-                                            })
-                                        }else{
-                                            pageRecordingFileColors.add(remember {
-                                                mutableStateOf(
-                                                    WePeep
-                                                )
-                                            })
-                                        }
-
-                                        pageRecordingFileUris.add(remember{mutableStateOf("".toUri())})
-                                        pageRecordingFileMediaPlayers.add(remember{mutableStateOf(MediaPlayer())})
-                                        audioPageRecordingFileLengthMilliSeconds.add(remember{mutableStateOf(0L)})
-                                    }
-                                    Log.i(TAG, "ff22 pageRecordingFileNames ==> $pageRecordingFileNames")
-                                    done = true
-                                }else{
-                                    if(pageRecordingS3Keys[i].value != "open"){
-                                        var length = 0L
-                                        if(pageData.audioLength != null){
-                                            Log.i(TAG, "Were in lengths")
-                                            if(pageData.audioLength.isNotEmpty()){
-                                                Log.i(TAG, "Were in lengths1")
-                                                if(i < pageData.audioLength.size) {
-                                                    Log.i(TAG, "Were in length2s")
-                                                    length = pageData.audioLength[i].toLong()
-                                                    Log.i(TAG, "Were in lengths3")
-                                                }
-                                            }
-                                        }
-                                        if(i < pageRecordingFileNames.size) {
-                                            pageRecordingFileNames[i].value = pageData.audioNames[i]
-                                            Log.i(TAG, "ff221 pageRecordingFileNames ==> ${pageRecordingFileNames}")
-                                            recordedPageRecordingAbsolutePath[i].value = ""
-
-                                            if(playingIndex == i) {
-                                                pageRecordingFileColors[i].value = Color.Green
-                                            }else{
-                                                pageRecordingFileColors[i].value = Peach
-                                            }
-
-                                            pageRecordingFileMediaPlayers[i].value = MediaPlayer()
-                                            audioPageRecordingFileLengthMilliSeconds[i].value = length
-                                            //pageRecordingFileUris[i].value = "".toUri()
-
-                                            SoundBackend.retrieveAudio(
-                                                pageRecordingS3Keys[i].value,
-                                                globalViewModel!!.currentUser!!.amplifyAuthUserId
-                                            ) {
-                                                if(it != null){
-                                                    if(i < pageRecordingFileUris.size) {
-                                                        pageRecordingFileUris[i].value = it
-                                                    }else{
-                                                        pageRecordingFileUris.add(mutableStateOf(it))
-                                                    }
-                                                }else{
-                                                    if(i < pageRecordingFileUris.size) {
-                                                        pageRecordingFileUris[i].value = "".toUri()
-                                                    }else{
-                                                        pageRecordingFileUris.add(mutableStateOf("".toUri()))
-                                                    }
-                                                }
-                                                done = true
-                                            }
-                                        }else{
-                                            pageRecordingFileNames.add(remember{mutableStateOf(pageData.audioNames[i])})
-                                            Log.i(TAG, "ff221 pageRecordingFileNames ==> $pageRecordingFileNames")
-                                            recordedPageRecordingAbsolutePath.add(remember{mutableStateOf("")})
-
-                                            if(playingIndex == i) {
-                                                pageRecordingFileColors.add(remember {
-                                                    mutableStateOf(
-                                                        Color.Green
-                                                    )
-                                                })
-                                            }else{
-                                                pageRecordingFileColors.add(remember {
-                                                    mutableStateOf(
-                                                        Peach
-                                                    )
-                                                })
-                                            }
-
-                                            pageRecordingFileMediaPlayers.add(remember{mutableStateOf(MediaPlayer())})
-                                            audioPageRecordingFileLengthMilliSeconds.add(remember{mutableStateOf(length)})
-
-                                            SoundBackend.retrieveAudio(
-                                                pageRecordingS3Keys[i].value,
-                                                globalViewModel!!.currentUser!!.amplifyAuthUserId
-                                            ) {
-                                                if(it != null){
-                                                    if(i < pageRecordingFileUris.size) {
-                                                        pageRecordingFileUris[i].value = it
-                                                    }else{
-                                                        pageRecordingFileUris.add(mutableStateOf(it))
-                                                    }
-                                                }else{
-                                                    if(i < pageRecordingFileUris.size) {
-                                                        pageRecordingFileUris[i].value = "".toUri()
-                                                    }else{
-                                                        pageRecordingFileUris.add(mutableStateOf("".toUri()))
-                                                    }
-                                                }
-                                                done = true
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if(done) {
-                                    Log.i(TAG, "DOner $i")
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    RecordingBlock(
-                                        i,
-                                        generalMediaPlayerService
-                                    ) {
-                                        Log.i(TAG, "recordedPageRecordingAbsolutePath iz ${recordedPageRecordingAbsolutePath.size}")
-                                        if(it < recordedPageRecordingAbsolutePath.size) {
-                                            Log.i(TAG, "selectedPageRecordingIndex iz $it")
-                                            selectedPageRecordingIndex = it
-                                            activatePageControls(2)
-                                            globalViewModel!!.bottomSheetOpenFor = "recordAudio"
-                                            recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording =
-                                                pageData
-                                            openBottomSheet(scope, state)
-                                        }
-                                    }
-                                }
-                            }
-                        }else{
-                            recordedPageRecordingAbsolutePath.clear()
-                            pageRecordingFileColors.clear()
-                            pageRecordingFileUris.clear()
-                            pageRecordingFileMediaPlayers.clear()
-                            pageRecordingFileNames.clear()
-                            audioPageRecordingFileLengthMilliSeconds.clear()
-                        }
+                    if(numberOfRecordings > -1){
+                        DisplayPageRecordingBlocks(
+                            pageData,
+                            scope,
+                            state,
+                            generalMediaPlayerService
+                        )
                     }
                     Spacer(modifier = Modifier.height(40.dp))
                 }
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun DisplayPageRecordingBlocks(
+    pageData: PageData,
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+    generalMediaPlayerService: GeneralMediaPlayerService,
+) {
+    if(pageRecordingS3Keys.isNotEmpty()){
+        for(i in pageRecordingS3Keys.indices){
+            var done by rememberSaveable { mutableStateOf(false) }
+            if(pageRecordingS3Keys[i].value == ""){
+                //if recording block has not been recorded into yet
+                if(i < pageRecordingFileNames.size){
+                    DisplayEmptyRecordingBlockIfItAlreadyExist(i)
+                }else{
+                    DisplayEmptyRecordingBlockIfItDoesNotExist(i)
+                }
+                done = true
+            }else{
+                //if recording block has been recorded into
+                if(pageRecordingS3Keys[i].value != "open"){
+                    //if recording is already saved
+                    val length = getRecordingLength(
+                        pageData,
+                        i
+                    )
+
+                    if(i < pageRecordingFileNames.size) {
+                        DisplayRecordingBlockIfItAlreadyExist(
+                            pageData,
+                            i,
+                            length
+                        )
+
+                        SoundBackend.retrieveAudio(
+                            pageRecordingS3Keys[i].value,
+                            globalViewModel!!.currentUser!!.amplifyAuthUserId
+                        ) {
+                            updatePageRecordingFileUris(
+                                it,
+                                i
+                            )
+                            done = true
+                        }
+                    }else{
+                        DisplayRecordingBlockIfItDoesNotExist(
+                            pageData,
+                            i,
+                            length
+                        )
+
+                        SoundBackend.retrieveAudio(
+                            pageRecordingS3Keys[i].value,
+                            globalViewModel!!.currentUser!!.amplifyAuthUserId
+                        ) {
+                            updatePageRecordingFileUris(
+                                it,
+                                i
+                            )
+                            done = true
+                        }
+                    }
+                }
+            }
+
+            if(done) {
+                Spacer(modifier = Modifier.height(16.dp))
+                RecordingBlock(
+                    i,
+                    generalMediaPlayerService
+                ) {
+                    if(it < recordedPageRecordingAbsolutePath.size) {
+                        selectedPageRecordingIndex = it
+                        activatePageControls(2)
+                        globalViewModel!!.bottomSheetOpenFor = "recordAudio"
+                        recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording =
+                            pageData
+                        openBottomSheet(scope, state)
+                    }
+                }
+            }
+        }
+    }else{
+        clearAllPageRecordingLists()
+    }
+}
+
+fun clearAllPageRecordingLists() {
+    recordedPageRecordingAbsolutePath.clear()
+    pageRecordingFileColors.clear()
+    pageRecordingFileUris.clear()
+    pageRecordingFileMediaPlayers.clear()
+    pageRecordingFileNames.clear()
+    audioPageRecordingFileLengthMilliSeconds.clear()
+}
+
+@Composable
+fun DisplayRecordingBlockIfItDoesNotExist(
+    pageData: PageData,
+    i: Int,
+    length: Long
+) {
+    pageRecordingFileNames.add(remember{mutableStateOf(pageData.audioNames[i])})
+    recordedPageRecordingAbsolutePath.add(remember{mutableStateOf("")})
+
+    if(playingIndex == i) {
+        pageRecordingFileColors.add(remember {
+            mutableStateOf(
+                Color.Green
+            )
+        })
+    }else{
+        pageRecordingFileColors.add(remember {
+            mutableStateOf(
+                Peach
+            )
+        })
+    }
+
+    pageRecordingFileMediaPlayers.add(remember{mutableStateOf(MediaPlayer())})
+    audioPageRecordingFileLengthMilliSeconds.add(remember{mutableStateOf(length)})
+}
+
+fun updatePageRecordingFileUris(uri: Uri?, i: Int) {
+    if(uri != null){
+        if(i < pageRecordingFileUris.size) {
+            pageRecordingFileUris[i].value = uri
+        }else{
+            pageRecordingFileUris.add(mutableStateOf(uri))
+        }
+    }else{
+        if(i < pageRecordingFileUris.size) {
+            pageRecordingFileUris[i].value = "".toUri()
+        }else{
+            pageRecordingFileUris.add(mutableStateOf("".toUri()))
+        }
+    }
+}
+
+@Composable
+fun DisplayRecordingBlockIfItAlreadyExist(
+    pageData: PageData,
+    i: Int,
+    length: Long
+) {
+    pageRecordingFileNames[i].value = pageData.audioNames[i]
+    recordedPageRecordingAbsolutePath[i].value = ""
+
+    if(playingIndex == i) {
+        pageRecordingFileColors[i].value = Color.Green
+    }else{
+        pageRecordingFileColors[i].value = Peach
+    }
+
+    pageRecordingFileMediaPlayers[i].value = MediaPlayer()
+    audioPageRecordingFileLengthMilliSeconds[i].value = length
+}
+
+/**
+ * Returns the length of a particular recording in a page
+ *
+ * @param pageData The page
+ * @param i The index of the particular recording
+ * @return The length of the recording
+ */
+private fun getRecordingLength(pageData: PageData, i: Int): Long {
+    var length = 0L
+    if(pageData.audioLength != null){
+        if(pageData.audioLength.isNotEmpty()){
+            if(i < pageData.audioLength.size) {
+                length = pageData.audioLength[i].toLong()
+            }
+        }
+    }
+    return length
+}
+
+@Composable
+fun DisplayEmptyRecordingBlockIfItAlreadyExist(i: Int) {
+    pageRecordingFileNames[i].value = "empty recording"
+    recordedPageRecordingAbsolutePath[i].value = ""
+
+    if(playingIndex == i) {
+        pageRecordingFileColors[i].value = Color.Green
+    }else{
+        pageRecordingFileColors[i].value = WePeep
+    }
+    pageRecordingFileUris[i].value = "".toUri()
+    pageRecordingFileMediaPlayers[i].value = MediaPlayer()
+    audioPageRecordingFileLengthMilliSeconds[i].value = 0L
+}
+
+@Composable
+fun DisplayEmptyRecordingBlockIfItDoesNotExist(i: Int) {
+    pageRecordingFileNames.add(remember{mutableStateOf("empty recording")})
+    recordedPageRecordingAbsolutePath.add(remember{mutableStateOf("")})
+
+    if(playingIndex == i) {
+        pageRecordingFileColors.add(remember {
+            mutableStateOf(
+                Color.Green
+            )
+        })
+    }else{
+        pageRecordingFileColors.add(remember {
+            mutableStateOf(
+                WePeep
+            )
+        })
+    }
+
+    pageRecordingFileUris.add(remember{mutableStateOf("".toUri())})
+    pageRecordingFileMediaPlayers.add(remember{mutableStateOf(MediaPlayer())})
+    audioPageRecordingFileLengthMilliSeconds.add(remember{mutableStateOf(0L)})
+}
+
+/**
+ * Adds a new recording block to the bedtime story recording page
+ *
+ * @param generalMediaPlayerService The media player service
+ * @return 1 if recording block was added or 0 if otherwise
+ */
+private fun addNewRecordingToBedtimeStoryRecording(
+    generalMediaPlayerService: GeneralMediaPlayerService,
+): Int{
+    if(!generalMediaPlayerService.isMediaPlayerPlaying()) {
+        //recording name must be bigger than others and must not exist
+        var newRecordingName = "recording 1"
+
+        if(pageRecordingNames.isNotEmpty()) {
+            //names end with a number (recording 4)
+            //sort this list by this number
+            val sortedNames = pageRecordingNames.sortedBy {
+                //use split() to get the number associated with a recording
+                it.value.split(" ")[1].toInt()
+            }
+            //Make the new recording name have a number that is one higher than the biggest number
+            //in the list
+            val lastName = sortedNames.last().value
+            val lastNumber = lastName.split(" ")[1].toInt()
+            newRecordingName = "recording ${lastNumber + 1}"
+        }
+
+        val newRecordingKeyS3 = ""
+        //add the new recording name and empty s3Key to the lists
+        pageRecordingNames.add(mutableStateOf(newRecordingName))
+        pageRecordingS3Keys.add(mutableStateOf(newRecordingKeyS3))
+        deActivatePageControls(5)
+        return 1
+    }
+    return 0
 }
 
 @Composable
@@ -752,7 +812,6 @@ fun deActivatePageControls(index: Int){
 fun clearPageRecordingsList(){
     pageRecordingNames.clear()
     pageRecordingS3Keys.clear()
-    Log.i(TAG, "Clearing page recordingd ee")
 }
 
 private fun storeToS3IfChapterPage(
@@ -763,14 +822,15 @@ private fun storeToS3IfChapterPage(
 ){
     Log.i(TAG, "storeToS3IfChapterPage 990 $index")
     if(index < pageRecordingFileNames.size) {
-        val key = "Routine/" +
-                "BedtimeStories/" +
-                "${globalViewModel!!.currentUser!!.username}/" +
+        val key = "${globalViewModel!!.currentUser!!.username.lowercase()}/" +
+                "routine/" +
+                "bedtime-story/" +
                 "recorded/" +
-                "${thisChapterData!!.bedtimeStoryInfo.displayName}/" +
-                "${thisChapterData!!.displayName}/" +
-                "${thisPageData.displayName}/" +
-                "${pageRecordingFileNames[index].value}.aac"
+                "${thisChapterData!!.bedtimeStoryInfo.displayName.lowercase()}/" +
+                "recordings/" +
+                "${thisChapterData!!.displayName.lowercase()}/" +
+                "${thisPageData.displayName.lowercase()}/" +
+                "${pageRecordingFileNames[index].value.lowercase()}.aac"
 
         if (recordedPageRecordingAbsolutePath[index].value != "") {
             Log.i(TAG, "updated: true 3")
@@ -956,14 +1016,5 @@ fun saveRecordingToS3AndDB(
                 completed()
             }
         }
-    }/*else{
-        Log.i(TAG, "Nothig - comp")
-        completed()
-    }*/
-}
-
-fun updateThisPageData(
-    pageData: PageData
-){
-    thisPageData = pageData
+    }
 }

@@ -175,49 +175,53 @@ fun resetUploadBedtimeStoryMediaPlayers(){
 fun createBedtimeStoryFromUpload(
     navController: NavController
 ){
-    var otherBedtimeStoriesWithSameName by mutableStateOf(-1)
     BedtimeStoryBackend.queryBedtimeStoryBasedOnDisplayName(bedtimeStoryName){
-        otherBedtimeStoriesWithSameName = if(it.isEmpty()) 0 else it.size
-    }
-    Thread.sleep(1_000)
-    val tags = getBedtimeStoryTagsList()
-    if (otherBedtimeStoriesWithSameName < 1) {
-        val key = "Routine/BedtimeStories/${globalViewModel!!.currentUser!!.username}/uploaded/$bedtimeStoryName/${bedtimeStoryName}_audio.aac"
-        SoundBackend.storeAudio(uploadedFileBedtimeStory.value.absolutePath, key){
-            val bedtimeStory = BedtimeStoryObject.BedtimeStory(
-                UUID.randomUUID().toString(),
-                UserObject.User.from(globalViewModel!!.currentUser!!),
-                globalViewModel!!.currentUser!!.id,
-                bedtimeStoryName,
-                bedtimeStoryShortDescription,
-                bedtimeStoryLongDescription,
-                key,
-                bedtimeStoryIcon,
-                audioFileLengthMilliSecondsBedtimeStory.value,
-                false, 
-                tags,
-                BedtimeStoryAudioSource.UPLOADED,
-                BedtimeStoryApprovalStatus.PENDING,
-                BedtimeStoryCreationStatus.COMPLETED
-            )
-            BedtimeStoryBackend.createBedtimeStory(bedtimeStory) { bedtimeStoryData ->
-                UserBedtimeStoryInfoRelationshipBackend.createUserBedtimeStoryInfoRelationshipObject(bedtimeStoryData) {
-                    UserBedtimeStoryBackend.createUserBedtimeStoryObject(bedtimeStoryData) {
-                        resetAllBedtimeStoryCreationObjects()
-                        openSavedElementDialogBox = true
-                        Thread.sleep(1_000)
-                        openSavedElementDialogBox = false
-                        recordBedtimeStoryCreatedViaUploadPinpointEvent(bedtimeStoryData)
-                        runOnUiThread {
-                            //TODO navigate to users list of pending bedtime stories
-                            navigateToBedtimeStoryScreen(navController, bedtimeStoryData)
+        if (it.isEmpty()) {
+            val tags = getBedtimeStoryTagsList()
+            val key = "${globalViewModel!!.currentUser!!.username.lowercase()}/" +
+                    "routine/" +
+                    "bedtime-story/" +
+                    "uploaded/" +
+                    "${bedtimeStoryName.lowercase()}/" +
+                    "${bedtimeStoryName.lowercase()}_audio.aac"
+
+            SoundBackend.storeAudio(uploadedFileBedtimeStory.value.absolutePath, key){
+                val bedtimeStory = BedtimeStoryObject.BedtimeStory(
+                    UUID.randomUUID().toString(),
+                    UserObject.User.from(globalViewModel!!.currentUser!!),
+                    globalViewModel!!.currentUser!!.id,
+                    bedtimeStoryName,
+                    bedtimeStoryShortDescription,
+                    bedtimeStoryLongDescription,
+                    key,
+                    bedtimeStoryIcon,
+                    audioFileLengthMilliSecondsBedtimeStory.value,
+                    false,
+                    tags,
+                    BedtimeStoryAudioSource.UPLOADED,
+                    BedtimeStoryApprovalStatus.PENDING,
+                    BedtimeStoryCreationStatus.COMPLETED
+                )
+
+                BedtimeStoryBackend.createBedtimeStory(bedtimeStory) { bedtimeStoryData ->
+                    UserBedtimeStoryInfoRelationshipBackend.createUserBedtimeStoryInfoRelationshipObject(bedtimeStoryData) {
+                        UserBedtimeStoryBackend.createUserBedtimeStoryObject(bedtimeStoryData) {
+                            resetAllBedtimeStoryCreationObjects()
+                            openSavedElementDialogBox = true
+                            Thread.sleep(1_000)
+                            openSavedElementDialogBox = false
+                            recordBedtimeStoryCreatedViaUploadPinpointEvent(bedtimeStoryData)
+                            runOnUiThread {
+                                //TODO navigate to users list of pending bedtime stories
+                                navigateToBedtimeStoryScreen(navController, bedtimeStoryData)
+                            }
                         }
                     }
                 }
             }
+        }else{
+            openBedtimeStoryNameTakenDialogBox = true
         }
-    }else{
-        openBedtimeStoryNameTakenDialogBox = true
     }
 }
 

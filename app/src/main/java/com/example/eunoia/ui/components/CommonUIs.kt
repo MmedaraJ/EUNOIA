@@ -2,6 +2,7 @@ package com.example.eunoia.ui.components
 
 import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -386,15 +387,19 @@ fun customizedOutlinedTextInput(
     placeholder: String,
     placeholderColor: Color,
     placeholderFontSize: Int,
-    offset: Int
+    offset: Int,
+    showWordCount: Boolean
 ): String{
     var text by rememberSaveable{ mutableStateOf("") }
     val context = LocalContext.current
     OutlinedTextField(
         value = text,
         onValueChange = {
-            if (it.length <= maxLength) text = it
-            else Toast.makeText(context, "Only $maxLength characters allowed", Toast.LENGTH_SHORT).show()
+            text = filterInputTextForSmallInput(
+                it,
+                text,
+                maxLength,
+            )
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = color,
@@ -410,15 +415,24 @@ fun customizedOutlinedTextInput(
             fontSize = inputFontSize.sp
         ),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
+        trailingIcon = {
+            if(showWordCount) {
+                WordCount(
+                    text.length,
+                    maxLength,
+                    focusedBorderColor,
+                    11,
+                    12
+                )
+            }
+        },
         placeholder = {
-            Text(
-                text = placeholder,
-                style = MaterialTheme.typography.h4,
-                color = placeholderColor,
-                fontSize = placeholderFontSize.sp,
-                modifier = Modifier
-                    .padding(0.dp)
-                    .offset(x = offset.dp)
+            NormalText(
+                placeholder,
+                placeholderColor,
+                placeholderFontSize,
+                0,
+                0
             )
         },
         modifier = Modifier
@@ -518,6 +532,141 @@ fun bigOutlinedTextInput(
     return text
 }
 
+fun filterInputTextForBigInput(
+    it: String,
+    text: String,
+    maxLength: Int,
+): String {
+    if (it.length <= maxLength){
+        if(
+            !it.contains("  ") &&
+            !it.contains("\n ") &&
+            !it.contains("\r ") &&
+            !it.contains("\r\n ") &&
+            !it.contains("\n\n\n") &&
+            !it.contains("\n\r\n") &&
+            !it.contains("\n\r\r") &&
+            !it.contains("\n\n\r") &&
+            !it.contains("\r\r\r") &&
+            !it.contains("\r\n\n") &&
+            !it.contains("\r\r\n") &&
+            !it.contains("\r\n\r") &&
+            !it.contains("\r\n\r\n\r\n") &&
+            it != "\n" &&
+            it != "\r" &&
+            it != "\r\n"
+        ) {
+            if(
+                (it.isNotEmpty() && it.first() == ' ') ||
+                (it.isNotEmpty() && it.first() == '\n') ||
+                (it.isNotEmpty() && it.first() == '\r')
+            ) {
+                return text
+            }else{
+                if (text.isEmpty()) {
+                    //do not allow user to input ' ' when text is empty
+                    if (it.isNotEmpty() && it.last() != ' ') return it
+                } else {
+                    if (it.isNotEmpty() && it.last() == ' ') {
+                        //allow user to input ' ' only if ' ' is not the last character
+                        //that was inputted
+                        if (it.length > 2){
+                            if(it[it.length - 2] != ' ') return it
+                        } else return it
+                    } else return it
+                }
+            }
+        }
+    }
+
+    return text
+}
+
+fun filterInputTextForSmallInput(
+    it: String,
+    text: String,
+    maxLength: Int,
+): String {
+    if (it.length <= maxLength){
+        if(
+            !it.contains("  ") &&
+            !it.contains("\n") &&
+            !it.contains("\r") &&
+            !it.contains("\r\n") &&
+            it != "\n" &&
+            it != "\r" &&
+            it != "\r\n"
+        ) {
+            if(
+                (it.isNotEmpty() && it.first() == ' ') ||
+                (it.isNotEmpty() && it.first() == '\n') ||
+                (it.isNotEmpty() && it.first() == '\r')
+            ) {
+                return text
+            }else{
+                if (text.isEmpty()) {
+                    //do not allow user to input ' ' when text is empty
+                    if (it.isNotEmpty() && it.last() != ' ') return it
+                } else {
+                    if (it.isNotEmpty() && it.last() == ' ') {
+                        //allow user to input ' ' only if ' ' is not the last character
+                        //that was inputted
+                        if (it.length > 2){
+                            if(it[it.length - 2] != ' ') return it
+                        } else return it
+                    } else return it
+                }
+            }
+        }
+    }
+
+    return text
+}
+
+@Composable
+fun WordCount(
+    textLen: Int,
+    maxLength: Int,
+    textColor: Color,
+    fontSize: Int,
+    padding: Int
+){
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .wrapContentWidth()
+            .fillMaxHeight()
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .wrapContentWidth()
+                .fillMaxHeight()
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .width(2.dp)
+                    .fillMaxHeight()
+            )
+        }
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .wrapContentWidth()
+                .fillMaxHeight()
+                .padding(bottom = padding.dp, end = padding.dp)
+        ) {
+            NormalText(
+                "$textLen/$maxLength",
+                textColor,
+                fontSize,
+                0,
+                0
+            )
+        }
+    }
+}
+
 @Composable
 fun customizableBigOutlinedTextInput(
     maxLength: Int,
@@ -530,45 +679,66 @@ fun customizableBigOutlinedTextInput(
     placeholderColor: Color,
     placeholderTextSize: Int,
     inputFontSize: Int,
+    showWordCount: Boolean,
     completed: (comment: String) -> Unit
 ): String{
     var text by rememberSaveable{ mutableStateOf("") }
     val context = LocalContext.current
-    OutlinedTextField(
-        value = text,
-        onValueChange = {
-            if (it.length <= maxLength) text = it
-            else Toast.makeText(context, "Only $maxLength characters allowed", Toast.LENGTH_SHORT).show()
-        },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            backgroundColor = backgroundColor,
-            focusedBorderColor = focusedBorderColor,
-            unfocusedBorderColor = unfocusedBorderColor,
-            textColor = textColor
-        ),
-        textStyle = TextStyle(
-            textAlign = TextAlign.Start,
-            fontFamily = bioRhymeFonts,
-            fontWeight = FontWeight.Light,
-            fontSize = inputFontSize.sp
-        ),
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
-        placeholder = {
-            Column(verticalArrangement = Arrangement.Top){
-                LightText(
-                    placeholder,
-                    placeholderColor,
-                    placeholderTextSize,
-                    0,
-                    0
-                )
-            }
-        },
+    Box(
+        contentAlignment = Alignment.BottomEnd,
         modifier = Modifier
-            .height(height.dp)
-            .padding(0.dp)
-            .fillMaxWidth()
-    )
+            .wrapContentSize()
+    ){
+        OutlinedTextField(
+            value = text,
+            onValueChange = {
+                text = filterInputTextForBigInput(
+                    it,
+                    text,
+                    maxLength,
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                backgroundColor = backgroundColor,
+                focusedBorderColor = focusedBorderColor,
+                unfocusedBorderColor = unfocusedBorderColor,
+                textColor = textColor
+            ),
+            textStyle = TextStyle(
+                textAlign = TextAlign.Start,
+                fontFamily = bioRhymeFonts,
+                fontWeight = FontWeight.Light,
+                fontSize = inputFontSize.sp
+            ),
+            shape = RoundedCornerShape(dimensionResource(id = R.dimen.ten)),
+            trailingIcon = {
+                if(showWordCount) {
+                    WordCount(
+                        text.length,
+                        maxLength,
+                        focusedBorderColor,
+                        11,
+                        12
+                    )
+                }
+            },
+            placeholder = {
+                Column(verticalArrangement = Arrangement.Top){
+                    NormalText(
+                        placeholder,
+                        placeholderColor,
+                        placeholderTextSize,
+                        0,
+                        0
+                    )
+                }
+            },
+            modifier = Modifier
+                .height(height.dp)
+                .padding(0.dp)
+                .fillMaxWidth()
+        )
+    }
     return text
 }
 
@@ -1839,7 +2009,7 @@ fun dropdownMenuSoftPeach(list: List<String>, title: String): String{
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ){
-                        LightText(
+                        NormalText(
                             title,
                             color = BeautyBush,
                             fontSize = 15,

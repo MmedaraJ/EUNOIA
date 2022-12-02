@@ -86,7 +86,8 @@ fun SoundUploader(
             placeholder = "Name of this audio",
             placeholderFontSize = 16,
             placeholderColor = BeautyBush,
-            offset = 0
+            offset = 0,
+            showWordCount = true
         )
         fileNames[index]!!.value = fileName
         Spacer(modifier = Modifier.height(6.dp))
@@ -116,7 +117,8 @@ fun SavePreset(){
             placeholder = "Name of this audio",
             placeholderFontSize = 16,
             placeholderColor = BeautyBush,
-            offset = 0
+            offset = 0,
+            showWordCount = true
         )
         presetName = fileName
         nameErrorMessage = if(presetName.isEmpty()) {

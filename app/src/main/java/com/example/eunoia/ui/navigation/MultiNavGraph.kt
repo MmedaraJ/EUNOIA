@@ -52,6 +52,7 @@ import com.example.eunoia.ui.bottomSheets.prayer.*
 import com.example.eunoia.ui.bottomSheets.recordAudio.RecordAudio
 import com.example.eunoia.ui.bottomSheets.selfLove.*
 import com.example.eunoia.ui.bottomSheets.sound.*
+import com.example.eunoia.ui.components.AlignedNormalText
 import com.example.eunoia.ui.components.NormalText
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.viewModels.*
@@ -78,6 +79,7 @@ var openUserAlreadyHasPrayerDialogBox by mutableStateOf(false)
 var openConfirmDeleteChapterDialogBox by mutableStateOf(false)
 var openPresetNameIsAlreadyTakenDialog by mutableStateOf(false)
 var openBedtimeStoryNameTakenDialogBox by mutableStateOf(false)
+var openConfirmDeleteSelfLoveDialogBox by mutableStateOf(false)
 var openUserAlreadyHasSelfLoveDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasSoundDialogBox by mutableStateOf(false)
 var openRoutineNameIsAlreadyTakenDialog by mutableStateOf(false)
@@ -86,6 +88,7 @@ var openRoutineAlreadyHasPresetDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasSelfLoveDialogBox by mutableStateOf(false)
 var openConfirmDeleteBedtimeStoryDialogBox by mutableStateOf(false)
 var openRoutineIsCurrentlyPlayingDialogBox by mutableStateOf(false)
+var openTooManyIncompleteSelfLoveDialogBox by mutableStateOf(false)
 var openUserAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
 var openTooManyIncompleteBedtimeStoryDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasBedtimeStoryDialogBox by mutableStateOf(false)
@@ -357,6 +360,15 @@ fun EunoiaApp(
                                         unselectedContentColor = Grey,
                                         alwaysShowLabel = true,
                                         selected = currentTab == item,
+                                        label = {
+                                            AlignedNormalText(
+                                                item.title,
+                                                Black,
+                                                9,
+                                                0,
+                                                0
+                                            )
+                                        },
                                         onClick = {
                                             if (currentTab == item) {
                                                 when (item) {
@@ -949,6 +961,14 @@ fun CreateTab(
                 state = state
             )
         }
+        composable(Screen.IncompleteSelfLoves.screen_route) {
+            Log.i("IncompleteSelfLoves", "You are now on the IncompleteSelfLoves tab")
+            IncompleteSelfLovesUI(
+                navController = navController,
+                scope = scope,
+                state = state
+            )
+        }
         composable(Screen.NamePrayer.screen_route) {
             Log.i("NamePrayer", "You are now on the NamePrayer tab")
             NamePrayerUI(
@@ -995,12 +1015,22 @@ fun CreateTab(
                 generalMediaPlayerService
             )
         }
-        composable(Screen.RecordSelfLove.screen_route) {
+        composable(
+            "${Screen.RecordSelfLove.screen_route}/selfLove={selfLove}",
+            arguments = listOf(
+                navArgument("selfLove") {
+                    type = SelfLoveObject.SelfLoveType()
+                }
+            )
+        ) { backStackEntry ->
+            val selfLove = backStackEntry.arguments?.getParcelable<SelfLoveObject.SelfLove>("selfLove")
             Log.i("RecordSelfLove", "You are now on the RecordSelfLove tab")
             RecordSelfLoveUI(
                 navController = navController,
                 scope = scope,
                 state = state,
+                selfLoveData = selfLove!!.data,
+                SelfLoveRecordingViewModel(),
                 soundMediaPlayerService,
                 generalMediaPlayerService
             )

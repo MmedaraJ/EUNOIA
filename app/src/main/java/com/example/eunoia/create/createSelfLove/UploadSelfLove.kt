@@ -174,36 +174,43 @@ fun createSelfLoveFromUpload(
     navController: NavController,
     context: Context
 ){
-    var otherSelfLovesWithSameName by mutableStateOf(-1)
     SelfLoveBackend.querySelfLoveBasedOnDisplayName(selfLoveName){
-        otherSelfLovesWithSameName = if(it.isEmpty()) 0 else it.size
-    }
-    Thread.sleep(1_000)
-    val tags = getSelfLoveTagsList()
-    val lyrics = getSelfLoveLyricsList()
-    if (otherSelfLovesWithSameName < 1) {
-        val key = "Routine/SelfLove/${globalViewModel!!.currentUser!!.username}/uploaded/$selfLoveName/${selfLoveName}_audio.aac"
-        SoundBackend.storeAudio(uploadedFileSelfLove.value.absolutePath, key){
-            val selfLove = SelfLoveObject.SelfLove(
-                UUID.randomUUID().toString(),
-                UserObject.User.from(globalViewModel!!.currentUser!!),
-                globalViewModel!!.currentUser!!.id,
-                selfLoveName,
-                selfLoveShortDescription,
-                selfLoveLongDescription,
-                key,
-                selfLoveIcon,
-                uploadedAudioFileLengthMilliSecondsSelfLove.value,
-                false,
-                lyrics,
-                tags,
-                SelfLoveAudioSource.UPLOADED,
-                SelfLoveApprovalStatus.PENDING,
-            )
-            createSelfLove(selfLove, context, navController)
+        val tags = getSelfLoveTagsList()
+        val lyrics = getSelfLoveLyricsList()
+        if (it.isEmpty()) {
+            val key = "${globalViewModel!!.currentUser!!.username.lowercase()}/" +
+                    "routine/" +
+                    "self-love/" +
+                    "uploaded/" +
+                    "${selfLoveName.lowercase()}/" +
+                    "${selfLoveName.lowercase()}_audio.aac"
+
+            SoundBackend.storeAudio(uploadedFileSelfLove.value.absolutePath, key){
+                val selfLove = SelfLoveObject.SelfLove(
+                    UUID.randomUUID().toString(),
+                    UserObject.User.from(globalViewModel!!.currentUser!!),
+                    globalViewModel!!.currentUser!!.id,
+                    selfLoveName,
+                    selfLoveShortDescription,
+                    selfLoveLongDescription,
+                    key,
+                    selfLoveIcon,
+                    uploadedAudioFileLengthMilliSecondsSelfLove.value,
+                    false,
+                    lyrics,
+                    tags,
+                    listOf(),
+                    listOf(),
+                    listOf(),
+                    SelfLoveAudioSource.UPLOADED,
+                    SelfLoveApprovalStatus.PENDING,
+                    SelfLoveCreationStatus.COMPLETED
+                )
+                createSelfLove(selfLove, context, navController)
+            }
+        }else{
+            openSelfLoveNameTakenDialogBox = true
         }
-    }else{
-        openSelfLoveNameTakenDialogBox = true
     }
 }
 

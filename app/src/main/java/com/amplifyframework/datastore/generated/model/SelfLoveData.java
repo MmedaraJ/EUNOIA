@@ -41,8 +41,12 @@ public final class SelfLoveData implements Model {
   public static final QueryField VISIBLE_TO_OTHERS = field("SelfLoveData", "visibleToOthers");
   public static final QueryField LYRICS = field("SelfLoveData", "lyrics");
   public static final QueryField TAGS = field("SelfLoveData", "tags");
+  public static final QueryField AUDIO_KEYS_S3 = field("SelfLoveData", "audioKeysS3");
+  public static final QueryField AUDIO_NAMES = field("SelfLoveData", "audioNames");
+  public static final QueryField AUDIO_LENGTHS = field("SelfLoveData", "audioLengths");
   public static final QueryField AUDIO_SOURCE = field("SelfLoveData", "audioSource");
   public static final QueryField APPROVAL_STATUS = field("SelfLoveData", "approvalStatus");
+  public static final QueryField CREATION_STATUS = field("SelfLoveData", "creationStatus");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData selfLoveOwner;
   private final @ModelField(targetType="String") String selfLoveOwnerId;
@@ -55,8 +59,12 @@ public final class SelfLoveData implements Model {
   private final @ModelField(targetType="Boolean", isRequired = true) Boolean visibleToOthers;
   private final @ModelField(targetType="String") List<String> lyrics;
   private final @ModelField(targetType="String") List<String> tags;
+  private final @ModelField(targetType="String") List<String> audioKeysS3;
+  private final @ModelField(targetType="String") List<String> audioNames;
+  private final @ModelField(targetType="Int") List<Integer> audioLengths;
   private final @ModelField(targetType="SelfLoveAudioSource") SelfLoveAudioSource audioSource;
   private final @ModelField(targetType="SelfLoveApprovalStatus") SelfLoveApprovalStatus approvalStatus;
+  private final @ModelField(targetType="SelfLoveCreationStatus") SelfLoveCreationStatus creationStatus;
   private final @ModelField(targetType="UserSelfLoveRelationship") @HasMany(associatedWith = "userSelfLoveRelationshipSelfLove", type = UserSelfLoveRelationship.class) List<UserSelfLoveRelationship> userSelfLoveRelationshipsOwnedBySelfLove = null;
   private final @ModelField(targetType="RoutineSelfLove") @HasMany(associatedWith = "selfLoveData", type = RoutineSelfLove.class) List<RoutineSelfLove> routines = null;
   private final @ModelField(targetType="UserRoutineRelationshipSelfLove") @HasMany(associatedWith = "selfLoveData", type = UserRoutineRelationshipSelfLove.class) List<UserRoutineRelationshipSelfLove> userRoutineRelationships = null;
@@ -111,12 +119,28 @@ public final class SelfLoveData implements Model {
       return tags;
   }
   
+  public List<String> getAudioKeysS3() {
+      return audioKeysS3;
+  }
+  
+  public List<String> getAudioNames() {
+      return audioNames;
+  }
+  
+  public List<Integer> getAudioLengths() {
+      return audioLengths;
+  }
+  
   public SelfLoveAudioSource getAudioSource() {
       return audioSource;
   }
   
   public SelfLoveApprovalStatus getApprovalStatus() {
       return approvalStatus;
+  }
+  
+  public SelfLoveCreationStatus getCreationStatus() {
+      return creationStatus;
   }
   
   public List<UserSelfLoveRelationship> getUserSelfLoveRelationshipsOwnedBySelfLove() {
@@ -143,7 +167,7 @@ public final class SelfLoveData implements Model {
       return updatedAt;
   }
   
-  private SelfLoveData(String id, UserData selfLoveOwner, String selfLoveOwnerId, String display_name, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
+  private SelfLoveData(String id, UserData selfLoveOwner, String selfLoveOwnerId, String display_name, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, List<String> audioKeysS3, List<String> audioNames, List<Integer> audioLengths, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus, SelfLoveCreationStatus creationStatus) {
     this.id = id;
     this.selfLoveOwner = selfLoveOwner;
     this.selfLoveOwnerId = selfLoveOwnerId;
@@ -156,8 +180,12 @@ public final class SelfLoveData implements Model {
     this.visibleToOthers = visibleToOthers;
     this.lyrics = lyrics;
     this.tags = tags;
+    this.audioKeysS3 = audioKeysS3;
+    this.audioNames = audioNames;
+    this.audioLengths = audioLengths;
     this.audioSource = audioSource;
     this.approvalStatus = approvalStatus;
+    this.creationStatus = creationStatus;
   }
   
   @Override
@@ -180,8 +208,12 @@ public final class SelfLoveData implements Model {
               ObjectsCompat.equals(getVisibleToOthers(), selfLoveData.getVisibleToOthers()) &&
               ObjectsCompat.equals(getLyrics(), selfLoveData.getLyrics()) &&
               ObjectsCompat.equals(getTags(), selfLoveData.getTags()) &&
+              ObjectsCompat.equals(getAudioKeysS3(), selfLoveData.getAudioKeysS3()) &&
+              ObjectsCompat.equals(getAudioNames(), selfLoveData.getAudioNames()) &&
+              ObjectsCompat.equals(getAudioLengths(), selfLoveData.getAudioLengths()) &&
               ObjectsCompat.equals(getAudioSource(), selfLoveData.getAudioSource()) &&
               ObjectsCompat.equals(getApprovalStatus(), selfLoveData.getApprovalStatus()) &&
+              ObjectsCompat.equals(getCreationStatus(), selfLoveData.getCreationStatus()) &&
               ObjectsCompat.equals(getCreatedAt(), selfLoveData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), selfLoveData.getUpdatedAt());
       }
@@ -202,8 +234,12 @@ public final class SelfLoveData implements Model {
       .append(getVisibleToOthers())
       .append(getLyrics())
       .append(getTags())
+      .append(getAudioKeysS3())
+      .append(getAudioNames())
+      .append(getAudioLengths())
       .append(getAudioSource())
       .append(getApprovalStatus())
+      .append(getCreationStatus())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -226,8 +262,12 @@ public final class SelfLoveData implements Model {
       .append("visibleToOthers=" + String.valueOf(getVisibleToOthers()) + ", ")
       .append("lyrics=" + String.valueOf(getLyrics()) + ", ")
       .append("tags=" + String.valueOf(getTags()) + ", ")
+      .append("audioKeysS3=" + String.valueOf(getAudioKeysS3()) + ", ")
+      .append("audioNames=" + String.valueOf(getAudioNames()) + ", ")
+      .append("audioLengths=" + String.valueOf(getAudioLengths()) + ", ")
       .append("audioSource=" + String.valueOf(getAudioSource()) + ", ")
       .append("approvalStatus=" + String.valueOf(getApprovalStatus()) + ", ")
+      .append("creationStatus=" + String.valueOf(getCreationStatus()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -261,6 +301,10 @@ public final class SelfLoveData implements Model {
       null,
       null,
       null,
+      null,
+      null,
+      null,
+      null,
       null
     );
   }
@@ -278,8 +322,12 @@ public final class SelfLoveData implements Model {
       visibleToOthers,
       lyrics,
       tags,
+      audioKeysS3,
+      audioNames,
+      audioLengths,
       audioSource,
-      approvalStatus);
+      approvalStatus,
+      creationStatus);
   }
   public interface SelfLoveOwnerStep {
     DisplayNameStep selfLoveOwner(UserData selfLoveOwner);
@@ -319,8 +367,12 @@ public final class SelfLoveData implements Model {
     BuildStep longDescription(String longDescription);
     BuildStep lyrics(List<String> lyrics);
     BuildStep tags(List<String> tags);
+    BuildStep audioKeysS3(List<String> audioKeysS3);
+    BuildStep audioNames(List<String> audioNames);
+    BuildStep audioLengths(List<Integer> audioLengths);
     BuildStep audioSource(SelfLoveAudioSource audioSource);
     BuildStep approvalStatus(SelfLoveApprovalStatus approvalStatus);
+    BuildStep creationStatus(SelfLoveCreationStatus creationStatus);
   }
   
 
@@ -337,8 +389,12 @@ public final class SelfLoveData implements Model {
     private String longDescription;
     private List<String> lyrics;
     private List<String> tags;
+    private List<String> audioKeysS3;
+    private List<String> audioNames;
+    private List<Integer> audioLengths;
     private SelfLoveAudioSource audioSource;
     private SelfLoveApprovalStatus approvalStatus;
+    private SelfLoveCreationStatus creationStatus;
     @Override
      public SelfLoveData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -356,8 +412,12 @@ public final class SelfLoveData implements Model {
           visibleToOthers,
           lyrics,
           tags,
+          audioKeysS3,
+          audioNames,
+          audioLengths,
           audioSource,
-          approvalStatus);
+          approvalStatus,
+          creationStatus);
     }
     
     @Override
@@ -433,6 +493,24 @@ public final class SelfLoveData implements Model {
     }
     
     @Override
+     public BuildStep audioKeysS3(List<String> audioKeysS3) {
+        this.audioKeysS3 = audioKeysS3;
+        return this;
+    }
+    
+    @Override
+     public BuildStep audioNames(List<String> audioNames) {
+        this.audioNames = audioNames;
+        return this;
+    }
+    
+    @Override
+     public BuildStep audioLengths(List<Integer> audioLengths) {
+        this.audioLengths = audioLengths;
+        return this;
+    }
+    
+    @Override
      public BuildStep audioSource(SelfLoveAudioSource audioSource) {
         this.audioSource = audioSource;
         return this;
@@ -441,6 +519,12 @@ public final class SelfLoveData implements Model {
     @Override
      public BuildStep approvalStatus(SelfLoveApprovalStatus approvalStatus) {
         this.approvalStatus = approvalStatus;
+        return this;
+    }
+    
+    @Override
+     public BuildStep creationStatus(SelfLoveCreationStatus creationStatus) {
+        this.creationStatus = creationStatus;
         return this;
     }
     
@@ -456,7 +540,7 @@ public final class SelfLoveData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData selfLoveOwner, String selfLoveOwnerId, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus) {
+    private CopyOfBuilder(String id, UserData selfLoveOwner, String selfLoveOwnerId, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, List<String> lyrics, List<String> tags, List<String> audioKeysS3, List<String> audioNames, List<Integer> audioLengths, SelfLoveAudioSource audioSource, SelfLoveApprovalStatus approvalStatus, SelfLoveCreationStatus creationStatus) {
       super.id(id);
       super.selfLoveOwner(selfLoveOwner)
         .displayName(displayName)
@@ -469,8 +553,12 @@ public final class SelfLoveData implements Model {
         .longDescription(longDescription)
         .lyrics(lyrics)
         .tags(tags)
+        .audioKeysS3(audioKeysS3)
+        .audioNames(audioNames)
+        .audioLengths(audioLengths)
         .audioSource(audioSource)
-        .approvalStatus(approvalStatus);
+        .approvalStatus(approvalStatus)
+        .creationStatus(creationStatus);
     }
     
     @Override
@@ -529,6 +617,21 @@ public final class SelfLoveData implements Model {
     }
     
     @Override
+     public CopyOfBuilder audioKeysS3(List<String> audioKeysS3) {
+      return (CopyOfBuilder) super.audioKeysS3(audioKeysS3);
+    }
+    
+    @Override
+     public CopyOfBuilder audioNames(List<String> audioNames) {
+      return (CopyOfBuilder) super.audioNames(audioNames);
+    }
+    
+    @Override
+     public CopyOfBuilder audioLengths(List<Integer> audioLengths) {
+      return (CopyOfBuilder) super.audioLengths(audioLengths);
+    }
+    
+    @Override
      public CopyOfBuilder audioSource(SelfLoveAudioSource audioSource) {
       return (CopyOfBuilder) super.audioSource(audioSource);
     }
@@ -536,6 +639,11 @@ public final class SelfLoveData implements Model {
     @Override
      public CopyOfBuilder approvalStatus(SelfLoveApprovalStatus approvalStatus) {
       return (CopyOfBuilder) super.approvalStatus(approvalStatus);
+    }
+    
+    @Override
+     public CopyOfBuilder creationStatus(SelfLoveCreationStatus creationStatus) {
+      return (CopyOfBuilder) super.creationStatus(creationStatus);
     }
   }
   

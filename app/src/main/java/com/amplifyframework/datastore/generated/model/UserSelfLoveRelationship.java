@@ -34,6 +34,7 @@ public final class UserSelfLoveRelationship implements Model {
   public static final QueryField USER_SELF_LOVE_RELATIONSHIP_SELF_LOVE = field("UserSelfLoveRelationship", "userSelfLoveRelationshipSelfLoveDataID");
   public static final QueryField NUMBER_OF_TIMES_PLAYED = field("UserSelfLoveRelationship", "numberOfTimesPlayed");
   public static final QueryField TOTAL_PLAY_TIME = field("UserSelfLoveRelationship", "totalPlayTime");
+  public static final QueryField CONTINUE_PLAYING_TIME = field("UserSelfLoveRelationship", "continuePlayingTime");
   public static final QueryField CURRENTLY_LISTENING = field("UserSelfLoveRelationship", "currentlyListening");
   public static final QueryField USAGE_TIMESTAMPS = field("UserSelfLoveRelationship", "usageTimestamps");
   public static final QueryField USAGE_PLAY_TIMES = field("UserSelfLoveRelationship", "usagePlayTimes");
@@ -42,6 +43,7 @@ public final class UserSelfLoveRelationship implements Model {
   private final @ModelField(targetType="SelfLoveData", isRequired = true) @BelongsTo(targetName = "userSelfLoveRelationshipSelfLoveDataID", type = SelfLoveData.class) SelfLoveData userSelfLoveRelationshipSelfLove;
   private final @ModelField(targetType="Int") Integer numberOfTimesPlayed;
   private final @ModelField(targetType="Int") Integer totalPlayTime;
+  private final @ModelField(targetType="Int") Integer continuePlayingTime;
   private final @ModelField(targetType="Boolean") Boolean currentlyListening;
   private final @ModelField(targetType="AWSDateTime") List<Temporal.DateTime> usageTimestamps;
   private final @ModelField(targetType="Int") List<Integer> usagePlayTimes;
@@ -67,6 +69,10 @@ public final class UserSelfLoveRelationship implements Model {
       return totalPlayTime;
   }
   
+  public Integer getContinuePlayingTime() {
+      return continuePlayingTime;
+  }
+  
   public Boolean getCurrentlyListening() {
       return currentlyListening;
   }
@@ -87,12 +93,13 @@ public final class UserSelfLoveRelationship implements Model {
       return updatedAt;
   }
   
-  private UserSelfLoveRelationship(String id, UserData userSelfLoveRelationshipOwner, SelfLoveData userSelfLoveRelationshipSelfLove, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
+  private UserSelfLoveRelationship(String id, UserData userSelfLoveRelationshipOwner, SelfLoveData userSelfLoveRelationshipSelfLove, Integer numberOfTimesPlayed, Integer totalPlayTime, Integer continuePlayingTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
     this.id = id;
     this.userSelfLoveRelationshipOwner = userSelfLoveRelationshipOwner;
     this.userSelfLoveRelationshipSelfLove = userSelfLoveRelationshipSelfLove;
     this.numberOfTimesPlayed = numberOfTimesPlayed;
     this.totalPlayTime = totalPlayTime;
+    this.continuePlayingTime = continuePlayingTime;
     this.currentlyListening = currentlyListening;
     this.usageTimestamps = usageTimestamps;
     this.usagePlayTimes = usagePlayTimes;
@@ -111,6 +118,7 @@ public final class UserSelfLoveRelationship implements Model {
               ObjectsCompat.equals(getUserSelfLoveRelationshipSelfLove(), userSelfLoveRelationship.getUserSelfLoveRelationshipSelfLove()) &&
               ObjectsCompat.equals(getNumberOfTimesPlayed(), userSelfLoveRelationship.getNumberOfTimesPlayed()) &&
               ObjectsCompat.equals(getTotalPlayTime(), userSelfLoveRelationship.getTotalPlayTime()) &&
+              ObjectsCompat.equals(getContinuePlayingTime(), userSelfLoveRelationship.getContinuePlayingTime()) &&
               ObjectsCompat.equals(getCurrentlyListening(), userSelfLoveRelationship.getCurrentlyListening()) &&
               ObjectsCompat.equals(getUsageTimestamps(), userSelfLoveRelationship.getUsageTimestamps()) &&
               ObjectsCompat.equals(getUsagePlayTimes(), userSelfLoveRelationship.getUsagePlayTimes()) &&
@@ -127,6 +135,7 @@ public final class UserSelfLoveRelationship implements Model {
       .append(getUserSelfLoveRelationshipSelfLove())
       .append(getNumberOfTimesPlayed())
       .append(getTotalPlayTime())
+      .append(getContinuePlayingTime())
       .append(getCurrentlyListening())
       .append(getUsageTimestamps())
       .append(getUsagePlayTimes())
@@ -145,6 +154,7 @@ public final class UserSelfLoveRelationship implements Model {
       .append("userSelfLoveRelationshipSelfLove=" + String.valueOf(getUserSelfLoveRelationshipSelfLove()) + ", ")
       .append("numberOfTimesPlayed=" + String.valueOf(getNumberOfTimesPlayed()) + ", ")
       .append("totalPlayTime=" + String.valueOf(getTotalPlayTime()) + ", ")
+      .append("continuePlayingTime=" + String.valueOf(getContinuePlayingTime()) + ", ")
       .append("currentlyListening=" + String.valueOf(getCurrentlyListening()) + ", ")
       .append("usageTimestamps=" + String.valueOf(getUsageTimestamps()) + ", ")
       .append("usagePlayTimes=" + String.valueOf(getUsagePlayTimes()) + ", ")
@@ -175,6 +185,7 @@ public final class UserSelfLoveRelationship implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -185,6 +196,7 @@ public final class UserSelfLoveRelationship implements Model {
       userSelfLoveRelationshipSelfLove,
       numberOfTimesPlayed,
       totalPlayTime,
+      continuePlayingTime,
       currentlyListening,
       usageTimestamps,
       usagePlayTimes);
@@ -204,6 +216,7 @@ public final class UserSelfLoveRelationship implements Model {
     BuildStep id(String id);
     BuildStep numberOfTimesPlayed(Integer numberOfTimesPlayed);
     BuildStep totalPlayTime(Integer totalPlayTime);
+    BuildStep continuePlayingTime(Integer continuePlayingTime);
     BuildStep currentlyListening(Boolean currentlyListening);
     BuildStep usageTimestamps(List<Temporal.DateTime> usageTimestamps);
     BuildStep usagePlayTimes(List<Integer> usagePlayTimes);
@@ -216,6 +229,7 @@ public final class UserSelfLoveRelationship implements Model {
     private SelfLoveData userSelfLoveRelationshipSelfLove;
     private Integer numberOfTimesPlayed;
     private Integer totalPlayTime;
+    private Integer continuePlayingTime;
     private Boolean currentlyListening;
     private List<Temporal.DateTime> usageTimestamps;
     private List<Integer> usagePlayTimes;
@@ -229,6 +243,7 @@ public final class UserSelfLoveRelationship implements Model {
           userSelfLoveRelationshipSelfLove,
           numberOfTimesPlayed,
           totalPlayTime,
+          continuePlayingTime,
           currentlyListening,
           usageTimestamps,
           usagePlayTimes);
@@ -257,6 +272,12 @@ public final class UserSelfLoveRelationship implements Model {
     @Override
      public BuildStep totalPlayTime(Integer totalPlayTime) {
         this.totalPlayTime = totalPlayTime;
+        return this;
+    }
+    
+    @Override
+     public BuildStep continuePlayingTime(Integer continuePlayingTime) {
+        this.continuePlayingTime = continuePlayingTime;
         return this;
     }
     
@@ -290,12 +311,13 @@ public final class UserSelfLoveRelationship implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData userSelfLoveRelationshipOwner, SelfLoveData userSelfLoveRelationshipSelfLove, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
+    private CopyOfBuilder(String id, UserData userSelfLoveRelationshipOwner, SelfLoveData userSelfLoveRelationshipSelfLove, Integer numberOfTimesPlayed, Integer totalPlayTime, Integer continuePlayingTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
       super.id(id);
       super.userSelfLoveRelationshipOwner(userSelfLoveRelationshipOwner)
         .userSelfLoveRelationshipSelfLove(userSelfLoveRelationshipSelfLove)
         .numberOfTimesPlayed(numberOfTimesPlayed)
         .totalPlayTime(totalPlayTime)
+        .continuePlayingTime(continuePlayingTime)
         .currentlyListening(currentlyListening)
         .usageTimestamps(usageTimestamps)
         .usagePlayTimes(usagePlayTimes);
@@ -319,6 +341,11 @@ public final class UserSelfLoveRelationship implements Model {
     @Override
      public CopyOfBuilder totalPlayTime(Integer totalPlayTime) {
       return (CopyOfBuilder) super.totalPlayTime(totalPlayTime);
+    }
+    
+    @Override
+     public CopyOfBuilder continuePlayingTime(Integer continuePlayingTime) {
+      return (CopyOfBuilder) super.continuePlayingTime(continuePlayingTime);
     }
     
     @Override

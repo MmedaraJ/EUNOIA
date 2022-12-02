@@ -32,6 +32,7 @@ fun ConfirmAlertDialog(
                 openDialog.value = false
                 openConfirmDeletePageDialogBox = false
                 openConfirmDeleteChapterDialogBox = false
+                openConfirmDeleteSelfLoveDialogBox = false
                 openRoutineIsCurrentlyPlayingDialogBox = false
                 openConfirmDeleteBedtimeStoryDialogBox = false
             },
@@ -58,6 +59,7 @@ fun ConfirmAlertDialog(
                             openDialog.value = false
                             openConfirmDeletePageDialogBox = false
                             openConfirmDeleteChapterDialogBox = false
+                            openConfirmDeleteSelfLoveDialogBox = false
                             openRoutineIsCurrentlyPlayingDialogBox = false
                             openConfirmDeleteBedtimeStoryDialogBox = false
                             yes()
@@ -81,6 +83,7 @@ fun ConfirmAlertDialog(
                             openDialog.value = false
                             openConfirmDeletePageDialogBox = false
                             openConfirmDeleteChapterDialogBox = false
+                            openConfirmDeleteSelfLoveDialogBox = false
                             openRoutineIsCurrentlyPlayingDialogBox = false
                             openConfirmDeleteBedtimeStoryDialogBox = false
                             no()

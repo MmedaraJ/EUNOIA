@@ -16,7 +16,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
     object Search: Screen("Search", R.drawable.search,"search")
     object Feedback: Screen("Feedback", R.drawable.feedback_icon,"feedback")
     object Account: Screen("Account", R.drawable.feedback_icon,"account")
-    object Dashboard : Screen("Dashboard", R.drawable.cloud,"dashboard")
+    object Dashboard : Screen("Home", R.drawable.cloud,"home")
     object Create: Screen("Create", R.drawable.create_button,"create")
 
     /**
@@ -89,6 +89,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
     object NameSelfLove: Screen("Name Self Love", -1,"name_self_love")
     object UploadSelfLove: Screen("Upload Self Love", -1,"upload_self_love")
     object RecordSelfLove: Screen("Record Self Love", -1,"record_self_love")
+    object IncompleteSelfLoves: Screen("Incomplete Self Love", -1,"incomplete_self_love")
 
     /**
      * Routine
@@ -147,6 +148,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                 NameSelfLove.screen_route -> NameSelfLove
                 UploadSelfLove.screen_route -> UploadSelfLove
                 RecordSelfLove.screen_route -> RecordSelfLove
+                IncompleteSelfLoves.screen_route -> IncompleteSelfLoves
 
                 /**
                  * Sound

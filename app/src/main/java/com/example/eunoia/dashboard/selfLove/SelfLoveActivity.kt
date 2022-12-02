@@ -208,7 +208,6 @@ fun SelfLoveActivityUI(
         ){
             StarSurroundedText("Favourite Self Loves")
         }
-        val context = LocalContext.current
         Column(
             modifier = Modifier
                 .constrainAs(emptySelfLoveList) {

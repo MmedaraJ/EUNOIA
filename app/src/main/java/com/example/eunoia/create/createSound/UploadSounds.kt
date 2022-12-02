@@ -23,6 +23,7 @@ import com.example.eunoia.services.GeneralMediaPlayerService
 import com.example.eunoia.services.SoundMediaPlayerService
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
+import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.SwansDown
@@ -87,7 +88,7 @@ fun UploadSoundsUI(
                     navController.popBackStack()
                 },
                 {
-                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
                 },
                 {

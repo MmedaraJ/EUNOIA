@@ -328,6 +328,11 @@ enum SelfLoveApprovalStatus{
     DISAPPROVED
 }
 
+enum SelfLoveCreationStatus{
+    COMPLETED
+    INCOMPLETE
+}
+
 type SelfLoveData
 @model (queries: { get: "getSelfLoveData", list: "listSelfLoveDatas" })
 @auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
@@ -344,8 +349,12 @@ type SelfLoveData
     visibleToOthers: Boolean!
     lyrics: [String!]
     tags: [String!]
+    audioKeysS3: [String!]
+    audioNames: [String!]
+    audioLengths: [Int]
     audioSource: SelfLoveAudioSource
     approvalStatus: SelfLoveApprovalStatus
+    creationStatus: SelfLoveCreationStatus
     userSelfLoveRelationshipsOwnedBySelfLove: [UserSelfLoveRelationship!] @hasMany(indexName: "UserSelfLoveRelationshipsOwnedBySelfLove", fields: ["id"])
     routines: [RoutineData!] @manyToMany(relationName: "RoutineSelfLove")
     userRoutineRelationships: [UserRoutineRelationship!] @manyToMany(relationName: "UserRoutineRelationshipSelfLove")
@@ -362,6 +371,7 @@ type UserSelfLoveRelationship
     userSelfLoveRelationshipSelfLove: SelfLoveData! @belongsTo(fields: ["userSelfLoveRelationshipSelfLoveDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    continuePlayingTime: Int
     currentlyListening: Boolean
     usageTimestamps: [AWSDateTime!]
     usagePlayTimes: [Int!]

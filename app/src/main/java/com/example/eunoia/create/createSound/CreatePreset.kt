@@ -18,6 +18,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
+import com.example.eunoia.create.createPrayer.prayerName
 import com.example.eunoia.create.createSoundViewModel
 import com.example.eunoia.dashboard.sound.*
 import com.example.eunoia.models.*
@@ -28,6 +29,7 @@ import com.example.eunoia.ui.components.*
 import com.example.eunoia.ui.navigation.globalViewModel
 import com.example.eunoia.ui.navigation.openSavedElementDialogBox
 import com.example.eunoia.ui.screens.Screen
+import com.example.eunoia.ui.theme.BeautyBush
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.SwansDown
 import com.example.eunoia.ui.theme.WePeep
@@ -169,17 +171,17 @@ fun CreatePresetUI(
                     end.linkTo(parent.end, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            AlignedNormalText(
                 text = volumeErrorMessage,
-                color = Black,
+                color = BeautyBush,
                 fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
             Spacer(modifier = Modifier.height(4.dp))
-            AlignedLightText(
+            AlignedNormalText(
                 text = nameErrorMessage,
-                color = Black,
+                color = BeautyBush,
                 fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
@@ -304,6 +306,11 @@ fun createSound(completed: (soundData: SoundData) -> Unit){
     val fileNameList = getFileNameList()
     val maxPlayTime = getMaxPlayTime()
     val tags = getSoundTagsList()
+    val key = "${globalViewModel!!.currentUser!!.username.lowercase()}/" +
+            "routine/" +
+            "sound/" +
+            "${soundName.lowercase()}/" +
+            "${soundName.lowercase()}_audio.aac"
 
     val sound = SoundObject.Sound(
         UUID.randomUUID().toString(),
@@ -313,7 +320,7 @@ fun createSound(completed: (soundData: SoundData) -> Unit){
         soundName,
         soundShortDescription,
         soundShortDescription,
-        "Routine/Sounds/${globalViewModel!!.currentUser!!.username}/$soundName/",
+        key,
         soundIcon,
         0xFFEBBA9A.toInt(),
         maxPlayTime,

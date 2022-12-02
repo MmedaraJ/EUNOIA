@@ -154,7 +154,8 @@ fun NamePrayerUI(
                 placeholder = "Name",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
-                offset = 0
+                offset = 0,
+                showWordCount = true
             )
         }
         Column(
@@ -191,7 +192,8 @@ fun NamePrayerUI(
                 placeholder = "Short description",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
-                offset = 0
+                offset = 0,
+                showWordCount = true
             )
         }
         Column(
@@ -229,6 +231,7 @@ fun NamePrayerUI(
                 placeholderColor = BeautyBush,
                 placeholderTextSize = 16,
                 inputFontSize = 16,
+                true
             ){}
         }
         Column(
@@ -529,7 +532,8 @@ fun NamePrayerUI(
                 placeholder = "Tags",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
-                offset = 0
+                offset = 0,
+                showWordCount = true
             )
         }
         Column(

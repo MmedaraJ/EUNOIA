@@ -228,7 +228,7 @@ fun RecordBedtimeStoryUI(
                                             it!!.id == updatedBedtimeStoryData.id
                                         }
                                         openSavedElementDialogBox = true
-                                        Thread.sleep(1_000)
+                                        Thread.sleep(30_000)
                                         navController.popBackStack()
                                     }
                                 }
@@ -303,14 +303,14 @@ fun completeBedtimeStory(
 ) {
     val outFile = File(context.externalCacheDir!!.absolutePath + "/${getRandomString(5)}_audio.aac")
     getAllUris(bedtimeStoryData){
-        concatenateAllUris(outFile, context) {
-            val key = "Routine/" +
-                    "BedtimeStories/" +
-                    "${globalViewModel!!.currentUser!!.username}/" +
-                    "recorded/" +
-                    "${bedtimeStoryData.displayName}_complete/" +
-                    "${bedtimeStoryData.displayName}_audio.aac"
-
+        concatenateAllUris(
+            outFile = outFile,
+            context = context,
+            size = allUriTriples.size,
+            getInputAndConcat = {
+                getInputAndConcatForRecordBedtimeStory()
+            }
+        ) {
             val fullPlayTime = retrieveUriDuration(
                 outFile.path,
                 context
@@ -318,10 +318,9 @@ fun completeBedtimeStory(
 
             SoundBackend.storeAudio(
                 outFile.absolutePath,
-                key
-            ) { s3Key ->
+                bedtimeStoryData.audioKeyS3
+            ) { _ ->
                 val newBedtimeStory = bedtimeStoryData.copyOfBuilder()
-                    .audioKeyS3(s3Key)
                     .fullPlayTime(fullPlayTime)
                     .creationStatus(BedtimeStoryCreationStatus.COMPLETED)
                     .build()
@@ -334,11 +333,7 @@ fun completeBedtimeStory(
     }
 }
 
-fun concatenateAllUris(
-    outFile: File,
-    context: Context,
-    completed: () -> Unit
-) {
+private fun getInputAndConcatForRecordBedtimeStory(): InputAndConcat{
     var inputStr = ""
     var concatStr = ""
 
@@ -347,9 +342,23 @@ fun concatenateAllUris(
         concatStr += "[$i:a]"
     }
 
-    Log.i(TAG, "Output file before: 0. ${outFile.length()}")
+    return InputAndConcat(inputStr, concatStr)
+}
 
-    val rc = FFmpeg.execute("$inputStr-filter_complex \"${concatStr}concat=n=${allUriTriples.size}:v=0:a=1\" -y ${outFile.absolutePath}")
+/**
+ * Class for the input and concat strings used to concatenate audio files
+ */
+data class InputAndConcat(val inputStr: String, val concatStr: String)
+
+fun concatenateAllUris(
+    outFile: File,
+    context: Context,
+    size: Int,
+    getInputAndConcat: () -> InputAndConcat,
+    completed: () -> Unit
+) {
+    val (inputStr, concatStr) = getInputAndConcat()
+    val rc = FFmpeg.execute("$inputStr-filter_complex \"${concatStr}concat=n=${size}:v=0:a=1\" -y ${outFile.absolutePath}")
 
     when (rc) {
         RETURN_CODE_SUCCESS -> {
@@ -358,7 +367,6 @@ fun concatenateAllUris(
                 outFile.path,
                 context
             )
-            Log.i(TAG, "Output file done: 1. $len")
             completed()
         }
         RETURN_CODE_CANCEL -> {
@@ -374,9 +382,9 @@ fun concatenateAllUris(
     }
 }
 
-val allUriTriples = mutableListOf<AllUriTriples>()
+private val allUriTriples = mutableListOf<AllUriTriples>()
 
-fun getAllUris(
+private fun getAllUris(
     bedtimeStoryData: BedtimeStoryInfoData,
     completed: () -> Unit
 ) {

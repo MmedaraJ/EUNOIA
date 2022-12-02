@@ -50,6 +50,7 @@ object UserSelfLoveRelationshipBackend {
             userSelfLoveRelationshipSelfLove = SelfLoveObject.SelfLove.from(selfLove),
             numberOfTimesPlayed = 0,
             totalPlayTime = 0,
+            continuePlayingTime = 0,
             currentlyListening = false,
             usageTimeStamp = listOf(),
             usagePlayTimes = listOf()
@@ -99,7 +100,10 @@ object UserSelfLoveRelationshipBackend {
                         for (userSelfLoveRelationshipData in response.data) {
                             //TODO change pending to approved
                             if(userSelfLoveRelationshipData != null) {
-                                if (userSelfLoveRelationshipData.userSelfLoveRelationshipSelfLove.approvalStatus == SelfLoveApprovalStatus.PENDING) {
+                                if (
+                                    userSelfLoveRelationshipData.userSelfLoveRelationshipSelfLove.approvalStatus == SelfLoveApprovalStatus.PENDING &&
+                                    userSelfLoveRelationshipData.userSelfLoveRelationshipSelfLove.creationStatus == SelfLoveCreationStatus.COMPLETED
+                                ) {
                                     Log.i(TAG, userSelfLoveRelationshipData.toString())
                                     userSelfLoveRelationshipList.add(userSelfLoveRelationshipData)
                                 }

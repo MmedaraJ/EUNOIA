@@ -24,8 +24,12 @@ object SelfLoveObject {
         val visibleToOthers: Boolean,
         val lyrics: List<String>?,
         val tags: List<String>?,
+        val audioKeysS3: List<String>,
+        val audioNames: List<String>,
+        val audioLengths: List<Long>?,
         val audioSource: SelfLoveAudioSource,
         val approvalStatus: SelfLoveApprovalStatus,
+        val creationStatus: SelfLoveCreationStatus
     ): Parcelable{
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -41,8 +45,16 @@ object SelfLoveObject {
                 .visibleToOthers(this.visibleToOthers)
                 .lyrics(this.lyrics)
                 .tags(this.tags)
+                .audioKeysS3(this.audioKeysS3)
+                .audioNames(this.audioNames)
+                .audioLengths(
+                    this.audioLengths!!.map {
+                        it.toInt()
+                    }
+                )
                 .audioSource(this.audioSource)
                 .approvalStatus(this.approvalStatus)
+                .creationStatus(this.creationStatus)
                 .selfLoveOwnerId(this.selfLoveOwnerId)
                 .shortDescription(this.shortDescription)
                 .longDescription(this.longDescription)
@@ -64,8 +76,14 @@ object SelfLoveObject {
                     selfLoveData.visibleToOthers,
                     selfLoveData.lyrics,
                     selfLoveData.tags,
+                    selfLoveData.audioKeysS3,
+                    selfLoveData.audioNames,
+                    selfLoveData.audioLengths.map {
+                        it.toLong()
+                    },
                     selfLoveData.audioSource,
                     selfLoveData.approvalStatus,
+                    selfLoveData.creationStatus,
                 )
                 return result
             }

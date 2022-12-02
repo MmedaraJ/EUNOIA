@@ -34,6 +34,7 @@ fun AlertDialogBox(text: String){
                 openRoutineAlreadyHasPresetDialogBox = false
                 openRoutineAlreadyHasPrayerDialogBox = false
                 openRoutineAlreadyHasSelfLoveDialogBox = false
+                openTooManyIncompleteSelfLoveDialogBox = false
                 openUserAlreadyHasBedtimeStoryDialogBox = false
                 openTooManyIncompleteBedtimeStoryDialogBox = false
                 openRoutineAlreadyHasBedtimeStoryDialogBox = false

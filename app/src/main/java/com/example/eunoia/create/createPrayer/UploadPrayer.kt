@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
+import com.example.eunoia.create.createBedtimeStory.bedtimeStoryName
 import com.example.eunoia.create.resetEverything
 import com.example.eunoia.dashboard.home.UserDashboardActivity
 import com.example.eunoia.models.PrayerObject
@@ -174,36 +175,39 @@ fun createPrayerFromUpload(
     navController: NavController,
     context: Context
 ){
-    var otherPrayersWithSameName by mutableStateOf(-1)
     PrayerBackend.queryPrayerBasedOnDisplayName(prayerName){
-        otherPrayersWithSameName = if(it.isEmpty()) 0 else it.size
-    }
-    Thread.sleep(1_000)
-    val tags = getPrayerTagsList()
-    if (otherPrayersWithSameName < 1) {
-        val key = "Routine/Prayer/${globalViewModel!!.currentUser!!.username}/uploaded/$prayerName/${prayerName}_audio.aac"
-        SoundBackend.storeAudio(uploadedFilePrayer.value.absolutePath, key){
-            val prayer = PrayerObject.Prayer(
-                UUID.randomUUID().toString(),
-                UserObject.User.from(globalViewModel!!.currentUser!!),
-                globalViewModel!!.currentUser!!.id,
-                prayerName,
-                prayerShortDescription,
-                prayerLongDescription,
-                key,
-                prayerIcon,
-                uploadedAudioFileLengthMilliSecondsPrayer.value,
-                false,
-                prayerReligion,
-                prayerCountry,
-                tags,
-                PrayerAudioSource.UPLOADED,
-                PrayerApprovalStatus.PENDING,
-            )
-            createPrayer(prayer, context, navController)
+        val tags = getPrayerTagsList()
+        if (it.isEmpty()) {
+            val key = "${globalViewModel!!.currentUser!!.username.lowercase()}/" +
+                    "routine/" +
+                    "prayer/" +
+                    "uploaded/" +
+                    "${prayerName.lowercase()}/" +
+                    "${prayerName.lowercase()}_audio.aac"
+
+            SoundBackend.storeAudio(uploadedFilePrayer.value.absolutePath, key){
+                val prayer = PrayerObject.Prayer(
+                    UUID.randomUUID().toString(),
+                    UserObject.User.from(globalViewModel!!.currentUser!!),
+                    globalViewModel!!.currentUser!!.id,
+                    prayerName,
+                    prayerShortDescription,
+                    prayerLongDescription,
+                    key,
+                    prayerIcon,
+                    uploadedAudioFileLengthMilliSecondsPrayer.value,
+                    false,
+                    prayerReligion,
+                    prayerCountry,
+                    tags,
+                    PrayerAudioSource.UPLOADED,
+                    PrayerApprovalStatus.PENDING,
+                )
+                createPrayer(prayer, context, navController)
+            }
+        }else{
+            openPrayerNameTakenDialogBox = true
         }
-    }else{
-        openPrayerNameTakenDialogBox = true
     }
 }
 
