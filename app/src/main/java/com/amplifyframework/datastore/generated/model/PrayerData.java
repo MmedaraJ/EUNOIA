@@ -42,8 +42,12 @@ public final class PrayerData implements Model {
   public static final QueryField RELIGION = field("PrayerData", "religion");
   public static final QueryField COUNTRY = field("PrayerData", "country");
   public static final QueryField TAGS = field("PrayerData", "tags");
+  public static final QueryField AUDIO_KEYS_S3 = field("PrayerData", "audioKeysS3");
+  public static final QueryField AUDIO_NAMES = field("PrayerData", "audioNames");
+  public static final QueryField AUDIO_LENGTHS = field("PrayerData", "audioLengths");
   public static final QueryField AUDIO_SOURCE = field("PrayerData", "audioSource");
   public static final QueryField APPROVAL_STATUS = field("PrayerData", "approvalStatus");
+  public static final QueryField CREATION_STATUS = field("PrayerData", "creationStatus");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="UserData", isRequired = true) @BelongsTo(targetName = "userDataID", type = UserData.class) UserData prayerOwner;
   private final @ModelField(targetType="String") String prayerOwnerId;
@@ -57,8 +61,12 @@ public final class PrayerData implements Model {
   private final @ModelField(targetType="String") String religion;
   private final @ModelField(targetType="String") String country;
   private final @ModelField(targetType="String") List<String> tags;
+  private final @ModelField(targetType="String") List<String> audioKeysS3;
+  private final @ModelField(targetType="String") List<String> audioNames;
+  private final @ModelField(targetType="Int") List<Integer> audioLengths;
   private final @ModelField(targetType="PrayerAudioSource") PrayerAudioSource audioSource;
   private final @ModelField(targetType="PrayerApprovalStatus") PrayerApprovalStatus approvalStatus;
+  private final @ModelField(targetType="PrayerCreationStatus") PrayerCreationStatus creationStatus;
   private final @ModelField(targetType="UserPrayerRelationship") @HasMany(associatedWith = "userPrayerRelationshipPrayer", type = UserPrayerRelationship.class) List<UserPrayerRelationship> userPrayerRelationshipsOwnedByPrayer = null;
   private final @ModelField(targetType="RoutinePrayer") @HasMany(associatedWith = "prayerData", type = RoutinePrayer.class) List<RoutinePrayer> routines = null;
   private final @ModelField(targetType="UserRoutineRelationshipPrayer") @HasMany(associatedWith = "prayerData", type = UserRoutineRelationshipPrayer.class) List<UserRoutineRelationshipPrayer> userRoutineRelationships = null;
@@ -117,12 +125,28 @@ public final class PrayerData implements Model {
       return tags;
   }
   
+  public List<String> getAudioKeysS3() {
+      return audioKeysS3;
+  }
+  
+  public List<String> getAudioNames() {
+      return audioNames;
+  }
+  
+  public List<Integer> getAudioLengths() {
+      return audioLengths;
+  }
+  
   public PrayerAudioSource getAudioSource() {
       return audioSource;
   }
   
   public PrayerApprovalStatus getApprovalStatus() {
       return approvalStatus;
+  }
+  
+  public PrayerCreationStatus getCreationStatus() {
+      return creationStatus;
   }
   
   public List<UserPrayerRelationship> getUserPrayerRelationshipsOwnedByPrayer() {
@@ -149,7 +173,7 @@ public final class PrayerData implements Model {
       return updatedAt;
   }
   
-  private PrayerData(String id, UserData prayerOwner, String prayerOwnerId, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
+  private PrayerData(String id, UserData prayerOwner, String prayerOwnerId, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, List<String> audioKeysS3, List<String> audioNames, List<Integer> audioLengths, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus, PrayerCreationStatus creationStatus) {
     this.id = id;
     this.prayerOwner = prayerOwner;
     this.prayerOwnerId = prayerOwnerId;
@@ -163,8 +187,12 @@ public final class PrayerData implements Model {
     this.religion = religion;
     this.country = country;
     this.tags = tags;
+    this.audioKeysS3 = audioKeysS3;
+    this.audioNames = audioNames;
+    this.audioLengths = audioLengths;
     this.audioSource = audioSource;
     this.approvalStatus = approvalStatus;
+    this.creationStatus = creationStatus;
   }
   
   @Override
@@ -188,8 +216,12 @@ public final class PrayerData implements Model {
               ObjectsCompat.equals(getReligion(), prayerData.getReligion()) &&
               ObjectsCompat.equals(getCountry(), prayerData.getCountry()) &&
               ObjectsCompat.equals(getTags(), prayerData.getTags()) &&
+              ObjectsCompat.equals(getAudioKeysS3(), prayerData.getAudioKeysS3()) &&
+              ObjectsCompat.equals(getAudioNames(), prayerData.getAudioNames()) &&
+              ObjectsCompat.equals(getAudioLengths(), prayerData.getAudioLengths()) &&
               ObjectsCompat.equals(getAudioSource(), prayerData.getAudioSource()) &&
               ObjectsCompat.equals(getApprovalStatus(), prayerData.getApprovalStatus()) &&
+              ObjectsCompat.equals(getCreationStatus(), prayerData.getCreationStatus()) &&
               ObjectsCompat.equals(getCreatedAt(), prayerData.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), prayerData.getUpdatedAt());
       }
@@ -211,8 +243,12 @@ public final class PrayerData implements Model {
       .append(getReligion())
       .append(getCountry())
       .append(getTags())
+      .append(getAudioKeysS3())
+      .append(getAudioNames())
+      .append(getAudioLengths())
       .append(getAudioSource())
       .append(getApprovalStatus())
+      .append(getCreationStatus())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -236,8 +272,12 @@ public final class PrayerData implements Model {
       .append("religion=" + String.valueOf(getReligion()) + ", ")
       .append("country=" + String.valueOf(getCountry()) + ", ")
       .append("tags=" + String.valueOf(getTags()) + ", ")
+      .append("audioKeysS3=" + String.valueOf(getAudioKeysS3()) + ", ")
+      .append("audioNames=" + String.valueOf(getAudioNames()) + ", ")
+      .append("audioLengths=" + String.valueOf(getAudioLengths()) + ", ")
       .append("audioSource=" + String.valueOf(getAudioSource()) + ", ")
       .append("approvalStatus=" + String.valueOf(getApprovalStatus()) + ", ")
+      .append("creationStatus=" + String.valueOf(getCreationStatus()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
@@ -272,6 +312,10 @@ public final class PrayerData implements Model {
       null,
       null,
       null,
+      null,
+      null,
+      null,
+      null,
       null
     );
   }
@@ -290,8 +334,12 @@ public final class PrayerData implements Model {
       religion,
       country,
       tags,
+      audioKeysS3,
+      audioNames,
+      audioLengths,
       audioSource,
-      approvalStatus);
+      approvalStatus,
+      creationStatus);
   }
   public interface PrayerOwnerStep {
     DisplayNameStep prayerOwner(UserData prayerOwner);
@@ -332,8 +380,12 @@ public final class PrayerData implements Model {
     BuildStep religion(String religion);
     BuildStep country(String country);
     BuildStep tags(List<String> tags);
+    BuildStep audioKeysS3(List<String> audioKeysS3);
+    BuildStep audioNames(List<String> audioNames);
+    BuildStep audioLengths(List<Integer> audioLengths);
     BuildStep audioSource(PrayerAudioSource audioSource);
     BuildStep approvalStatus(PrayerApprovalStatus approvalStatus);
+    BuildStep creationStatus(PrayerCreationStatus creationStatus);
   }
   
 
@@ -351,8 +403,12 @@ public final class PrayerData implements Model {
     private String religion;
     private String country;
     private List<String> tags;
+    private List<String> audioKeysS3;
+    private List<String> audioNames;
+    private List<Integer> audioLengths;
     private PrayerAudioSource audioSource;
     private PrayerApprovalStatus approvalStatus;
+    private PrayerCreationStatus creationStatus;
     @Override
      public PrayerData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -371,8 +427,12 @@ public final class PrayerData implements Model {
           religion,
           country,
           tags,
+          audioKeysS3,
+          audioNames,
+          audioLengths,
           audioSource,
-          approvalStatus);
+          approvalStatus,
+          creationStatus);
     }
     
     @Override
@@ -454,6 +514,24 @@ public final class PrayerData implements Model {
     }
     
     @Override
+     public BuildStep audioKeysS3(List<String> audioKeysS3) {
+        this.audioKeysS3 = audioKeysS3;
+        return this;
+    }
+    
+    @Override
+     public BuildStep audioNames(List<String> audioNames) {
+        this.audioNames = audioNames;
+        return this;
+    }
+    
+    @Override
+     public BuildStep audioLengths(List<Integer> audioLengths) {
+        this.audioLengths = audioLengths;
+        return this;
+    }
+    
+    @Override
      public BuildStep audioSource(PrayerAudioSource audioSource) {
         this.audioSource = audioSource;
         return this;
@@ -462,6 +540,12 @@ public final class PrayerData implements Model {
     @Override
      public BuildStep approvalStatus(PrayerApprovalStatus approvalStatus) {
         this.approvalStatus = approvalStatus;
+        return this;
+    }
+    
+    @Override
+     public BuildStep creationStatus(PrayerCreationStatus creationStatus) {
+        this.creationStatus = creationStatus;
         return this;
     }
     
@@ -477,7 +561,7 @@ public final class PrayerData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData prayerOwner, String prayerOwnerId, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus) {
+    private CopyOfBuilder(String id, UserData prayerOwner, String prayerOwnerId, String displayName, String shortDescription, String longDescription, String audioKeyS3, Integer icon, Integer fullPlayTime, Boolean visibleToOthers, String religion, String country, List<String> tags, List<String> audioKeysS3, List<String> audioNames, List<Integer> audioLengths, PrayerAudioSource audioSource, PrayerApprovalStatus approvalStatus, PrayerCreationStatus creationStatus) {
       super.id(id);
       super.prayerOwner(prayerOwner)
         .displayName(displayName)
@@ -491,8 +575,12 @@ public final class PrayerData implements Model {
         .religion(religion)
         .country(country)
         .tags(tags)
+        .audioKeysS3(audioKeysS3)
+        .audioNames(audioNames)
+        .audioLengths(audioLengths)
         .audioSource(audioSource)
-        .approvalStatus(approvalStatus);
+        .approvalStatus(approvalStatus)
+        .creationStatus(creationStatus);
     }
     
     @Override
@@ -556,6 +644,21 @@ public final class PrayerData implements Model {
     }
     
     @Override
+     public CopyOfBuilder audioKeysS3(List<String> audioKeysS3) {
+      return (CopyOfBuilder) super.audioKeysS3(audioKeysS3);
+    }
+    
+    @Override
+     public CopyOfBuilder audioNames(List<String> audioNames) {
+      return (CopyOfBuilder) super.audioNames(audioNames);
+    }
+    
+    @Override
+     public CopyOfBuilder audioLengths(List<Integer> audioLengths) {
+      return (CopyOfBuilder) super.audioLengths(audioLengths);
+    }
+    
+    @Override
      public CopyOfBuilder audioSource(PrayerAudioSource audioSource) {
       return (CopyOfBuilder) super.audioSource(audioSource);
     }
@@ -563,6 +666,11 @@ public final class PrayerData implements Model {
     @Override
      public CopyOfBuilder approvalStatus(PrayerApprovalStatus approvalStatus) {
       return (CopyOfBuilder) super.approvalStatus(approvalStatus);
+    }
+    
+    @Override
+     public CopyOfBuilder creationStatus(PrayerCreationStatus creationStatus) {
+      return (CopyOfBuilder) super.creationStatus(creationStatus);
     }
   }
   

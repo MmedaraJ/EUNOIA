@@ -48,11 +48,10 @@ import java.util.*
 private const val TAG = "Prayer Activity"
 var prayerActivityUris = mutableListOf<MutableState<Uri>?>()
 var prayerActivityPlayButtonTexts = mutableListOf<MutableState<String>?>()
+
 private const val START_PRAYER = "start"
 private const val PAUSE_PRAYER = "pause"
 private const val WAIT_FOR_PRAYER = "wait"
-
-var keepGoing by mutableStateOf(false)
 
 private val allElements = listOf(
     "pouring\nrain",

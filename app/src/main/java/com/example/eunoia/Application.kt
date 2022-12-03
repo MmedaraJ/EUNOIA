@@ -10,9 +10,13 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class Eunoia : Application() {
     private val TAG = "Eunoia Application"
+    companion object {
+        lateinit var instance: Eunoia private set
+    }
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         // initialize Amplify when application is starting
         AuthBackend.initialize(applicationContext, this)
         if (! Python.isStarted()) {

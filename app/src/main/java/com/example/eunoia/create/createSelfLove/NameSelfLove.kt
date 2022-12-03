@@ -47,6 +47,7 @@ var selfLoveShortDescriptionErrorMessage by mutableStateOf("")
 var selfLoveLongDescriptionErrorMessage by mutableStateOf("")
 var selfLoveLyricsErrorMessage by mutableStateOf("")
 var selfLoveTagsErrorMessage by mutableStateOf("")
+
 private const val MIN_SELF_LOVE_NAME = 5
 private const val MIN_SELF_LOVE_SHORT_DESCRIPTION = 10
 private const val MIN_SELF_LOVE_LONG_DESCRIPTION = 50
@@ -527,20 +528,14 @@ fun NameSelfLoveUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    var otherSelfLovesWithSameName by mutableStateOf(-1)
                     SelfLoveBackend.querySelfLoveBasedOnDisplayName(selfLoveName){
-                        otherSelfLovesWithSameName = if(it.isEmpty()) 0 else it.size
-                    }
-                    Thread.sleep(1_000)
-
-                    if (otherSelfLovesWithSameName < 1) {
-                        runOnUiThread {
-                            navigateToUploadSelfLove(
-                                navController
-                            )
-                        }
-                    }else{
-                        openSelfLoveNameTakenDialogBox = true
+                        if (it.isEmpty()) {
+                            runOnUiThread {
+                                navigateToUploadSelfLove(
+                                    navController
+                                )
+                            }
+                        } else openSelfLoveNameTakenDialogBox = true
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -589,7 +584,7 @@ fun NameSelfLoveUI(
                     top.linkTo(inProgress.bottom, margin = 40.dp)
                 }
         ){
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

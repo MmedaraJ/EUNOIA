@@ -18,6 +18,7 @@ object UserPrayerRelationshipObject {
         val userPrayerRelationshipPrayer: @RawValue PrayerObject.Prayer,
         val numberOfTimesPlayed: Int,
         val totalPlayTime: Long,
+        val continuePlayingTime: Int,
         val currentlyListening: Boolean?,
         val usageTimeStamp: @RawValue List<Temporal.DateTime>?,
         val usagePlayTimes: List<Int>?,
@@ -32,6 +33,7 @@ object UserPrayerRelationshipObject {
                 .userPrayerRelationshipPrayer(this.userPrayerRelationshipPrayer.data)
                 .numberOfTimesPlayed(this.numberOfTimesPlayed)
                 .totalPlayTime(this.totalPlayTime.toInt())
+                .continuePlayingTime(this.continuePlayingTime)
                 .currentlyListening(this.currentlyListening)
                 .usageTimestamps(this.usageTimeStamp)
                 .usagePlayTimes(this.usagePlayTimes)
@@ -46,6 +48,7 @@ object UserPrayerRelationshipObject {
                     PrayerObject.Prayer.from(userPrayerRelationship.userPrayerRelationshipPrayer),
                     userPrayerRelationship.numberOfTimesPlayed,
                     userPrayerRelationship.totalPlayTime.toLong(),
+                    userPrayerRelationship.continuePlayingTime,
                     userPrayerRelationship.currentlyListening,
                     userPrayerRelationship.usageTimestamps,
                     userPrayerRelationship.usagePlayTimes

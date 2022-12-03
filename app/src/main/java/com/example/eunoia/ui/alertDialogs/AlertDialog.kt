@@ -25,6 +25,7 @@ fun AlertDialogBox(text: String){
                 openPresetAlreadyExistsDialog = false
                 openSelfLoveNameTakenDialogBox = false
                 openUserAlreadyHasSoundDialogBox = false
+                openConfirmDeletePrayerDialogBox = false
                 openUserAlreadyHasPrayerDialogBox = false
                 openPresetNameIsAlreadyTakenDialog = false
                 openBedtimeStoryNameTakenDialogBox = false
@@ -33,6 +34,7 @@ fun AlertDialogBox(text: String){
                 openRoutineNameIsAlreadyTakenDialog = false
                 openRoutineAlreadyHasPresetDialogBox = false
                 openRoutineAlreadyHasPrayerDialogBox = false
+                openTooManyIncompletePrayerDialogBox = false
                 openRoutineAlreadyHasSelfLoveDialogBox = false
                 openTooManyIncompleteSelfLoveDialogBox = false
                 openUserAlreadyHasBedtimeStoryDialogBox = false

@@ -34,6 +34,7 @@ public final class UserPrayerRelationship implements Model {
   public static final QueryField USER_PRAYER_RELATIONSHIP_PRAYER = field("UserPrayerRelationship", "userPrayerRelationshipPrayerDataID");
   public static final QueryField NUMBER_OF_TIMES_PLAYED = field("UserPrayerRelationship", "numberOfTimesPlayed");
   public static final QueryField TOTAL_PLAY_TIME = field("UserPrayerRelationship", "totalPlayTime");
+  public static final QueryField CONTINUE_PLAYING_TIME = field("UserPrayerRelationship", "continuePlayingTime");
   public static final QueryField CURRENTLY_LISTENING = field("UserPrayerRelationship", "currentlyListening");
   public static final QueryField USAGE_TIMESTAMPS = field("UserPrayerRelationship", "usageTimestamps");
   public static final QueryField USAGE_PLAY_TIMES = field("UserPrayerRelationship", "usagePlayTimes");
@@ -42,6 +43,7 @@ public final class UserPrayerRelationship implements Model {
   private final @ModelField(targetType="PrayerData", isRequired = true) @BelongsTo(targetName = "userPrayerRelationshipPrayerDataID", type = PrayerData.class) PrayerData userPrayerRelationshipPrayer;
   private final @ModelField(targetType="Int") Integer numberOfTimesPlayed;
   private final @ModelField(targetType="Int") Integer totalPlayTime;
+  private final @ModelField(targetType="Int") Integer continuePlayingTime;
   private final @ModelField(targetType="Boolean") Boolean currentlyListening;
   private final @ModelField(targetType="AWSDateTime") List<Temporal.DateTime> usageTimestamps;
   private final @ModelField(targetType="Int") List<Integer> usagePlayTimes;
@@ -67,6 +69,10 @@ public final class UserPrayerRelationship implements Model {
       return totalPlayTime;
   }
   
+  public Integer getContinuePlayingTime() {
+      return continuePlayingTime;
+  }
+  
   public Boolean getCurrentlyListening() {
       return currentlyListening;
   }
@@ -87,12 +93,13 @@ public final class UserPrayerRelationship implements Model {
       return updatedAt;
   }
   
-  private UserPrayerRelationship(String id, UserData userPrayerRelationshipOwner, PrayerData userPrayerRelationshipPrayer, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
+  private UserPrayerRelationship(String id, UserData userPrayerRelationshipOwner, PrayerData userPrayerRelationshipPrayer, Integer numberOfTimesPlayed, Integer totalPlayTime, Integer continuePlayingTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
     this.id = id;
     this.userPrayerRelationshipOwner = userPrayerRelationshipOwner;
     this.userPrayerRelationshipPrayer = userPrayerRelationshipPrayer;
     this.numberOfTimesPlayed = numberOfTimesPlayed;
     this.totalPlayTime = totalPlayTime;
+    this.continuePlayingTime = continuePlayingTime;
     this.currentlyListening = currentlyListening;
     this.usageTimestamps = usageTimestamps;
     this.usagePlayTimes = usagePlayTimes;
@@ -111,6 +118,7 @@ public final class UserPrayerRelationship implements Model {
               ObjectsCompat.equals(getUserPrayerRelationshipPrayer(), userPrayerRelationship.getUserPrayerRelationshipPrayer()) &&
               ObjectsCompat.equals(getNumberOfTimesPlayed(), userPrayerRelationship.getNumberOfTimesPlayed()) &&
               ObjectsCompat.equals(getTotalPlayTime(), userPrayerRelationship.getTotalPlayTime()) &&
+              ObjectsCompat.equals(getContinuePlayingTime(), userPrayerRelationship.getContinuePlayingTime()) &&
               ObjectsCompat.equals(getCurrentlyListening(), userPrayerRelationship.getCurrentlyListening()) &&
               ObjectsCompat.equals(getUsageTimestamps(), userPrayerRelationship.getUsageTimestamps()) &&
               ObjectsCompat.equals(getUsagePlayTimes(), userPrayerRelationship.getUsagePlayTimes()) &&
@@ -127,6 +135,7 @@ public final class UserPrayerRelationship implements Model {
       .append(getUserPrayerRelationshipPrayer())
       .append(getNumberOfTimesPlayed())
       .append(getTotalPlayTime())
+      .append(getContinuePlayingTime())
       .append(getCurrentlyListening())
       .append(getUsageTimestamps())
       .append(getUsagePlayTimes())
@@ -145,6 +154,7 @@ public final class UserPrayerRelationship implements Model {
       .append("userPrayerRelationshipPrayer=" + String.valueOf(getUserPrayerRelationshipPrayer()) + ", ")
       .append("numberOfTimesPlayed=" + String.valueOf(getNumberOfTimesPlayed()) + ", ")
       .append("totalPlayTime=" + String.valueOf(getTotalPlayTime()) + ", ")
+      .append("continuePlayingTime=" + String.valueOf(getContinuePlayingTime()) + ", ")
       .append("currentlyListening=" + String.valueOf(getCurrentlyListening()) + ", ")
       .append("usageTimestamps=" + String.valueOf(getUsageTimestamps()) + ", ")
       .append("usagePlayTimes=" + String.valueOf(getUsagePlayTimes()) + ", ")
@@ -175,6 +185,7 @@ public final class UserPrayerRelationship implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -185,6 +196,7 @@ public final class UserPrayerRelationship implements Model {
       userPrayerRelationshipPrayer,
       numberOfTimesPlayed,
       totalPlayTime,
+      continuePlayingTime,
       currentlyListening,
       usageTimestamps,
       usagePlayTimes);
@@ -204,6 +216,7 @@ public final class UserPrayerRelationship implements Model {
     BuildStep id(String id);
     BuildStep numberOfTimesPlayed(Integer numberOfTimesPlayed);
     BuildStep totalPlayTime(Integer totalPlayTime);
+    BuildStep continuePlayingTime(Integer continuePlayingTime);
     BuildStep currentlyListening(Boolean currentlyListening);
     BuildStep usageTimestamps(List<Temporal.DateTime> usageTimestamps);
     BuildStep usagePlayTimes(List<Integer> usagePlayTimes);
@@ -216,6 +229,7 @@ public final class UserPrayerRelationship implements Model {
     private PrayerData userPrayerRelationshipPrayer;
     private Integer numberOfTimesPlayed;
     private Integer totalPlayTime;
+    private Integer continuePlayingTime;
     private Boolean currentlyListening;
     private List<Temporal.DateTime> usageTimestamps;
     private List<Integer> usagePlayTimes;
@@ -229,6 +243,7 @@ public final class UserPrayerRelationship implements Model {
           userPrayerRelationshipPrayer,
           numberOfTimesPlayed,
           totalPlayTime,
+          continuePlayingTime,
           currentlyListening,
           usageTimestamps,
           usagePlayTimes);
@@ -257,6 +272,12 @@ public final class UserPrayerRelationship implements Model {
     @Override
      public BuildStep totalPlayTime(Integer totalPlayTime) {
         this.totalPlayTime = totalPlayTime;
+        return this;
+    }
+    
+    @Override
+     public BuildStep continuePlayingTime(Integer continuePlayingTime) {
+        this.continuePlayingTime = continuePlayingTime;
         return this;
     }
     
@@ -290,12 +311,13 @@ public final class UserPrayerRelationship implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, UserData userPrayerRelationshipOwner, PrayerData userPrayerRelationshipPrayer, Integer numberOfTimesPlayed, Integer totalPlayTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
+    private CopyOfBuilder(String id, UserData userPrayerRelationshipOwner, PrayerData userPrayerRelationshipPrayer, Integer numberOfTimesPlayed, Integer totalPlayTime, Integer continuePlayingTime, Boolean currentlyListening, List<Temporal.DateTime> usageTimestamps, List<Integer> usagePlayTimes) {
       super.id(id);
       super.userPrayerRelationshipOwner(userPrayerRelationshipOwner)
         .userPrayerRelationshipPrayer(userPrayerRelationshipPrayer)
         .numberOfTimesPlayed(numberOfTimesPlayed)
         .totalPlayTime(totalPlayTime)
+        .continuePlayingTime(continuePlayingTime)
         .currentlyListening(currentlyListening)
         .usageTimestamps(usageTimestamps)
         .usagePlayTimes(usagePlayTimes);
@@ -319,6 +341,11 @@ public final class UserPrayerRelationship implements Model {
     @Override
      public CopyOfBuilder totalPlayTime(Integer totalPlayTime) {
       return (CopyOfBuilder) super.totalPlayTime(totalPlayTime);
+    }
+    
+    @Override
+     public CopyOfBuilder continuePlayingTime(Integer continuePlayingTime) {
+      return (CopyOfBuilder) super.continuePlayingTime(continuePlayingTime);
     }
     
     @Override

@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.amplifyframework.datastore.generated.model.PageData
+import com.amplifyframework.datastore.generated.model.PrayerData
 import com.amplifyframework.datastore.generated.model.SelfLoveData
 import com.example.eunoia.R
 import com.example.eunoia.create.createBedtimeStory.*
@@ -188,6 +189,15 @@ fun processClosingRecordAudio(
                 )
             }
             is SelfLoveData -> {
+                closeRecordAudioAccordingly(
+                    "special",
+                    context,
+                    scope,
+                    state,
+                    generalMediaPlayerService
+                )
+            }
+            is PrayerData -> {
                 closeRecordAudioAccordingly(
                     "special",
                     context,
@@ -612,11 +622,9 @@ fun saveRecordedAudio(
             }
         }
 
-        is String ->{
-            when(recordAudioViewModel!!.currentRoutineElementWhoOwnsRecording){
-                "prayer" -> {
-                    setPrayerRecordingsData()
-                }
+        is PrayerData ->{
+            if(selectedPrayerRecordingIndex < recordedPrayerRecordingAbsolutePath.size) {
+                setPrayerRecordingsData(context)
             }
         }
     }
@@ -633,13 +641,8 @@ fun setPageRecordingsData(
     context: Context
 ) {
     if(selectedPageRecordingIndex < pageRecordingFileUris.size) {
-        Log.i(TAG, "selectedPageRecordingIndex =-- $selectedPageRecordingIndex")
-        Log.i(TAG, "recordingFile =-- ${recordingFile}")
-        Log.i(TAG, "recordingFile.length() =-- ${recordingFile!!.length()}")
-        Log.i(TAG, "recordingFile.toString() =-- ${recordingFile.toString()}")
         val recordedNames = mutableListOf<File>()
         recordedNames.add(recordingFile!!)
-        Log.i(TAG, "recordedNames.last() =-- ${recordedNames.last()}")
         recordedPageRecordingAbsolutePath[selectedPageRecordingIndex].value =
             recordedNames.last().absolutePath
         pageRecordingFileColors[selectedPageRecordingIndex].value = Peach
@@ -653,18 +656,27 @@ fun setPageRecordingsData(
         ).toLong()
         pageRecordingS3Keys[selectedPageRecordingIndex].value = "open"
         resetRecordingFileWithoutDeleting(context)
-        Log.i(TAG, "Saving page recording 0")
-        Log.i(TAG, "99 pageRecordingFileNames.seize => ${pageRecordingFileNames.size}")
-        Log.i(TAG, "99 pageRecordingFileNames--seize => ${pageRecordingFileNames}")
     }
 }
 
-fun setPrayerRecordingsData() {
-    recordedPrayerAbsolutePath.value = recordingFile!!.absolutePath
-    recordedFilePrayer.value = recordingFile!!
-    recordedFileUriPrayer.value = recordingFile!!.absolutePath.toUri()
-    recordedAudioFileLengthMilliSecondsPrayer.value = recordingFile!!.length()
-    recordedFileColorPrayer.value = Peach
+fun setPrayerRecordingsData(context: Context) {
+    if(selectedPrayerRecordingIndex < prayerRecordingFileUris.size) {
+        val recordedNames = mutableListOf<File>()
+        recordedNames.add(recordingFile!!)
+        recordedPrayerRecordingAbsolutePath[selectedPrayerRecordingIndex].value =
+            recordedNames.last().absolutePath
+        prayerRecordingFileColors[selectedPrayerRecordingIndex].value = Peach
+        prayerRecordingFileUris[selectedPrayerRecordingIndex].value =
+            recordedNames.last().absolutePath.toUri()
+        prayerRecordingFileNames[selectedPrayerRecordingIndex].value =
+            prayerRecordingNames[selectedPrayerRecordingIndex].value
+        audioPrayerRecordingFileLengthMilliSeconds[selectedPrayerRecordingIndex].value = retrieveUriDuration(
+            recordedNames.last().path,
+            context
+        ).toLong()
+        prayerRecordingS3Keys[selectedPrayerRecordingIndex].value = "open"
+        resetRecordingFileWithoutDeleting(context)
+    }
 }
 
 fun setSelfLoveRecordingsData(context: Context) {

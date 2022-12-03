@@ -200,8 +200,12 @@ fun createPrayerFromUpload(
                     prayerReligion,
                     prayerCountry,
                     tags,
+                    listOf(),
+                    listOf(),
+                    listOf(),
                     PrayerAudioSource.UPLOADED,
                     PrayerApprovalStatus.PENDING,
+                    PrayerCreationStatus.COMPLETED
                 )
                 createPrayer(prayer, context, navController)
             }
@@ -236,8 +240,13 @@ fun navigateToPrayerScreen(navController: NavController, prayerData: PrayerData)
     navController.navigate("${Screen.PrayerScreen.screen_route}/prayerData=${PrayerObject.Prayer.from(prayerData)}")
 }
 
-fun getPrayerTagsList():List<String> {
-    return prayerTags.split(",")
+fun getPrayerTagsList(): List<String> {
+    val list =  prayerTags.split(",")
+    val listMut = list.toMutableList()
+    listMut.removeIf {
+        it.isBlank()
+    }
+    return listMut
 }
 
 fun resetAllPrayerCreationObjects(context: Context){

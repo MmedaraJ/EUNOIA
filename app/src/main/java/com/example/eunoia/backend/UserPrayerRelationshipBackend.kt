@@ -45,14 +45,15 @@ object UserPrayerRelationshipBackend {
 
     fun createUserPrayerRelationshipObject(prayer: PrayerData, completed: (userPrayerRelationship: UserPrayerRelationship) -> Unit){
         val userPrayerRelationshipModel = UserPrayerRelationshipObject.UserPrayerRelationshipModel(
-            UUID.randomUUID().toString(),
-            UserObject.User.from(globalViewModel!!.currentUser!!),
-            PrayerObject.Prayer.from(prayer),
-            0,
-            0,
-            false,
-            listOf(),
-            listOf()
+            id = UUID.randomUUID().toString(),
+            userPrayerRelationshipOwner = UserObject.User.from(globalViewModel!!.currentUser!!),
+            userPrayerRelationshipPrayer = PrayerObject.Prayer.from(prayer),
+            numberOfTimesPlayed = 0,
+            totalPlayTime = 0,
+            continuePlayingTime = 0,
+            currentlyListening = false,
+            usageTimeStamp = listOf(),
+            usagePlayTimes = listOf()
         )
         createUserPrayerRelationship(userPrayerRelationshipModel){
             mainScope.launch {
@@ -99,7 +100,10 @@ object UserPrayerRelationshipBackend {
                         for (userPrayerRelationshipData in response.data) {
                             //TODO change pending to approved
                             if(userPrayerRelationshipData != null) {
-                                if (userPrayerRelationshipData.userPrayerRelationshipPrayer.approvalStatus == PrayerApprovalStatus.PENDING) {
+                                if (
+                                    userPrayerRelationshipData.userPrayerRelationshipPrayer.approvalStatus == PrayerApprovalStatus.PENDING &&
+                                    userPrayerRelationshipData.userPrayerRelationshipPrayer.creationStatus == PrayerCreationStatus.COMPLETED
+                                ) {
                                     Log.i(TAG, userPrayerRelationshipData.toString())
                                     userPrayerRelationshipList.add(userPrayerRelationshipData)
                                 }

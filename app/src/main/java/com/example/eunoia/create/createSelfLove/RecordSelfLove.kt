@@ -30,7 +30,6 @@ import com.example.eunoia.R
 import com.example.eunoia.backend.*
 import com.example.eunoia.create.createBedtimeStory.InputAndConcat
 import com.example.eunoia.create.createBedtimeStory.concatenateAllUris
-import com.example.eunoia.create.createBedtimeStory.userBedtimeStories
 import com.example.eunoia.dashboard.sound.gradientBackground
 import com.example.eunoia.lifecycle.CustomLifecycleEventListenerProcessor
 import com.example.eunoia.services.GeneralMediaPlayerService
@@ -268,7 +267,7 @@ fun RecordSelfLoveUI(
                                     }
                                 }
                                 2 -> {
-                                    startPlayingThisPage(
+                                    startPlayingThisSelfLove(
                                         generalMediaPlayerService,
                                         index,
                                     )
@@ -353,7 +352,7 @@ fun RecordSelfLoveUI(
  * @param index is the index of the play button
  * @param generalMediaPlayerService is the media player service that will play uri
  */
-fun startPlayingThisPage(
+fun startPlayingThisSelfLove(
     generalMediaPlayerService: GeneralMediaPlayerService,
     index: Int
 ){

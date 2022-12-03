@@ -1,8 +1,11 @@
 package com.example.eunoia.ui.screens
 
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
+import com.example.eunoia.Eunoia
 import com.example.eunoia.R
 
 /*fun NavBackStackEntry.getRoute(): String {
@@ -13,11 +16,11 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
     /**
      * bottom nav bar
      */
-    object Search: Screen("Search", R.drawable.search,"search")
-    object Feedback: Screen("Feedback", R.drawable.feedback_icon,"feedback")
-    object Account: Screen("Account", R.drawable.feedback_icon,"account")
-    object Dashboard : Screen("Home", R.drawable.cloud,"home")
-    object Create: Screen("Create", R.drawable.create_button,"create")
+    object Search: Screen(Eunoia.instance.getString(R.string.search_nav_title), R.drawable.search,"search")
+    object Feedback: Screen(Eunoia.instance.getString(R.string.feedback_nav_title), R.drawable.feedback_icon,"feedback")
+    object Account: Screen(Eunoia.instance.getString(R.string.account_nav_title), R.drawable.feedback_icon,"account")
+    object Dashboard : Screen(Eunoia.instance.getString(R.string.home_nav_title), R.drawable.cloud,"home")
+    object Create: Screen(Eunoia.instance.getString(R.string.create_nav_title), R.drawable.create_button,"create")
 
     /**
      * Sound
@@ -82,6 +85,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
     object NamePrayer: Screen("Name Prayer", -1,"name_prayer")
     object UploadPrayer: Screen("Upload Prayer", -1,"upload_prayer")
     object RecordPrayer: Screen("Record Prayer", -1,"record_prayer")
+    object IncompletePrayers: Screen("Incomplete Prayer", -1,"incomplete_prayer")
 
     /**
      * Create self love
@@ -141,6 +145,7 @@ sealed class Screen(var title: String, var icon: Int, var screen_route: String) 
                 NamePrayer.screen_route -> NamePrayer
                 UploadPrayer.screen_route -> UploadPrayer
                 RecordPrayer.screen_route -> RecordPrayer
+                IncompletePrayers.screen_route -> IncompletePrayers
 
                 /**
                  * Create Self Love

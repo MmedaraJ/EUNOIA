@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +35,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.observe
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.amazonaws.util.DateUtils
@@ -83,6 +85,7 @@ import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
 import com.example.eunoia.utils.*
 import com.example.eunoia.utils.Timer
+import com.example.eunoia.viewModels.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import java.io.DataOutputStream
@@ -124,7 +127,7 @@ class UserDashboardActivity :
 
     companion object{
         val TAG = "UserDashboardActivity"
-        lateinit var weakActivity: WeakReference<UserDashboardActivity>
+        var weakActivity: WeakReference<UserDashboardActivity> = WeakReference(UserDashboardActivity())
 
         fun getInstanceActivity(): UserDashboardActivity{
             return weakActivity.get()!!
@@ -451,6 +454,12 @@ fun UserDashboardActivityUI(
     navController: NavHostController,
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    globalViewModel: GlobalViewModel,
+    bedtimeStoryViewModel: BedtimeStoryViewModel,
+    soundViewModel: SoundViewModel,
+    prayerViewModel: PrayerViewModel,
+    selfLoveViewModel: SelfLoveViewModel,
+    routineViewModel: RoutineViewModel,
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService
 ) {
@@ -462,7 +471,7 @@ fun UserDashboardActivityUI(
         context
     )
 
-    globalViewModel!!.navController = navController
+    //globalViewModel!!.navController = navController
     val scrollState = rememberScrollState()
 
     var retrievedUserRoutineRelationships by rememberSaveable{ mutableStateOf(false) }
@@ -546,6 +555,7 @@ fun UserDashboardActivityUI(
                     end.linkTo(parent.end, margin = 0.dp)
                 }
                 .fillMaxWidth()
+                .testTag("options")
         ) {
             OptionItem(
                 allElements,

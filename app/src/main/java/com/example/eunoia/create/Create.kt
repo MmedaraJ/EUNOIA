@@ -42,7 +42,7 @@ fun CreateUI(
     globalViewModel!!.navController = navController
     createSoundViewModel =  viewModel()
     openSavedElementDialogBox = false
-    resetAllBedtimeStoryCreationObjects()
+    //resetAllBedtimeStoryCreationObjects()
 
     val scrollState = rememberScrollState()
     ConstraintLayout(
@@ -67,7 +67,7 @@ fun CreateUI(
             ProfilePictureHeader(
                 {},
                 {
-                    com.example.eunoia.ui.navigation.globalViewModel!!.bottomSheetOpenFor = "controls"
+                    globalViewModel!!.bottomSheetOpenFor = "controls"
                     openBottomSheet(scope, state)
 
                 },

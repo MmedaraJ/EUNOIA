@@ -25,8 +25,12 @@ object PrayerObject {
         val religion: String?,
         val country: String?,
         val tags: List<String>?,
+        val audioKeysS3: List<String>,
+        val audioNames: List<String>,
+        val audioLengths: List<Long>?,
         val audioSource: PrayerAudioSource,
         val approvalStatus: PrayerApprovalStatus,
+        val creationStatus: PrayerCreationStatus
     ): Parcelable {
         override fun toString(): String {
             return Uri.encode(Gson().toJson(this))
@@ -43,8 +47,16 @@ object PrayerObject {
                 .religion(this.religion)
                 .country(this.country)
                 .tags(this.tags)
+                .audioKeysS3(this.audioKeysS3)
+                .audioNames(this.audioNames)
+                .audioLengths(
+                    this.audioLengths!!.map {
+                        it.toInt()
+                    }
+                )
                 .audioSource(this.audioSource)
                 .approvalStatus(this.approvalStatus)
+                .creationStatus(this.creationStatus)
                 .prayerOwnerId(this.prayerOwnerId)
                 .shortDescription(this.shortDescription)
                 .longDescription(this.longDescription)
@@ -67,8 +79,14 @@ object PrayerObject {
                     prayerData.religion,
                     prayerData.country,
                     prayerData.tags,
+                    prayerData.audioKeysS3,
+                    prayerData.audioNames,
+                    prayerData.audioLengths.map {
+                        it.toLong()
+                    },
                     prayerData.audioSource,
                     prayerData.approvalStatus,
+                    prayerData.creationStatus,
                 )
                 return result
             }

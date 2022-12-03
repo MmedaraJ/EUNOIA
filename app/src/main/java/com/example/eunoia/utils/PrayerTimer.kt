@@ -3,7 +3,7 @@ package com.example.eunoia.utils
 import android.os.Handler
 import android.os.Looper
 
-class PrayerTimer(listener: PrayerTimer.OnPrayerTimerTickListener) {
+class PrayerTimer(listener: OnPrayerTimerTickListener) {
     interface OnPrayerTimerTickListener{
         fun onPrayerTimerTick(
             durationString: String,
@@ -13,7 +13,6 @@ class PrayerTimer(listener: PrayerTimer.OnPrayerTimerTickListener) {
 
     private var handler = Handler(Looper.getMainLooper())
     private lateinit var runnable: Runnable
-
     private var duration = 0L
     private var delay = 100L
     private var maxDuration = 100000L

@@ -7,6 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -15,17 +16,20 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread
-import com.example.eunoia.backend.PrayerBackend
+import com.amplifyframework.datastore.generated.model.*
+import com.example.eunoia.backend.*
+import com.example.eunoia.create.createSelfLove.*
+import com.example.eunoia.models.PrayerObject
+import com.example.eunoia.models.SelfLoveObject
+import com.example.eunoia.models.UserObject
 import com.example.eunoia.ui.alertDialogs.AlertDialogBox
 import com.example.eunoia.ui.bottomSheets.openBottomSheet
 import com.example.eunoia.ui.components.*
-import com.example.eunoia.ui.navigation.globalViewModel
-import com.example.eunoia.ui.navigation.openPrayerNameTakenDialogBox
-import com.example.eunoia.ui.navigation.soundViewModel
+import com.example.eunoia.ui.navigation.*
 import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.*
-import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
+import java.util.*
 
 var prayerIcon by mutableStateOf(-1)
 var prayerName by mutableStateOf("")
@@ -41,14 +45,16 @@ var prayerLongDescriptionErrorMessage by mutableStateOf("")
 var prayerReligionErrorMessage by mutableStateOf("")
 var prayerCountryErrorMessage by mutableStateOf("")
 var prayerTagsErrorMessage by mutableStateOf("")
+
 private const val MIN_PRAYER_NAME = 5
 private const val MIN_PRAYER_SHORT_DESCRIPTION = 10
-private const val MIN_PRAYER_LONG_DESCRIPTION = 10
+private const val MIN_PRAYER_LONG_DESCRIPTION = 50
 private const val MIN_PRAYER_TAGS = 3
 private const val MAX_PRAYER_NAME = 30
 private const val MAX_PRAYER_SHORT_DESCRIPTION = 50
-private const val MAX_PRAYER_LONG_DESCRIPTION = 200
+private const val MAX_PRAYER_LONG_DESCRIPTION = 500
 private const val MAX_PRAYER_TAGS = 50
+var incompletePrayers = mutableListOf<MutableState<PrayerData>?>()
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -57,6 +63,14 @@ fun NamePrayerUI(
     scope: CoroutineScope,
     state: ModalBottomSheetState
 ){
+    var numberOfIncompletePrayers by rememberSaveable { mutableStateOf(0) }
+    PrayerBackend.queryIncompletePrayerBasedOnUser(globalViewModel!!.currentUser!!) {
+        for (i in incompletePrayers.size until it.size) {
+            incompletePrayers.add(mutableStateOf(it[i]!!))
+        }
+        numberOfIncompletePrayers = incompletePrayers.size
+    }
+
     val scrollState = rememberScrollState()
     val context = LocalContext.current
 
@@ -77,24 +91,31 @@ fun NamePrayerUI(
         val (
             header,
             title,
+            nameTitle,
             nameColumn,
             nameError,
+            shortDescriptionTitle,
             prayerShortDescriptionColumn,
             prayerShortDescriptionError,
+            longDescriptionTitle,
             prayerLongDescriptionColumn,
             prayerLongDescriptionError,
-            tagColumn,
-            tagError,
+            religionTitle,
             religionColumn,
             religionError,
+        ) = createRefs()
+
+        val (
+            tagTitle,
+            tagColumn,
+            tagError,
+            countryTitle,
             countryColumn,
             countryError,
             iconTitle,
             icons,
-        ) = createRefs()
-
-        val (
             next,
+            inProgress,
             endSpace,
         ) = createRefs()
 
@@ -137,9 +158,25 @@ fun NamePrayerUI(
             )
         }
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(nameTitle) {
+                    top.linkTo(title.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            NormalText(
+                text = "Name",
+                color = Black,
+                fontSize = 13,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
             modifier = Modifier
                 .constrainAs(nameColumn) {
-                    top.linkTo(title.bottom, margin = 16.dp)
+                    top.linkTo(nameTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -151,7 +188,7 @@ fun NamePrayerUI(
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
-                placeholder = "Name",
+                placeholder = "eg. Morning Prayer",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
                 offset = 0,
@@ -166,10 +203,26 @@ fun NamePrayerUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            NormalText(
                 text = prayerNameErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(shortDescriptionTitle) {
+                    top.linkTo(nameError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            NormalText(
+                text = "Get people excited in one sentence",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -177,7 +230,7 @@ fun NamePrayerUI(
         Column(
             modifier = Modifier
                 .constrainAs(prayerShortDescriptionColumn) {
-                    top.linkTo(nameError.bottom, margin = 16.dp)
+                    top.linkTo(shortDescriptionTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -189,7 +242,7 @@ fun NamePrayerUI(
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
-                placeholder = "Short description",
+                placeholder = "eg. When times are hard and money no dey",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
                 offset = 0,
@@ -204,10 +257,26 @@ fun NamePrayerUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            NormalText(
                 text = prayerShortDescriptionErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(longDescriptionTitle) {
+                    top.linkTo(prayerShortDescriptionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            NormalText(
+                text = "Summarize this self love",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -215,7 +284,7 @@ fun NamePrayerUI(
         Column(
             modifier = Modifier
                 .constrainAs(prayerLongDescriptionColumn) {
-                    top.linkTo(prayerShortDescriptionError.bottom, margin = 16.dp)
+                    top.linkTo(longDescriptionTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -223,7 +292,7 @@ fun NamePrayerUI(
             prayerLongDescription = customizableBigOutlinedTextInput(
                 maxLength = MAX_PRAYER_LONG_DESCRIPTION,
                 height = 100,
-                placeholder = "Long description",
+                placeholder = "Make it lengthy",
                 backgroundColor = SoftPeach,
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
@@ -242,10 +311,26 @@ fun NamePrayerUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            NormalText(
                 text = prayerLongDescriptionErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(religionTitle) {
+                    top.linkTo(prayerLongDescriptionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            NormalText(
+                text = "Religion",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -253,7 +338,7 @@ fun NamePrayerUI(
         Column(
             modifier = Modifier
                 .constrainAs(religionColumn) {
-                    top.linkTo(prayerLongDescriptionError.bottom, margin = 16.dp)
+                    top.linkTo(religionTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -282,10 +367,26 @@ fun NamePrayerUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            NormalText(
                 text = prayerReligionErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(countryTitle) {
+                    top.linkTo(religionError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            NormalText(
+                text = "Country",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -293,7 +394,7 @@ fun NamePrayerUI(
         Column(
             modifier = Modifier
                 .constrainAs(countryColumn) {
-                    top.linkTo(religionError.bottom, margin = 16.dp)
+                    top.linkTo(countryTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -506,10 +607,26 @@ fun NamePrayerUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            NormalText(
                 text = prayerCountryErrorMessage,
+                color = BeautyBush,
+                fontSize = 11,
+                xOffset = 0,
+                yOffset = 0
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(tagTitle) {
+                    top.linkTo(countryError.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                }
+        ){
+            NormalText(
+                text = "Hashtags help users find your self love",
                 color = Black,
-                fontSize = 10,
+                fontSize = 13,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -517,7 +634,7 @@ fun NamePrayerUI(
         Column(
             modifier = Modifier
                 .constrainAs(tagColumn) {
-                    top.linkTo(countryError.bottom, margin = 16.dp)
+                    top.linkTo(tagTitle.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -529,7 +646,7 @@ fun NamePrayerUI(
                 focusedBorderColor = BeautyBush,
                 unfocusedBorderColor = SoftPeach,
                 inputFontSize = 16,
-                placeholder = "Tags",
+                placeholder = "eg. love, self care",
                 placeholderFontSize = 16,
                 placeholderColor = BeautyBush,
                 offset = 0,
@@ -544,10 +661,10 @@ fun NamePrayerUI(
                     start.linkTo(parent.start, margin = 0.dp)
                 }
         ){
-            AlignedLightText(
+            NormalText(
                 text = prayerTagsErrorMessage,
-                color = Black,
-                fontSize = 10,
+                color = BeautyBush,
+                fontSize = 11,
                 xOffset = 0,
                 yOffset = 0
             )
@@ -556,7 +673,7 @@ fun NamePrayerUI(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .constrainAs(iconTitle) {
-                    top.linkTo(tagError.bottom, margin = 24.dp)
+                    top.linkTo(tagError.bottom, margin = 48.dp)
                     start.linkTo(parent.start, margin = 0.dp)
                     end.linkTo(parent.end, margin = 0.dp)
                 }
@@ -654,20 +771,14 @@ fun NamePrayerUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    var otherPrayersWithSameName by mutableStateOf(-1)
                     PrayerBackend.queryPrayerBasedOnDisplayName(prayerName){
-                        otherPrayersWithSameName = if(it.isEmpty()) 0 else it.size
-                    }
-                    Thread.sleep(1_000)
-
-                    if(otherPrayersWithSameName < 1) {
-                        runOnUiThread {
-                            navigateToUploadPrayer(
-                                navController
-                            )
-                        }
-                    }else{
-                        openPrayerNameTakenDialogBox = true
+                        if(it.isEmpty()){
+                            runOnUiThread {
+                                navigateToUploadPrayer(
+                                    navController
+                                )
+                            }
+                        } else openPrayerNameTakenDialogBox = true
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -685,21 +796,28 @@ fun NamePrayerUI(
                     textType = "light",
                     maxWidthFraction = 1F
                 ) {
-                    var otherPrayersWithSameName by mutableStateOf(-1)
-                    PrayerBackend.queryPrayerBasedOnDisplayName(prayerName){
-                        otherPrayersWithSameName = if(it.isEmpty()) 0 else it.size
-                    }
-                    Thread.sleep(1_000)
-
-                    if(otherPrayersWithSameName < 1) {
-                        runOnUiThread {
-                            navigateToRecordPrayer(
-                                navController
-                            )
-                        }
-                    }else{
-                        openPrayerNameTakenDialogBox = true
-                    }
+                    createPrayer(numberOfIncompletePrayers, navController)
+                }
+            }
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .constrainAs(inProgress) {
+                    top.linkTo(next.bottom, margin = 24.dp)
+                    start.linkTo(parent.start, margin = 0.dp)
+                    end.linkTo(parent.end, margin = 0.dp)
+                }
+        ){
+            if(numberOfIncompletePrayers > 0) {
+                ClickableNormalText(
+                    text = "Complete another prayer",
+                    color = Black,
+                    12,
+                    0,
+                    0
+                ) {
+                    navController.navigate(Screen.IncompletePrayers.screen_route)
                 }
             }
         }
@@ -709,7 +827,66 @@ fun NamePrayerUI(
                     top.linkTo(next.bottom, margin = 40.dp)
                 }
         ){
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+    }
+}
+
+private fun createPrayer(
+    numberOfIncompletePrayers: Int,
+    navController: NavController
+){
+    PrayerBackend.queryPrayerBasedOnDisplayName(prayerName){
+        if(numberOfIncompletePrayers < 3){
+            if (it.isEmpty()) {
+                val tags = getPrayerTagsList()
+                val key = "${globalViewModel!!.currentUser!!.username.lowercase()}/" +
+                        "routine/" +
+                        "prayer/" +
+                        "recorded/" +
+                        "${prayerName.lowercase()}/" +
+                        "complete/" +
+                        "${prayerName.lowercase()}_audio.aac"
+
+                val prayer = PrayerObject.Prayer(
+                    UUID.randomUUID().toString(),
+                    UserObject.User.from(globalViewModel!!.currentUser!!),
+                    globalViewModel!!.currentUser!!.id,
+                    prayerName,
+                    prayerShortDescription,
+                    prayerLongDescription,
+                    key,
+                    prayerIcon,
+                    0,
+                    false,
+                    prayerReligion,
+                    prayerCountry,
+                    tags,
+                    listOf(),
+                    listOf(),
+                    listOf(),
+                    PrayerAudioSource.RECORDED,
+                    PrayerApprovalStatus.PENDING,
+                    PrayerCreationStatus.INCOMPLETE,
+                )
+
+                PrayerBackend.createPrayer(prayer) { prayerData ->
+                    UserPrayerRelationshipBackend.createUserPrayerRelationshipObject(prayerData) {
+                        UserPrayerBackend.createUserPrayerObject(
+                            prayerData
+                        ) {
+                            navigateToRecordPrayer(
+                                navController,
+                                prayerData
+                            )
+                        }
+                    }
+                }
+            }else{
+                openPrayerNameTakenDialogBox = true
+            }
+        }else{
+            openTooManyIncompletePrayerDialogBox = true
         }
     }
 }
@@ -719,33 +896,39 @@ private fun SetupAlertDialogs(){
     if(openPrayerNameTakenDialogBox){
         AlertDialogBox(text = "The name '$prayerName' already exists")
     }
+    if(openTooManyIncompletePrayerDialogBox){
+        AlertDialogBox(text = "You have three prayers in progress already")
+    }
 }
 
 private fun initializePrayerNameError() {
-    prayerNameErrorMessage = if(prayerName.isEmpty()){
-        "Name this prayer"
-    } else if(prayerName.length < MIN_PRAYER_NAME){
-        "Name must be at least $MIN_PRAYER_NAME characters"
+    prayerNameErrorMessage = if(
+        prayerName.isNotEmpty() &&
+        prayerName.length < MIN_PRAYER_NAME
+    ){
+        "Must be at least $MIN_PRAYER_NAME characters"
     } else{
         ""
     }
 }
 
 private fun initializePrayerShortDescriptionError() {
-    prayerShortDescriptionErrorMessage = if(prayerShortDescription.isEmpty()){
-        "Provide short description"
-    } else if(prayerShortDescription.length < MIN_PRAYER_SHORT_DESCRIPTION){
-        "Short description must be at least $MIN_PRAYER_SHORT_DESCRIPTION characters"
+    prayerShortDescriptionErrorMessage = if(
+        prayerShortDescription.isNotEmpty() &&
+        prayerShortDescription.length < MIN_PRAYER_SHORT_DESCRIPTION
+    ){
+        "Must be at least $MIN_PRAYER_SHORT_DESCRIPTION characters"
     } else{
         ""
     }
 }
 
 private fun initializePrayerLongDescriptionError() {
-    prayerLongDescriptionErrorMessage = if(prayerLongDescription.isEmpty()){
-        "Provide long description"
-    } else if(prayerLongDescription.length < MIN_PRAYER_LONG_DESCRIPTION){
-        "Long description must be at least $MIN_PRAYER_LONG_DESCRIPTION characters"
+    prayerLongDescriptionErrorMessage = if(
+        prayerLongDescription.isNotEmpty() &&
+        prayerLongDescription.length < MIN_PRAYER_LONG_DESCRIPTION
+    ){
+        "Must be at least $MIN_PRAYER_LONG_DESCRIPTION characters"
     } else{
         ""
     }
@@ -769,9 +952,9 @@ private fun initializePrayerCountryError() {
 
 private fun initializePrayerTagsError() {
     prayerTagsErrorMessage = if(prayerTags.isEmpty()){
-        "Add tags to this prayer. Separate tags with a comma"
+        "Separate hashtags with a comma"
     } else if(prayerTags.length < MIN_PRAYER_TAGS){
-        "Tags must be at least $MIN_PRAYER_TAGS characters"
+        "Must be at least $MIN_PRAYER_TAGS characters"
     } else{
         ""
     }
@@ -802,6 +985,9 @@ fun navigateToUploadPrayer(navController: NavController){
     navController.navigate(Screen.UploadPrayer.screen_route)
 }
 
-fun navigateToRecordPrayer(navController: NavController){
-    navController.navigate(Screen.RecordPrayer.screen_route)
+fun navigateToRecordPrayer(
+    navController: NavController,
+    prayerData: PrayerData
+){
+    navController.navigate("${Screen.RecordPrayer.screen_route}/prayer=${PrayerObject.Prayer.from(prayerData)}")
 }

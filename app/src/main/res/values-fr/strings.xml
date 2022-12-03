@@ -5,13 +5,13 @@
     <string name="profile_picture_text">Profile picture</string>
 
     <!--Sign in/up process-->
-    <string name="eunoia_definition">(n): well mind, beautiful thinking</string>
-    <string name="home_nav_title">Home</string>
-    <string name="search_nav_title">Search</string>
-    <string name="create_nav_title">Create</string>
-    <string name="feedback_nav_title">Feedback</string>
-    <string name="account_nav_title">Account</string>
-    <string name="welcome_to">Welcome to</string>
+    <string name="eunoia_definition">(n): bon esprit, belle pensée</string>
+    <string name="home_nav_title">Maison</string>
+    <string name="search_nav_title">Chercher</string>
+    <string name="create_nav_title">Créer</string>
+    <string name="feedback_nav_title">Réaction</string>
+    <string name="account_nav_title">Compte</string>
+    <string name="welcome_to">Bienvenue à</string>
     <string name="sign_in">sign in</string>
     <string name="sign_up">sign up</string>
     <string name="username">username</string>

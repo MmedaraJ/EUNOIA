@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -75,6 +76,7 @@ var openPresetAlreadyExistsDialog by mutableStateOf(false)
 var openSelfLoveNameTakenDialogBox by mutableStateOf(false)
 var openConfirmDeletePageDialogBox by mutableStateOf(false)
 var openUserAlreadyHasSoundDialogBox by mutableStateOf(false)
+var openConfirmDeletePrayerDialogBox by mutableStateOf(false)
 var openUserAlreadyHasPrayerDialogBox by mutableStateOf(false)
 var openConfirmDeleteChapterDialogBox by mutableStateOf(false)
 var openPresetNameIsAlreadyTakenDialog by mutableStateOf(false)
@@ -85,6 +87,7 @@ var openRoutineAlreadyHasSoundDialogBox by mutableStateOf(false)
 var openRoutineNameIsAlreadyTakenDialog by mutableStateOf(false)
 var openRoutineAlreadyHasPrayerDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasPresetDialogBox by mutableStateOf(false)
+var openTooManyIncompletePrayerDialogBox by mutableStateOf(false)
 var openRoutineAlreadyHasSelfLoveDialogBox by mutableStateOf(false)
 var openConfirmDeleteBedtimeStoryDialogBox by mutableStateOf(false)
 var openRoutineIsCurrentlyPlayingDialogBox by mutableStateOf(false)
@@ -114,6 +117,7 @@ fun MultiBottomNavApp() {
     EunoiaApp(
         scope,
         modalBottomSheetState,
+        viewModel(),
         generalMediaPlayerService,
         soundMediaPlayerService,
     ) { screen ->
@@ -138,6 +142,7 @@ var accountNavController: NavController? = null
 fun EunoiaApp(
     scope: CoroutineScope,
     state: ModalBottomSheetState,
+    globalViewModel: GlobalViewModel,
     generalMediaPlayerService: GeneralMediaPlayerService,
     soundMediaPlayerService: SoundMediaPlayerService,
     bodyContent: @Composable (Screen) -> Unit
@@ -321,12 +326,13 @@ fun EunoiaApp(
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(50.dp)
                             ) {
                                 NormalText(
-                                    text = "uygrhtng dghsn giujhfn ",
+                                    text = "now playing",
                                     color = Black,
                                     fontSize = 14,
                                     xOffset = 0,
@@ -347,6 +353,7 @@ fun EunoiaApp(
                             ) {
                                 /*val navBackStackEntry by navController.currentBackStackEntryAsState()
                             val currentRoute = navBackStackEntry?.destination?.route*/
+                                //val dashboardNavController = rememberNavController()
                                 items.forEach { item ->
                                     BottomNavigationItem(
                                         icon = {
@@ -373,29 +380,19 @@ fun EunoiaApp(
                                             if (currentTab == item) {
                                                 when (item) {
                                                     Screen.Dashboard -> {
-                                                        if (dashboardNavController != null) {
-                                                            dashboardNavController!!.popBackStack()
-                                                        }
+                                                        dashboardNavController!!.popBackStack()
                                                     }
                                                     Screen.Search -> {
-                                                        if (searchNavController != null) {
-                                                            searchNavController!!.popBackStack()
-                                                        }
+                                                        searchNavController!!.popBackStack()
                                                     }
                                                     Screen.Create -> {
-                                                        if (createNavController != null) {
-                                                            createNavController!!.popBackStack()
-                                                        }
+                                                        createNavController!!.popBackStack()
                                                     }
                                                     Screen.Feedback -> {
-                                                        if (feedbackNavController != null) {
-                                                            feedbackNavController!!.popBackStack()
-                                                        }
+                                                        feedbackNavController!!.popBackStack()
                                                     }
                                                     Screen.Account -> {
-                                                        if (accountNavController != null) {
-                                                            accountNavController!!.popBackStack()
-                                                        }
+                                                        accountNavController!!.popBackStack()
                                                     }
                                                     else -> {}
                                                 }
@@ -501,6 +498,12 @@ fun DashboardTab(
                 navController,
                 scope,
                 state,
+                viewModel(),
+                viewModel(),
+                viewModel(),
+                viewModel(),
+                viewModel(),
+                viewModel(),
                 generalMediaPlayerService,
                 soundMediaPlayerService
             )
@@ -969,6 +972,14 @@ fun CreateTab(
                 state = state
             )
         }
+        composable(Screen.IncompletePrayers.screen_route) {
+            Log.i("IncompletePrayers", "You are now on the IncompletePrayers tab")
+            IncompletePrayersUI(
+                navController = navController,
+                scope = scope,
+                state = state
+            )
+        }
         composable(Screen.NamePrayer.screen_route) {
             Log.i("NamePrayer", "You are now on the NamePrayer tab")
             NamePrayerUI(
@@ -987,12 +998,22 @@ fun CreateTab(
                 generalMediaPlayerService
             )
         }
-        composable(Screen.RecordPrayer.screen_route) {
+        composable(
+            "${Screen.RecordPrayer.screen_route}/prayer={prayer}",
+            arguments = listOf(
+                navArgument("prayer") {
+                    type = PrayerObject.PrayerType()
+                }
+            )
+        ) { backStackEntry ->
+            val prayer = backStackEntry.arguments?.getParcelable<PrayerObject.Prayer>("prayer")
             Log.i("RecordPrayer", "You are now on the RecordPrayer tab")
             RecordPrayerUI(
                 navController = navController,
                 scope = scope,
                 state = state,
+                prayerData = prayer!!.data,
+                PrayerRecordingViewModel(),
                 soundMediaPlayerService,
                 generalMediaPlayerService
             )

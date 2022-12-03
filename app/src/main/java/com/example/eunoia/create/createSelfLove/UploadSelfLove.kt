@@ -9,9 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -37,7 +35,6 @@ import com.example.eunoia.ui.screens.Screen
 import com.example.eunoia.ui.theme.Black
 import com.example.eunoia.ui.theme.SwansDown
 import com.example.eunoia.ui.theme.WePeep
-import com.example.eunoia.viewModels.GlobalViewModel
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import java.util.*
@@ -215,11 +212,11 @@ fun createSelfLoveFromUpload(
 }
 
 fun createSelfLove(
-    SelfLove: SelfLoveObject.SelfLove,
+    selfLove: SelfLoveObject.SelfLove,
     context: Context,
     navController: NavController
 ){
-    SelfLoveBackend.createSelfLove(SelfLove) { selfLoveData ->
+    SelfLoveBackend.createSelfLove(selfLove) { selfLoveData ->
         UserSelfLoveRelationshipBackend.createUserSelfLoveRelationshipObject(selfLoveData) {
             UserSelfLoveBackend.createUserSelfLoveObject(selfLoveData) {
                 resetAllSelfLoveCreationObjects(context)
@@ -238,8 +235,13 @@ fun navigateToSelfLoveScreen(navController: NavController, selfLoveData: SelfLov
     navController.navigate("${Screen.SelfLoveScreen.screen_route}/selfLoveData=${SelfLoveObject.SelfLove.from(selfLoveData)}")
 }
 
-fun getSelfLoveTagsList():List<String> {
-    return selfLoveTags.split(",")
+fun getSelfLoveTagsList(): List<String> {
+    val list =  selfLoveTags.split(",")
+    val listMut = list.toMutableList()
+    listMut.removeIf {
+        it.isBlank()
+    }
+    return listMut
 }
 
 fun getSelfLoveLyricsList():List<String> {

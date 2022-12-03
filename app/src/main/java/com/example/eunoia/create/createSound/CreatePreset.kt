@@ -18,6 +18,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.*
+import com.example.eunoia.create.createBedtimeStory.bedtimeStoryTags
 import com.example.eunoia.create.createPrayer.prayerName
 import com.example.eunoia.create.createSoundViewModel
 import com.example.eunoia.dashboard.sound.*
@@ -360,7 +361,12 @@ fun getMaxPlayTime(): Long {
 }
 
 fun getSoundTagsList():List<String> {
-    return soundTags.split(",")
+    val list =  soundTags.split(",")
+    val listMut = list.toMutableList()
+    listMut.removeIf {
+        it.isBlank()
+    }
+    return listMut
 }
 
 private fun createUserSound(soundData: SoundData, completed: () -> Unit){

@@ -277,6 +277,11 @@ enum PrayerApprovalStatus{
     DISAPPROVED
 }
 
+enum PrayerCreationStatus{
+    COMPLETED
+    INCOMPLETE
+}
+
 type PrayerData
 @model (queries: { get: "getPrayerData", list: "listPrayerDatas" })
 @auth (rules: [{ allow: private, operations: [read]}, { allow: owner }]) {
@@ -294,8 +299,12 @@ type PrayerData
     religion: String
     country: String
     tags: [String!]
+    audioKeysS3: [String!]
+    audioNames: [String!]
+    audioLengths: [Int]
     audioSource: PrayerAudioSource
     approvalStatus: PrayerApprovalStatus
+    creationStatus: PrayerCreationStatus
     userPrayerRelationshipsOwnedByPrayer: [UserPrayerRelationship!] @hasMany(indexName: "UserPrayerRelationshipsOwnedByPrayer", fields: ["id"])
     routines: [RoutineData!] @manyToMany(relationName: "RoutinePrayer")
     userRoutineRelationships: [UserRoutineRelationship!] @manyToMany(relationName: "UserRoutineRelationshipPrayer")
@@ -312,6 +321,7 @@ type UserPrayerRelationship
     userPrayerRelationshipPrayer: PrayerData! @belongsTo(fields: ["userPrayerRelationshipPrayerDataID"])
     numberOfTimesPlayed: Int
     totalPlayTime: Int
+    continuePlayingTime: Int
     currentlyListening: Boolean
     usageTimestamps: [AWSDateTime!]
     usagePlayTimes: [Int!]

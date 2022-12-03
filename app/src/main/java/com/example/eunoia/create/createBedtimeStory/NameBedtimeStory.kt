@@ -21,6 +21,7 @@ import com.amplifyframework.datastore.generated.model.*
 import com.example.eunoia.backend.BedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryBackend
 import com.example.eunoia.backend.UserBedtimeStoryInfoRelationshipBackend
+import com.example.eunoia.create.createPrayer.prayerTags
 import com.example.eunoia.create.createSelfLove.selfLoveName
 import com.example.eunoia.models.BedtimeStoryObject
 import com.example.eunoia.models.UserObject
@@ -530,7 +531,7 @@ fun NameBedtimeStoryUI(
                     top.linkTo(inProgress.bottom, margin = 40.dp)
                 }
         ){
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -652,7 +653,12 @@ private fun createBedtimeStory(
 }
 
 fun getBedtimeStoryTagsList():List<String> {
-    return bedtimeStoryTags.split(",")
+    val list =  bedtimeStoryTags.split(",")
+    val listMut = list.toMutableList()
+    listMut.removeIf {
+        it.isBlank()
+    }
+    return listMut
 }
 
 fun resetNameBedtimeStoryVariables(){
